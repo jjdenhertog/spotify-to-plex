@@ -1,0 +1,65 @@
+{
+    "compilerOptions": {
+        "target": "es5",
+        "lib": [
+            "dom",
+            "dom.iterable",
+            "esnext"
+        ],
+        "allowJs": true,
+        "skipLibCheck": true,
+        "strict": true,
+        "forceConsistentCasingInFileNames": true,
+        "noEmit": true,
+        "esModuleInterop": true,
+        "module": "esnext",
+        "moduleResolution": "node",
+        "resolveJsonModule": true,
+        "isolatedModules": true,
+        "jsx": "preserve",
+        "incremental": true,
+        "plugins": [
+            {
+                "name": "next"
+            }
+        ],
+        "baseUrl": ".",
+        "paths": {
+            "@/helpers/*": [
+                "src/helpers/*"
+            ],
+            "@/components/*": [
+                "src/components/*"
+            ],
+            "@/styles/*": [
+                "src/styles/*"
+            ],
+            "@/types/*": [
+                "src/types/*"
+            ],
+            "@/pages/*": [
+                "pages/*"
+            ],
+            "@/layouts/*": [
+                "src/layouts/*"
+            ],
+            "@/library/*": [
+                "src/library/*"
+            ],
+            "@/hoc/*": [
+                "src/hoc/*"
+            ]
+        }
+    },
+    "include": [
+        "next-env.d.ts",
+        "**/*.ts",
+        "**/*.tsx",
+        "lib/utils/cache.js",
+        ".next/types/**/*.ts",
+        "dist/types/**/*.ts"
+    ],
+    "exclude": [
+        "node_modules"
+    ]
+}

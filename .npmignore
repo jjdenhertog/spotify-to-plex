@@ -1,0 +1,23 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+/components
+/helpers
+/layouts
+/library
+/pages
+/styles
+/types
+/src
+/app
+/config
+/.yalc
+post.txt
+.dockerignore
+.env.local
+.eslintrc.json
+.gitignore
+config.json
+Dockerfile
+package-lock.json
+tsconfig.json
+dist/cache
+yalc.lock
