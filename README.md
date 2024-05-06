@@ -35,7 +35,7 @@ Create a new stack with the following configuration when using portainer.
 ```yaml
 version: '3.3'
 services:
-    aiguestdj-plex:
+    spotify-to-plex:
         container_name: spotify-to-plex
         restart: unless-stopped
         volumes:
