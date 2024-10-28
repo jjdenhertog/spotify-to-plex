@@ -1,6 +1,8 @@
 # Spotify to Plex
 
-This is the repository for a [Plex](https://plex.tv/) extension to import Spotify playlists. 
+This is the repository for a [Plex](https://plex.tv/) extension to import Spotify playlists. Currently Plex is moving away from Tidal, so the currently library will be updated alot for better support.
+
+[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)]([https://www.buymeacoffee.com/gbraad](https://buymeacoffee.com/jjdenhertog))
 
 ------------
 
