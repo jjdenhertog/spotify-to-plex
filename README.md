@@ -1,12 +1,14 @@
 <h1 align="center" style="color: orange;">🚀 New Release Coming Soon! 🚀</h1>
 
 <!--
+<div style="text-align:center"><img src="misc/logo.png"></div>
 <h1 align="center" style="color: orange;">Spotify to Plex</h1>
-[SCREENSHOTS]
 
 A beautiful web application that you can use to sync your Spotify playlists with [Plex](https://plex.tv/). This application uses the data from Spotify (playlists or albums) and tries to find all the matching songs in Plex. With every playlists it gives you an overview of the songs that have been matched and how they have been matched. 
 
-This project started because I'm using Home Assistant together with Plex and Sonos. During the week I'm listing to Spotify but in the evening and weekends Plex is more often used. Using this application I can automatically synchronise my Spotify songs with my Plex setup. 
+<img src="misc/app_overview.jpg">
+
+This project started because I'm using Home Assistant together with Plex and Sonos. During the week I'm listing to Spotify but in the evening and weekends Plex is more often used. Using this application I can automatically synchronize my Spotify songs with my Plex setup. 
 
 Features
 * Matching Spotify songs with Plex
@@ -14,17 +16,27 @@ Features
 * Export your missing songs (which could be used in [Tidal Media Downloader](https://github.com/yaronzz/Tidal-Media-Downloader))
 
 Coming soon
-* Automatically synchronise playlists or recent songs
+* Automatically synchronize playlists or recent songs
+* Update thumbnail in Plex to the Spotify Thumbnail
+* Select multiple playlists to set settings
 * API route for dashboarding
 
 Coming later
-* Add albums / playlist by searching
+* Add albums / playlist by searching Spotify
 
 ------------
 
 ## Installation
 
 Install the Spotify-to-Plex app using a docker container. Once up and running you will find the instance at http://[ipaddress]:9030. You can change the port number by setting the `PORT` environment variable.
+
+### Encryption key
+
+When you are using the [Spotify users](#spotify) option it's important to also setup an encryption key. This should be a random string. It is used to encrypt any sensitive data that we receive from Spotify. To get a random key you could use the following command line
+
+```bash
+openssl rand -hex 32
+```
 
 ### Spotify credentials
 
@@ -36,7 +48,7 @@ If you want to match missing songs with Tidal you also need to use Tidal Credent
 
 ### Binding volume
 
-All the data is stored in the `/app/config` folder, you need to add it as a volume for persistant storage.
+All the data is stored in the `/app/config` folder, you need to add it as a volume for persistent storage.
 
 ```sh
 docker run -d \
@@ -47,6 +59,7 @@ docker run -d \
     -e TIDAL_API_CLIENT_ID=PASTE_YOUR_TIDAL_CLIENT_ID_HERE \
     -e TIDAL_API_CLIENT_SECRET=PASTE_YOUR_TIDAL_CLIENT_SECRET_HERE \
     -e TIDAL_API_REDIRECT_URI=http://[ipaddress]:3000/api/tidal/token \
+    -e ENCRYPTION_KEY=PASTE_YOUR_ENCRYPTION_KEY \
     -v /local/directory/:/app/config:rw \
     --name=spotify-to-plex \
     --network=host \
@@ -74,6 +87,7 @@ services:
             - TIDAL_API_CLIENT_ID=PASTE_YOUR_TIDAL_CLIENT_ID_HERE
             - TIDAL_API_CLIENT_SECRET=PASTE_YOUR_TIDAL_CLIENT_SECRET_HERE
             - TIDAL_API_REDIRECT_URI=http://[ipaddress]:9030/api/tidal/token
+            - ENCRYPTION_KEY=PASTE_YOUR_ENCRYPTION_KEY
         network_mode: "host"
         image: 'jjdenhertog/spotify-to-plex:latest'
 ```
@@ -85,7 +99,7 @@ To match songs with Plex I'm using [plex-music-searcher](https://github.com/jjde
 
 When the matched song is indeed totally wrong, you can find more info by clicking on the warning. This tells you why the song was matched. You can use this information to raise an issue so I can look into it.
 
-[INSERT IMAGE HERE]
+<img src="misc/track_analyzer.jpg">
 
 ## Creating Plex Playlists
 
@@ -97,39 +111,62 @@ To modify the name of the playlist you can click on the pen icon behind the play
 
 ## Speeding things up
 
-Most API requests to Plex and Tidal take quite a while, that is why alot of data is cached. So when a song is matched once, it will not try to match it again. This means that when you reload an existing playlist it will only try to search for the missing song. 
+Most API requests to Plex and Tidal take quite a while, that is why a lot of data is cached. So when a song is matched once, it will not try to match it again. This means that when you reload an existing playlist it will only try to search for the missing song. 
 
-Most requests are made in sets of 5 tracks at-a-time and also cached in that way. So you don't need to wait untill al tracks are searched for. When interrupting the process it will have stored any matches that were succesfully made.
+Most requests are made in sets of 5 tracks at-a-time and also cached in that way. So you don't need to wait until al tracks are searched for. When interrupting the process it will have stored any matches that were successfully made.
 
 ### Removing cache
 
 All cached data is stored in `track_links.json` in the data folder. When removing this file all previously matched tracks will be removed. The other option is to click on the refresh icon on the playlist screen. This will reload the current playlist but ignore any previously matched songs. 
 
-[Screenshot]
+<img src="misc/clear_cache.jpg">
 
 ## Large playlists
 
-If you are syncing extremely large playlists (200+ songs) than you are prompted to use the `fast` search option. This will scan your library only with one search approach instead of multie. Find more information about this in [plex-music-searcher](https://github.com/jjdenhertog/plex-music-search).
+If you are syncing extremely large playlists (200+ songs) than you are prompted to use the `fast` search option. This will scan your library only with one search approach instead of multiple. Find more information about this in [plex-music-searcher](https://github.com/jjdenhertog/plex-music-search).
 
-For large playlists it's good to know that any matched songs are cached. So there is little harm to interrupting the proces. Any songs that were matched will be skipped the next time the synchronisation runs.
+For large playlists it's good to know that any matched songs are cached. So there is little harm to interrupting the process. Any songs that were matched will be skipped the next time the synchronization runs.
 
 ------------
 
-## Synchronisation
+## Spotify
 
-You can use Spotify-to-Plex to automatically syncrhonise your playlists with Plex. While managing your playlists you have the option to enable automatic syncing and to set the interval in hours of how often the synchronisation should occur.
+In the Users section you have the option to add Spotify users. You do not need this for any manually imports, you only need it when you want to do a bit more with the Spotify accounts. When you have a connected user you can:
 
-[Screenshot]
+* Easily add albums or playlist saved by that user
+* Import user specific or private playlists
+* Automatically sync most recent listened songs
+
+<img src="misc/spotify_users.jpg">
+
+### Multiple users
+
+You can also add multiple users. In order to add multiple users you need to sign out of Spotify before attempting to add the extra user. Alternatively you can also perform this step in an incognito window.
+
+### Security
+
+When you login to your Spotify account the tokens will be stored in `spotify.json` in your data folder. Make sure you securely store that 
+
+
+------------
+
+## Synchronization
+
+<div style="color:orange; font-weight:bold">I'm still working on this feature</div>
+
+You can use Spotify-to-Plex to automatically synchronize your playlists with Plex. While managing your playlists you have the option to enable automatic syncing and to set the interval in hours of how often the synchronization should occur.
+
+<img src="misc/sync_playlist.jpg">
 
 ### Setup
 
-You need to setup your own task to start the automatic synchronisation. To do this, you have two options: 
+You need to setup your own task to start the automatic synchronization. To do this, you have two options: 
 * Run the cornjob via commandline `npx ts-node --r tsconfig/paths/register cronjob/sync.ts`
 * Call an API route `http://[ipaddress]:9030/api/sync`
 
 ### Logs
 
-In the application you can find log entries for each time the synchronizaton took place - including the duration of each task. 
+In the application you can find log entries for each time the synchronization took place - including the duration of each task. 
 
 ### Missing songs
 
