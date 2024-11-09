@@ -16,15 +16,15 @@ export type GetPlexResourcesResponse = {
 
 const router = createRouter<NextApiRequest, NextApiResponse>()
     .get(
-        async (req, res, next) => {
+        async (_req, res) => {
 
             try {
 
-                if (!plex.settings || !plex.settings.token)
+                if (!plex.settings?.token)
                     return res.status(400).json({ message: "No Plex connection found" });
 
 
-                const result = await axios.get<any>(`https://plex.tv/api/v2/resources`, {
+                const result = await axios.get(`https://plex.tv/api/v2/resources`, {
                     params: {
                         "X-Plex-Product=": "AI Guest DJ",
                         "X-Plex-Client-Identifier": process.env.PLEX_APP_ID,
@@ -45,17 +45,15 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                         })
                     }
                 })
+
                 return res.status(200).json(servers)
-            } catch (e) {
+            } catch (_e) {
                 return res.status(400).json({ message: "No resources found" })
             }
         })
 
 
 export default router.handler({
-    onNoMatch: (req, res) => {
-        res.status(200).json({})
-    },
     onError: (err: any, req, res) => {
         generateError(req, res, "Songs", err);
     }

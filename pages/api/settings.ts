@@ -10,22 +10,19 @@ export type GetSettingsResponse = {
 }
 const router = createRouter<NextApiRequest, NextApiResponse>()
     .post(
-        async (req, res, next) => {
+        async (req, res) => {
             if (req.body.uri)
                 plex.saveConfig({ uri: req.body.uri, id: req.body.id })
 
             res.json({ loggedin: !!plex.settings.token, uri: plex.settings.uri, id: plex.settings.id })
         })
     .get(
-        async (req, res, next) => {
+        async (_req, res) => {
             res.json({ loggedin: !!plex.settings.token, uri: plex.settings.uri, id: plex.settings.id })
         })
 
 
 export default router.handler({
-    onNoMatch: (req, res) => {
-        res.status(200).json({})
-    },
     onError: (err: any, req, res) => {
         generateError(req, res, "Songs", err);
     }

@@ -1,6 +1,3 @@
-<h1 align="center" style="color: orange;">🚀 New Release Coming Soon! 🚀</h1>
-
-<!--
 <p align="center"><img src="misc/logo.png" width="90"></p>
 <p align="center" color="red">Spotify to Plex</p>
 
@@ -28,15 +25,27 @@ This project started because I'm using Home Assistant together with Plex and Son
 
 
 # Table of Contents
-- [Installation](#installation)
-    - [Docker](#docker-installation)
-    - [Portainer](#portainer-installation)
-- [Matching songs](#matching-songs)
-- [Creating Plex Playlists](#creating-plex-playlists)
-- [Speeding things up](#speeding-things-up)
-- [Spotify](#spotify)
-- [Synchronization](#synchronization)
-- [Support This Open-Source Project ❤️](#support-this-open-source-project-%EF%B8%8F)
+* [Installation](#installation)
+  * [Encryption key](#encryption-key)
+  * [Spotify credentials](#spotify-credentials)
+  * [Tidal credentials](#tidal-credentials)
+  * [Binding volume](#binding-volume)
+  * [Docker installation](#docker-installation)
+  * [Portainer installation](#portainer-installation)
+* [Matching songs](#matching-songs)
+* [Creating Plex Playlists](#creating-plex-playlists)
+  * [Changing the playlist name](#changing-the-playlist-name)
+* [Speeding things up](#speeding-things-up)
+  * [Removing cache](#removing-cache)
+  * [Large playlists](#large-playlists)
+* [Spotify](#spotify)
+  * [Multiple users](#multiple-users)
+  * [Security](#security)
+* [Synchronization](#synchronization)
+  * [Setup](#setup)
+  * [Logs](#logs)
+  * [Missing songs](#missing-songs)
+* [Support This Open-Source Project ❤️](#support-this-open-source-project-️)
 
 ------------
 
@@ -195,7 +204,6 @@ In the application you can find log entries for each time the synchronization to
 The cronjob will automatically update all missing songs in two text files `spotify_missing_songs.txt` and `tidal_missing_songs.txt`. You can do this to easily see which songs are not in your Plex environment. The Tidal songs are also structured in such a way that it could be used in [Tidal Media Downloader](https://github.com/yaronzz/Tidal-Media-Downloader). [Disclaimer](https://github.com/yaronzz/Tidal-Media-Downloader?tab=readme-ov-file#-disclaimer).
 
 ------------
--->
 
 ## Support This Open-Source Project ❤️
 

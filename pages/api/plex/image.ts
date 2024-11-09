@@ -12,7 +12,7 @@ export const config = {
 
 const router = createRouter<NextApiRequest, NextApiResponse>()
     .get(
-        async (req, res, next) => {
+        async (req, res) => {
             const { path } = req.query;
 
             if (!path || Array.isArray(path) || !plex.settings.token)
@@ -21,7 +21,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
             try {
                 res.setHeader(
                     "Cache-Control",
-                    `public, immutable, no-transform, s-maxage=31536000, max-age=31536000`,
+                    `public, immutable, no-transform, s-maxage=31536000, max-age=31536000`
                 );
                 const url = path.indexOf('http') > -1 ? path : `${plex.settings.uri}${path}`;
                 try {
@@ -29,18 +29,15 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                     const data = await AxiosRequest.get<any>(url, plex.settings.token, { responseType: "arraybuffer" })
                     res.setHeader('content-type', String(data.headers['Content-Type']))
                     res.setHeader('content-length', data.data.length)
+
                     return res.status(200).send(data.data)
 
                 } catch (e) {
                     console.log(e)
                 }
-                // const contentType = image.content_type
-                // const body = image.image
 
-                // res.setHeader("content-type", contentType);
-                // return res.status(200).send(body)cate;
                 return res.status(200).send('[ ]')
-            } catch (error) {
+            } catch (_error) {
                 return res.status(404).end();
             }
         })

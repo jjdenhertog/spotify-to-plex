@@ -1,9 +1,18 @@
 {
     "name": "@jjdenhertog/spotify-to-plex",
-    "version": "1.0.2",
-    "description": "Synchronise Spotify playlists with Plex",
+    "version": "1.0.3",
+    "description": "Sync Spotify with your Plex Library.",
+    "keywords": [
+        "plex",
+        "spotify",
+        "sync",
+        "tidal",
+        "import",
+        "playlists",
+        "albums"
+    ],
     "scripts": {
-        "deploy": "npm version patch --no-git-tag-version",
+        "deploy": "npm version patch --no-git-tag-version && npm run docker",
         "docker": "PACKAGE_VERSION=$(grep '\"version\"' package.json | cut -d '\"' -f 4 | head -n 1) && docker buildx build --platform=linux/amd64,linux/arm64 -t jjdenhertog/spotify-to-plex -t jjdenhertog/spotify-to-plex:$PACKAGE_VERSION --push .",
         "dev": "next dev",
         "build": "next build",
@@ -17,6 +26,8 @@
     "dependencies": {
         "@emotion/react": "^11.11.3",
         "@emotion/styled": "^11.11.0",
+        "@jjdenhertog/plex-music-search": "^1.0.2",
+        "@jjdenhertog/tidal-music-search": "^1.0.3",
         "@mui/icons-material": "^5.15.3",
         "@mui/joy": "^5.0.0-beta.21",
         "@mui/lab": "^5.0.0-alpha.134",
@@ -26,7 +37,6 @@
         "next-compose-plugins": "^2.2.1",
         "next-connect": "^1.0.0",
         "notistack": "^3.0.1",
-        "openai": "^4.28.0",
         "plex-api": "^5.3.2",
         "qs": "^6.12.0",
         "react": "^18.2.0",
@@ -39,8 +49,6 @@
         "@types/node": "^20.3.0",
         "@types/qs": "^6.9.14",
         "@types/react": "^18.2.11",
-        "@types/react-dom": "^18.2.7",
-        "eslint": "8.42.0",
-        "eslint-config-next": "^14.1.4"
+        "@types/react-dom": "^18.2.7"
     }
 }

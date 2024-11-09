@@ -3,8 +3,6 @@ import { CssVarsProvider, extendTheme } from "@mui/joy";
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
 
-// Use the <Provider> to improve performance and allow components that call
-// `useSession()` anywhere in your application to access the `session` object.
 export default function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
 
     const customTheme = extendTheme({
@@ -14,10 +12,12 @@ export default function App({ Component, pageProps: { session, ...pageProps } }:
         },
         typography: {
             "body-lg": {
-                fontWeight: 200
+                fontWeight: 200,
+                fontSize: '1.2em'
             },
             "body-md": {
-                lineHeight: "1.4em",
+                fontSize: '.95em',
+                lineHeight: "1.2em",
                 fontWeight: 200
             },
             "body-sm": {
@@ -40,6 +40,36 @@ export default function App({ Component, pageProps: { session, ...pageProps } }:
             }
         },
         components: {
+            JoyTooltip: {
+                defaultProps: {
+                    size: "sm",
+                    color: "primary",
+                    enterDelay: 0,
+                    arrow: true,
+                    placement: "top",
+                }
+            },
+            JoyTabs: {
+                styleOverrides: {
+                    root: {
+                        background: 'none'
+                    }
+                }
+            },
+            JoyTab: {
+                styleOverrides: {
+                    root: {
+                        background: 'var(--joy-palette-background-surface)'
+                    }
+                }
+            },
+            JoyTabPanel: {
+                styleOverrides: {
+                    root: {
+                        background: 'var(--joy-palette-background-surface)'
+                    }
+                }
+            },
             JoyButton: {
                 styleOverrides: {
                     root: {
@@ -52,10 +82,20 @@ export default function App({ Component, pageProps: { session, ...pageProps } }:
                     root: {
                     }
                 }
+            },
+            JoyModal: {
+                styleOverrides: {
+                    root: {
+                        '& .MuiModal-backdrop': {
+                            backdropFilter: 'none',
+                            background: 'rgba(0,0,0,0.7)'
+                        }
+                    }
+                }
             }
         }
     });
-    
+
     return (
         <>
             <Head>
@@ -64,6 +104,7 @@ export default function App({ Component, pageProps: { session, ...pageProps } }:
                 <meta name="HandheldFriendly" content="True" />
                 <meta name="mobile-web-app-capable" content="yes" />
                 <meta name="MobileOptimized" content="320" />
+                <style>{`:root { color-scheme: dark; }`}</style>
             </Head>
             <CssVarsProvider
                 defaultMode="system"

@@ -17,14 +17,15 @@ export type GetPlexPlaylistResponse = {
 
 const router = createRouter<NextApiRequest, NextApiResponse>()
     .get(
-        async (req, res, next) => {
-            if (!plex.settings.uri || !plex.settings.token) {
+        async (_req, res, _next) => {
+
+            if (!plex.settings.uri || !plex.settings.token)
                 return res.status(400).json({ msg: "No plex connection found" });
-                return;
-            }
 
             const url = getAPIUrl(plex.settings.uri, `/playlists`);
-            const plexData = (await AxiosRequest.get<GetPlaylistResponse>(url, plex.settings.token)).data;
+            const playlistResult = await AxiosRequest.get<GetPlaylistResponse>(url, plex.settings.token)
+            const { data: plexData } = playlistResult;
+
             const result: GetPlexPlaylistResponse[] = []
             plexData.MediaContainer.Metadata.forEach((item) => {
                 if (!item.smart && item.playlistType == 'audio') {
@@ -38,20 +39,15 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
             res.json(result);
         })
     .post(
-        async (req, res, next) => {
-            const type: string = req.body.type;
-            const name: string = req.body.name;
-            const id: string = req.body.id;
+        async (req, res) => {
+            const { id, name, type } = req.body
             const items: { key: string, source?: string }[] = req.body.items;
-            if (!items || items.length == 0 || !name || !id || !type)
+            if (!items || items.length == 0 || typeof name != 'string' || typeof id != 'string' || typeof type != 'string')
                 return res.status(400).json({ msg: "Invalid data given" });
 
-            if (!plex.settings.uri || !plex.settings.token || !plex.settings.id) {
+            if (!plex.settings.uri || !plex.settings.token || !plex.settings.id)
                 return res.status(400).json({ msg: "No plex connection found" });
-                return;
-            }
 
-            // const playlistName: string = req.body.playlistName;
             const firstItem = items.shift();
             if (!firstItem)
                 return res.status(400).json({ msg: "No items given" });
@@ -62,14 +58,11 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
             plex.savePlaylist(type, id, playlistId)
 
             const link = getAPIUrl(plex.settings.uri, `/web/index.html#!/server/${plex.settings.id}/playlist?key=${encodeURIComponent(`/playlists/${playlistId}`)}`)
-            res.json({ id: playlistId, link: link })
+            res.json({ id: playlistId, link })
         })
 
 
 export default router.handler({
-    onNoMatch: (req, res) => {
-        res.status(200).json({})
-    },
     onError: (err: any, req, res) => {
         generateError(req, res, "Plex Playlists", err);
     }
