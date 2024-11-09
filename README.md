@@ -1,28 +1,42 @@
 <h1 align="center" style="color: orange;">🚀 New Release Coming Soon! 🚀</h1>
 
 <!--
-<div style="text-align:center"><img src="misc/logo.png"></div>
-<h1 align="center" style="color: orange;">Spotify to Plex</h1>
+<p align="center"><img src="misc/logo.png" width="90"></p>
+<p align="center" color="red">Spotify to Plex</p>
 
-A beautiful web application that you can use to sync your Spotify playlists with [Plex](https://plex.tv/). This application uses the data from Spotify (playlists or albums) and tries to find all the matching songs in Plex. With every playlists it gives you an overview of the songs that have been matched and how they have been matched. 
+------------
+
+A beautiful web application that you can use to sync your Spotify playlists with [Plex](https://plex.tv/). This application uses the data from Spotify (playlists or albums) and tries to find all the matching songs in Plex. With every playlists it gives you an overview of the songs that have been matched and how they have been matched.
 
 <img src="misc/app_overview.jpg">
 
 This project started because I'm using Home Assistant together with Plex and Sonos. During the week I'm listing to Spotify but in the evening and weekends Plex is more often used. Using this application I can automatically synchronize my Spotify songs with my Plex setup. 
 
-Features
+#### Features
 * Matching Spotify songs with Plex
 * Imported automated personal playlists (e.g. Daylist)
 * Export your missing songs (which could be used in [Tidal Media Downloader](https://github.com/yaronzz/Tidal-Media-Downloader))
 
-Coming soon
+#### Coming soon
 * Automatically synchronize playlists or recent songs
 * Update thumbnail in Plex to the Spotify Thumbnail
 * Select multiple playlists to set settings
 * API route for dashboarding
 
-Coming later
+#### Coming later
 * Add albums / playlist by searching Spotify
+
+
+# Table of Contents
+- [Installation](#installation)
+    - [Docker](#docker-installation)
+    - [Portainer](#portainer-installation)
+- [Matching songs](#matching-songs)
+- [Creating Plex Playlists](#creating-plex-playlists)
+- [Speeding things up](#speeding-things-up)
+- [Spotify](#spotify)
+- [Synchronization](#synchronization)
+- [Support This Open-Source Project ❤️](#support-this-open-source-project-%EF%B8%8F)
 
 ------------
 
@@ -49,6 +63,8 @@ If you want to match missing songs with Tidal you also need to use Tidal Credent
 ### Binding volume
 
 All the data is stored in the `/app/config` folder, you need to add it as a volume for persistent storage.
+
+### Docker installation
 
 ```sh
 docker run -d \
@@ -99,7 +115,9 @@ To match songs with Plex I'm using [plex-music-searcher](https://github.com/jjde
 
 When the matched song is indeed totally wrong, you can find more info by clicking on the warning. This tells you why the song was matched. You can use this information to raise an issue so I can look into it.
 
-<img src="misc/track_analyzer.jpg">
+<img src="misc/track_analyzer.jpg" width="450">
+
+------------
 
 ## Creating Plex Playlists
 
@@ -108,6 +126,8 @@ With any imported playlist you have the option to create a playlist or update th
 ### Changing the playlist name
 
 To modify the name of the playlist you can click on the pen icon behind the playlist title and rename it to something else. 
+
+------------
 
 ## Speeding things up
 
@@ -119,9 +139,9 @@ Most requests are made in sets of 5 tracks at-a-time and also cached in that way
 
 All cached data is stored in `track_links.json` in the data folder. When removing this file all previously matched tracks will be removed. The other option is to click on the refresh icon on the playlist screen. This will reload the current playlist but ignore any previously matched songs. 
 
-<img src="misc/clear_cache.jpg">
+<img src="misc/clear_cache.jpg" width="200">
 
-## Large playlists
+### Large playlists
 
 If you are syncing extremely large playlists (200+ songs) than you are prompted to use the `fast` search option. This will scan your library only with one search approach instead of multiple. Find more information about this in [plex-music-searcher](https://github.com/jjdenhertog/plex-music-search).
 
@@ -137,7 +157,7 @@ In the Users section you have the option to add Spotify users. You do not need t
 * Import user specific or private playlists
 * Automatically sync most recent listened songs
 
-<img src="misc/spotify_users.jpg">
+<img src="misc/spotify_users.jpg" width="450">
 
 ### Multiple users
 
@@ -145,18 +165,19 @@ You can also add multiple users. In order to add multiple users you need to sign
 
 ### Security
 
-When you login to your Spotify account the tokens will be stored in `spotify.json` in your data folder. Make sure you securely store that 
-
+When you login to your Spotify account the tokens will be stored in `spotify.json` in your data folder. Make sure to properly protect the folder that you are adding to this app. Sensitive data is encrypted using an [encryption key](#encryption-key) that you can add.
 
 ------------
 
 ## Synchronization
 
-<div style="color:orange; font-weight:bold">I'm still working on this feature</div>
+⚠️ ⚠️ This is not yet included, [I'm working on this](#coming-soon) ⚠️ ⚠️
+
+------------
 
 You can use Spotify-to-Plex to automatically synchronize your playlists with Plex. While managing your playlists you have the option to enable automatic syncing and to set the interval in hours of how often the synchronization should occur.
 
-<img src="misc/sync_playlist.jpg">
+<img src="misc/sync_playlist.jpg" width="450">
 
 ### Setup
 
@@ -168,11 +189,13 @@ You need to setup your own task to start the automatic synchronization. To do th
 
 In the application you can find log entries for each time the synchronization took place - including the duration of each task. 
 
+
 ### Missing songs
 
 The cronjob will automatically update all missing songs in two text files `spotify_missing_songs.txt` and `tidal_missing_songs.txt`. You can do this to easily see which songs are not in your Plex environment. The Tidal songs are also structured in such a way that it could be used in [Tidal Media Downloader](https://github.com/yaronzz/Tidal-Media-Downloader). [Disclaimer](https://github.com/yaronzz/Tidal-Media-Downloader?tab=readme-ov-file#-disclaimer).
 
 ------------
+-->
 
 ## Support This Open-Source Project ❤️
 
@@ -181,6 +204,3 @@ If you appreciate my work, consider starring this repository or making a donatio
 [![Buy Me a Coffee](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/jjdenhertog)
 
 Are you a developer and have some free time on your hand? It would be great if you can help me maintain and improve this library.
-
-
--->
