@@ -126,6 +126,10 @@ When the matched song is indeed totally wrong, you can find more info by clickin
 
 <img src="misc/track_analyzer.jpg" width="450">
 
+### Missing songs
+
+You can view all songs that cannot be matched and download it as a text file containing all song links. It is also possible to match it up with Tidal, for this you need to setup [Tidal credentials](#tidal-credentials) as well.
+
 ------------
 
 ## Creating Plex Playlists
