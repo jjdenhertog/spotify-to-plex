@@ -219,7 +219,7 @@ You can use Spotify-to-Plex to automatically synchronize your playlists with Ple
 
 You need to setup your own task to start the automatic synchronization. To do this, you have two options: 
 * Run the action via the command line `npm run sync:playlists`
-* Call an API action `http://[ipaddress]:9030/api/sync` 
+* Call an API action `http://[ipaddress]:9030/api/sync/playlists` 
 
 #### Docker
 
@@ -239,6 +239,10 @@ touch spotify_to_plex_playlists.log
 ```
 
 ### Syncing albums
+
+It is also possible to sync albums with the similar approach as with playlists. You can use either of two options:
+* Run the action via the command line `npm run sync:albums`
+* Call an API action `http://[ipaddress]:9030/api/sync/albums` 
 
 The only thing that the syncing service for albums does is create a `missing_albums_spotify.txt` and `missing_albums_tidal.txt` file. It does not create or update any Plex playlists.
 
