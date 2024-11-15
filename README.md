@@ -66,6 +66,27 @@ openssl rand -hex 32
 
 To import playlists you need Spotify API credentials to make the connection. You can get these credentials at the [Spotify Developer site](https://developer.spotify.com/). More information can also be found at the [Gettin started section](https://developer.spotify.com/documentation/web-api) of the documentation.
 
+For manually adding playlists <b>you don't need the redirect URL</b>. 
+The redirect URL is only needed when you want to sync private playlists like your daylist.
+
+#### Creating a new app
+
+The screenshot below shows how you should create the app. 
+
+<img src="misc/spotify_app_1.jpg" width="450"/>
+
+#### Invalid redirect URL
+
+If you get the message that you have set an invalid redirect URL there are two things to check:
+
+**2. Environment variable**
+`SPOTIFY_API_REDIRECT_URI` should be set correctly, for example: `http://192.168.100.130:9030/api/spotify/token`
+
+**1. Redirect URL in the Spotify App**
+It should be exactly the same as the environment variable. So in this case: `http://192.168.100.130:9030/api/spotify/token`
+
+<img src="misc/spotify_app_2.jpg" width="450"/>
+
 ### Tidal credentials
 
 If you want to match missing songs with Tidal you also need to use Tidal Credentials. To obtain your Tidal API client ID and client secret, you need to register for access to the Tidal API. Visit the [Tidal Developer Portal](https://developer.tidal.com/) to apply for API access and retrieve your credentials.
@@ -81,10 +102,10 @@ docker run -d \
     -e PORT=9030 \
     -e TIDAL_API_CLIENT_ID=PASTE_YOUR_TIDAL_CLIENT_ID_HERE \
     -e SPOTIFY_API_CLIENT_SECRET=PASTE_YOUR_SPOTIFY_CLIENT_SECRET_HERE \
-    -e SPOTIFY_API_REDIRECT_URI=http://[ipaddress]:9030/api/spotify/token \
+    -e SPOTIFY_API_REDIRECT_URI=http://[IP_OF_SPOTIFY_TO_PLEX]:9030/api/spotify/token \
     -e TIDAL_API_CLIENT_ID=PASTE_YOUR_TIDAL_CLIENT_ID_HERE \
     -e TIDAL_API_CLIENT_SECRET=PASTE_YOUR_TIDAL_CLIENT_SECRET_HERE \
-    -e TIDAL_API_REDIRECT_URI=http://[ipaddress]:3000/api/tidal/token \
+    -e TIDAL_API_REDIRECT_URI=http://[IP_OF_SPOTIFY_TO_PLEX]:3000/api/tidal/token \
     -e ENCRYPTION_KEY=PASTE_YOUR_ENCRYPTION_KEY \
     -v /local/directory/:/app/config:rw \
     --name=spotify-to-plex \
@@ -109,10 +130,10 @@ services:
             - PORT=9030
             - SPOTIFY_API_CLIENT_ID=PASTE_YOUR_SPOTIFY_CLIENT_ID_HERE
             - SPOTIFY_API_CLIENT_SECRET=PASTE_YOUR_SPOTIFY_CLIENT_SECRET_HERE
-            - SPOTIFY_API_REDIRECT_URI=http://[ipaddress]:9030/api/spotify/token
+            - SPOTIFY_API_REDIRECT_URI=http://[IP_OF_SPOTIFY_TO_PLEX]:9030/api/spotify/token
             - TIDAL_API_CLIENT_ID=PASTE_YOUR_TIDAL_CLIENT_ID_HERE
             - TIDAL_API_CLIENT_SECRET=PASTE_YOUR_TIDAL_CLIENT_SECRET_HERE
-            - TIDAL_API_REDIRECT_URI=http://[ipaddress]:9030/api/tidal/token
+            - TIDAL_API_REDIRECT_URI=http://[IP_OF_SPOTIFY_TO_PLEX]:9030/api/tidal/token
             - ENCRYPTION_KEY=PASTE_YOUR_ENCRYPTION_KEY
         network_mode: "host"
         image: 'jjdenhertog/spotify-to-plex:latest'
