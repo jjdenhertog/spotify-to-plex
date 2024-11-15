@@ -13,11 +13,11 @@ This project started because I'm using Home Assistant together with Plex and Son
 * Matching Spotify songs with Plex
 * Imported automated personal playlists (e.g. Daylist)
 * Export your missing songs (which could be used in [Tidal Media Downloader](https://github.com/yaronzz/Tidal-Media-Downloader))
-
+* Select multiple playlists to set settings
+  
 #### Coming soon
 * Automatically synchronize playlists or recent songs
 * Update thumbnail in Plex to the Spotify Thumbnail
-* Select multiple playlists to set settings
 * API route for dashboarding
 
 #### Coming later
@@ -254,10 +254,10 @@ The cronjob will automatically update all missing songs in two text files `missi
 
 Originally I started this project for a Home Assistant dashboard. For this dashboard to work I needed to somehow list and categorize my playlists and albums. This dashboarding support impacts `Spotify to Plex` in two ways.
 
-*API Route*
+**API Route**
 The api route `/api/dashboard` returns all the playlists including its tracks with all Plex media content id references. This can be used to categorize and play tracks.
 
-*Managing Playlists & Albums*
+**Managing Playlists & Albums**
 While adding a Playlist or Album there is also an option to add it as Plex Media Content ID. This is solely used for dashboarding purpose, it doesn't do anything with the sync features.
 
 ------------
