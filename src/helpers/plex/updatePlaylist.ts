@@ -2,6 +2,7 @@ import getAPIUrl from '@/helpers/getAPIUrl';
 import { plex } from '@/library/plex';
 import { GetPlaylistResponse } from '@/types/PlexAPI';
 import { AxiosRequest } from '../AxiosRequest';
+import { handleOneRetryAttempt } from './handleOneRetryAttempt';
 
 export async function updatePlaylist(id: string, data: { title: string }) {
     if (!plex.settings.uri || !plex.settings.token)
@@ -11,5 +12,5 @@ export async function updatePlaylist(id: string, data: { title: string }) {
 
     const query = new URLSearchParams(data);
 
-    await AxiosRequest.put<GetPlaylistResponse>(`${url}?${query.toString()}`, plex.settings.token)
+    await handleOneRetryAttempt(() => AxiosRequest.put<GetPlaylistResponse>(`${url}?${query.toString()}`, plex.settings.token))
 }

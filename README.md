@@ -46,6 +46,7 @@ This project started because I'm using Home Assistant together with Plex and Son
   * [Logs](#logs)
   * [Syncing albums](#syncing-albums)
   * [Missing songs](#missing-songs-1)
+* [Dashboarding](#dashboarding)
 * [Support This Open-Source Project ❤️](#support-this-open-source-project-️)
 
 ------------
@@ -244,6 +245,20 @@ The only thing that the syncing service for albums does is create a `missing_alb
 ### Missing songs
 
 The cronjob will automatically update all missing songs in two text files `missing_tracks_spotify.txt` and `missing_tracks_tidal.txt`. You can do this to easily see which songs are not in your Plex environment. The Tidal songs are also structured in such a way that it could be used in [Tidal Media Downloader](https://github.com/yaronzz/Tidal-Media-Downloader). [Disclaimer](https://github.com/yaronzz/Tidal-Media-Downloader?tab=readme-ov-file#-disclaimer).
+
+------------
+
+## Dashboarding
+
+⚠️ ⚠️ This is not yet included, [I'm working on this](#coming-soon) ⚠️ ⚠️
+
+Originally I started this project for a Home Assistant dashboard. For this dashboard to work I needed to somehow list and categorize my playlists and albums. This dashboarding support impacts `Spotify to Plex` in two ways.
+
+*API Route*
+The api route `/api/dashboard` returns all the playlists including its tracks with all Plex media content id references. This can be used to categorize and play tracks.
+
+*Managing Playlists & Albums*
+While adding a Playlist or Album there is also an option to add it as Plex Media Content ID. This is solely used for dashboarding purpose, it doesn't do anything with the sync features.
 
 ------------
 

@@ -8,6 +8,8 @@ export const AxiosRequest = {
         return axios.get<T>(url,
             {
                 ...config,
+                // eslint-disable-next-line unicorn/numeric-separators-style
+                timeout: 10000,
                 httpsAgent: agent,
                 headers: {
                     "X-Plex-Token": token,

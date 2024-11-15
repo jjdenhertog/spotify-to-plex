@@ -18,7 +18,7 @@ export async function addItemsToPlaylist(id: string, items: { key: string; sourc
         } catch (_e) {
             // Wait for 1 sec. and try again
             await (new Promise((resolve) => {
-                setTimeout(resolve, 1000);
+                setTimeout(resolve, 2000);
             }));
             try {
                 await AxiosRequest.put(putRequestUrl, plex.settings.token)

@@ -114,7 +114,8 @@ export default function ManagePlaylists() {
                 <Typography mb={1} level="h2">Add Playlist or Album</Typography>
                 <Typography mb={1} level="body-md">The following inputs are supported:</Typography>
                 <Typography level="body-md" mt={1} mb={.5} sx={{ fontSize: ".9em" }} startDecorator={<KeyboardArrowRightSharp sx={{ fontSize: "1.1em" }} />}>Spotify URL &#40;e.g. https://open.spotify.com/playlist/37i9dQZF1EQqA6klNdJvwx &#41;</Typography>
-                <Typography level="body-md" mb={2} sx={{ fontSize: ".9em" }} startDecorator={<KeyboardArrowRightSharp sx={{ fontSize: "1.1em" }} />}>Spotify URI &#40;e.g. spotify:playlist:37i9dQZF1EQqA6klNdJvwx &#41;</Typography>
+                <Typography level="body-md" mb={1} sx={{ fontSize: ".9em" }} startDecorator={<KeyboardArrowRightSharp sx={{ fontSize: "1.1em" }} />}>Spotify URI &#40;e.g. spotify:playlist:37i9dQZF1EQqA6klNdJvwx &#41;</Typography>
+                <Typography level="body-md" mb={2} sx={{ fontSize: ".9em" }} startDecorator={<KeyboardArrowRightSharp sx={{ fontSize: "1.1em" }} />}>Plex Content id, for dashboarding &#40;e.g. /library/metadata/12345 &#41; </Typography>
                 <Input placeholder="Enter your Spotify URL/URI here.." disabled={generating} value={spotifyInput} onChange={onChangeSpotifyInput} />
                 <Box mt={1}>
                     <Button size="sm" disabled={generating} onClick={onAddPlaylistClick}>Add item</Button>

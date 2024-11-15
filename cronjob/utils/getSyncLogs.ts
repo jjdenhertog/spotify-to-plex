@@ -17,7 +17,10 @@ export function getSyncLogs() {
             logs.push(itemLog);
         }
 
+        // Restart log
         itemLog.start = Date.now();
+        itemLog.end = undefined;
+        itemLog.error = undefined;
 
         return itemLog;
     };

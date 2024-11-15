@@ -1,3 +1,3 @@
-import { resolve } from "path";
+import { resolve } from "node:path";
 
 export const configDir = resolve('config');

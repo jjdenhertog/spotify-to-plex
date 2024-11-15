@@ -16,7 +16,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
 
             const logs: SyncLog[] = JSON.parse(readFileSync(logsPath, 'utf8'))
 
-            return res.status(200).json(logs.sort((a, b) => a.start - b.start))
+            return res.status(200).json(logs.sort((a, b) => b.start - a.start))
         }
     )
 
