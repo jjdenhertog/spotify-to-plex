@@ -7,13 +7,10 @@ import axios from "axios";
 import { NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { resolve } from "path";
 import { Fragment, useCallback, useEffect, useState } from "react";
 import { GetAuthUrlResponse } from "./api/auth/url";
 import { GetPlexResourcesResponse } from "./api/plex/resources";
 import { GetSettingsResponse } from "./api/settings";
-
-export const configDir = resolve('config')
 
 const Page: NextPage = () => {
 

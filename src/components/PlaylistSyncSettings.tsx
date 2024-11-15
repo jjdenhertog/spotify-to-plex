@@ -8,14 +8,21 @@ import { ChangeEvent, useCallback, useEffect, useState } from "react";
 type Props = {
 
     readonly onClose: (reload?: boolean) => void
-    readonly open: boolean,
-    readonly item: SpotifySavedItem | null
+    readonly items: SpotifySavedItem[]
 }
 
 export default function PlaylistSyncSettings(props: Props) {
-    const { open, item } = props;
+    const { items } = props;
     const [autoSync, setAutoSync] = useState(false);
     const [hours, setHours] = useState("24");
+
+    ///////////////////////////////////////////////
+    // Modify labels
+    ///////////////////////////////////////////////
+    const [label, setLabel] = useState('')
+    const onEditLabelChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+        setLabel(e.target.value)
+    }, [])
 
     //////////////////////////////
     // Making changes
@@ -32,26 +39,28 @@ export default function PlaylistSyncSettings(props: Props) {
     const onSaveChangesClick = useCallback(() => {
 
         errorBoundary(async () => {
-            if (!item)
+            if (!items)
                 return;
 
             const validateHours = Number(hours)
             if (isNaN(validateHours) || validateHours < 2)
                 throw new Error(`The value should not be lower than two hours, due to API limitations.`)
 
+
             await axios.put(`/api/saved-items/`, {
-                id: item.id,
+                ids: items.map(item => item.id),
                 sync: autoSync,
-                sync_interval: hours
+                sync_interval: hours,
+                label: (items.length > 1 && label.trim() != '') ? label : undefined
             })
 
-            enqueueSnackbar(`[${item.title}] Changes saved`)
+            enqueueSnackbar(`Changes saved`)
 
             // eslint-disable-next-line react/destructuring-assignment
             props.onClose(true)
         })
 
-    }, [autoSync, hours, item, props])
+    }, [autoSync, hours, items, label, props])
 
     //////////////////////////////
     // Close dialog
@@ -66,26 +75,48 @@ export default function PlaylistSyncSettings(props: Props) {
     // Load item data
     /////////////////////////////////////
     useEffect(() => {
-        if (!item)
+        if (!items)
             return;
 
-        setAutoSync(!!item.sync)
-        setHours(item.sync_interval ?? "24")
+        // eslint-disable-next-line @typescript-eslint/prefer-destructuring
+        const firstItem = items[0]
 
-    }, [item])
+        if (firstItem) {
+            setAutoSync(!!firstItem.sync)
+            setHours(firstItem.sync_interval ?? "24")
+        }
 
-    const hasChanges = (
-        !!(Boolean(item?.sync) != autoSync) ||
-        !!((item?.sync_interval ?? "24") != hours)
-    )
+    }, [items])
 
-    return (<Modal open={open} onClose={onClose} disableEscapeKeyDown disablePortal>
+    return (<Modal open onClose={onClose} disableEscapeKeyDown disablePortal>
         <ModalDialog sx={{ maxWidth: '400px' }}>
             <ModalClose />
 
-            {item ? <>
-                <Typography level="h1">{item.title}</Typography>
+            {items ? <>
+                <Typography level="h1">{items.length > 1 ? "Settings" : items[0].title}</Typography>
                 <Typography level="body-md">The settings below are only used while synchronizing this item. These are ignored during manual syncing.</Typography>
+
+                {items.length > 1 &&
+                    <>
+                        <Divider />
+                        <FormControl orientation="horizontal" sx={{ justifyContent: 'space-between' }}>
+                            <div>
+                                <FormLabel>Label</FormLabel>
+                                <FormHelperText sx={{ mt: 0 }}>This label will be connected<br />to any items added.</FormHelperText>
+                            </div>
+                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+
+                                <Input
+                                    sx={{ width: 100 }}
+                                    value={label}
+                                    placeholder="Add label"
+                                    onChange={onEditLabelChange}
+                                />
+
+                            </Box>
+                        </FormControl>
+                    </>
+                }
                 <Divider sx={{ mt: 1, mb: 1 }} />
                 <Box>
                     <FormControl orientation="horizontal" sx={{ justifyContent: 'space-between', mb: 3 }}>
@@ -134,7 +165,7 @@ export default function PlaylistSyncSettings(props: Props) {
 
                     <Divider sx={{ mt: 1, mb: 1 }} />
                     <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-                        <Button disabled={!hasChanges} onClick={onSaveChangesClick}>Save changes</Button>
+                        <Button onClick={onSaveChangesClick}>Save changes</Button>
                     </Box>
                 </Box>
 

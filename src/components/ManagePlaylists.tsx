@@ -1,11 +1,13 @@
+/* eslint-disable no-eq-null */
 import { errorBoundary } from "@/helpers/errors/errorBoundary";
 import { filterUnique } from "@/helpers/filterUnique";
 import { SpotifySavedItem } from "@/types/SpotifyAPI";
-import { Close, KeyboardArrowRightSharp, QueueMusic, Settings, Sync, SyncDisabled } from "@mui/icons-material";
-import { Box, Button, Chip, CircularProgress, Divider, IconButton, Input, Modal, ModalClose, ModalDialog, Sheet, Tooltip, Typography } from "@mui/joy";
+import { CloseRounded, KeyboardArrowRightSharp } from "@mui/icons-material";
+import { Box, Button, CircularProgress, Divider, IconButton, Input, Option, Select, SelectStaticProps, Typography } from "@mui/joy";
 import axios from "axios";
-import { enqueueSnackbar } from "notistack";
-import { ChangeEvent, useCallback, useEffect, useMemo, useState } from "react";
+import React, { ChangeEvent, useCallback, useEffect, useMemo, useState } from "react";
+import { useClearSelection, useSelection } from "react-selection-manager";
+import ManagePlaylistItem from "./ManagePlaylistItem";
 import PlaylistSyncSettings from "./PlaylistSyncSettings";
 
 export default function ManagePlaylists() {
@@ -13,6 +15,8 @@ export default function ManagePlaylists() {
     const [spotifyInput, setSpotifyInput] = useState<string>('')
     const [items, setItems] = useState<SpotifySavedItem[]>([])
     const [generating, setGenerating] = useState<boolean>(false);
+    const selectedItems = useSelection()
+    const clearSelection = useClearSelection();
 
     ///////////////////////////////
     // Load data
@@ -32,7 +36,15 @@ export default function ManagePlaylists() {
             .map(item => item.label || "")
             .filter(item => !!item)
             .filter(filterUnique)
+            .sort((a, b) => a.localeCompare(b))
     }, [items])
+
+    const reloadSavedItems = useCallback(() => {
+        errorBoundary(async () => {
+            const result = await axios.get<SpotifySavedItem[]>(`/api/saved-items`)
+            setItems(result.data)
+        })
+    }, [])
 
     ///////////////////////////////
     // Add Item
@@ -57,96 +69,38 @@ export default function ManagePlaylists() {
         })
     }, [spotifyInput])
 
-    ///////////////////////////////
-    // Delete Item
-    ///////////////////////////////
-    const onDeleteItemClick = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
+    //////////////////////////////////
+    // Selecting multiple
+    //////////////////////////////////
+    const [editMultipleItems, setEditMultipleItems] = useState<SpotifySavedItem[]>([])
+    const onEditSettingsClick = useCallback(() => {
+        setEditMultipleItems(items.filter(item => selectedItems.has(item.id)))
+    }, [items, selectedItems])
+    const onCloseMultipleEditItem = useCallback((reload?: boolean) => {
+        setEditMultipleItems([])
+        clearSelection()
 
-        const { id } = e.currentTarget.dataset;
-        if (id) {
-            errorBoundary(async () => {
-                const result = await axios.delete<SpotifySavedItem[]>(`/api/saved-items?id=${id}`)
-                setItems(result.data)
-                enqueueSnackbar(`Item removed`)
-            })
-        }
+        if (reload)
+            reloadSavedItems()
+    }, [clearSelection, reloadSavedItems])
+
+
+    //////////////////////////////////
+    // Show selection
+    //////////////////////////////////
+    const [filterLabel, setFilterLabel] = useState<string | null>(null)
+    const action: SelectStaticProps['action'] = React.useRef(null);
+    const onSelectLabel = useCallback((_event: React.SyntheticEvent | null, newValue: string | null) => {
+        setFilterLabel(newValue)
+    }, []);
+    const onClearButtonMouseDown = useCallback((e: React.SyntheticEvent) => {
+        e.stopPropagation();
     }, [])
-
-    ///////////////////////////////
-    // Settings Item
-    ///////////////////////////////
-    const [editItem, setEditItem] = useState<SpotifySavedItem | null>(null)
-    const onEditItemClick = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
-
-        const { id } = e.currentTarget.dataset;
-        if (id) {
-            const savedItem = items.find(item => item.id == id)
-            if (savedItem)
-                setEditItem(savedItem)
-        }
-
-    }, [items])
-    const onCloseEditItem = useCallback((reload?: boolean) => {
-        setEditItem(null)
-
-        if (reload) {
-            errorBoundary(async () => {
-                const result = await axios.get<SpotifySavedItem[]>(`/api/saved-items`)
-                setItems(result.data)
-            })
-        }
+    const onClearButtonClick = useCallback(() => {
+        setFilterLabel(null);
+        action.current?.focusVisible();
     }, [])
-
-    ///////////////////////////////////////////////
-    // Modify labels
-    ///////////////////////////////////////////////
-    const [labelName, setLabelName] = useState('')
-    const [editLabel, setEditLabel] = useState<SpotifySavedItem | null>(null)
-
-    const saveLabel = useCallback((label: string) => {
-        errorBoundary(async () => {
-            if (!editLabel)
-                return;
-
-            await axios.put(`/api/saved-items/`, {
-                id: editLabel.id,
-                label
-            })
-
-            const result = await axios.get<SpotifySavedItem[]>(`/api/saved-items`)
-            setItems(result.data)
-
-            setEditLabel(null)
-            enqueueSnackbar(`Label changed to ${label}`)
-        })
-    }, [editLabel])
-
-    const onEditLabelClick = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
-        const { id } = e.currentTarget.dataset
-        if (typeof id == 'string') {
-            // Find label
-            const item = items.find(item => item.id == id)
-            if (item) {
-                setEditLabel(item)
-                setLabelName(item.label || "")
-            }
-        }
-    }, [items])
-    const onEditLabelClose = useCallback(() => {
-        setEditLabel(null)
-    }, [])
-    const onEditLabelChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-        setLabelName(e.target.value)
-    }, [])
-    const onEditLabelSaveClick = useCallback(() => {
-        saveLabel(labelName)
-    }, [labelName, saveLabel])
-    const onEditLabelChipClick = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
-        const { label } = e.currentTarget.dataset;
-        if (typeof label == 'string' && label.trim())
-            saveLabel(label.trim())
-    }, [saveLabel])
-
+    const visibleItems = filterLabel == null ? items : items.filter(item => item.label == filterLabel)
 
     return (<>
         {loading ?
@@ -166,33 +120,41 @@ export default function ManagePlaylists() {
                     <Button size="sm" disabled={generating} onClick={onAddPlaylistClick}>Add item</Button>
                 </Box>
                 <Divider sx={{ mt: 2, mb: 2 }} />
-                {items.length > 0 &&
+                {visibleItems.length > 0 &&
                     <>
-                        <Typography level="h2" mt={2} mb={.5}>List</Typography>
-                        {items.map(item => {
-                            return <Sheet variant="soft" key={item.id} sx={{ p: 1, mb: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 1 }}>
-                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                    <Box component="img" src={item.image} height={40} />
-                                    <Box>
-                                        <Typography level="body-lg">{item.title}</Typography>
-                                        <Box sx={{ display: 'flex', gap: .5, alignItems: 'center' }}>
-                                            <Typography level="body-xs" sx={{ color: 'rgba(255,255,255,0.4)' }}>{item.type == 'spotify-album' ? 'album' : 'playlist'}</Typography>
-                                            {item.sync ?
-                                                <Tooltip color="neutral" title={`Automatically synced every ${item.sync_interval ?? "24"} hours`}><Sync sx={{ fontSize: '1.2em', color: 'rgba(255,255,255,0.4)' }} /></Tooltip>
-                                                :
-                                                <Tooltip color="neutral" title="Not automatically synced"><SyncDisabled sx={{ fontSize: '1.2em', color: 'rgba(255,255,255,0.4)' }} /></Tooltip>
-                                            }
-                                            <Chip size="sm" variant='outlined' sx={{ fontWeight: '100', fontSize: '.9em' }} slotProps={{ action: { 'data-id': item.id } }} onClick={onEditLabelClick}>{item.label || 'Add label'}</Chip>
-                                        </Box>
-                                    </Box>
-                                </Box>
-                                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 1 }}>
-                                    <Tooltip title="Open Plex importer"><IconButton component='a' variant="outlined" color="primary" size="sm" href={`/import/${item.id}`}><QueueMusic sx={{ fontSize: '1em' }} /></IconButton></Tooltip>
-                                    <Tooltip title="Settings"><IconButton data-id={item.id} onClick={onEditItemClick} variant="outlined" size="sm" ><Settings sx={{ fontSize: '1em' }} /></IconButton></Tooltip>
-                                    <Tooltip title="Delete item"><IconButton data-id={item.id} onClick={onDeleteItemClick} variant="outlined" size="sm" ><Close sx={{ fontSize: '1em' }} /></IconButton></Tooltip>
-                                </Box>
-                            </Sheet>
-                        })}
+                        <Box sx={{ display: 'flex', justifyContent: "space-between" }}>
+                            <Typography level="h2" mt={2} mb={.5}>List</Typography>
+                            <Box sx={{ display: "flex", gap: 1 }}>
+                                <Select
+                                    placeholder="Select label"
+                                    size="sm"
+                                    sx={{ height: 30 }}
+                                    value={filterLabel}
+                                    action={action}
+                                    onChange={onSelectLabel}
+                                    {...(filterLabel != null && {
+                                        endDecorator: (
+                                            <IconButton
+                                                size="sm"
+                                                variant="plain"
+                                                style={{ height: 20, width: 20, minHeight: 20, minWidth: 20 }}
+                                                color="neutral"
+                                                onMouseDown={onClearButtonMouseDown}
+                                                onClick={onClearButtonClick}
+                                            >
+                                                <CloseRounded style={{ fontSize: '1em' }} />
+                                            </IconButton>
+                                        ),
+                                        indicator: null,
+                                    })}
+                                >
+                                    <Option value="">Uncategorized</Option>
+                                    {labels.map(item => <Option key={item} value={item}>{item}</Option>)}
+                                </Select>
+                                <Button disabled={selectedItems.size == 0} onClick={onEditSettingsClick} size="sm" sx={{ height: 30 }} color="neutral" variant="outlined">Edit</Button>
+                            </Box>
+                        </Box>
+                        {visibleItems.map(item => <ManagePlaylistItem key={item.id} item={item} orderedIds={visibleItems.map(item => item.id)} labels={labels} reloadSavedItems={reloadSavedItems} />)}
                     </>
                 }
 
@@ -200,22 +162,7 @@ export default function ManagePlaylists() {
             </>
         }
 
-        <PlaylistSyncSettings item={editItem} open={!!editItem} onClose={onCloseEditItem} />
-
-        {!!editLabel && <Modal open onClose={onEditLabelClose} disableEscapeKeyDown disablePortal>
-            <ModalDialog sx={{ maxWidth: '400px' }}>
-                <ModalClose />
-                <Typography level="h1">Label name</Typography>
-                <Typography level="body-md">This name can be used to group playlists and album and use it for sorting and other purposes.</Typography>
-                <Input autoFocus value={labelName} onChange={onEditLabelChange} />
-                <Box>
-                    {labels.map(item => <Chip variant="outlined" size="sm" sx={{ mr: .5, mb: .5 }} key={item} slotProps={{ action: { 'data-label': item } }} onClick={onEditLabelChipClick}>{item}</Chip>)}
-                </Box>
-                <Box mt={.5}>
-                    <Button size="sm" onClick={onEditLabelSaveClick}>Save Label</Button>
-                </Box>
-            </ModalDialog>
-        </Modal>}
+        {editMultipleItems.length > 0 && <PlaylistSyncSettings items={editMultipleItems} onClose={onCloseMultipleEditItem} />}
     </>
     )
 }

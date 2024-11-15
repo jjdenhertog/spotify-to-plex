@@ -1,10 +1,10 @@
 import { generateError } from '@/helpers/errors/generateError';
+import { configDir } from "@/library/configDir";
 import { SpotifyCredentials, SpotifyUser } from '@/types/SpotifyAPI';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createRouter } from 'next-connect';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { configDir } from '../..';
 
 export type GetSpotifyUserResponse = SpotifyUser
 const router = createRouter<NextApiRequest, NextApiResponse>()

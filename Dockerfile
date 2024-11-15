@@ -7,14 +7,12 @@ FROM base AS deps
 # RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
+ENV NODE_ENV development
+
 # Install dependencies based on the preferred package manager
-COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
-RUN \
-  if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
-  elif [ -f package-lock.json ]; then npm ci; \
-  elif [ -f pnpm-lock.yaml ]; then yarn global add pnpm && pnpm i --frozen-lockfile; \
-  else echo "Lockfile not found." && exit 1; \
-  fi
+COPY package.json package-lock.json* ./
+
+RUN npm install
 
 # Rebuild the source code only when needed
 FROM base AS builder
@@ -38,6 +36,11 @@ RUN adduser --system --uid 1001 nextjs
 
 COPY --from=builder /app/public ./public
 
+# Needed for cronjobs
+COPY --from=builder /app/cronjob ./cronjob
+COPY --from=builder /app/src ./src
+COPY --from=builder /app/tsconfig.json ./tsconfig.json
+
 # Set the correct permission for prerender cache
 RUN mkdir dist
 RUN mkdir config
@@ -48,7 +51,7 @@ COPY --from=builder /app/dist/standalone ./
 COPY --from=builder /app/dist/static ./dist/static
 
 RUN rm -rf pages/
-RUN rm -rf src/
+RUN npm install --omit=dev
 
 # EXPOSE 9030
 ENV PORT 9030

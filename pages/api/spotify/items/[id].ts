@@ -1,7 +1,7 @@
 import { generateError } from '@/helpers/errors/generateError';
 import getAccessToken from '@/helpers/spotify/getAccessToken';
 import getSpotifyData from '@/helpers/spotify/getSpotifyData';
-import { configDir } from '@/pages/index';
+import { configDir } from "@/library/configDir";
 import { SpotifySavedItem } from '@/types/SpotifyAPI';
 import { SpotifyApi } from '@spotify/web-api-ts-sdk';
 import type { NextApiRequest, NextApiResponse } from 'next';

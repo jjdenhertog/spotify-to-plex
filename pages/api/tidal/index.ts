@@ -35,8 +35,6 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
             // Tidal authentication
             ///////////////////////////////////////
             const tidalUser = await getTidalCredentials()
-
-            // Initiate library
             const tidalMusicSearch = new TidalMusicSearch({
                 clientId: process.env.TIDAL_API_CLIENT_ID,
                 clientSecret: process.env.TIDAL_API_CLIENT_SECRET

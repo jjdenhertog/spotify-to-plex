@@ -1,11 +1,11 @@
-import { configDir } from "@/pages/index"
+import { configDir } from "@/library/configDir"
 import { SpotifyCredentials } from "@/types/SpotifyAPI"
 import { existsSync, readFileSync } from "node:fs"
 import { join } from "node:path"
 import { decrypt } from "../encryption"
 import refreshAccessTokens from "./refreshAccessTokens"
 
-export default async function getAccessToken() {
+export default async function getAccessToken(userId?: string) {
 
     try {
         const credentialsPath = join(configDir, 'spotify.json')
@@ -21,6 +21,10 @@ export default async function getAccessToken() {
 
         for (let i = 0; i < users.length; i++) {
             const user = users[i];
+
+            if (userId && user.user.id != userId)
+                continue;
+
             if (now < user.expires_at) {
                 return {
                     access_token: decrypt(user.access_token.access_token),

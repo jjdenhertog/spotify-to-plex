@@ -132,8 +132,8 @@ export default function UserItems(props: Props) {
                     <Divider sx={{ mt: 2, mb: 2 }} />
                     <Sheet color="neutral" variant="soft" sx={{ p: 2 }}>
                         <Typography level="h2" sx={{ mb: .5 }} >Label name</Typography>
-                        <Typography level="body-sm" sx={{ mb: 1 }}> This label will be connected to any items added.</Typography>
-                        <Input value={label} sx={{ maxWidth: 200 }} placeholder="Add label" onChange={onEditLabelChange} />
+                        <Typography level="body-sm" sx={{ mb: 1 }}>This label will be connected to any items added.</Typography>
+                        <Input value={label} sx={{ maxWidth: 200 }} placeholder="Change label" onChange={onEditLabelChange} />
                     </Sheet>
                     <Divider sx={{ mt: 2, mb: 2 }} />
                     <Box>

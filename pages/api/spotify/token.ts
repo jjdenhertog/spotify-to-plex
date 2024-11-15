@@ -1,5 +1,6 @@
 import { encrypt } from '@/helpers/encryption';
 import { generateError } from '@/helpers/errors/generateError';
+import { configDir } from "@/library/configDir";
 import { SpotifyCredentials } from '@/types/SpotifyAPI';
 import { SpotifyApi } from '@spotify/web-api-ts-sdk';
 import axios from 'axios';
@@ -7,7 +8,6 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { createRouter } from 'next-connect';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { configDir } from '../..';
 
 const router = createRouter<NextApiRequest, NextApiResponse>()
     .get(

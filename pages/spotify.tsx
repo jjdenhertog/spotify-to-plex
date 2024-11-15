@@ -1,4 +1,5 @@
 import Logo from "@/components/Logo";
+import Logs from "@/components/Logs";
 import ManagePlaylists from "@/components/ManagePlaylists";
 import ManageUsers from "@/components/ManageUsers";
 import MainLayout from "@/layouts/MainLayout";
@@ -8,21 +9,12 @@ import { NextPage } from "next";
 import Head from "next/head";
 
 const Page: NextPage = () => {
-
-
-
-    // res.redirect(authUrl);
-
     /***
      * 
      * TODO:
      * 
      * - Add categories (for dashboard)
-     * - Select users playlists and albums manualy to sync
-     * - Automatic synchronization of certain playlists
      * - Automatic synchronization of recent played songs / playlists
-     * - Check if playlist is public during adding
-     * - Manually add specific playlists
      * 
      */
 
@@ -42,12 +34,16 @@ const Page: NextPage = () => {
                         <TabList>
                             <Tab variant="solid" color="primary">Playlists & Albums</Tab>
                             <Tab variant="solid" color="primary">Users</Tab>
+                            <Tab variant="solid" color="primary" sx={{ marginLeft: "auto" }}>Logs</Tab>
                         </TabList>
                         <TabPanel value={0}>
                             <ManagePlaylists />
                         </TabPanel>
                         <TabPanel value={1}>
                             <ManageUsers />
+                        </TabPanel>
+                        <TabPanel value={2}>
+                            <Logs />
                         </TabPanel>
                     </Tabs>
 

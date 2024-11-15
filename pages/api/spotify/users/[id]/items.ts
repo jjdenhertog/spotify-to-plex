@@ -1,7 +1,7 @@
 import { decrypt } from '@/helpers/encryption';
 import { generateError } from '@/helpers/errors/generateError';
 import refreshAccessTokens from '@/helpers/spotify/refreshAccessTokens';
-import { configDir } from '@/pages/index';
+import { configDir } from "@/library/configDir";
 import { GetSpotifyAlbum, GetSpotifyPlaylist, SpotifyCredentials, SpotifySavedItem } from '@/types/SpotifyAPI';
 import { SavedAlbum, SimplifiedPlaylist, SpotifyApi } from '@spotify/web-api-ts-sdk';
 import type { NextApiRequest, NextApiResponse } from 'next';

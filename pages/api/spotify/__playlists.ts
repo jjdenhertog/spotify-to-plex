@@ -1,12 +1,12 @@
 import { generateError } from '@/helpers/errors/generateError';
 import refreshAccessTokens from '@/helpers/spotify/refreshAccessTokens';
+import { configDir } from "@/library/configDir";
 import { RecentPlayedContext, SpotifyCredentials } from '@/types/SpotifyAPI';
 import { SpotifyApi } from '@spotify/web-api-ts-sdk';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createRouter } from 'next-connect';
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { configDir } from '../..';
 
 const router = createRouter<NextApiRequest, NextApiResponse>()
     .get(

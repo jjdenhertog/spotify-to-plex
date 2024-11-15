@@ -1,4 +1,3 @@
-
 module.exports = {
     output: process.env.NEXT_DOCKER ? "standalone" : undefined,
     distDir: "dist",

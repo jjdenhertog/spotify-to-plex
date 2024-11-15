@@ -1,4 +1,4 @@
-import { configDir } from "@/pages/index"
+import { configDir } from "@/library/configDir"
 import { SpotifyCredentials } from "@/types/SpotifyAPI"
 import axios from "axios"
 import { existsSync, readFileSync, writeFileSync } from "node:fs"

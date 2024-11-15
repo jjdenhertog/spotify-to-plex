@@ -1,4 +1,4 @@
-import { configDir } from "@/pages/index"
+import { configDir } from "@/library/configDir"
 import { readFileSync, writeFileSync } from "node:fs"
 import { join } from "node:path"
 

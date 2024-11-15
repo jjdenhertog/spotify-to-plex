@@ -1,4 +1,4 @@
-import { configDir } from "@/pages/index";
+import { configDir } from "@/library/configDir";
 import { TidalCredentials } from "@/types/TidalAPI";
 import axios from "axios";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
@@ -23,8 +23,12 @@ export default async function getTidalCredentials() {
     const credentials: TidalCredentials = JSON.parse(readFileSync(credentialsPath, 'utf8'))
     const now = Date.now()
 
+    if (!credentials || !credentials.access_token || !credentials.access_token.refresh_token || !credentials.expires_at)
+        return;
+
     if (now < credentials.expires_at)
         return credentials;
+
 
     // Reload token
     try {
@@ -59,6 +63,5 @@ export default async function getTidalCredentials() {
         return credentials;
         // Store
     } catch (e) {
-        console.log(e)
     }
 }

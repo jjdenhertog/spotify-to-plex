@@ -23,7 +23,6 @@ This project started because I'm using Home Assistant together with Plex and Son
 #### Coming later
 * Add albums / playlist by searching Spotify
 
-
 # Table of Contents
 * [Installation](#installation)
   * [Encryption key](#encryption-key)
@@ -33,6 +32,7 @@ This project started because I'm using Home Assistant together with Plex and Son
   * [Docker installation](#docker-installation)
   * [Portainer installation](#portainer-installation)
 * [Matching songs](#matching-songs)
+  * [Missing songs](#missing-songs)
 * [Creating Plex Playlists](#creating-plex-playlists)
   * [Changing the playlist name](#changing-the-playlist-name)
 * [Speeding things up](#speeding-things-up)
@@ -44,7 +44,8 @@ This project started because I'm using Home Assistant together with Plex and Son
 * [Synchronization](#synchronization)
   * [Setup](#setup)
   * [Logs](#logs)
-  * [Missing songs](#missing-songs)
+  * [Syncing albums](#syncing-albums)
+  * [Missing songs](#missing-songs-1)
 * [Support This Open-Source Project ❤️](#support-this-open-source-project-️)
 
 ------------
@@ -195,17 +196,33 @@ You can use Spotify-to-Plex to automatically synchronize your playlists with Ple
 ### Setup
 
 You need to setup your own task to start the automatic synchronization. To do this, you have two options: 
-* Run the cornjob via commandline `npx ts-node --r tsconfig/paths/register cronjob/sync.ts`
-* Call an API route `http://[ipaddress]:9030/api/sync`
+* Run the action via the command line `npm run sync:playlists`
+* Call an API action `http://[ipaddress]:9030/api/sync` 
+
+#### Docker
+
+The preferred approach is by using the docker `exec` command in combination with something like a task scheduler. When using the API action you might run into issues with requests timing out. This really depends per setup, but if you have Spotify to Plex installed on a NAS this would be the go to method. 
+
+```
+docker exec spotify-to-plex sh -c "cd /app && npm run sync:playlists"
+```
 
 ### Logs
 
-In the application you can find log entries for each time the synchronization took place - including the duration of each task. 
+In the application you can find log entries for each time the synchronization took place - including the duration of each playlists or any error messages. When you have setup a scheduled task to run the `docker exec` command you can also stream the output to a file. Below you find an example of this setup.
 
+```
+docker exec spotify-to-plex sh -c "cd /app && npm run sync:playlists"  > /volume2/Share/spotify_to_plex_playlists.log
+touch spotify_to_plex_playlists.log
+```
+
+### Syncing albums
+
+The only thing that the syncing service for albums does is create a `missing_albums_spotify.txt` and `missing_albums_tidal.txt` file. It does not create or update any Plex playlists.
 
 ### Missing songs
 
-The cronjob will automatically update all missing songs in two text files `spotify_missing_songs.txt` and `tidal_missing_songs.txt`. You can do this to easily see which songs are not in your Plex environment. The Tidal songs are also structured in such a way that it could be used in [Tidal Media Downloader](https://github.com/yaronzz/Tidal-Media-Downloader). [Disclaimer](https://github.com/yaronzz/Tidal-Media-Downloader?tab=readme-ov-file#-disclaimer).
+The cronjob will automatically update all missing songs in two text files `missing_tracks_spotify.txt` and `missing_tracks_tidal.txt`. You can do this to easily see which songs are not in your Plex environment. The Tidal songs are also structured in such a way that it could be used in [Tidal Media Downloader](https://github.com/yaronzz/Tidal-Media-Downloader). [Disclaimer](https://github.com/yaronzz/Tidal-Media-Downloader?tab=readme-ov-file#-disclaimer).
 
 ------------
 

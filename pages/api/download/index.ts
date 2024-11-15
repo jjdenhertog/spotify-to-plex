@@ -1,10 +1,10 @@
 import { generateError } from '@/helpers/errors/generateError';
+import { configDir } from "@/library/configDir";
 import { TrackLink } from '@/types/TrackLink';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createRouter } from 'next-connect';
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { configDir } from '../..';
 const router = createRouter<NextApiRequest, NextApiResponse>()
     .post(
         async (req, res) => {

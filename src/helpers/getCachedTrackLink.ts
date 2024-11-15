@@ -1,4 +1,4 @@
-import { configDir } from "@/pages/index"
+import { configDir } from "@/library/configDir"
 import { TrackLink } from "@/types/TrackLink"
 import { PlexMusicSearchTrack } from "@jjdenhertog/plex-music-search"
 import { TidalMusicSearchTrack } from "@jjdenhertog/tidal-music-search"

@@ -240,7 +240,7 @@ export default function PlexPlaylist(props: PlexPlaylistProps) {
                 return;
 
             await axios.put(`/api/saved-items/`, {
-                id: playlist.id,
+                ids: [playlist.id],
                 title: newPlaylistName
             })
 
