@@ -13,7 +13,7 @@ type Props = {
 export default function PlaylistSyncSettings(props: Props) {
     const { items } = props;
     const [autoSync, setAutoSync] = useState(false);
-    const [hours, setHours] = useState("24");
+    const [days, setDays] = useState("2");
 
     ///////////////////////////////////////////////
     // Modify labels
@@ -30,9 +30,9 @@ export default function PlaylistSyncSettings(props: Props) {
         setAutoSync(e.target.checked)
     }, [])
 
-    const onHoursChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+    const onDaysChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
         if (e.target.value)
-            setHours(e.target.value)
+            setDays(e.target.value)
     }, [])
 
     const onSaveChangesClick = useCallback(() => {
@@ -41,15 +41,14 @@ export default function PlaylistSyncSettings(props: Props) {
             if (!items)
                 return;
 
-            const validateHours = Number(hours)
-            if (isNaN(validateHours) || validateHours < 2)
-                throw new Error(`The value should not be lower than two hours, due to API limitations.`)
-
+            const validateDays = Number(days)
+            if (isNaN(validateDays) || validateDays < 0)
+                throw new Error(`The value should not be lower than zero days.`)
 
             await axios.put(`/api/saved-items/`, {
                 ids: items.map(item => item.id),
                 sync: autoSync,
-                sync_interval: hours,
+                sync_interval: days,
                 label: (items.length > 1 && label.trim() != '') ? label : undefined
             })
 
@@ -59,7 +58,7 @@ export default function PlaylistSyncSettings(props: Props) {
             props.onClose(true)
         })
 
-    }, [autoSync, hours, items, label, props])
+    }, [autoSync, days, items, label, props])
 
     //////////////////////////////
     // Close dialog
@@ -82,7 +81,7 @@ export default function PlaylistSyncSettings(props: Props) {
 
         if (firstItem) {
             setAutoSync(!!firstItem.sync)
-            setHours(firstItem.sync_interval ?? "24")
+            setDays(firstItem.sync_interval ?? "2")
         }
 
     }, [items])
@@ -139,7 +138,7 @@ export default function PlaylistSyncSettings(props: Props) {
                     {!!autoSync &&
                         <FormControl orientation="horizontal" sx={{ justifyContent: 'space-between' }}>
                             <div>
-                                <FormLabel>Interval (hours)</FormLabel>
+                                <FormLabel>Interval (days)</FormLabel>
                                 <FormHelperText sx={{ mt: 0 }}>Read the sync instruction on Github for extra information.</FormHelperText>
                             </div>
                             <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -147,15 +146,15 @@ export default function PlaylistSyncSettings(props: Props) {
                                 <Input
                                     sx={{ width: 100 }}
                                     type="number"
-                                    value={hours}
+                                    value={days}
                                     slotProps={{
                                         input: {
-                                            min: 2
+                                            min: 0
                                         }
                                     }}
 
-                                    onChange={onHoursChange}
-                                    endDecorator={<Typography level="body-xs">hrs</Typography>}
+                                    onChange={onDaysChange}
+                                    endDecorator={<Typography level="body-xs">day{days == '1' ? '' : 's'}</Typography>}
                                 />
 
                             </Box>

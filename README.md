@@ -42,6 +42,8 @@ This project started because I'm using Home Assistant together with Plex and Son
   * [Multiple users](#multiple-users)
   * [Security](#security)
 * [Synchronization](#synchronization)
+  * [How it works](#how-it-works)
+  * [What happens during synchronization](#what-happens-during-synchronization)
   * [Setup](#setup)
   * [Logs](#logs)
   * [Syncing albums](#syncing-albums)
@@ -207,19 +209,21 @@ When you login to your Spotify account the tokens will be stored in `spotify.jso
 
 ## Synchronization
 
-You can use `Spotify to Plex` to automatically synchronize your playlists with Plex. While managing your playlists you have the option to enable automatic syncing and to set the interval in hours of how often the synchronization should occur.
+You can use `Spotify to Plex` to automatically synchronize your playlists with Plex. While managing your playlists you have the option to enable automatic syncing and to set the interval in days of how often the synchronization should occur.
 
 <img src="misc/sync_playlist.jpg" width="450">
+
+> Synchronization can take a very very long times (60 minutes +) depending on the setup. Keep this in mind when using it. 
 
 ### How it works
 
 At the one hand you need to setup which playlists (and in which interval) you want to sync. Then on the other end you need to make sure that you call the sync script within a set interval. 
 
-An example approach would be that you call the sync script every day around midnight. And then you would set the 'hours to sync' for a playlist to 48. Even though the sync script is called every day. The select playlist will only be synced once per 48 hours.
+An example approach would be that you call the sync script every day around midnight. And then you would set the 'days to sync' for a playlist to 7. Even though the sync script is called every day. The select playlist will only be synced once a week.
 
-### What happens during synchronisation
+### What happens during synchronization
 
-During synchronisation it does exactly the same as you would do in the app. Which means:
+During synchronization it does exactly the same as you would do in the app. Which means:
 - Open the Plex importer for a playlist
 - Try to match all tracks with Plex
 - Log any missing tracks

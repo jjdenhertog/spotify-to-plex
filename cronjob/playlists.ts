@@ -41,15 +41,13 @@ export async function syncPlaylists() {
         // Load Plex playlist
         //////////////////////////////////
         const itemLog = putLog(id, title)
-        const hours = Number(sync_interval)
-        if (!hours || isNaN(hours)) {
-            logError(itemLog, `Invalid sync_interval data`)
-            continue;
-        }
+        let days = Number(sync_interval)
+        if (isNaN(days))
+            days = 0;
 
         try {
 
-            const nextSyncAfter = new Date((itemLog.end || 0) + (hours * 60 * 60 * 1000));
+            const nextSyncAfter = new Date((itemLog.end || 0) + (days * 24 * 60 * 60 * 1000));
             if (nextSyncAfter.getTime() > Date.now() && !force) {
                 console.log(`Next sync on: ${nextSyncAfter.toString()}`)
                 continue;
