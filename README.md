@@ -14,9 +14,17 @@ This project started because I'm using Home Assistant together with Plex and Son
 * Imported automated personal playlists (e.g. Daylist)
 * Update thumbnail in Plex to the Spotify Thumbnail
 * Export your missing songs (which could be used in [Tidal Media Downloader](https://github.com/yaronzz/Tidal-Media-Downloader))
+<<<<<<< HEAD
   
 #### Coming soon
 * Automatically synchronize playlists or recent songs
+=======
+* Select multiple playlists to set settings
+  
+#### Coming soon
+* Automatically synchronize playlists or recent songs
+* Update thumbnail in Plex to the Spotify Thumbnail
+>>>>>>> c4ea5e1c36f62210c5a131bf300ba4a58fd698d7
 * API route for dashboarding
 * Showing and filtering on song quality
 
@@ -219,7 +227,7 @@ You can use Spotify-to-Plex to automatically synchronize your playlists with Ple
 
 You need to setup your own task to start the automatic synchronization. To do this, you have two options: 
 * Run the action via the command line `npm run sync:playlists`
-* Call an API action `http://[ipaddress]:9030/api/sync` 
+* Call an API action `http://[ipaddress]:9030/api/sync/playlists` 
 
 #### Docker
 
@@ -240,6 +248,10 @@ touch spotify_to_plex_playlists.log
 
 ### Syncing albums
 
+It is also possible to sync albums with the similar approach as with playlists. You can use either of two options:
+* Run the action via the command line `npm run sync:albums`
+* Call an API action `http://[ipaddress]:9030/api/sync/albums` 
+
 The only thing that the syncing service for albums does is create a `missing_albums_spotify.txt` and `missing_albums_tidal.txt` file. It does not create or update any Plex playlists.
 
 ### Missing songs
@@ -254,10 +266,10 @@ The cronjob will automatically update all missing songs in two text files `missi
 
 Originally I started this project for a Home Assistant dashboard. For this dashboard to work I needed to somehow list and categorize my playlists and albums. This dashboarding support impacts `Spotify to Plex` in two ways.
 
-*API Route*
+**API Route**
 The api route `/api/dashboard` returns all the playlists including its tracks with all Plex media content id references. This can be used to categorize and play tracks.
 
-*Managing Playlists & Albums*
+**Managing Playlists & Albums**
 While adding a Playlist or Album there is also an option to add it as Plex Media Content ID. This is solely used for dashboarding purpose, it doesn't do anything with the sync features.
 
 ------------
