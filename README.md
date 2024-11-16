@@ -260,7 +260,7 @@ The only thing that the syncing service for albums does is create a `missing_alb
 
 ### Missing songs
 
-The cronjob will automatically update all missing songs in two text files `missing_tracks_spotify.txt` and `missing_tracks_tidal.txt`. You can do this to easily see which songs are not in your Plex environment. The Tidal songs are also structured in such a way that it could be used in [Tidal Media Downloader](https://github.com/yaronzz/Tidal-Media-Downloader). [Disclaimer](https://github.com/yaronzz/Tidal-Media-Downloader?tab=readme-ov-file#-disclaimer).
+The cronjob will automatically update all missing songs in two text files `missing_tracks_spotify.txt` and `missing_tracks_tidal.txt`. You can do this to easily see which songs are not in your Plex environment. The Tidal songs are also structured in such a way that it could be used in [Tidal Media Downloader](https://github.com/yaronzz/Tidal-Media-Downloader). [Disclaimer](https://github.com/yaronzz/Tidal-Media-Downloader?tab=readme-ov-file#-disclaimer). Or it can be used with the [Spotify to Plex Tidal Downloader](https://github.com/jjdenhertog/spotify-to-plex-tidal-downloader)
 
 ------------
 
