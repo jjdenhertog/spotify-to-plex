@@ -14,17 +14,9 @@ This project started because I'm using Home Assistant together with Plex and Son
 * Imported automated personal playlists (e.g. Daylist)
 * Update thumbnail in Plex to the Spotify Thumbnail
 * Export your missing songs (which could be used in [Tidal Media Downloader](https://github.com/yaronzz/Tidal-Media-Downloader))
-<<<<<<< HEAD
   
 #### Coming soon
 * Automatically synchronize playlists or recent songs
-=======
-* Select multiple playlists to set settings
-  
-#### Coming soon
-* Automatically synchronize playlists or recent songs
-* Update thumbnail in Plex to the Spotify Thumbnail
->>>>>>> c4ea5e1c36f62210c5a131bf300ba4a58fd698d7
 * API route for dashboarding
 * Showing and filtering on song quality
 
@@ -215,13 +207,25 @@ When you login to your Spotify account the tokens will be stored in `spotify.jso
 
 ## Synchronization
 
-⚠️ ⚠️ This is not yet included, [I'm working on this](#coming-soon) ⚠️ ⚠️
-
-------------
-
-You can use Spotify-to-Plex to automatically synchronize your playlists with Plex. While managing your playlists you have the option to enable automatic syncing and to set the interval in hours of how often the synchronization should occur.
+You can use `Spotify to Plex` to automatically synchronize your playlists with Plex. While managing your playlists you have the option to enable automatic syncing and to set the interval in hours of how often the synchronization should occur.
 
 <img src="misc/sync_playlist.jpg" width="450">
+
+### How it works
+
+At the one hand you need to setup which playlists (and in which interval) you want to sync. Then on the other end you need to make sure that you call the sync script within a set interval. 
+
+An example approach would be that you call the sync script every day around midnight. And then you would set the 'hours to sync' for a playlist to 48. Even though the sync script is called every day. The select playlist will only be synced once per 48 hours.
+
+### What happens during synchronisation
+
+During synchronisation it does exactly the same as you would do in the app. Which means:
+- Open the Plex importer for a playlist
+- Try to match all tracks with Plex
+- Log any missing tracks
+- Update the existing playlist (or create a new one)
+
+It <u>does not</u> remember any selection that you made during the process of matching of a playlist. So if you have chose alternative songs during the first setup it will not apply that same selection.
 
 ### Setup
 
