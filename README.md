@@ -213,7 +213,7 @@ You can use `Spotify to Plex` to automatically synchronize your playlists with P
 
 <img src="misc/sync_playlist.jpg" width="450">
 
-> Synchronization can take a very very long times (60 minutes +) depending on the setup. Keep this in mind when using it. 
+> Synchronization can take a very very long time (60 minutes +) depending on the setup. Keep this in mind when using it. 
 
 ### How it works
 
