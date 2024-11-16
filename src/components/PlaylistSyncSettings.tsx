@@ -1,14 +1,13 @@
 import { errorBoundary } from "@/helpers/errors/errorBoundary";
-import { SpotifySavedItem } from "@/types/SpotifyAPI";
+import { SavedItem } from "@/types/SpotifyAPI";
 import { Box, Button, Divider, FormControl, FormHelperText, FormLabel, Input, Modal, ModalClose, ModalDialog, Switch, Typography } from "@mui/joy";
 import axios from "axios";
 import { enqueueSnackbar } from "notistack";
 import { ChangeEvent, useCallback, useEffect, useState } from "react";
 
 type Props = {
-
     readonly onClose: (reload?: boolean) => void
-    readonly items: SpotifySavedItem[]
+    readonly items: SavedItem[]
 }
 
 export default function PlaylistSyncSettings(props: Props) {

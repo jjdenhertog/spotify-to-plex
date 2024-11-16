@@ -9,7 +9,7 @@ import { getSyncLogs } from "./utils/getSyncLogs";
 import { loadSpotifyData } from "./utils/loadSpotifyData";
 
 
-async function syncTracks() {
+export async function syncAlbums() {
 
     // Check if we need to force syncing
     const args = process.argv.slice(2);
@@ -64,7 +64,7 @@ async function syncTracks() {
         const missingTracks = data.tracks.filter(item => {
             const { title: trackTitle, artists: trackArtists } = item;
 
-            return result.some(track => trackTitle == title && trackArtists.indexOf(track.artist) > - 1 && track.result.length == 0)
+            return result.some(track => track.title == trackTitle && trackArtists.indexOf(track.artist) > - 1 && track.result.length == 0)
         })
 
         if (!result.some(item => item.result.length == 0)) {
@@ -88,7 +88,7 @@ async function syncTracks() {
         logComplete(itemLog)
 
         // Store the missing albums
-        writeFileSync(join(configDir, 'missing_tracks_spotify.txt'), missingSpotifyAlbums.map(id => `https://open.spotify.com/album/${id}`).join('\n'))
+        writeFileSync(join(configDir, 'missing_albums_spotify.txt'), missingSpotifyAlbums.map(id => `https://open.spotify.com/album/${id}`).join('\n'))
         writeFileSync(join(configDir, 'missing_albums_tidal.txt'), missingTidalAlbums.map(id => `https://tidal.com/browse/album/${id}`).join('\n'))
     }
 
@@ -98,7 +98,7 @@ async function syncTracks() {
 
 function run() {
     console.log(`Start syncing items`)
-    syncTracks()
+    syncAlbums()
         .then(() => {
             console.log(`Sync complete`)
         })

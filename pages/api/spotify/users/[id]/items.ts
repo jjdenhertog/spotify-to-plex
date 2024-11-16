@@ -2,7 +2,7 @@ import { decrypt } from '@/helpers/encryption';
 import { generateError } from '@/helpers/errors/generateError';
 import refreshAccessTokens from '@/helpers/spotify/refreshAccessTokens';
 import { configDir } from "@/library/configDir";
-import { GetSpotifyAlbum, GetSpotifyPlaylist, SpotifyCredentials, SpotifySavedItem } from '@/types/SpotifyAPI';
+import { GetSpotifyAlbum, GetSpotifyPlaylist, SavedItem, SpotifyCredentials } from '@/types/SpotifyAPI';
 import { SavedAlbum, SimplifiedPlaylist, SpotifyApi } from '@spotify/web-api-ts-sdk';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createRouter } from 'next-connect';
@@ -47,7 +47,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
             // Get Saved items
             ///////////////////////////////////
             const savedItemsPath = join(configDir, 'spotify_saved_items.json')
-            let savedItems: SpotifySavedItem[] = []
+            let savedItems: SavedItem[] = []
             if (existsSync(savedItemsPath))
                 savedItems = JSON.parse(readFileSync(savedItemsPath, 'utf8'))
 

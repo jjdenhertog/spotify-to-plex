@@ -2,7 +2,7 @@ import Logo from "@/components/Logo";
 import PlexPlaylist from "@/components/PlexPlaylist";
 import { errorBoundary } from "@/helpers/errors/errorBoundary";
 import MainLayout from "@/layouts/MainLayout";
-import { GetSpotifyAlbum, GetSpotifyPlaylist, SpotifySavedItem } from "@/types/SpotifyAPI";
+import { GetSpotifyAlbum, GetSpotifyPlaylist, SavedItem } from "@/types/SpotifyAPI";
 import { ChevronLeft } from "@mui/icons-material";
 import { Box, Button, CircularProgress, Container, Modal, ModalClose, ModalDialog, Typography } from "@mui/joy";
 import axios from "axios";
@@ -31,7 +31,7 @@ const Page: NextPage = () => {
             if (result.data.tracks.length > 100)
                 setShowOptimizer(true)
 
-            const savedItems = await axios.get<[SpotifySavedItem]>(`/api/saved-items?id=${router.query.id}`)
+            const savedItems = await axios.get<[SavedItem]>(`/api/saved-items?id=${router.query.id}`)
             // eslint-disable-next-line @typescript-eslint/prefer-destructuring
             const savedItem = savedItems.data[0]
             if (!savedItem)

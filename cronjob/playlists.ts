@@ -16,7 +16,7 @@ import { loadSpotifyData } from "./utils/loadSpotifyData";
 import { putPlexPlaylist } from "./utils/putPlexTracks";
 
 
-async function syncTracks() {
+export async function syncPlaylists() {
 
     // Check if we need to force syncing
     const args = process.argv.slice(2);
@@ -104,14 +104,13 @@ async function syncTracks() {
             ////////////
             await putPlexPlaylist(id, plexPlaylist, result, title, data.image)
 
-
             ////////////
             // Handle missing tracks
             ////////////
             const missingTracks = toSearchItems.filter(item => {
                 const { title: trackTitle, artists: trackArtists } = item;
 
-                return result.some(track => trackTitle == title && trackArtists.indexOf(track.artist) > - 1 && track.result.length == 0)
+                return result.some(track => track.title == trackTitle && trackArtists.indexOf(track.artist) > - 1 && track.result.length == 0)
             })
             if (missingTracks.length == 0) {
                 logComplete(itemLog)
@@ -151,7 +150,7 @@ async function syncTracks() {
 
 function run() {
     console.log(`Start syncing items`)
-    syncTracks()
+    syncPlaylists()
         .then(() => {
             console.log(`Sync complete`)
         })

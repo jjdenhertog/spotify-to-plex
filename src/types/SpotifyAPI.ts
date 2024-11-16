@@ -61,8 +61,8 @@ export type RecentPlayedContext = {
     href: string,
     uri: string
 }
-export type SpotifySavedItem = {
-    type: "spotify-album" | "spotify-playlist"
+export type SavedItem = {
+    type: "spotify-album" | "spotify-playlist" | "plex-media"
     uri: string
     id: string
     title: string

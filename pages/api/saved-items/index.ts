@@ -1,7 +1,9 @@
 import { generateError } from '@/helpers/errors/generateError';
 import getSpotifyData from '@/helpers/spotify/getSpotifyData';
 import { configDir } from "@/library/configDir";
-import { SpotifySavedItem } from '@/types/SpotifyAPI';
+import { plex } from '@/library/plex';
+import { SavedItem } from '@/types/SpotifyAPI';
+import { PlexMusicSearch } from '@jjdenhertog/plex-music-search';
 import { SpotifyApi } from '@spotify/web-api-ts-sdk';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createRouter } from 'next-connect';
@@ -17,7 +19,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
             if (!existsSync(savedItemsPath))
                 return res.status(200).json([])
 
-            const savedItems: SpotifySavedItem[] = JSON.parse(readFileSync(savedItemsPath, 'utf8'))
+            const savedItems: SavedItem[] = JSON.parse(readFileSync(savedItemsPath, 'utf8'))
 
             const { id } = req.query;
             if (typeof id == 'string') {
@@ -40,38 +42,62 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
             if (!process.env.SPOTIFY_API_CLIENT_ID || !process.env.SPOTIFY_API_CLIENT_SECRET)
                 return res.status(400).json({ error: "Spotify Credentials missing. Please add the environment variables to use this feature." })
 
-            let id = searchId || '';
-            if (search) {
-                if (search.indexOf('http') > -1) {
-                    const { path } = parse(search, true);
-                    if (path) {
-                        id = path.split("/").join(":");
-                        id = `spotify${id}`;
+
+
+            let savedItem: SavedItem | null = null;
+            if (typeof search == 'string' && search.trim().startsWith('/library')) {
+                const plexMediaId = search.trim();
+
+                if (!plex.settings.token || !plex.settings.uri)
+                    return res.status(400).json({ msg: "Plex not configured" });
+
+                const plexMusicSearch = new PlexMusicSearch({
+                    uri: plex.settings.uri,
+                    token: plex.settings.token
+                })
+
+                const metaData = await plexMusicSearch.getById(plexMediaId)
+                if (metaData)
+                    savedItem = { type: 'plex-media', uri: metaData.id, id: metaData.guid, title: metaData.title, image: `/api/plex/image?path=${encodeURIComponent(metaData.image)}` }
+            } else {
+
+                let id = searchId || '';
+                if (search) {
+                    if (search.indexOf('http') > -1) {
+                        const { path } = parse(search, true);
+                        if (path) {
+                            id = path.split("/").join(":");
+                            id = `spotify${id}`;
+                        }
+                    } else if (search.split(":").length == 3) {
+                        id = search;
+                    } else {
+                        return res.status(400).json({ error: "Invalid Spotify URI, expecting spotify:playlist:id" })
                     }
-                } else if (search.split(":").length == 3) {
-                    id = search;
-                } else {
-                    return res.status(400).json({ error: "Invalid Spotify URI, expecting spotify:playlist:id" })
                 }
+
+                const api = SpotifyApi.withClientCredentials(process.env.SPOTIFY_API_CLIENT_ID, process.env.SPOTIFY_API_CLIENT_SECRET);
+                const data = await getSpotifyData(api, id)
+                if (!data)
+                    return res.status(400).json({ error: "No datas found, it might be a private playlist" })
+
+                const { type, id: resultId, title: name, image } = data;
+                savedItem = { type, uri: id, id: resultId, title: name, image }
+                if (typeof user_id == 'string')
+                    savedItem.user = user_id;
+
+                if (typeof label == 'string')
+                    savedItem.label = label;
+
             }
 
-            const api = SpotifyApi.withClientCredentials(process.env.SPOTIFY_API_CLIENT_ID, process.env.SPOTIFY_API_CLIENT_SECRET);
-            const data = await getSpotifyData(api, id)
-            if (!data)
-                return res.status(400).json({ error: "No datas found, it might be a private playlist" })
-
-            const { type, id: resultId, title: name, image } = data;
-            const savedItem: SpotifySavedItem = { type, uri: id, id: resultId, title: name, image }
-            if (typeof user_id == 'string')
-                savedItem.user = user_id;
-
-            if (typeof label == 'string')
-                savedItem.label = label;
+            if (!savedItem)
+                return res.status(400).json({ error: "Could not find data to save" })
 
             const savedItemsPath = join(configDir, 'spotify_saved_items.json')
             if (existsSync(savedItemsPath)) {
 
-                const savedItems: SpotifySavedItem[] = JSON.parse(readFileSync(savedItemsPath, 'utf8'))
+                const savedItems: SavedItem[] = JSON.parse(readFileSync(savedItemsPath, 'utf8'))
                 if (savedItems.some(item => item.id == savedItem.id))
                     return res.status(400).json({ error: `${savedItem.title} (spotify id: ${savedItem.id}) is already added.` })
 
@@ -81,7 +107,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 writeFileSync(savedItemsPath, JSON.stringify([savedItem], undefined, 4))
             }
 
-            const savedItems: SpotifySavedItem[] = JSON.parse(readFileSync(savedItemsPath, 'utf8'))
+            const savedItems: SavedItem[] = JSON.parse(readFileSync(savedItemsPath, 'utf8'))
 
             return res.status(200).json(savedItems.reverse())
         })
@@ -96,7 +122,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
             if (typeof id != 'string')
                 return res.status(400).json({ error: `ID expected but none found` })
 
-            let savedItems: SpotifySavedItem[] = JSON.parse(readFileSync(savedItemsPath, 'utf8'))
+            let savedItems: SavedItem[] = JSON.parse(readFileSync(savedItemsPath, 'utf8'))
             if (!savedItems.some(item => item.id == id))
                 return res.status(400).json({ error: `Item not found` })
 
@@ -119,7 +145,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
             if (!Array.isArray(ids))
                 return res.status(400).json({ error: `Mutliple ids expected as an array` })
 
-            const savedItems: SpotifySavedItem[] = JSON.parse(readFileSync(savedItemsPath, 'utf8'))
+            const savedItems: SavedItem[] = JSON.parse(readFileSync(savedItemsPath, 'utf8'))
 
             for (let i = 0; i < ids.length; i++) {
                 const saveItem = savedItems.find(item => item.id == ids[i])

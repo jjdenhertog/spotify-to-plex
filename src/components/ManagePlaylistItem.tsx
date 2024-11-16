@@ -1,5 +1,5 @@
 import { errorBoundary } from "@/helpers/errors/errorBoundary"
-import { SpotifySavedItem } from "@/types/SpotifyAPI"
+import { SavedItem } from "@/types/SpotifyAPI"
 import { Close, QueueMusic, Settings, Sync, SyncDisabled } from "@mui/icons-material"
 import { Box, Button, Chip, IconButton, Input, Modal, ModalClose, ModalDialog, Sheet, Tooltip, Typography } from "@mui/joy"
 import axios from "axios"
@@ -9,7 +9,7 @@ import { useIsSelected, useSelectionEvent } from "react-selection-manager"
 import PlaylistSyncSettings from "./PlaylistSyncSettings"
 
 type Props = {
-    readonly item: SpotifySavedItem,
+    readonly item: SavedItem,
     readonly orderedIds: string[],
     readonly labels: string[],
     readonly reloadSavedItems: () => void
@@ -54,7 +54,7 @@ export default function ManagePlaylistItem(props: Props) {
         e.stopPropagation();
 
         errorBoundary(async () => {
-            await axios.delete<SpotifySavedItem[]>(`/api/saved-items?id=${item.id}`)
+            await axios.delete<SavedItem[]>(`/api/saved-items?id=${item.id}`)
             reloadSavedItems()
             enqueueSnackbar(`Item removed`)
         })
@@ -109,19 +109,29 @@ export default function ManagePlaylistItem(props: Props) {
                     <Box>
                         <Typography level="body-lg">{item.title}</Typography>
                         <Box sx={{ display: 'flex', gap: .5, alignItems: 'center' }}>
-                            <Typography level="body-xs" sx={{ color: 'rgba(255,255,255,0.4)' }}>{item.type == 'spotify-album' ? 'album' : 'playlist'}</Typography>
-                            {item.sync ?
-                                <Tooltip color="neutral" title={`Automatically synced every ${item.sync_interval ?? "24"} hours`}><Sync sx={{ fontSize: '1.2em', color: 'rgba(255,255,255,0.4)' }} /></Tooltip>
+                            {item.type == 'plex-media' ?
+                                <Typography level="body-xs" sx={{ color: 'rgba(255,255,255,0.4)' }}>Plex media</Typography>
                                 :
-                                <Tooltip color="neutral" title="Not automatically synced"><SyncDisabled sx={{ fontSize: '1.2em', color: 'rgba(255,255,255,0.4)' }} /></Tooltip>
+                                <>
+                                    <Typography level="body-xs" sx={{ color: 'rgba(255,255,255,0.4)' }}>{item.type == 'spotify-album' ? 'album' : 'playlist'}</Typography>
+                                    {item.sync ?
+                                        <Tooltip color="neutral" title={`Automatically synced every ${item.sync_interval ?? "24"} hours`}><Sync sx={{ fontSize: '1.2em', color: 'rgba(255,255,255,0.4)' }} /></Tooltip>
+                                        :
+                                        <Tooltip color="neutral" title="Not automatically synced"><SyncDisabled sx={{ fontSize: '1.2em', color: 'rgba(255,255,255,0.4)' }} /></Tooltip>
+                                    }
+                                </>
                             }
                             <Chip size="sm" variant='outlined' sx={{ fontWeight: '100', fontSize: '.9em' }} slotProps={{ action: { 'data-id': item.id } }} onClick={onEditLabelClick}>{item.label || 'Add label'}</Chip>
                         </Box>
                     </Box>
                 </Box>
                 <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 1 }}>
-                    <Tooltip title="Open Plex importer"><IconButton component='a' variant="outlined" color="primary" size="sm" href={`/import/${item.id}`}><QueueMusic sx={{ fontSize: '1em' }} /></IconButton></Tooltip>
-                    <Tooltip title="Settings"><IconButton data-id={item.id} onClick={onEditItemClick} variant="outlined" size="sm" ><Settings sx={{ fontSize: '1em' }} /></IconButton></Tooltip>
+                    {item.type != 'plex-media' &&
+                        <>
+                            <Tooltip title="Open Plex importer"><IconButton component='a' variant="outlined" color="primary" size="sm" href={`/import/${item.id}`}><QueueMusic sx={{ fontSize: '1em' }} /></IconButton></Tooltip>
+                            <Tooltip title="Settings"><IconButton data-id={item.id} onClick={onEditItemClick} variant="outlined" size="sm" ><Settings sx={{ fontSize: '1em' }} /></IconButton></Tooltip>
+                        </>
+                    }
                     <Tooltip title="Delete item"><IconButton data-id={item.id} onClick={onDeleteItemClick} variant="outlined" size="sm" ><Close sx={{ fontSize: '1em' }} /></IconButton></Tooltip>
                 </Box>
             </Sheet>

@@ -2,7 +2,7 @@ import { errorBoundary } from "@/helpers/errors/errorBoundary";
 import { SearchResponse } from "@jjdenhertog/plex-music-search";
 import { Box, CircularProgress, Divider, Modal, ModalClose, ModalDialog, Typography } from "@mui/joy";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 
 type Props = {
     readonly track: {
@@ -64,7 +64,7 @@ export default function TrackAnalyzer(props: Props) {
                         if (!matching)
                             return null;
 
-                        return <>
+                        return <Fragment key={`analyze-${item.id}`}>
                             <Box>
                                 <Typography level="h2" mb={1}>Reason for match: {reason}</Typography>
                                 <Typography level="body-md">{title}</Typography>
@@ -104,7 +104,7 @@ export default function TrackAnalyzer(props: Props) {
                             </Box>
 
                             <Divider sx={{ mt: 1, mb: 1 }} />
-                        </>
+                        </Fragment>
                     })}
                 </>
             }

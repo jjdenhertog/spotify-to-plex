@@ -1,6 +1,6 @@
 import { errorBoundary } from "@/helpers/errors/errorBoundary";
 import { GetSpotifyUserResponse } from "@/pages/api/spotify/users";
-import { GetSpotifyAlbum, GetSpotifyPlaylist, SpotifySavedItem } from "@/types/SpotifyAPI";
+import { GetSpotifyAlbum, GetSpotifyPlaylist, SavedItem } from "@/types/SpotifyAPI";
 import { Add, Check } from "@mui/icons-material";
 import { Box, Button, CircularProgress, Divider, IconButton, Input, Modal, ModalClose, ModalDialog, Sheet, Tooltip, Typography } from "@mui/joy";
 import axios from "axios";
@@ -71,7 +71,7 @@ export default function UserItems(props: Props) {
                 // Add loading
                 setAddingItems(prev => [...prev, item.id])
 
-                await axios.post<SpotifySavedItem[]>(`/api/saved-items`, { id: searchId, user_id, label })
+                await axios.post<SavedItem[]>(`/api/saved-items`, { id: searchId, user_id, label })
                 enqueueSnackbar(`Added ${item.title}`)
                 // Set added item to added
                 setItems(prev => prev.map(item => {

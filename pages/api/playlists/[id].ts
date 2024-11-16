@@ -2,6 +2,7 @@ import { AxiosRequest } from '@/helpers/AxiosRequest';
 import { generateError } from '@/helpers/errors/generateError';
 import getAPIUrl from '@/helpers/getAPIUrl';
 import { addItemsToPlaylist } from '@/helpers/plex/addItemsToPlaylist';
+import { putPlaylistPoster } from '@/helpers/plex/putPlaylistPoster';
 import { removeItemsFromPlaylist } from '@/helpers/plex/removeItemsFromPlaylist';
 import { updatePlaylist } from '@/helpers/plex/updatePlaylist';
 import { plex, PlexPlaylists } from '@/library/plex';
@@ -43,7 +44,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
         })
     .put(
         async (req, res) => {
-            const { id, name } = req.body;
+            const { id, name, thumb } = req.body;
             const items: { key: string, source?: string }[] = req.body.items;
             if (!items || items.length == 0 || typeof name != 'string' || typeof id != 'string')
                 return res.status(400).json({ msg: "Invalid data given" });
@@ -74,6 +75,14 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
 
             if (playlist.title != name && name)
                 await updatePlaylist(playlist.ratingKey, { title: name })
+
+            // Update thumbnail of playlist
+            if (typeof thumb == 'string') {
+                try {
+                    await putPlaylistPoster(playlist.ratingKey, thumb)
+                } catch (_e) {
+                }
+            }
 
             const link = getAPIUrl(plex.settings.uri, `/web/index.html#!/server/${plex.settings.id}/playlist?key=${encodeURIComponent(`/playlists/${playlist.ratingKey}`)}`)
             res.json({ id: playlist.ratingKey, link })

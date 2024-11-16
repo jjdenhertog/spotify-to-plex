@@ -12,13 +12,13 @@ This project started because I'm using Home Assistant together with Plex and Son
 #### Features
 * Matching Spotify songs with Plex
 * Imported automated personal playlists (e.g. Daylist)
+* Update thumbnail in Plex to the Spotify Thumbnail
 * Export your missing songs (which could be used in [Tidal Media Downloader](https://github.com/yaronzz/Tidal-Media-Downloader))
-
+  
 #### Coming soon
 * Automatically synchronize playlists or recent songs
-* Update thumbnail in Plex to the Spotify Thumbnail
-* Select multiple playlists to set settings
 * API route for dashboarding
+* Showing and filtering on song quality
 
 #### Coming later
 * Add albums / playlist by searching Spotify

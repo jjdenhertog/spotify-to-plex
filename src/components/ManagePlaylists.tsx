@@ -1,9 +1,9 @@
 /* eslint-disable no-eq-null */
 import { errorBoundary } from "@/helpers/errors/errorBoundary";
 import { filterUnique } from "@/helpers/filterUnique";
-import { SpotifySavedItem } from "@/types/SpotifyAPI";
+import { SavedItem } from "@/types/SpotifyAPI";
 import { CloseRounded, KeyboardArrowRightSharp } from "@mui/icons-material";
-import { Box, Button, CircularProgress, Divider, IconButton, Input, Option, Select, SelectStaticProps, Typography } from "@mui/joy";
+import { Box, Button, CircularProgress, Divider, IconButton, Input, Link, Option, Select, SelectStaticProps, Typography } from "@mui/joy";
 import axios from "axios";
 import React, { ChangeEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { useClearSelection, useSelection } from "react-selection-manager";
@@ -12,8 +12,8 @@ import PlaylistSyncSettings from "./PlaylistSyncSettings";
 
 export default function ManagePlaylists() {
     const [loading, setLoading] = useState(true)
-    const [spotifyInput, setSpotifyInput] = useState<string>('')
-    const [items, setItems] = useState<SpotifySavedItem[]>([])
+    const [searchInput, setSearchInput] = useState<string>('')
+    const [items, setItems] = useState<SavedItem[]>([])
     const [generating, setGenerating] = useState<boolean>(false);
     const selectedItems = useSelection()
     const clearSelection = useClearSelection();
@@ -23,7 +23,7 @@ export default function ManagePlaylists() {
     ///////////////////////////////
     useEffect(() => {
         errorBoundary(async () => {
-            const result = await axios.get<SpotifySavedItem[]>(`/api/saved-items`)
+            const result = await axios.get<SavedItem[]>(`/api/saved-items`)
             setItems(result.data)
             setLoading(false)
         }, () => {
@@ -41,7 +41,7 @@ export default function ManagePlaylists() {
 
     const reloadSavedItems = useCallback(() => {
         errorBoundary(async () => {
-            const result = await axios.get<SpotifySavedItem[]>(`/api/saved-items`)
+            const result = await axios.get<SavedItem[]>(`/api/saved-items`)
             setItems(result.data)
         })
     }, [])
@@ -50,29 +50,29 @@ export default function ManagePlaylists() {
     // Add Item
     ///////////////////////////////
     const onChangeSpotifyInput = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-        setSpotifyInput(e.currentTarget.value)
+        setSearchInput(e.currentTarget.value)
     }, [])
 
     const onAddPlaylistClick = useCallback(() => {
         errorBoundary(async () => {
             setGenerating(true);
 
-            const result = await axios.post<SpotifySavedItem[]>(`/api/saved-items`, {
-                search: spotifyInput
+            const result = await axios.post<SavedItem[]>(`/api/saved-items`, {
+                search: searchInput
             })
             setItems(result.data)
-            setSpotifyInput('')
+            setSearchInput('')
             setGenerating(false);
 
         }, () => {
             setGenerating(false);
         })
-    }, [spotifyInput])
+    }, [searchInput])
 
     //////////////////////////////////
     // Selecting multiple
     //////////////////////////////////
-    const [editMultipleItems, setEditMultipleItems] = useState<SpotifySavedItem[]>([])
+    const [editMultipleItems, setEditMultipleItems] = useState<SavedItem[]>([])
     const onEditSettingsClick = useCallback(() => {
         setEditMultipleItems(items.filter(item => selectedItems.has(item.id)))
     }, [items, selectedItems])
@@ -115,8 +115,8 @@ export default function ManagePlaylists() {
                 <Typography mb={1} level="body-md">The following inputs are supported:</Typography>
                 <Typography level="body-md" mt={1} mb={.5} sx={{ fontSize: ".9em" }} startDecorator={<KeyboardArrowRightSharp sx={{ fontSize: "1.1em" }} />}>Spotify URL &#40;e.g. https://open.spotify.com/playlist/37i9dQZF1EQqA6klNdJvwx &#41;</Typography>
                 <Typography level="body-md" mb={1} sx={{ fontSize: ".9em" }} startDecorator={<KeyboardArrowRightSharp sx={{ fontSize: "1.1em" }} />}>Spotify URI &#40;e.g. spotify:playlist:37i9dQZF1EQqA6klNdJvwx &#41;</Typography>
-                <Typography level="body-md" mb={2} sx={{ fontSize: ".9em" }} startDecorator={<KeyboardArrowRightSharp sx={{ fontSize: "1.1em" }} />}>Plex Content id, for dashboarding &#40;e.g. /library/metadata/12345 &#41; </Typography>
-                <Input placeholder="Enter your Spotify URL/URI here.." disabled={generating} value={spotifyInput} onChange={onChangeSpotifyInput} />
+                <Typography level="body-md" mb={2} sx={{ fontSize: ".9em" }} startDecorator={<KeyboardArrowRightSharp sx={{ fontSize: "1.1em" }} />}>Plex Content id, for <Link href="https://github.com/jjdenhertog/spotify-to-plex/blob/main/README.md#dashboarding" target="_blank">dashboarding</Link> &#40;e.g. /library/metadata/12345 &#41; </Typography>
+                <Input placeholder="Enter your Spotify URL/URI or Plex ID here.." disabled={generating} value={searchInput} onChange={onChangeSpotifyInput} />
                 <Box mt={1}>
                     <Button size="sm" disabled={generating} onClick={onAddPlaylistClick}>Add item</Button>
                 </Box>

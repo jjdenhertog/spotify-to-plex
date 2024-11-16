@@ -2,7 +2,7 @@ import { generateError } from '@/helpers/errors/generateError';
 import getAccessToken from '@/helpers/spotify/getAccessToken';
 import getSpotifyData from '@/helpers/spotify/getSpotifyData';
 import { configDir } from "@/library/configDir";
-import { SpotifySavedItem } from '@/types/SpotifyAPI';
+import { SavedItem } from '@/types/SpotifyAPI';
 import { SpotifyApi } from '@spotify/web-api-ts-sdk';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createRouter } from 'next-connect';
@@ -24,7 +24,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
             if (!existsSync(savedItemsPath))
                 return res.status(200).json([])
 
-            const savedItems: SpotifySavedItem[] = JSON.parse(readFileSync(savedItemsPath, 'utf8'))
+            const savedItems: SavedItem[] = JSON.parse(readFileSync(savedItemsPath, 'utf8'))
             const savedItem = savedItems.find(item => item.id == id)
             if (!savedItem)
                 return res.status(400).json({ error: `Item not found` })
