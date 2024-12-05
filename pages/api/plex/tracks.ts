@@ -9,7 +9,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
     .post(
         async (req, res) => {
             const searchItems: PlexMusicSearchTrack[] = req.body.items;
-            const { type = 'spotify-playlist', fast = false } = req.body;
+            const { type = 'spotify-playlist', fast = false, album } = req.body;
 
             if (!searchItems || searchItems.length == 0)
                 return res.status(400).json({ msg: "No items given" });
@@ -43,7 +43,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
             // Update track links
             ///////////////////////////
             const { add } = getCachedTrackLinks(searchItems, 'plex')
-            add(searchResult, 'plex')
+            add(searchResult, 'plex', album ? { id: album } : undefined)
 
             res.status(200).json(searchResult);
         })

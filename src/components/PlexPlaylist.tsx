@@ -116,7 +116,8 @@ export default function PlexPlaylist(props: PlexPlaylistProps) {
                     // Search for album
                     const result = await axios.post<SearchResponse[]>('/api/plex/tracks', {
                         items: tracks,
-                        type: playlist.type
+                        type: playlist.type,
+                        album: playlist.id,
                     }, { signal: abortController.current.signal })
 
                     setTracks(result.data);

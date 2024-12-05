@@ -4,6 +4,7 @@ import { PlexMusicSearch } from "@jjdenhertog/plex-music-search";
 import { writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { findMissingTidalAlbums } from "./utils/findMissingTidalAlbums";
+import { getCachedPlexTracks } from "./utils/getCachedPlexTracks";
 import { getSavedAlbums } from "./utils/getSavedAlbums";
 import { getSyncLogs } from "./utils/getSyncLogs";
 import { loadSpotifyData } from "./utils/loadSpotifyData";
@@ -59,6 +60,8 @@ export async function syncAlbums() {
             token: plex.settings.token,
         })
         const result = await plexMusicSearch.searchAlbum(data.tracks)
+        const { add } = await getCachedPlexTracks(plexMusicSearch, data)
+
         const missingTracks = data.tracks.filter(item => {
             const { title: trackTitle, artists: trackArtists } = item;
 
@@ -67,6 +70,9 @@ export async function syncAlbums() {
 
         if (!result.some(item => item.result.length == 0)) {
             logComplete(itemLog);
+
+            // Store album id
+            add(result, 'plex', { id: data.id })
             continue;
         }
 
