@@ -111,7 +111,9 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
             }
 
             // Return data
-            const playlists: GetSpotifyPlaylist[] = allPlaylists.map(item => {
+            const playlists: GetSpotifyPlaylist[] = allPlaylists
+                .filter(item => item)
+                .map(item => {
                 return {
                     type: "spotify-playlist",
                     id: item.id,
