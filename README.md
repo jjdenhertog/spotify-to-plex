@@ -67,7 +67,7 @@ openssl rand -hex 32
 
 ### Spotify credentials
 
-To import playlists you need Spotify API credentials to make the connection. You can get these credentials at the [Spotify Developer site](https://developer.spotify.com/). More information can also be found at the [Gettin started section](https://developer.spotify.com/documentation/web-api) of the documentation.
+To import playlists you need Spotify API credentials to make the connection. You can get these credentials at the [Spotify Developer site](https://developer.spotify.com/). More information can also be found at the [Getting started section](https://developer.spotify.com/documentation/web-api) of the documentation.
 
 For manually adding playlists <b>you don't need the redirect URL</b>. 
 The redirect URL is only needed when you want to sync private playlists like your daylist.
@@ -213,7 +213,7 @@ You can use `Spotify to Plex` to automatically synchronize your playlists with P
 
 <img src="misc/sync_playlist.jpg" width="450">
 
-> Synchronization can take a very very long times (60 minutes +) depending on the setup. Keep this in mind when using it. 
+> Synchronization can take a very very long time (60 minutes +) depending on the setup. Keep this in mind when using it. 
 
 ### How it works
 
