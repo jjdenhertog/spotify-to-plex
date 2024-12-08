@@ -1,6 +1,6 @@
 {
     "name": "@jjdenhertog/spotify-to-plex",
-    "version": "1.0.50",
+    "version": "1.0.51",
     "description": "Sync Spotify with your Plex Library.",
     "keywords": [
         "plex",
@@ -18,10 +18,12 @@
         "build": "next build",
         "sync:playlists": "npx ts-node --transpile-only -r tsconfig-paths/register cronjob/playlists.ts",
         "sync:albums": "npx ts-node --transpile-only -r tsconfig-paths/register cronjob/albums.ts",
-        "sync:dashboard": "npx ts-node --transpile-only -r tsconfig-paths/register cronjob/dashboard.ts",
+        "sync:mqtt": "npx ts-node --transpile-only -r tsconfig-paths/register cronjob/mqtt.ts",
+        "sync:users": "npx ts-node --transpile-only -r tsconfig-paths/register cronjob/users.ts",
         "dev:sync:playlists": "dotenv -e .env.local -- npx ts-node -r tsconfig-paths/register cronjob/playlists.ts -- force",
         "dev:sync:albums": "dotenv -e .env.local -- npx ts-node -r tsconfig-paths/register cronjob/albums.ts -- force",
-        "dev:sync:dashboard": "dotenv -e .env.local -- npx ts-node -r tsconfig-paths/register cronjob/dashboard.ts -- force",
+        "dev:sync:mqtt": "dotenv -e .env.local -- npx ts-node -r tsconfig-paths/register cronjob/mqtt.ts -- force",
+        "dev:sync:users": "dotenv -e .env.local -- npx ts-node -r tsconfig-paths/register cronjob/users.ts -- force",
         "start": "next start",
         "lint": "next lint"
     },
