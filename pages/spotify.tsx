@@ -4,7 +4,7 @@ import ManagePlaylists from "@/components/ManagePlaylists";
 import ManageUsers from "@/components/ManageUsers";
 import MainLayout from "@/layouts/MainLayout";
 import { ChevronLeft } from "@mui/icons-material";
-import { Alert, Button, Container, Sheet, Tab, TabList, TabPanel, Tabs, Typography } from "@mui/joy";
+import { Alert, Button, Container, Link, Sheet, Tab, TabList, TabPanel, Tabs, Typography } from '@mui/joy';
 import { NextPage } from "next";
 import Head from "next/head";
 
@@ -47,8 +47,7 @@ const Page: NextPage = () => {
                         </TabPanel>
                     </Tabs>
 
-                    {/* <Alert variant="outlined" sx={{ mt: 1, mb: 2, fontWeight: 'normal' }}>Checkout the Github readme to find out more about automatic synchronisation.</Alert> */}
-                    <Alert color="warning" variant="outlined" sx={{ mt: 1, mb: 2, fontWeight: 200 }}>Any settings for automatic synchroisation is not yet used.</Alert>
+                    <Alert variant="outlined" sx={{ mt: 1, mb: 2, fontWeight: 'normal' }}>Checkout the <Link href={"https://github.com/jjdenhertog/spotify-to-plex?tab=readme-ov-file#synchronization"} target="_blank" sx={{ m: 0, p: 0 }} color="warning">Github readme</Link> to find out more about automatic synchronisation.</Alert>
                 </Sheet>
             </Container>
         </MainLayout >

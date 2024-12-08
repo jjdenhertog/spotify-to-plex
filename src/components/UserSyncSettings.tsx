@@ -14,10 +14,7 @@ export default function UserSyncSettings(props: Props) {
     const { user } = props;
     const [autoSync, setAutoSync] = useState(false);
     const [label, setLabel] = useState('')
-    const [daylistMorning, setDaylistMorning] = useState(false);
-    const [daylistAfternoon, setDaylistAfternoon] = useState(false);
-    const [daylistEvening, setDaylistEvening] = useState(false);
-    const [recentSongs, setRecentSongs] = useState(false);
+    const [recentContext, setRecentContext] = useState(false);
 
     //////////////////////////////
     // Making changes
@@ -31,17 +28,8 @@ export default function UserSyncSettings(props: Props) {
             case "autosync":
                 setAutoSync(e.target.checked)
                 break;
-            case "daylist-morning":
-                setDaylistMorning(e.target.checked)
-                break;
-            case "daylist-afternoon":
-                setDaylistAfternoon(e.target.checked)
-                break;
-            case "daylist-evening":
-                setDaylistEvening(e.target.checked)
-                break;
-            case "recent-songs":
-                setRecentSongs(e.target.checked)
+            case "recent-context":
+                setRecentContext(e.target.checked)
                 break;
         }
     }, [])
@@ -52,15 +40,11 @@ export default function UserSyncSettings(props: Props) {
             if (!user)
                 return;
 
-
             await axios.put(`/api/spotify/users/`, {
                 id: user.id,
                 sync: autoSync,
                 label,
-                daylist_morning: daylistMorning,
-                daylist_afternoon: daylistAfternoon,
-                daylist_evening: daylistEvening,
-                recent_songs: recentSongs
+                recent_context: recentContext
             })
 
             enqueueSnackbar(`[${user.name}] Changes saved`)
@@ -69,7 +53,7 @@ export default function UserSyncSettings(props: Props) {
             props.onClose(true)
         })
 
-    }, [user, autoSync, label, daylistMorning, daylistAfternoon, daylistEvening, recentSongs, props])
+    }, [user, autoSync, label, recentContext, props])
 
     //////////////////////////////
     // Close dialog
@@ -86,20 +70,14 @@ export default function UserSyncSettings(props: Props) {
     useEffect(() => {
 
         setAutoSync(!!user.sync)
-        setRecentSongs(!!user.recentSongs)
-        setDaylistMorning(!!user.daylistMorning)
-        setDaylistAfternoon(!!user.daylistAfternoon)
-        setDaylistEvening(!!user.daylistEvening)
+        setRecentContext(!!user.recentContext)
         setLabel(user.label || "")
     }, [user])
 
     const hasChanges = (
         (user.label || "") != label ||
         !!(Boolean(user?.sync) != autoSync) ||
-        !!(Boolean(user?.daylistMorning) != daylistMorning) ||
-        !!(Boolean(user?.daylistAfternoon) != daylistAfternoon) ||
-        !!(Boolean(user?.daylistEvening) != daylistEvening) ||
-        !!(Boolean(user?.recentSongs) != recentSongs)
+        !!(Boolean(user?.recentContext) != recentContext)
     )
 
     return (<Modal open onClose={onClose} disableEscapeKeyDown disablePortal>
@@ -142,86 +120,20 @@ export default function UserSyncSettings(props: Props) {
                                 </Box>
                             </Box>
 
-                            <FormControl orientation="horizontal" sx={{ justifyContent: 'space-between', mb: 3 }}>
-                                <FormLabel sx={{ flexDirection: 'column', alignItems: 'flex-start' }}>
-                                    <Typography level="body-md" fontWeight="bold">Daylist morning</Typography>
-                                    <Typography level="body-sm" pr={3}>Spotify daylist at 10:00.</Typography>
-                                </FormLabel>
-                                <Switch
-                                    checked={daylistMorning}
-                                    onChange={onSwitchChange}
-                                    color={daylistMorning ? 'success' : 'neutral'}
-                                    variant={daylistMorning ? 'solid' : 'outlined'}
-                                    endDecorator={daylistMorning ? 'On' : 'Off'}
-                                    slotProps={{
-                                        input: { 'data-id': 'daylist-morning' },
-                                        endDecorator: {
-                                            sx: {
-                                                minWidth: 24,
-                                            },
-                                        },
-                                    }}
-                                />
-                            </FormControl>
-
 
                             <FormControl orientation="horizontal" sx={{ justifyContent: 'space-between', mb: 3 }}>
                                 <FormLabel sx={{ flexDirection: 'column', alignItems: 'flex-start' }}>
-                                    <Typography level="body-md" fontWeight="bold">Daylist afternoon</Typography>
-                                    <Typography level="body-sm" pr={3}>Spotify daylist at 13:00.</Typography>
-                                </FormLabel>
-                                <Switch
-                                    checked={daylistAfternoon}
-                                    onChange={onSwitchChange}
-                                    color={daylistAfternoon ? 'success' : 'neutral'}
-                                    variant={daylistAfternoon ? 'solid' : 'outlined'}
-                                    endDecorator={daylistAfternoon ? 'On' : 'Off'}
-                                    slotProps={{
-                                        input: { 'data-id': 'daylist-afternoon' },
-                                        endDecorator: {
-                                            sx: {
-                                                minWidth: 24,
-                                            },
-                                        },
-                                    }}
-                                />
-                            </FormControl>
-                            <FormControl orientation="horizontal" sx={{ justifyContent: 'space-between', mb: 3 }}>
-                                <FormLabel sx={{ flexDirection: 'column', alignItems: 'flex-start' }}>
-                                    <Typography level="body-md" fontWeight="bold">Daylist Evening</Typography>
-                                    <Typography level="body-sm" pr={3}>Spotify daylist at 22:00.</Typography>
-                                </FormLabel>
-
-                                <Switch
-                                    checked={daylistEvening}
-                                    onChange={onSwitchChange}
-                                    color={daylistEvening ? 'success' : 'neutral'}
-                                    variant={daylistEvening ? 'solid' : 'outlined'}
-                                    endDecorator={daylistEvening ? 'On' : 'Off'}
-                                    slotProps={{
-                                        input: { 'data-id': 'daylist-evening' },
-                                        endDecorator: {
-                                            sx: {
-                                                minWidth: 24,
-                                            },
-                                        },
-                                    }}
-                                />
-                            </FormControl>
-
-                            <FormControl orientation="horizontal" sx={{ justifyContent: 'space-between', mb: 3 }}>
-                                <FormLabel sx={{ flexDirection: 'column', alignItems: 'flex-start' }}>
-                                    <Typography level="body-md" fontWeight="bold">Recently played</Typography>
+                                    <Typography level="body-md" fontWeight="bold">Recently playlists or albums</Typography>
                                     <Typography level="body-sm" pr={3}>Syncs playlists and albums based on the last 50 played songs.</Typography>
                                 </FormLabel>
                                 <Switch
-                                    checked={recentSongs}
+                                    checked={recentContext}
                                     onChange={onSwitchChange}
-                                    color={recentSongs ? 'success' : 'neutral'}
-                                    variant={recentSongs ? 'solid' : 'outlined'}
-                                    endDecorator={recentSongs ? 'On' : 'Off'}
+                                    color={recentContext ? 'success' : 'neutral'}
+                                    variant={recentContext ? 'solid' : 'outlined'}
+                                    endDecorator={recentContext ? 'On' : 'Off'}
                                     slotProps={{
-                                        input: { 'data-id': 'recent-songs' },
+                                        input: { 'data-id': 'recent-context' },
                                         endDecorator: {
                                             sx: {
                                                 minWidth: 24,

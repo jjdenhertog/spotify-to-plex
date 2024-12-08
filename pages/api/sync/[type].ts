@@ -1,6 +1,7 @@
 import { generateError } from '@/helpers/errors/generateError';
 import { syncAlbums } from 'cronjob/albums';
 import { syncPlaylists } from 'cronjob/playlists';
+import { syncUsers } from 'cronjob/users';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createRouter } from 'next-connect';
 
@@ -9,8 +10,8 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
         async (req, res) => {
 
             const { type } = req.query
-            if (type != 'albums' && type != 'playlists')
-                throw new Error(`Expecting type albums or playlists. Got ${typeof type == 'string' ? type : 'none'}`)
+            if (type != 'albums' && type != 'playlists' && type != "users")
+                throw new Error(`Expecting type albums, playlists or users. Got ${typeof type == 'string' ? type : 'none'}`)
 
             switch (type) {
                 case "albums":
@@ -19,6 +20,10 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
 
                 case "playlists":
                     await syncPlaylists()
+                    break;
+
+                case "users":
+                    await syncUsers()
                     break;
             }
 

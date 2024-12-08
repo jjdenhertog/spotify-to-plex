@@ -34,7 +34,7 @@ export function useMQTT() {
             object_id: "spotify_to_plex_categories",
             state_topic: categoryTopic,
             value_template: "{{ value_json.categories | join(',') }}",
-            icon: "mdi:music",
+            icon: "mdi:music"
         };
 
         publishData(discoveryTopic, payload, true);
@@ -49,7 +49,7 @@ export function useMQTT() {
             state_topic: `${itemTopicBase}/${item.id}`,
             json_attributes_topic: `${itemTopicBase}/${item.id}`,
             value_template: "{{ value_json.name }}",
-            icon: "mdi:playlist-music",
+            icon: "mdi:playlist-music"
         };
         publishData(discoveryTopic, payload);
     };

@@ -42,8 +42,6 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
             if (!process.env.SPOTIFY_API_CLIENT_ID || !process.env.SPOTIFY_API_CLIENT_SECRET)
                 return res.status(400).json({ error: "Spotify Credentials missing. Please add the environment variables to use this feature." })
 
-
-
             let savedItem: SavedItem | null = null;
             if (typeof search == 'string' && search.trim().startsWith('/library')) {
                 const plexMediaId = search.trim();

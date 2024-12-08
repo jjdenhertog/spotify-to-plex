@@ -115,7 +115,7 @@ export default function ManagePlaylistItem(props: Props) {
                                 <>
                                     <Typography level="body-xs" sx={{ color: 'rgba(255,255,255,0.4)' }}>{item.type == 'spotify-album' ? 'album' : 'playlist'}</Typography>
                                     {item.sync ?
-                                        <Tooltip color="neutral" title={`Automatically synced every ${item.sync_interval ?? "24"} hours`}><Sync sx={{ fontSize: '1.2em', color: 'rgba(255,255,255,0.4)' }} /></Tooltip>
+                                        <Tooltip color="neutral" title={`Automatically synced every ${item.sync_interval ?? "1"} days`}><Sync sx={{ fontSize: '1.2em', color: 'rgba(255,255,255,0.4)' }} /></Tooltip>
                                         :
                                         <Tooltip color="neutral" title="Not automatically synced"><SyncDisabled sx={{ fontSize: '1.2em', color: 'rgba(255,255,255,0.4)' }} /></Tooltip>
                                     }

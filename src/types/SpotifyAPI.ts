@@ -50,10 +50,7 @@ export type SpotifyUser = {
     name: string,
     sync?: boolean
     label?: string
-    daylistMorning?: boolean
-    daylistAfternoon?: boolean
-    daylistEvening?: boolean
-    recentSongs?: boolean
+    recentContext?: boolean
 }
 
 export type RecentPlayedContext = {

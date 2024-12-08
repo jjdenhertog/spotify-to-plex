@@ -1,12 +1,13 @@
 import { GetSpotifyAlbum, GetSpotifyPlaylist } from "@/types/SpotifyAPI";
-import { PlaylistedTrack, SpotifyApi, Track } from "@spotify/web-api-ts-sdk";
+import { OpenSpotifyApi } from "@jjdenhertog/open-spotify-sdk";
+import { SpotifyApi } from "@spotify/web-api-ts-sdk";
+import getSpotifyPlaylist from "./getSpotifyPlaylist";
 
-export default async function getSpotifyData(api: SpotifyApi, id: string): Promise<GetSpotifyAlbum | GetSpotifyPlaylist | undefined> {
+export default async function getSpotifyData(api: SpotifyApi, id: string, simplified: boolean = false): Promise<GetSpotifyAlbum | GetSpotifyPlaylist | undefined> {
     if (id.indexOf('spotify:album:') > -1) {
         const albumId = id.slice(Math.max(0, id.indexOf('spotify:album:') + 'spotify:album:'.length)).trim();
         try {
             const result = await api.albums.get(albumId)
-
             return {
                 type: "spotify-album",
                 id: result.id,
@@ -25,41 +26,38 @@ export default async function getSpotifyData(api: SpotifyApi, id: string): Promi
     } else if (id.indexOf('spotify:playlist:') > -1) {
         const playlistId = id.slice(Math.max(0, id.indexOf('spotify:playlist:') + 'spotify:playlist:'.length)).trim();
 
-        try {
-            let allTracks: PlaylistedTrack<Track>[] = []
-            const result = await api.playlists.getPlaylist(playlistId)
-            allTracks = allTracks.concat(result.tracks.items);
-            let offset = 50;
-            let hasMoreResults = result.tracks.offset + result.tracks.limit < result.tracks.total;
-            const nextUrl = result.tracks.next
 
-            if (nextUrl) {
-                while (hasMoreResults) {
-                    const loadMore = await api.playlists.getPlaylistItems(playlistId, undefined, undefined, 50, offset)
-                    allTracks = allTracks.concat(loadMore.items);
-                    hasMoreResults = loadMore.offset + loadMore.limit < loadMore.total;
-                    offset = loadMore.offset + loadMore.limit;
+        const playlist = await getSpotifyPlaylist(api, playlistId, simplified)
+        if (!playlist) {
+            // Attempt using the partner api
+            try {
+                const openSpotifyAPI = new OpenSpotifyApi()
+
+                let playlist = await openSpotifyAPI.playlists.get(id, 0, 1)
+                if (!simplified)
+                    playlist = await openSpotifyAPI.playlists.getFull(id)
+
+                return {
+                    type: "spotify-playlist",
+                    id: playlist.id,
+                    title: playlist.name,
+                    owner: playlist.owner.name,
+                    image: playlist.images[0].url,
+                    tracks: playlist.tracks.items.map(track => {
+                        return {
+                            artist: track.artists[0].name,
+                            id: track.id,
+                            artists: track.artists.map(artist => artist.name),
+                            album: track.album.name,
+                            title: track.name
+                        }
+                    })
                 }
-            }
 
-            return {
-                type: "spotify-playlist",
-                id: result.id,
-                title: result.name,
-                owner: result.owner.display_name,
-                image: result.images[0].url,
-                tracks: allTracks.map(item => {
-                    return {
-                        id: item.track.id,
-                        title: item.track.name,
-                        artist: item.track.artists[0].name,
-                        album: item.track.album.name,
-                        artists: item.track.artists.map(item => item.name),
-                    }
-                })
+            } catch (_e) {
+                console.log(_e)
             }
-        } catch (_e) {
-            return undefined;
         }
+
     }
 }

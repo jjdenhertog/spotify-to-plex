@@ -18,6 +18,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 'user-read-recently-played',
                 'user-library-read',
                 'playlist-read-private',
+                'playlist-read-collaborative',
                 'user-read-playback-state'
             ].join(' ')
 

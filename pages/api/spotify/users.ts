@@ -16,7 +16,6 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 return res.status(400).json({ error: "No users are currently connected." })
 
             const users: SpotifyCredentials[] = JSON.parse(readFileSync(credentialsPath, 'utf8'))
-
             return res.status(200).json(users.map(item => item.user))
         }
     )
@@ -29,7 +28,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
 
             const credentials: SpotifyCredentials[] = JSON.parse(readFileSync(credentialsPath, 'utf8'))
 
-            const { id, sync, label, daylist_morning, daylist_afternoon, daylist_evening, recent_songs } = req.body;
+            const { id, sync, label, recent_context } = req.body;
             const credential = credentials.find(item => item.user.id == id)
             if (!credential)
                 return res.status(404).json({ error: "User is not found." })
@@ -39,17 +38,8 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
             if (typeof sync == 'boolean')
                 user.sync = sync;
 
-            if (typeof daylist_morning == 'boolean')
-                user.daylistMorning = daylist_morning;
-
-            if (typeof daylist_afternoon == 'boolean')
-                user.daylistAfternoon = daylist_afternoon;
-
-            if (typeof daylist_evening == 'boolean')
-                user.daylistEvening = daylist_evening;
-
-            if (typeof recent_songs == 'boolean')
-                user.recentSongs = recent_songs;
+            if (typeof recent_context == 'boolean')
+                user.recentContext = recent_context;
 
             if (typeof label == 'string')
                 user.label = label;
