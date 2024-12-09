@@ -1,6 +1,6 @@
 {
     "name": "@jjdenhertog/spotify-to-plex",
-    "version": "1.0.51",
+    "version": "1.0.54",
     "description": "Sync Spotify with your Plex Library.",
     "keywords": [
         "plex",
