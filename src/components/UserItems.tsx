@@ -67,9 +67,11 @@ export default function UserItems(props: Props) {
 
             searchId += id;
 
+            const itemId = item.id
+
             errorBoundary(async () => {
                 // Add loading
-                setAddingItems(prev => [...prev, item.id])
+                setAddingItems(prev => [...prev, itemId])
 
                 await axios.post<SavedItem[]>(`/api/saved-items`, { id: searchId, user_id, label })
                 enqueueSnackbar(`Added ${item.title}`)
@@ -87,7 +89,15 @@ export default function UserItems(props: Props) {
 
                 // Remove loading
                 setAddingItems(prev => {
-                    const idx = prev.indexOf(item.id);
+                    const idx = prev.indexOf(itemId);
+                    if (idx != -1)
+                        prev.splice(idx, 1)
+
+                    return prev;
+                })
+            }, () => {
+                setAddingItems(prev => {
+                    const idx = prev.indexOf(itemId);
                     if (idx != -1)
                         prev.splice(idx, 1)
 

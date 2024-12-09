@@ -28,36 +28,36 @@ export default async function getSpotifyData(api: SpotifyApi, id: string, simpli
 
 
         const playlist = await getSpotifyPlaylist(api, playlistId, simplified)
-        if (!playlist) {
-            // Attempt using the partner api
-            try {
-                const openSpotifyAPI = new OpenSpotifyApi()
+        if (playlist)
+            return playlist;
 
-                let playlist = await openSpotifyAPI.playlists.get(id, 0, 1)
-                if (!simplified)
-                    playlist = await openSpotifyAPI.playlists.getFull(id)
+        // Attempt using the partner api
+        try {
+            const openSpotifyAPI = new OpenSpotifyApi()
 
-                return {
-                    type: "spotify-playlist",
-                    id: playlist.id,
-                    title: playlist.name,
-                    owner: playlist.owner.name,
-                    image: playlist.images[0].url,
-                    tracks: playlist.tracks.items.map(track => {
-                        return {
-                            artist: track.artists[0].name,
-                            id: track.id,
-                            artists: track.artists.map(artist => artist.name),
-                            album: track.album.name,
-                            title: track.name
-                        }
-                    })
-                }
+            let playlist = await openSpotifyAPI.playlists.get(id, 0, 1)
+            if (!simplified)
+                playlist = await openSpotifyAPI.playlists.getFull(id)
 
-            } catch (_e) {
-                console.log(_e)
+            return {
+                type: "spotify-playlist",
+                id: playlist.id,
+                title: playlist.name,
+                owner: playlist.owner.name,
+                image: playlist.images[0].url,
+                tracks: playlist.tracks.items.map(track => {
+                    return {
+                        artist: track.artists[0].name,
+                        id: track.id,
+                        artists: track.artists.map(artist => artist.name),
+                        album: track.album.name,
+                        title: track.name
+                    }
+                })
             }
-        }
 
+        } catch (_e) {
+            console.log(_e)
+        }
     }
 }

@@ -76,6 +76,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
 
                 const api = SpotifyApi.withClientCredentials(process.env.SPOTIFY_API_CLIENT_ID, process.env.SPOTIFY_API_CLIENT_SECRET);
                 const data = await getSpotifyData(api, id)
+
                 if (!data)
                     return res.status(400).json({ error: "No datas found, it might be a private playlist" })
 
