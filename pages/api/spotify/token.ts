@@ -78,7 +78,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                     const newCredentials = existingCredentials.filter(item => item.user.id != spotifyCredentials.user.id)
                     newCredentials.push(spotifyCredentials)
 
-                    writeFileSync(credentialsPath, JSON.stringify([spotifyCredentials], undefined, 4))
+                    writeFileSync(credentialsPath, JSON.stringify(newCredentials, undefined, 4))
                 } else {
                     writeFileSync(credentialsPath, JSON.stringify([spotifyCredentials], undefined, 4))
                 }
