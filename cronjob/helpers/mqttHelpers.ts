@@ -1,32 +1,23 @@
 import { configDir } from '@/library/configDir';
-import { MQTTItem } from '@/types/dashboard/DashboardItem';
+import { MQTTItem } from '@/types/dashboard/MQTTItem';
 import mqtt, { MqttClient } from 'mqtt';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
-export function useMQTT() {
+export function mqttHelpers() {
 
     const publishedItemsPath = join(configDir, 'mqtt_published_items.json');
     const categoryTopic = `spotify-to-plex/categories`;
     const itemTopicBase = `spotify-to-plex/items`;
 
     let client: MqttClient | null = null;
-    if (typeof process.env.MQTT_BROKER_URL == 'string' && typeof process.env.MQTT_USERNAME == 'string' && typeof process.env.MQTT_PASSWORD == 'string') {
-        client = mqtt.connect(process.env.MQTT_BROKER_URL, {
-            username: process.env.MQTT_USERNAME,
-            password: process.env.MQTT_PASSWORD,
-        });
-    }
 
-    const publishData = (topic: string, payload: object, retain = false) => {
-        if (!client)
-            return;
-
+    const publishData = async (topic: string, payload: object, retain = false) => {
         const payloadString = JSON.stringify(payload);
-        client.publish(topic, payloadString, { retain });
+        await client?.publishAsync(topic, payloadString, { retain });
     };
 
-    const publishCategoryDiscovery = () => {
+    const publishCategoryDiscovery = async () => {
         const discoveryTopic = `homeassistant/sensor/categories/config`;
         const payload = {
             name: "Music Categories",
@@ -37,10 +28,10 @@ export function useMQTT() {
             icon: "mdi:music"
         };
 
-        publishData(discoveryTopic, payload, true);
+        await publishData(discoveryTopic, payload, true);
     };
 
-    const publishItemDiscovery = (item: MQTTItem) => {
+    const publishItemDiscovery = async (item: MQTTItem) => {
         const discoveryTopic = `homeassistant/sensor/item_${item.id}/config`;
         const payload = {
             name: item.name,
@@ -51,28 +42,27 @@ export function useMQTT() {
             value_template: "{{ value_json.name }}",
             icon: "mdi:playlist-music"
         };
-        publishData(discoveryTopic, payload);
+        await publishData(discoveryTopic, payload, true);
     };
 
 
-    const publishCategories = (categories: string[]) => {
-        publishCategoryDiscovery()
-        publishData(categoryTopic, { categories }, true);
+    const publishCategories = async (categories: string[]) => {
+        await publishCategoryDiscovery()
+        await publishData(categoryTopic, { categories }, true);
     }
 
-    const publishItem = (item: MQTTItem) => {
+    const publishItem = async (item: MQTTItem) => {
         const data = {
             ...item,
             category_id: item.category.toLowerCase().trim()
         }
-        publishItemDiscovery(data)
+        await publishItemDiscovery(data)
 
         const topic = `${itemTopicBase}/${data.id}`;
-        publishData(topic, data, true);
+        await publishData(topic, data, true);
     }
 
-    const removeUnusedItems = (all: MQTTItem[]) => {
-
+    const removeUnusedItems = async (all: MQTTItem[]) => {
         if (!client)
             return;
 
@@ -81,15 +71,30 @@ export function useMQTT() {
             const previousItems: string[] = JSON.parse(readFileSync(publishedItemsPath, 'utf8'))
             const toRemoveItems = previousItems.filter(prev => !itemIds.includes(prev))
             if (toRemoveItems.length > 0) {
-                toRemoveItems.forEach(remove => {
+                for (let i = 0; i < toRemoveItems.length; i++) {
+                    const remove = toRemoveItems[i];
                     const topic = `homeassistant/sensor/item_${remove}/config`;
-                    client.publish(topic, "", { retain: true });
-                })
+                    if (client)
+                        await client.publishAsync(topic, "", { retain: true });
+                }
             }
         }
 
         writeFileSync(publishedItemsPath, JSON.stringify(itemIds, undefined, 4))
     }
 
-    return { publishCategories, publishItem, removeUnusedItems }
+    const open = async () => {
+        if (typeof process.env.MQTT_BROKER_URL != 'string' || typeof process.env.MQTT_USERNAME != 'string' || typeof process.env.MQTT_PASSWORD != 'string')
+            return;
+
+        client = await mqtt.connectAsync(process.env.MQTT_BROKER_URL, {
+            username: process.env.MQTT_USERNAME,
+            password: process.env.MQTT_PASSWORD,
+        });
+    }
+    const close = async () => {
+        await client?.endAsync()
+    }
+
+    return { publishCategories, publishItem, removeUnusedItems, close, open }
 }

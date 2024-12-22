@@ -1,19 +1,20 @@
-import { useMQTT } from '@/helpers/mqtt/useMQTT';
 import { configDir } from '@/library/configDir';
 import { plex } from '@/library/plex';
-import { MQTTItem } from '@/types/dashboard/DashboardItem';
+import { MQTTItem } from '@/types/dashboard/MQTTItem';
 import { PlaylistData } from '@/types/dashboard/PlaylistData';
-import { SavedItem } from '@/types/SpotifyAPI';
 import { TrackLink } from '@/types/TrackLink';
 import { PlexMusicSearch } from '@jjdenhertog/plex-music-search';
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { mqttHelpers } from './helpers/mqttHelpers';
+import { savedItemsHelpers } from './helpers/savedItemsHelpers';
 
-export async function createDashboard() {
-    const mqtt = useMQTT()
+export async function refreshMQTT() {
+    const mqtt = mqttHelpers()
+    await mqtt.open()
 
-    const savedItemsPath = join(configDir, 'spotify_saved_items.json')
-    if (!existsSync(savedItemsPath))
+    const { items: savedItems } = savedItemsHelpers()
+    if (savedItems.length == 0)
         throw new Error('Missing spotify saved items')
 
     const playlistPath = join(configDir, 'playlists.json')
@@ -27,7 +28,6 @@ export async function createDashboard() {
     if (!plex.settings.token || !plex.settings.uri)
         throw new Error('Missing plex')
 
-    const savedItems: SavedItem[] = JSON.parse(readFileSync(savedItemsPath, 'utf8'))
     const playlists: PlaylistData = JSON.parse(readFileSync(playlistPath, 'utf8'))
     const trackLinks: TrackLink[] = JSON.parse(readFileSync(trackLinksPath, 'utf8'))
 
@@ -37,9 +37,9 @@ export async function createDashboard() {
     for (let i = 0; i < savedItems.length; i++) {
         const savedItem = savedItems[i];
 
-        const { type, id, title, label } = savedItem;
+        const { type, id, title, label, uri } = savedItem;
         if (!label)
-            return;
+            continue;
 
         if (!categories.includes(label))
             categories.push(label)
@@ -54,7 +54,9 @@ export async function createDashboard() {
 
         switch (type) {
             case "plex-media":
-                const mediaContentId = id
+                const mediaContentId = uri
+                    .split("/playlist")
+                    .join("")
                     .split("/children")
                     .join("")
                     .split("/items")
@@ -67,7 +69,7 @@ export async function createDashboard() {
                 // Skip if theres not track link
                 const trackLink = trackLinks.find(item => item.spotify_id == id)
                 if (!trackLink?.plex_id || trackLink.plex_id.length == 0)
-                    return;
+                    continue;
 
                 item = { id: entityId, category: label, name: title, media_content_id: trackLink.plex_id[0] }
 
@@ -76,7 +78,7 @@ export async function createDashboard() {
                 // Skip if theres not track link
                 const playlist = playlists.data.find(item => item.id == id)
                 if (!playlist?.plex)
-                    return;
+                    continue;
 
                 item = { id: entityId, category: label, name: title, media_content_id: `/library/metadata/${playlist.plex}` }
                 break;
@@ -89,42 +91,41 @@ export async function createDashboard() {
             const mediaContentId = item.media_content_id;
             const data = await plexMusicSearch.getById(mediaContentId)
             if (data) {
-                const { guid, image } = data;
-                const type = guid.includes('album') ? 'album' : 'playlist'
+                const { image } = data;
 
                 // Publish MQTT
                 const mqttItem: MQTTItem = {
                     ...item,
-                    type,
                     thumb: image || ""
                 }
 
                 items.push(mqttItem)
-                mqtt.publishItem(mqttItem)
-
-            } else {
-                console.log(`Data could not be loaded: ${item.name}`)
+                await mqtt.publishItem(mqttItem)
             }
 
         } catch (_e) {
-            console.log(_e)
-            console.log(`Uncaught error: ${item.name}`)
         }
     }
 
     // Update categories
-    mqtt.publishCategories(categories)
-    mqtt.removeUnusedItems(items)
+    await mqtt.publishCategories(categories)
+    await mqtt.removeUnusedItems(items)
+
+    await mqtt.close()
 }
 
 
 function run() {
-    createDashboard()
+    if (typeof process.env.MQTT_BROKER_URL != 'string' || typeof process.env.MQTT_USERNAME != 'string' || typeof process.env.MQTT_PASSWORD != 'string')
+        return;
+
+    console.log(`-- Publishing MQTT Items, for use with Home Assistant --`)
+    refreshMQTT()
         .then(() => {
-            console.log(`Create dashboard completed`)
+            console.log(`Publish MQTT items completed`)
         })
-        .catch((e: unknown) => {
-            console.log(e)
+        .catch((_e: unknown) => {
+            // Do nothing
         })
 }
 

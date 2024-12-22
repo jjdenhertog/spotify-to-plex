@@ -5,7 +5,7 @@ import { RecentPlayedContext, SavedItem, SpotifyCredentials } from "@/types/Spot
 import { SpotifyApi } from "@spotify/web-api-ts-sdk";
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import { useSavedItems } from "./hooks/useSavedItems";
+import { savedItemsHelpers } from "./helpers/savedItemsHelpers";
 import { loadSpotifyData } from "./utils/loadSpotifyData";
 
 
@@ -17,7 +17,7 @@ export async function syncUsers() {
     await refreshAccessTokens()
     const credentials: SpotifyCredentials[] = JSON.parse(readFileSync(credentialsPath, 'utf8'))
 
-    const savedItems = useSavedItems()
+    const savedItems = savedItemsHelpers()
 
     for (let i = 0; i < credentials.length; i++) {
         try {
