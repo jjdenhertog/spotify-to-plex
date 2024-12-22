@@ -16,7 +16,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
 
             const result = await axios.post<PostPinResponse>("https://plex.tv/api/v2/pins", stringify({
                 strong: true,
-                "X-Plex-Product": "AI Guest DJ",
+                "X-Plex-Product": "Spotify to Plex",
                 "X-Plex-Client-Identifier": process.env.PLEX_APP_ID,
             }))
 
