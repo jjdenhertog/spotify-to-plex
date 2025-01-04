@@ -64,7 +64,7 @@ export default function TrackAnalyzer(props: Props) {
                         if (!matching)
                             return null;
 
-                        return <Fragment key={`analyze-${item.id}`}>
+                        return <Fragment key={`analyze-${id}`}>
                             <Box>
                                 <Typography level="h2" mb={1}>Reason for match: {reason}</Typography>
                                 <Typography level="body-md">{title}</Typography>

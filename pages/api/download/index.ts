@@ -20,7 +20,6 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
             if (!trackIds || trackIds.length == 0)
                 throw new Error(`Tracks were submitted, but had a length of zero.`)
 
-
             const getPrettyNumber = (value: number) => {
                 return value
                     .toString()
@@ -49,7 +48,6 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                         .filter(item => !!item)
 
                     res.send(tidalTracks.map(id => `https://tidal.com/browse/track/${id}`).join('\n'))
-
                     break;
 
                 default:

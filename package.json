@@ -1,6 +1,6 @@
 {
     "name": "@jjdenhertog/spotify-to-plex",
-    "version": "1.0.61",
+    "version": "1.0.66",
     "description": "Sync Spotify with your Plex Library.",
     "keywords": [
         "plex",
@@ -35,7 +35,7 @@
         "@emotion/react": "^11.11.3",
         "@emotion/styled": "^11.11.0",
         "@jjdenhertog/open-spotify-sdk": "^1.0.4",
-        "@jjdenhertog/plex-music-search": "^1.0.5",
+        "@jjdenhertog/plex-music-search": "^1.0.22",
         "@jjdenhertog/tidal-music-search": "^1.0.4",
         "@mui/icons-material": "^5.15.3",
         "@mui/joy": "^5.0.0-beta.21",

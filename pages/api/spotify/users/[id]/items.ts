@@ -74,17 +74,19 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 }
 
                 // Return data
-                const albums: GetSpotifyAlbum[] = allAlbums.map(item => {
-                    return {
-                        type: "spotify-album",
-                        id: item.album.id,
-                        added: savedItems.some(savedItem => savedItem.id == item.album.id),
-                        title: item.album.name,
-                        private: false,
-                        image: item.album.images[0].url,
-                        tracks: []
-                    }
-                })
+                const albums: GetSpotifyAlbum[] = allAlbums
+                    .filter(item => !!item)
+                    .map(item => {
+                        return {
+                            type: "spotify-album",
+                            id: item.album.id,
+                            added: savedItems.some(savedItem => savedItem.id == item.album.id),
+                            title: item.album.name,
+                            private: false,
+                            image: item.album.images?.[0]?.url || '',
+                            tracks: []
+                        }
+                    })
 
                 return res.json(albums)
             }
@@ -112,20 +114,20 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
 
             // Return data
             const playlists: GetSpotifyPlaylist[] = allPlaylists
-                .filter(item => item)
+                .filter(item => !!item)
                 .map(item => {
-                return {
-                    type: "spotify-playlist",
-                    id: item.id,
-                    added: savedItems.some(savedItem => savedItem.id == item.id),
-                    title: item.name,
-                    user_id: item.public ? undefined : id,
-                    private: !item.public,
-                    owner: item.owner.display_name,
-                    image: item.images[0].url,
-                    tracks: []
-                }
-            })
+                    return {
+                        type: "spotify-playlist",
+                        id: item.id,
+                        added: savedItems.some(savedItem => savedItem.id == item.id),
+                        title: item.name,
+                        user_id: item.public ? undefined : id,
+                        private: !item.public,
+                        owner: item.owner.display_name,
+                        image: item.images?.[0]?.url || '',
+                        tracks: []
+                    }
+                })
 
             return res.json(playlists)
         }

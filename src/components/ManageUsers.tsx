@@ -102,7 +102,6 @@ export default function ManageUsers() {
                         <Box pt={1}>
                             <Typography level="body-sm" mb={1}>You can add more users if you want. But make sure to first log out of spotify.com or open this window in an incognito window. Otherwise it will simply reconnect the last user.</Typography>
                             <Button size="sm" variant="outlined" component="a" href="/api/spotify/login" sx={{ borderColor: "#1db954" }}>Add another user</Button>
-
                         </Box>
                     </>
                     :

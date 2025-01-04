@@ -8,6 +8,7 @@ export default async function getSpotifyData(api: SpotifyApi, id: string, simpli
         const albumId = id.slice(Math.max(0, id.indexOf('spotify:album:') + 'spotify:album:'.length)).trim();
         try {
             const result = await api.albums.get(albumId)
+
             return {
                 type: "spotify-album",
                 id: result.id,

@@ -28,7 +28,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                     forwardUrl: `${req.body.callback}?plex=1`,
                     context: {
                         device: {
-                            product: 'AI Guest DJ',
+                            product: 'Spotify to Plex',
                         },
                     },
                 });

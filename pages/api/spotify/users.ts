@@ -16,6 +16,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 return res.status(400).json({ error: "No users are currently connected." })
 
             const users: SpotifyCredentials[] = JSON.parse(readFileSync(credentialsPath, 'utf8'))
+
             return res.status(200).json(users.map(item => item.user))
         }
     )

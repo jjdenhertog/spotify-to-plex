@@ -2,9 +2,10 @@ import Logo from "@/components/Logo";
 import Logs from "@/components/Logs";
 import ManagePlaylists from "@/components/ManagePlaylists";
 import ManageUsers from "@/components/ManageUsers";
+import SearchAnalyzer from "@/components/SearchAnalyzer";
 import MainLayout from "@/layouts/MainLayout";
 import { ChevronLeft } from "@mui/icons-material";
-import { Alert, Button, Container, Link, Sheet, Tab, TabList, TabPanel, Tabs, Typography } from '@mui/joy';
+import { Button, Container, Sheet, Tab, TabList, TabPanel, Tabs, Typography } from '@mui/joy';
 import { NextPage } from "next";
 import Head from "next/head";
 
@@ -17,7 +18,6 @@ const Page: NextPage = () => {
      * - Automatic synchronization of recent played songs / playlists
      * 
      */
-
     return (<>
         <Head>
             <title>Spotify to Plex</title>
@@ -33,7 +33,8 @@ const Page: NextPage = () => {
                     <Tabs sx={{ mt: 2 }}>
                         <TabList>
                             <Tab variant="solid" color="primary">Playlists & Albums</Tab>
-                            <Tab variant="solid" color="primary">Users</Tab>
+                            <Tab variant="solid" color="primary" sx={{ marginLeft: '2px' }}>Users</Tab>
+                            <Tab variant="solid" color="primary" sx={{ marginLeft: '2px' }}>Search Analyzer</Tab>
                             <Tab variant="solid" color="primary" sx={{ marginLeft: "auto" }}>Logs</Tab>
                         </TabList>
                         <TabPanel value={0}>
@@ -43,11 +44,14 @@ const Page: NextPage = () => {
                             <ManageUsers />
                         </TabPanel>
                         <TabPanel value={2}>
+                            <SearchAnalyzer />
+                        </TabPanel>
+                        <TabPanel value={3}>
                             <Logs />
                         </TabPanel>
                     </Tabs>
 
-                    <Alert variant="outlined" sx={{ mt: 1, mb: 2, fontWeight: 'normal' }}>Checkout the <Link href={"https://github.com/jjdenhertog/spotify-to-plex?tab=readme-ov-file#synchronization"} target="_blank" sx={{ m: 0, p: 0 }} color="warning">Github readme</Link> to find out more about automatic synchronisation.</Alert>
+                    {/* <Alert variant="outlined" sx={{ mt: 1, mb: 2, fontWeight: 'normal', display: 'block' }}>Checkout the <Link href="https://github.com/jjdenhertog/spotify-to-plex?tab=readme-ov-file#synchronization" target="_blank" sx={{ m: 0, p: 0 }} color="warning">Github readme</Link> to find out more about automatic synchronisation.</Alert> */}
                 </Sheet>
             </Container>
         </MainLayout >
