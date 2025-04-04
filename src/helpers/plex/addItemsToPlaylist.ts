@@ -14,14 +14,14 @@ export async function addItemsToPlaylist(id: string, items: { key: string; sourc
         const uri = getUri(item.key, item.source);
         const putRequestUrl = `${url}?uri=${encodeURIComponent(uri)}`;
         try {
-            await AxiosRequest.put(putRequestUrl, plex.settings.token)
+            await AxiosRequest.put(putRequestUrl, plex.getToken())
         } catch (_e) {
             // Wait for 1 sec. and try again
             await (new Promise((resolve) => {
                 setTimeout(resolve, 2000);
             }));
             try {
-                await AxiosRequest.put(putRequestUrl, plex.settings.token)
+                await AxiosRequest.put(putRequestUrl, plex.getToken())
             } catch (_e) { }
         }
     }

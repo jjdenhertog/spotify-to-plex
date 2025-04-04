@@ -81,7 +81,7 @@ export async function syncPlaylists() {
             //////////////////////////////////////
             const plexMusicSearch = new PlexMusicSearch({
                 uri: plex.settings.uri,
-                token: plex.settings.token,
+                token: plex.getToken(),
             })
 
             // eslint-disable-next-line prefer-const

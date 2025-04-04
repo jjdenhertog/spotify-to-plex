@@ -11,6 +11,7 @@ export type PlexSettings = {
     id?: string,
     uri?: string,
     token?: string,
+    serverToken?: string,
     pin_code?: string,
     pin_id?: string
 }
@@ -58,9 +59,14 @@ if (!_plex) {
             _plex.playlists = { ..._plex.playlists, data: playlists };
             writeFileSync(join(configDir, 'playlists.json'), JSON.stringify(_plex.playlists, null, 2), 'utf8');
         },
+        getToken: () => {
+            return _plex.settings.serverToken || _plex.settings.token
+        },
         settings,
         playlists
     }
+
+    
 }
 
 export const plex = _plex;

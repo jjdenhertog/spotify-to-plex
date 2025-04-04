@@ -57,7 +57,7 @@ export async function syncAlbums() {
         //////////////////////////////////////
         const plexMusicSearch = new PlexMusicSearch({
             uri: plex.settings.uri,
-            token: plex.settings.token,
+            token: plex.getToken(),
         })
         const result = await plexMusicSearch.searchAlbum(data.tracks)
         const { add } = await getCachedPlexTracks(plexMusicSearch, data)

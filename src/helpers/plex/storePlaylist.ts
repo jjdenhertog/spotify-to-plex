@@ -15,7 +15,7 @@ export async function storePlaylist(name: string, uri: string) {
         uri
     });
 
-    const result = await AxiosRequest.post<GetPlaylistResponse>(`${url}?${query.toString()}`, plex.settings.token)
+    const result = await AxiosRequest.post<GetPlaylistResponse>(`${url}?${query.toString()}`, plex.getToken())
     const id = result.data.MediaContainer.Metadata[0].ratingKey;
 
     return id;

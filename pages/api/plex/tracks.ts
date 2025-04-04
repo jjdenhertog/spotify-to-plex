@@ -22,7 +22,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
             //////////////////////////////////////
             const plexMusicSearch = new PlexMusicSearch({
                 uri: plex.settings.uri,
-                token: plex.settings.token,
+                token: plex.getToken(),
                 searchApproaches: fast ? [
                     { id: 'fast', filtered: true }
                 ] : undefined

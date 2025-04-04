@@ -62,7 +62,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
 
             // Check the existence
             const url = getAPIUrl(plex.settings.uri, `/playlists`);
-            const result = await AxiosRequest.get<GetPlaylistResponse>(url, plex.settings.token);
+            const result = await AxiosRequest.get<GetPlaylistResponse>(url, plex.getToken());
             const playlist = result.data.MediaContainer.Metadata.find(item => item.ratingKey == playlistIds.plex);
             if (!playlist)
                 return res.status(404).json({ error: `Playlist not found with id ${playlistIds.plex}` })

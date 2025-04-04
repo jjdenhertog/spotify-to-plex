@@ -7,6 +7,6 @@ export async function removeItemsFromPlaylist(id: string) {
         throw new Error('No Plex connection found');
 
     const url = getAPIUrl(plex.settings.uri, `/playlists/${id}/items`);
-    await AxiosRequest.delete(url, plex.settings.token)
+    await AxiosRequest.delete(url, plex.getToken())
 
 }

@@ -12,7 +12,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
     .post(
         async (req, res) => {
             if (req.body.uri)
-                plex.saveConfig({ uri: req.body.uri, id: req.body.id })
+                plex.saveConfig({ uri: req.body.uri, id: req.body.id, serverToken: req.body.serverToken })
 
             res.json({ loggedin: !!plex.settings.token, uri: plex.settings.uri, id: plex.settings.id })
         })

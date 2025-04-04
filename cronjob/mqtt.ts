@@ -47,7 +47,7 @@ export async function refreshMQTT() {
         const entityId = id.slice(Math.max(0, id.lastIndexOf("/") + 1))
         const plexMusicSearch = new PlexMusicSearch({
             uri: plex.settings.uri,
-            token: plex.settings.token,
+            token: plex.getToken(),
         })
 
         let item: { id: string, category: string, name: string, media_content_id: string } | null = null;

@@ -20,25 +20,25 @@ export async function putPlaylistPoster(id: string, image: string) {
 
 export async function getPlaylist(id: string) {
     const url = getAPIUrl(plex.settings.uri, `/library/metadata/${id}`);
-    const currentPlaylist = await handleOneRetryAttempt(() => AxiosRequest.get<any>(url, plex.settings.token))
+    const currentPlaylist = await handleOneRetryAttempt(() => AxiosRequest.get<any>(url, plex.getToken()))
 
     return currentPlaylist.data.MediaContainer.Metadata[0];
 }
 async function getPosters(id: string) {
     const url = getAPIUrl(plex.settings.uri, `/library/metadata/${id}/posters`);
-    const currentPosters = await handleOneRetryAttempt(() => AxiosRequest.get<any>(url, plex.settings.token))
+    const currentPosters = await handleOneRetryAttempt(() => AxiosRequest.get<any>(url, plex.getToken()))
 
     return currentPosters.data.MediaContainer;
 }
 async function putPoster(id: string, uploadUrl: string) {
     const url = getAPIUrl(plex.settings.uri, `/library/metadata/${id}/poster?url=${encodeURIComponent(uploadUrl)}`);
 
-    return handleOneRetryAttempt(() => AxiosRequest.put<any>(url, plex.settings.token))
+    return handleOneRetryAttempt(() => AxiosRequest.put<any>(url, plex.getToken()))
 }
 
 async function uploadPoster(id: string, image: string) {
     const url = getAPIUrl(plex.settings.uri, `/library/metadata/${id}/posters?url=${encodeURIComponent(image)}`);
 
-    return AxiosRequest.post<any>(url, plex.settings.token)
+    return AxiosRequest.post<any>(url, plex.getToken())
 }
 

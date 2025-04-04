@@ -12,5 +12,5 @@ export async function updatePlaylist(id: string, data: { title: string }) {
 
     const query = new URLSearchParams(data);
 
-    await handleOneRetryAttempt(() => AxiosRequest.put<GetPlaylistResponse>(`${url}?${query.toString()}`, plex.settings.token))
+    await handleOneRetryAttempt(() => AxiosRequest.put<GetPlaylistResponse>(`${url}?${query.toString()}`, plex.getToken()))
 }

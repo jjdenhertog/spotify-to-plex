@@ -26,7 +26,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 const url = path.indexOf('http') > -1 ? path : `${plex.settings.uri}${path}`;
                 try {
 
-                    const data = await AxiosRequest.get<any>(url, plex.settings.token, { responseType: "arraybuffer" })
+                    const data = await AxiosRequest.get<any>(url, plex.getToken(), { responseType: "arraybuffer" })
                     res.setHeader('content-type', String(data.headers['Content-Type']))
                     res.setHeader('content-length', data.data.length)
 

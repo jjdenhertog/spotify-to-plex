@@ -55,15 +55,16 @@ const Page: NextPage = () => {
             setSaving(true);
             setValidated(false);
 
-            // eslint-disable-next-line @typescript-eslint/prefer-destructuring
-            const resource = resources.filter(item => item.connections.some(connection => connection.uri == newPlexUri))[0];
+            const [resource] = resources.filter(item => item.connections.some(connection => connection.uri == newPlexUri));
             if (!resource)
                 throw new Error("Something went wrong selecting the resource");
 
             // Store URI
+            const { id, accessToken } = resource;
             const settings = await axios.post<GetSettingsResponse>("/api/settings", {
+                id,
                 uri: newPlexUri,
-                id: resource.id
+                serverToken: accessToken
             });
 
             setSettings(settings.data);
