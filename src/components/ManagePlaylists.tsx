@@ -2,13 +2,13 @@
 import { errorBoundary } from "@/helpers/errors/errorBoundary";
 import { filterUnique } from "@/helpers/filterUnique";
 import { SavedItem } from "@/types/SpotifyAPI";
-import { CloseRounded, KeyboardArrowRightSharp } from "@mui/icons-material";
-import { Box, Button, CircularProgress, Divider, IconButton, Input, Link, Option, Select, SelectStaticProps, Typography } from "@mui/joy";
+import { Box, Button, CircularProgress, Divider, Link, Paper, TextField, Typography } from "@mui/material";
+import Grid from '@mui/material/Grid2';
 import axios from "axios";
-import React, { ChangeEvent, useCallback, useEffect, useMemo, useState } from "react";
+import { ChangeEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { useClearSelection, useSelection } from "react-selection-manager";
 import ManagePlaylistItem from "./ManagePlaylistItem";
-import PlaylistSyncSettings from "./PlaylistSyncSettings";
+import PlaylistItemSettings from "./PlaylistSyncSettings";
 
 export default function ManagePlaylists() {
     const [loading, setLoading] = useState(true)
@@ -38,6 +38,42 @@ export default function ManagePlaylists() {
             .filter(filterUnique)
             .sort((a, b) => a.localeCompare(b))
     }, [items])
+
+    const groupedItems = useMemo(() => {
+        // Sort labels alphabetically but keep "Uncategorized" at the beginning
+        const sortedLabels = Array.from(new Set(items.map(item => item.label || "Uncategorized")))
+            .sort((a, b) => {
+                if (a === "Uncategorized") return -1;
+
+                if (b === "Uncategorized") return 1;
+
+                return a.localeCompare(b);
+            });
+
+        const groups: Record<string, SavedItem[]> = {};
+
+        sortedLabels.forEach(label => {
+            groups[label] = [];
+        });
+
+        items.forEach(item => {
+            const label = item.label || "Uncategorized";
+            groups[label].push(item);
+        });
+
+        return groups;
+    }, [items]);
+
+    const orderedIds = useMemo(() => {
+        const ids: string[] = [];
+        Object.entries(groupedItems).forEach(([_, groupItems]) => {
+            groupItems.forEach(item => {
+                ids.push(item.id);
+            });
+        });
+
+        return ids;
+    }, [groupedItems]);
 
     const reloadSavedItems = useCallback(() => {
         errorBoundary(async () => {
@@ -84,87 +120,63 @@ export default function ManagePlaylists() {
             reloadSavedItems()
     }, [clearSelection, reloadSavedItems])
 
-
     //////////////////////////////////
     // Show selection
     //////////////////////////////////
-    const [filterLabel, setFilterLabel] = useState<string | null>(null)
-    const action: SelectStaticProps['action'] = React.useRef(null);
-    const onSelectLabel = useCallback((_event: React.SyntheticEvent | null, newValue: string | null) => {
-        setFilterLabel(newValue)
-    }, []);
-    const onClearButtonMouseDown = useCallback((e: React.SyntheticEvent) => {
-        e.stopPropagation();
-    }, [])
-    const onClearButtonClick = useCallback(() => {
-        setFilterLabel(null);
-        action.current?.focusVisible();
-    }, [])
-    const visibleItems = filterLabel == null ? items : items.filter(item => item.label == filterLabel)
 
     return (<>
         {loading ?
             <Box sx={{ textAlign: 'center', p: 2 }}><CircularProgress /></Box>
             :
             <>
-                <Typography mb={.5} level="body-sm">Add any existing Spotify Playlist or Album. Once added you can sync it with Plex or change settings for the automated synchronisation. </Typography>
-
-
-                <Divider sx={{ mt: 2, mb: 2 }} />
-                <Typography mb={1} level="h2">Add Playlist or Album</Typography>
-                <Typography mb={1} level="body-md">The following inputs are supported:</Typography>
-                <Typography level="body-md" mt={1} mb={.5} sx={{ fontSize: ".9em" }} startDecorator={<KeyboardArrowRightSharp sx={{ fontSize: "1.1em" }} />}>Spotify URL &#40;e.g. https://open.spotify.com/playlist/37i9dQZF1EQqA6klNdJvwx &#41;</Typography>
-                <Typography level="body-md" mb={1} sx={{ fontSize: ".9em" }} startDecorator={<KeyboardArrowRightSharp sx={{ fontSize: "1.1em" }} />}>Spotify URI &#40;e.g. spotify:playlist:37i9dQZF1EQqA6klNdJvwx &#41;</Typography>
-                <Typography level="body-md" mb={2} sx={{ fontSize: ".9em" }} startDecorator={<KeyboardArrowRightSharp sx={{ fontSize: "1.1em" }} />}>Plex Content id, for <Link href="https://github.com/jjdenhertog/spotify-to-plex/blob/main/README.md#dashboarding" target="_blank">dashboarding</Link> &#40;e.g. /library/metadata/12345 &#41; </Typography>
-                <Input placeholder="Enter your Spotify URL/URI or Plex ID here.." disabled={generating} value={searchInput} onChange={onChangeSpotifyInput} />
-                <Box mt={1}>
-                    <Button size="sm" disabled={generating} onClick={onAddPlaylistClick}>Add item</Button>
-                </Box>
-                <Divider sx={{ mt: 2, mb: 2 }} />
-                {visibleItems.length > 0 &&
-                    <>
-                        <Box sx={{ display: 'flex', justifyContent: "space-between" }}>
-                            <Typography level="h2" mt={2} mb={.5}>List</Typography>
-                            <Box sx={{ display: "flex", gap: 1 }}>
-                                <Select
-                                    placeholder="Select label"
-                                    size="sm"
-                                    sx={{ height: 30 }}
-                                    value={filterLabel}
-                                    action={action}
-                                    onChange={onSelectLabel}
-                                    {...(filterLabel != null && {
-                                        endDecorator: (
-                                            <IconButton
-                                                size="sm"
-                                                variant="plain"
-                                                style={{ height: 20, width: 20, minHeight: 20, minWidth: 20 }}
-                                                color="neutral"
-                                                onMouseDown={onClearButtonMouseDown}
-                                                onClick={onClearButtonClick}
-                                            >
-                                                <CloseRounded style={{ fontSize: '1em' }} />
-                                            </IconButton>
-                                        ),
-                                        indicator: null,
-                                    })}
-                                >
-                                    <Option value="">Uncategorized</Option>
-                                    {labels.map(item => <Option key={item} value={item}>{item}</Option>)}
-                                </Select>
-                                <Button disabled={selectedItems.size == 0} onClick={onEditSettingsClick} size="sm" sx={{ height: 30 }} color="neutral" variant="outlined">Edit</Button>
-                            </Box>
+                <Paper elevation={0} sx={{ p: 2, mb: 2, bgcolor: 'action.hover' }}>
+                    <Box maxWidth={560} >
+                        <Typography mb={.5} variant="body2">Add any existing Spotify Playlist or Album. Once added you can sync it with Plex or change settings for the automated synchronisation. </Typography>
+                        <Divider sx={{ mt: 2, mb: 2 }} />
+                        <Typography mb={1} variant="h6">Add Playlist or Album</Typography>
+                        <Typography mb={1} variant="body2">The following inputs are supported:</Typography>
+                        <Box component="ul" sx={{ mt: 1, mb: 2, pl: 2, fontSize: ".9em" }}>
+                            <Box component="li" sx={{ mb: 0.5 }}>Spotify URL &#40;e.g. https://open.spotify.com/playlist/37i9dQZF1EQqA6klNdJvwx &#41;</Box>
+                            <Box component="li" sx={{ mb: 0.5 }}>Spotify URI &#40;e.g. spotify:playlist:37i9dQZF1EQqA6klNdJvwx &#41;</Box>
+                            <Box component="li">Plex Content id, for <Link href="https://github.com/jjdenhertog/spotify-to-plex/blob/main/README.md#dashboarding" target="_blank">dashboarding</Link> &#40;e.g. /library/metadata/12345 &#41;</Box>
                         </Box>
-                        {visibleItems.map(item => <ManagePlaylistItem key={item.id} item={item} orderedIds={visibleItems.map(item => item.id)} labels={labels} reloadSavedItems={reloadSavedItems} />)}
-                    </>
-                }
-
-
+                        <TextField fullWidth placeholder="Enter your Spotify URL/URI or Plex ID here.." disabled={generating} value={searchInput} onChange={onChangeSpotifyInput} variant="outlined" size="small" />
+                        <Box mt={1}>
+                            <Button size="small" disabled={generating} onClick={onAddPlaylistClick}>Add item</Button>
+                        </Box>
+                    </Box>
+                </Paper>
+                <Divider sx={{ mt: 2, mb: 2 }} />
+                <Box sx={{ display: 'flex', justifyContent: "flex-end", mb: 1 }}>
+                    <Button disabled={selectedItems.size == 0} onClick={onEditSettingsClick} size="small" sx={{ height: 30 }} variant="outlined">Edit selected items</Button>
+                </Box>
+                <Paper elevation={0} sx={{ p: 2, mb: 2, bgcolor: 'action.hover' }}>
+                    {Object.keys(groupedItems).length > 0 &&
+                        <>
+                            {Object.entries(groupedItems).map(([label, groupItems]) => (
+                                <Box key={label} sx={{ mb: 4 }}>
+                                    <Typography variant="h6" sx={{ mb: 2 }}>{label}</Typography>
+                                    <Grid container spacing={2}>
+                                        {groupItems.map(item => (
+                                            <Grid size={{ xs: 6, sm: 4, md: 4, lg: 3 }} key={item.id}>
+                                                <ManagePlaylistItem
+                                                    item={item}
+                                                    orderedIds={orderedIds}
+                                                    labels={labels}
+                                                    reloadSavedItems={reloadSavedItems}
+                                                />
+                                            </Grid>
+                                        ))}
+                                    </Grid>
+                                </Box>
+                            ))}
+                        </>
+                    }
+                </Paper>
             </>
         }
 
-        {editMultipleItems.length > 0 && <PlaylistSyncSettings items={editMultipleItems} onClose={onCloseMultipleEditItem} />}
+        {editMultipleItems.length > 0 && <PlaylistItemSettings items={editMultipleItems} labels={labels} onClose={onCloseMultipleEditItem} />}
     </>
     )
 }
-

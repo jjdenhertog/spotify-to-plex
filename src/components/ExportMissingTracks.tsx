@@ -1,7 +1,8 @@
 import { errorBoundary } from "@/helpers/errors/errorBoundary";
 import { GetTidalTracksResponse } from "@/pages/api/tidal";
 import { Track } from "@/types/SpotifyAPI";
-import { Alert, Box, Button, CircularProgress, Divider, Modal, ModalClose, ModalDialog, Typography } from "@mui/joy";
+import CloseIcon from '@mui/icons-material/Close';
+import { Alert, Box, Button, CircularProgress, Divider, IconButton, Modal, Typography } from "@mui/material";
 import axios from "axios";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { PlexPlaylistProps } from "./PlexPlaylist";
@@ -164,17 +165,23 @@ export default function ExportMissingTracks(props: Props) {
 
     const hasTidalTracks = tidalTracks.some(item => item.tidal_ids && item.tidal_ids.length > 0)
 
-    return (<Modal open onClose={onClose} disableEscapeKeyDown disablePortal>
-        <ModalDialog sx={{ maxWidth: 600 }}>
-            <ModalClose />
+    return (<Modal open onClose={onClose}>
+        <Box sx={{ maxWidth: 600, p: 2, position: 'relative' }}>
+            <IconButton
+                size="small"
+                onClick={onClose}
+                sx={{ position: 'absolute', right: 8, top: 8 }}
+            >
+                <CloseIcon fontSize="small" />
+            </IconButton>
             {!!loading && <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', p: 5 }}>
                 <CircularProgress />
             </Box>}
 
             {!loading &&
                 <>
-                    <Typography level="h1">Missing tracks</Typography>
-                    <Typography level="body-md">Below you find an overview of all missing tracks of the current selection.</Typography>
+                    <Typography variant="h6">Missing tracks</Typography>
+                    <Typography variant="body2">Below you find an overview of all missing tracks of the current selection.</Typography>
                     <Box sx={{ display: 'flex', gap: 1 }}>
                         {tracks.length > 0 &&
                             <>
@@ -198,7 +205,7 @@ export default function ExportMissingTracks(props: Props) {
                         }
                     </Box>
                     {!canUseTidal &&
-                        <Alert sx={{ fontWeight: 'normal' }} color="warning">You have not added Tidal credentials. Visit Github for more info.</Alert>
+                        <Alert severity="warning" sx={{ fontWeight: 'normal' }}>You have not added Tidal credentials. Visit Github for more info.</Alert>
                     }
                     <Divider sx={{ mt: 1, mb: 2 }} />
 
@@ -206,11 +213,11 @@ export default function ExportMissingTracks(props: Props) {
                         <Box >
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, border: '2px solid rgba(255,255,255,0.5)', borderRadius: '4px', p: 2, textAlign: 'center' }}>
                                 <Box sx={{ alignItems: 'center' }}>
-                                    <CircularProgress color="neutral" size="sm" />
+                                    <CircularProgress color="inherit" size="small" />
                                 </Box>
                                 <Box sx={{ flexGrow: 1, display: 'flex', gap: 1, justifyContent: 'space-between' }}>
-                                    <Typography level="body-md" sx={{ color: 'rgba(255,255,255,0.7)' }}>Processed {tracksLoaded.length} of {tracksToLoad} Tidal tracks</Typography>
-                                    <Typography onClick={onCancelClick} level="body-md" sx={{ textDecoration: 'underline', textUnderlineOffset: '2px', textDecorationThickness: '1px', cursor: 'pointer', color: 'var(--joy-palette-primary-400)' }}>cancel</Typography>
+                                    <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.7)' }}>Processed {tracksLoaded.length} of {tracksToLoad} Tidal tracks</Typography>
+                                    <Typography onClick={onCancelClick} variant="body2" sx={{ textDecoration: 'underline', textUnderlineOffset: '2px', textDecorationThickness: '1px', cursor: 'pointer', color: 'primary.main' }}>cancel</Typography>
                                 </Box>
                             </Box>
                         </Box>
@@ -218,10 +225,10 @@ export default function ExportMissingTracks(props: Props) {
 
                     {!loadingTracks && tidalTracks.length > 0 && missingTidalTracks.length > 0 &&
                         <Box sx={{ mt: 1, mb: 1 }}>
-                            <Alert variant="outlined" color="warning">
+                            <Alert variant="outlined" severity="warning">
                                 <Box sx={{ p: 1 }}>
-                                    <Typography mb={.5} level="h2" color="warning">{missingTidalTracks.length} Tidal tracks not found</Typography>
-                                    <Typography mb={1} level="body-sm">Not all Tidal tracks could be found.</Typography>
+                                    <Typography mb={.5} variant="h6" color="warning">{missingTidalTracks.length} Tidal tracks not found</Typography>
+                                    <Typography mb={1} variant="body2">Not all Tidal tracks could be found.</Typography>
                                 </Box>
                             </Alert>
                         </Box>
@@ -245,21 +252,21 @@ export default function ExportMissingTracks(props: Props) {
                                     }}>
 
                                     <Box>
-                                        <Typography level="body-md" color={!!tidalTrack && !!tidalTrack.tidal_ids && tidalTrack.tidal_ids.length == 0 ? 'warning' : undefined}>
+                                        <Typography variant="body2" color={!!tidalTrack && !!tidalTrack.tidal_ids && tidalTrack.tidal_ids.length == 0 ? 'warning' : undefined}>
                                             {item.title}
                                         </Typography>
-                                        <Typography level="body-xs">
+                                        <Typography variant="caption">
                                             {item.artists.join(', ')}
                                         </Typography>
                                     </Box>
                                     <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end' }}>
                                         <Box>
                                             {!!tidalTrack && !!tidalTrack.tidal_ids && tidalTrack.tidal_ids.length > 0 &&
-                                                <Button component="a" href={`https://tidal.com/browse/track/${tidalTrack.tidal_ids[0]}`} target="_blank" className="btn" color="neutral" variant="outlined" size="sm" sx={{ fontSize: '.8em' }}>Tidal</Button>
+                                                <Button component="a" href={`https://tidal.com/browse/track/${tidalTrack.tidal_ids[0]}`} target="_blank" className="btn" color="inherit" variant="outlined" size="small" sx={{ fontSize: '.8em' }}>Tidal</Button>
                                             }
                                         </Box>
                                         <Box>
-                                            <Button component="a" href={`https://open.spotify.com/track/${item.id}`} target="_blank" className="btn" color="neutral" variant="outlined" size="sm" sx={{ fontSize: '.8em' }}>Spotify</Button>
+                                            <Button component="a" href={`https://open.spotify.com/track/${item.id}`} target="_blank" className="btn" color="inherit" variant="outlined" size="small" sx={{ fontSize: '.8em' }}>Spotify</Button>
                                         </Box>
                                     </Box>
                                 </Box>
@@ -270,8 +277,8 @@ export default function ExportMissingTracks(props: Props) {
 
                         {totalPages > 1 &&
                             <Box mt={1} display="flex" justifyContent="space-between">
-                                <Button size="sm" variant="outlined" color="neutral" disabled={page <= 0} onClick={prevPageClick}>Previous</Button>
-                                <Button size="sm" variant="outlined" color="neutral" disabled={page >= totalPages} onClick={nextPageClick}>Next</Button>
+                                <Button size="small" variant="outlined" color="inherit" disabled={page <= 0} onClick={prevPageClick}>Previous</Button>
+                                <Button size="small" variant="outlined" color="inherit" disabled={page >= totalPages} onClick={nextPageClick}>Next</Button>
                             </Box>
                         }
 
@@ -279,6 +286,6 @@ export default function ExportMissingTracks(props: Props) {
                     </Box>
                 </>
             }
-        </ModalDialog>
+        </Box>
     </Modal>)
 }

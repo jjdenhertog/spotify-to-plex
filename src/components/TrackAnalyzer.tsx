@@ -1,6 +1,7 @@
 import { errorBoundary } from "@/helpers/errors/errorBoundary";
 import { SearchResponse } from "@jjdenhertog/plex-music-search";
-import { Box, CircularProgress, Divider, Modal, ModalClose, ModalDialog, Typography } from "@mui/joy";
+import CloseIcon from '@mui/icons-material/Close';
+import { Box, CircularProgress, Divider, IconButton, Modal, Typography } from "@mui/material";
 import axios from "axios";
 import { Fragment, useEffect, useState } from "react";
 
@@ -39,67 +40,62 @@ export default function TrackAnalyzer(props: Props) {
         return `${Math.round(value * 100)}%`
     }
 
-    return (<Modal open onClose={onClose} disableEscapeKeyDown disablePortal>
-        <ModalDialog sx={{ maxWidth: 600 }}>
-            <ModalClose />
+    return (<Modal open onClose={onClose}>
+        <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', maxWidth: 600, bgcolor: 'background.paper', p: 3, borderRadius: 1 }}>
+            <IconButton
+                size="small"
+                onClick={onClose}
+                sx={{ position: 'absolute', right: 8, top: 8 }}
+            >
+                <CloseIcon fontSize="small" />
+            </IconButton>
             {!!loading && <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', p: 5 }}>
                 <CircularProgress />
             </Box>}
 
             {!loading && !!searchResponse &&
                 <>
-                    <Typography level="h1">Track Analyzer</Typography>
-                    <Typography level="body-md">Below you find the exact data on which your tracks were matched. It can help you understand why the track was matched. This data can also be used to optimize the matching alghorithm.</Typography>
-
-                    <Divider sx={{ mt: 1, mb: 1 }} />
-                    <Box>
-                        <Typography level="h2" mb={.5}>Searching for:</Typography>
-                        <Typography level="body-md" mb={0}>{track.title}</Typography>
-                        <Typography level="body-md" mb={1}>{track.artists.join(', ')}</Typography>
-                    </Box>
-
-                    {searchResponse.result.map(item => {
-                        const { title, artist, id, matching, reason } = item;
-
+                    <Typography variant="h6" sx={{ mb: 1 }}>Results</Typography>
+                    {searchResponse.result.map(({ id, title, artist, matching, reason }) => {
                         if (!matching)
                             return null;
 
                         return <Fragment key={`analyze-${id}`}>
                             <Box>
-                                <Typography level="h2" mb={1}>Reason for match: {reason}</Typography>
-                                <Typography level="body-md">{title}</Typography>
-                                <Typography level="body-sm">{artist.title}</Typography>
+                                <Typography variant="h6" sx={{ mb: 1 }}>Reason for match: {reason}</Typography>
+                                <Typography variant="body1">{title}</Typography>
+                                <Typography variant="body2">{artist.title}</Typography>
                             </Box>
                             <Box key={id} sx={{ display: 'flex', gap: 2 }}>
                                 <Box>
-                                    <Typography level="body-md">Artist</Typography>
-                                    <Typography level="body-sm">Match: {matching.artist.match ? "Yes" : "No"}</Typography>
-                                    <Typography level="body-sm">Contains: {matching.artist.contains ? "Yes" : "No"}</Typography>
-                                    <Typography level="body-sm">Similarity: {getRoundedSimilarity(matching.artist.similarity)}</Typography>
+                                    <Typography variant="body1">Artist</Typography>
+                                    <Typography variant="body2">Match: {matching.artist.match ? "Yes" : "No"}</Typography>
+                                    <Typography variant="body2">Contains: {matching.artist.contains ? "Yes" : "No"}</Typography>
+                                    <Typography variant="body2">Similarity: {getRoundedSimilarity(matching.artist.similarity)}</Typography>
                                 </Box>
                                 <Box>
-                                    <Typography level="body-md">Artist in Title</Typography>
-                                    <Typography level="body-sm">Match: {matching.artistInTitle.match ? "Yes" : "No"}</Typography>
-                                    <Typography level="body-sm">Contains: {matching.artistInTitle.contains ? "Yes" : "No"}</Typography>
-                                    <Typography level="body-sm">Similarity: {getRoundedSimilarity(matching.artistInTitle.similarity)}</Typography>
+                                    <Typography variant="body1">Artist in Title</Typography>
+                                    <Typography variant="body2">Match: {matching.artistInTitle.match ? "Yes" : "No"}</Typography>
+                                    <Typography variant="body2">Contains: {matching.artistInTitle.contains ? "Yes" : "No"}</Typography>
+                                    <Typography variant="body2">Similarity: {getRoundedSimilarity(matching.artistInTitle.similarity)}</Typography>
                                 </Box>
                                 <Box>
-                                    <Typography level="body-md">Artist with Title</Typography>
-                                    <Typography level="body-sm">Match: {matching.artistWithTitle.match ? "Yes" : "No"}</Typography>
-                                    <Typography level="body-sm">Contains: {matching.artistWithTitle.contains ? "Yes" : "No"}</Typography>
-                                    <Typography level="body-sm">Similarity: {getRoundedSimilarity(matching.artistWithTitle.similarity)}</Typography>
+                                    <Typography variant="body1">Artist with Title</Typography>
+                                    <Typography variant="body2">Match: {matching.artistWithTitle.match ? "Yes" : "No"}</Typography>
+                                    <Typography variant="body2">Contains: {matching.artistWithTitle.contains ? "Yes" : "No"}</Typography>
+                                    <Typography variant="body2">Similarity: {getRoundedSimilarity(matching.artistWithTitle.similarity)}</Typography>
                                 </Box>
                                 <Box>
-                                    <Typography level="body-md">Title</Typography>
-                                    <Typography level="body-sm">Match: {matching.title.match ? "Yes" : "No"}</Typography>
-                                    <Typography level="body-sm">Contains: {matching.title.contains ? "Yes" : "No"}</Typography>
-                                    <Typography level="body-sm">Similarity: {getRoundedSimilarity(matching.title.similarity)}</Typography>
+                                    <Typography variant="body1">Title</Typography>
+                                    <Typography variant="body2">Match: {matching.title.match ? "Yes" : "No"}</Typography>
+                                    <Typography variant="body2">Contains: {matching.title.contains ? "Yes" : "No"}</Typography>
+                                    <Typography variant="body2">Similarity: {getRoundedSimilarity(matching.title.similarity)}</Typography>
                                 </Box>
                                 <Box>
-                                    <Typography level="body-md">Album</Typography>
-                                    <Typography level="body-sm">Match: {matching.album.match ? "Yes" : "No"}</Typography>
-                                    <Typography level="body-sm">Contains: {matching.album.contains ? "Yes" : "No"}</Typography>
-                                    <Typography level="body-sm">Similarity: {getRoundedSimilarity(matching.album.similarity)}</Typography>
+                                    <Typography variant="body1">Album</Typography>
+                                    <Typography variant="body2">Match: {matching.album.match ? "Yes" : "No"}</Typography>
+                                    <Typography variant="body2">Contains: {matching.album.contains ? "Yes" : "No"}</Typography>
+                                    <Typography variant="body2">Similarity: {getRoundedSimilarity(matching.album.similarity)}</Typography>
                                 </Box>
                             </Box>
 
@@ -108,6 +104,6 @@ export default function TrackAnalyzer(props: Props) {
                     })}
                 </>
             }
-        </ModalDialog>
+        </Box>
     </Modal>)
 }

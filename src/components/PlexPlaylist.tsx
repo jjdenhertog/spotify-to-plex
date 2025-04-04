@@ -3,7 +3,8 @@ import { GetPlexPlaylistIdResponse } from "@/pages/api/playlists/[id]";
 import { GetSpotifyAlbum, GetSpotifyPlaylist, Track } from "@/types/SpotifyAPI";
 import { SearchResponse } from "@jjdenhertog/plex-music-search";
 import { Edit, Refresh } from "@mui/icons-material";
-import { Alert, Box, Button, CircularProgress, Divider, IconButton, Input, Modal, ModalClose, ModalDialog, Sheet, Stack, Tooltip, Typography } from "@mui/joy";
+import CloseIcon from '@mui/icons-material/Close';
+import { Alert, Box, Button, CircularProgress, Divider, IconButton, Input, Modal, Paper, Stack, Tooltip, Typography } from "@mui/material";
 import axios from "axios";
 import { enqueueSnackbar } from "notistack";
 import { ChangeEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -320,54 +321,54 @@ export default function PlexPlaylist(props: PlexPlaylistProps) {
             <Box sx={{ mt: 2 }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, border: '2px solid rgba(255,255,255,0.5)', borderRadius: '4px', p: 2, textAlign: 'center' }}>
                     <Box sx={{ alignItems: 'center' }}>
-                        <CircularProgress color="neutral" size="sm" />
+                        <CircularProgress size={20} />
                     </Box>
                     <Box sx={{ flexGrow: 1, display: 'flex', gap: 1, justifyContent: 'space-between' }}>
                         {playlist.type == 'spotify-playlist' ?
-                            <Typography level="body-md" sx={{ color: 'rgba(255,255,255,0.7)' }}>Processed {tracksLoaded.length} of {tracksToLoad} tracks</Typography>
+                            <Typography variant="body1" sx={{ color: 'text.secondary' }}>Processed {tracksLoaded.length} of {tracksToLoad} tracks</Typography>
                             :
-                            <Typography level="body-md" sx={{ color: 'rgba(255,255,255,0.7)' }}>Searching for album...</Typography>
+                            <Typography variant="body1" sx={{ color: 'text.secondary' }}>Searching for album...</Typography>
                         }
-                        <Typography onClick={onCancelClick} level="body-md" sx={{ textDecoration: 'underline', textUnderlineOffset: '2px', textDecorationThickness: '1px', cursor: 'pointer', color: 'var(--joy-palette-primary-400)' }}>cancel</Typography>
+                        <Typography onClick={onCancelClick} variant="body1" sx={{ textDecoration: 'underline', textUnderlineOffset: '2px', textDecorationThickness: '1px', cursor: 'pointer', color: 'primary.main' }}>cancel</Typography>
                     </Box>
                 </Box>
             </Box>
         }
 
 
-        <Sheet variant="soft" color="primary" sx={{ p: 2, mb: 1, mt: 1, position: 'relative' }}>
+        <Paper elevation={1} sx={{ p: 2, mb: 1, mt: 1, position: 'relative' }}>
             {!!loadingTracks &&
                 <>
-                    <Typography mb={.5} level="h2">Playlist loading...</Typography>
-                    <Typography mb={1} level="body-sm">We are trying to match all the songs from the playlist with your library.</Typography>
+                    <Typography variant="h6" sx={{ mb: 0.5 }}>Playlist loading...</Typography>
+                    <Typography variant="body2" sx={{ mb: 1 }}>We are trying to match all the songs from the playlist with your library.</Typography>
                 </>
             }
             {!loadingTracks &&
                 <>
-                    <Typography mb={.5} level="h2">Playlist loaded</Typography>
-                    <Typography mb={1} level="body-sm">We finished matching all songs from the playlist with your library. Any succesfull matches are cached to improve performance the next time this playlist is opened.</Typography>
+                    <Typography variant="h6" sx={{ mb: 0.5 }}>Playlist loaded</Typography>
+                    <Typography variant="body2" sx={{ mb: 1 }}>We finished matching all songs from the playlist with your library. Any succesfull matches are cached to improve performance the next time this playlist is opened.</Typography>
                 </>
             }
 
             {!loadingTracks &&
                 <Tooltip title='Refresh all songs (ignoring cache).'>
-                    <IconButton size="sm" variant="plain" sx={{ position: 'absolute', right: 2, top: 2 }} onClick={onForceRefreshClick}><Refresh /></IconButton>
+                    <IconButton size="small" sx={{ position: 'absolute', right: 2, top: 2 }} onClick={onForceRefreshClick}><Refresh /></IconButton>
                 </Tooltip>
             }
 
             <Box sx={{ display: 'flex', gap: 1 }}>
-                <Button disabled={loadingTracks} loading={saving} onClick={onPutPlaylistClick}>{plexPlaylist ? "Update" : "Create"} playlist</Button>
+                <Button disabled={loadingTracks || saving} onClick={onPutPlaylistClick}>{plexPlaylist ? "Update" : "Create"} playlist</Button>
                 <Button component="a" disabled={!plexPlaylist} href={plexPlaylist?.link} target='_blank'>Open playlist</Button>
             </Box>
-        </Sheet>
+        </Paper>
 
         {playlist?.type == 'spotify-album' &&
             <Box sx={{ mt: 1, mb: 1 }}>
                 <Alert variant="outlined" color="warning">
                     <Box sx={{ p: 1 }}>
-                        <Typography sx={{ m: 0, mb: .5 }} color="warning" level="h2">Album detected</Typography>
-                        <Typography mb={1} level="body-sm">You have added an album to your list. While you can use this album to create a playlist, you don&apos;t neccesarily need to. In most cases the album is already present in your library as an album.</Typography>
-                        <Typography level="body-sm">If you setup syncing for an album you will get the reports, even if you don&apos;t create a playlist for it.</Typography>
+                        <Typography variant="h6" sx={{ m: 0, mb: 0.5 }} color="warning">Album detected</Typography>
+                        <Typography variant="body2" sx={{ mb: 1 }}>You have added an album to your list. While you can use this album to create a playlist, you don&apos;t neccesarily need to. In most cases the album is already present in your library as an album.</Typography>
+                        <Typography variant="body2">If you setup syncing for an album you will get the reports, even if you don&apos;t create a playlist for it.</Typography>
                     </Box>
                 </Alert>
             </Box>
@@ -378,13 +379,13 @@ export default function PlexPlaylist(props: PlexPlaylistProps) {
                 <Alert variant="outlined" color="warning">
                     <Box sx={{ p: 1 }}>
                         {playlist.type == 'spotify-playlist' &&
-                            <Typography mb={.5} level="h2" color="warning">{missingTracks.length} tracks not found</Typography>
+                            <Typography variant="h6" sx={{ mb: 0.5 }} color="warning">{missingTracks.length} tracks not found</Typography>
                         }
                         {playlist.type == 'spotify-album' &&
-                            <Typography mb={.5} level="h2" color="warning">Album not found or incomplete</Typography>
+                            <Typography variant="h6" sx={{ mb: 0.5 }} color="warning">Album not found or incomplete</Typography>
                         }
-                        <Typography mb={1} level="body-sm">Some tracks are not matching up, these are missing in your library or the naming in your library is a bit different than expected. </Typography>
-                        <Button variant="outlined" color="warning" size="sm" onClick={onExportMissingClick}>View missing Files</Button>
+                        <Typography variant="body2" sx={{ mb: 1 }}>Some tracks are not matching up, these are missing in your library or the naming in your library is a bit different than expected. </Typography>
+                        <Button variant="outlined" color="warning" size="small" onClick={onExportMissingClick}>View missing Files</Button>
                     </Box>
                 </Alert>
             </Box>
@@ -394,22 +395,22 @@ export default function PlexPlaylist(props: PlexPlaylistProps) {
             <Box sx={{ mt: 1, mb: 1 }}>
                 <Alert variant="outlined" color="success">
                     <Box sx={{ p: 1 }}>
-                        <Typography mb={.5} level="h2" color="success">All tracks matched</Typography>
-                        <Typography level="body-sm">Each track is present in your Plex library.</Typography>
+                        <Typography variant="h6" sx={{ mb: 0.5 }} color="success">All tracks matched</Typography>
+                        <Typography variant="body2">Each track is present in your Plex library.</Typography>
                     </Box>
                 </Alert>
             </Box>
         }
 
-        <Sheet variant="soft" color="primary" sx={{ p: 2 }}>
+        <Paper elevation={1} sx={{ p: 2, bgcolor: 'primary.light' }}>
             <Box textAlign="center">
                 <Box sx={{ display: 'flex', gap: .5, transform: 'translateX(20px)', justifyContent: 'center', alignItems: 'center' }}>
-                    <Typography level="h2" sx={{ m: 0, p: 0 }}>{playlistName}</Typography>
-                    <IconButton onClick={onEditPlaylistNameClick} variant="plain" sx={{ '&:hover': { background: 'none' } }} size="sm"><Edit /></IconButton>
+                    <Typography variant="h6" sx={{ m: 0, p: 0 }}>{playlistName}</Typography>
+                    <IconButton onClick={onEditPlaylistNameClick} sx={{ '&:hover': { background: 'none' } }} size="small"><Edit /></IconButton>
                 </Box>
                 <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center', alignItems: 'center' }}>
-                    {playlistName != playlist.title && <Typography level="body-sm" sx={{ fontStyle: 'italic' }}>{playlist.title} -</Typography>}
-                    <Typography level="body-sm" fontStyle="italic">{playlist.tracks.length} songs</Typography>
+                    {playlistName != playlist.title && <Typography variant="body2" sx={{ fontStyle: 'italic' }}>{playlist.title} -</Typography>}
+                    <Typography variant="body2" sx={{ fontStyle: 'italic' }}>{playlist.tracks.length} songs</Typography>
                 </Box>
             </Box>
 
@@ -417,9 +418,9 @@ export default function PlexPlaylist(props: PlexPlaylistProps) {
             <Stack>
                 {totalPages > 1 &&
                     <Box display="flex" mb={1} justifyContent="space-between">
-                        <Button disabled={page <= 0} onClick={prevPageClick}>Previous</Button>
+                        <Button variant="contained" disabled={page <= 0} onClick={prevPageClick}>Previous</Button>
                         <Box>Showing {page * pageSize} - {curEnd}</Box>
-                        <Button disabled={page >= totalPages - 1} onClick={nextPageClick}>Next</Button>
+                        <Button variant="contained" disabled={page >= totalPages - 1} onClick={nextPageClick}>Next</Button>
                     </Box>
                 }
                 {visibleTracks.map(track => {
@@ -431,17 +432,25 @@ export default function PlexPlaylist(props: PlexPlaylistProps) {
                     return <PlexTrack key={`${playlist.id}-plex-${track.title}-${track.id}}`} loading={loading} track={track} setSongIdx={onSetSongIndex} songIdx={songIdx} data={data} fast={fast} />
                 })}
             </Stack>
-        </Sheet>
+        </Paper>
 
-        {!!showEditPlaylistName && <Modal open onClose={onEditPlaylistNameClick} disableEscapeKeyDown disablePortal>
-            <ModalDialog sx={{ maxWidth: '400px' }}>
-                <ModalClose />
-                <Typography level="h1">Playlist name</Typography>
-                <Typography level="body-md">This will be the name in your Plex library.</Typography>
-                <Input value={newPlaylistName} onChange={onPlaylistNameChange} />
-                <Button onClick={onSavePlaylistNameClick}>Save</Button>
-            </ModalDialog>
-        </Modal>}
+        {!!showEditPlaylistName &&
+            <Modal open onClose={onEditPlaylistNameClick}>
+                <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', maxWidth: 400, bgcolor: 'background.paper', p: 3, borderRadius: 1 }}>
+                    <IconButton
+                        size="small"
+                        onClick={onEditPlaylistNameClick}
+                        sx={{ position: 'absolute', right: 8, top: 8 }}
+                    >
+                        <CloseIcon fontSize="small" />
+                    </IconButton>
+                    <Typography variant="h6">Playlist name</Typography>
+                    <Typography variant="body1">This will be the name in your Plex library.</Typography>
+                    <Input value={newPlaylistName} onChange={onPlaylistNameChange} />
+                    <Button variant="contained" onClick={onSavePlaylistNameClick} sx={{ mt: 2 }}>Save</Button>
+                </Box>
+            </Modal>
+        }
 
         {!!showExportMissingTracks && missingTracks.length > 0 &&
             <ExportMissingTracks onClose={onExportMissingClick} tracks={missingTracks} playlist={playlist} />

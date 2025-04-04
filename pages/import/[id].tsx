@@ -4,7 +4,7 @@ import { errorBoundary } from "@/helpers/errors/errorBoundary";
 import MainLayout from "@/layouts/MainLayout";
 import { GetSpotifyAlbum, GetSpotifyPlaylist, SavedItem } from "@/types/SpotifyAPI";
 import { ChevronLeft } from "@mui/icons-material";
-import { Box, Button, CircularProgress, Container, Modal, ModalClose, ModalDialog, Typography } from "@mui/joy";
+import { Box, Button, CircularProgress, Container, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from "@mui/material";
 import axios from "axios";
 import { NextPage } from "next";
 import Head from "next/head";
@@ -67,29 +67,39 @@ const Page: NextPage = () => {
 
                 {!!loading && <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, maxWidth: 300, border: '2px solid rgba(255,255,255,0.5)', borderRadius: '4px', p: 2, textAlign: 'center' }}>
-                        <CircularProgress size="sm" />
-                        <Typography level="body-md"> Loading Spotify data...</Typography>
+                        <CircularProgress size={20} />
+                        <Typography variant="body1">Loading Spotify data...</Typography>
                     </Box>
                 </Box>}
 
                 {!loading && !!playlist && !!showOptimizer &&
-                    <Modal open>
-                        <ModalDialog sx={{ maxWidth: '400px' }}>
-                            <ModalClose />
-                            <Typography level="h1">Large playlist detected</Typography>
-                            <Typography level="body-sm">You are trying to match a large playlist with Plex. With the normal (more thourough) approach this will take a very long time. Using the fast approach it will do a more inaccurate search but it will be a lot faster.</Typography>
-                            <Typography level="body-sm">Which option do you want to use?</Typography>
-                            <Box sx={{ display: 'flex', gap: 1 }}>
-                                <Button onClick={onUseFastClick}>Fast</Button>
-                                <Button onClick={onUseNormalClick}>Normal</Button>
-                            </Box>
-                        </ModalDialog>
-                    </Modal>
+                    <Dialog open onClose={() => setShowOptimizer(false)}>
+                        <DialogTitle>Large playlist detected</DialogTitle>
+                        <DialogContent>
+                            <Typography variant="body2">
+                                You are trying to match a large playlist with Plex. With the normal (more thorough) approach this will take a very long time. Using the fast approach it will do a more inaccurate search but it will be a lot faster.
+                            </Typography>
+                            <Typography variant="body2">Which option do you want to use?</Typography>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button variant="contained" onClick={onUseFastClick}>Fast</Button>
+                            <Button variant="outlined" onClick={onUseNormalClick}>Normal</Button>
+                        </DialogActions>
+                    </Dialog>
                 }
 
                 {!loading && !!playlist && !showOptimizer &&
                     <>
-                        <Button component="a" href="/spotify" variant="outlined" color="neutral" size="sm" startDecorator={<ChevronLeft />}>Back</Button>
+                        <Button
+                            component="a"
+                            href="/spotify"
+                            variant="outlined"
+                            color="inherit"
+                            size="small"
+                            startIcon={<ChevronLeft />}
+                        >
+                            Back
+                        </Button>
                         <PlexPlaylist playlist={playlist} fast={fast} />
                     </>
                 }

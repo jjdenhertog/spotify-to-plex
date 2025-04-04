@@ -1,103 +1,100 @@
 import "@/styles/app.scss";
-import { CssVarsProvider, extendTheme } from "@mui/joy";
+import { createEmotionCache } from '@/utils/createEmotionCache';
+import { CacheProvider } from '@emotion/react';
+import CssBaseline from '@mui/material/CssBaseline';
+import { createTheme, ThemeProvider } from "@mui/material/styles";
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
 
-export default function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
+// Client-side cache, shared for the whole session of the user in the browser.
+const clientSideEmotionCache = createEmotionCache();
 
-    const customTheme = extendTheme({
-        fontFamily: {
-            display: 'Noto Sans', // applies to `h1`–`h4`
-            body: 'Noto Sans', // applies to `title-*` and `body-*`
+const theme = createTheme({
+    palette: {
+        mode: 'dark',
+        primary: {
+            main: '#edaf07',
         },
-        typography: {
-            "body-lg": {
-                fontWeight: 200,
-                fontSize: '1.2em'
-            },
-            "body-md": {
-                fontSize: '.95em',
-                lineHeight: "1.2em",
-                fontWeight: 200
-            },
-            "body-sm": {
-                lineHeight: "1.4em",
-                fontWeight: 200
-            },
-            "body-xs": {
-                lineHeight: "1.4em",
-                fontWeight: 200
-            },
-            h1: {
-                fontSize: "1.2em",
-                lineHeight: "1.4em",
-                fontWeight: 400
-            },
-            h2: {
-                fontSize: "1.15em",
-                lineHeight: "1.4em",
-                fontWeight: 300
+        secondary: {
+            main: '#cccccc',
+        }
+    },
+    typography: {
+        fontFamily: 'Noto Sans',
+        h1: {
+            fontSize: "1.2em",
+            lineHeight: "1.4em",
+            fontWeight: 400
+        },
+        h2: {
+            fontSize: "1.15em",
+            lineHeight: "1.4em",
+            fontWeight: 300
+        },
+        body1: {
+            fontSize: '.95em',
+            lineHeight: "1.2em",
+            fontWeight: 200
+        },
+        body2: {
+            lineHeight: "1.4em",
+            fontWeight: 200
+        }
+    },
+    components: {
+        MuiPaper: {
+
+        },
+        MuiTooltip: {
+            defaultProps: {
+                arrow: true,
+                enterDelay: 0,
+                placement: "top",
             }
         },
-        components: {
-            JoyTooltip: {
-                defaultProps: {
-                    size: "sm",
-                    color: "primary",
-                    enterDelay: 0,
-                    arrow: true,
-                    placement: "top",
+        MuiTabs: {
+            styleOverrides: {
+                root: {
+                    backgroundColor: 'transparent'
                 }
-            },
-            JoyTabs: {
-                styleOverrides: {
-                    root: {
-                        background: 'none'
-                    }
+            }
+        },
+        MuiTab: {
+            styleOverrides: {
+                root: {
+                    backgroundColor: 'rgba(0, 0, 0, 0.1)',
                 }
+            }
+        },
+        MuiButton: {
+            defaultProps: {
+                variant: 'outlined'
             },
-            JoyTab: {
-                styleOverrides: {
-                    root: {
-                        background: 'var(--joy-palette-background-surface)'
-                    }
+            styleOverrides: {
+                root: {
+                    textTransform: 'none',
+                    fontWeight: 300,
                 }
-            },
-            JoyTabPanel: {
-                styleOverrides: {
-                    root: {
-                        background: 'var(--joy-palette-background-surface)'
-                    }
-                }
-            },
-            JoyButton: {
-                styleOverrides: {
-                    root: {
-                        fontWeight: 300,
-                    }
-                }
-            },
-            JoyInput: {
-                styleOverrides: {
-                    root: {
-                    }
-                }
-            },
-            JoyModal: {
-                styleOverrides: {
-                    root: {
-                        '& .MuiModal-backdrop': {
-                            backdropFilter: 'none',
-                            background: 'rgba(0,0,0,0.7)'
-                        }
-                    }
+            }
+        },
+        MuiModal: {
+            styleOverrides: {
+                backdrop: {
+                    backdropFilter: 'none',
+                    backgroundColor: 'rgba(0,0,0,0.7)'
                 }
             }
         }
-    });
+    }
+});
 
+export default function App({
+    Component,
+    pageProps,
+    emotionCache = clientSideEmotionCache
+}: AppProps & { readonly emotionCache?: any }) {
     return (
-        <>
+        <CacheProvider value={emotionCache}>
             <Head>
                 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
                 <meta name="viewport" content="initial-scale=1, width=device-width" />
@@ -106,16 +103,10 @@ export default function App({ Component, pageProps: { session, ...pageProps } }:
                 <meta name="MobileOptimized" content="320" />
                 <style>{`:root { color-scheme: dark; }`}</style>
             </Head>
-            <CssVarsProvider
-                defaultMode="system"
-                // the local storage key to use.
-                modeStorageKey="plex-openai-system-mode"
-                // set as root provider
-                disableNestedContext
-                theme={customTheme}
-            >
+            <ThemeProvider theme={theme}>
+                <CssBaseline />
                 <Component {...pageProps} />
-            </CssVarsProvider>
-        </>
+            </ThemeProvider>
+        </CacheProvider>
     )
 }

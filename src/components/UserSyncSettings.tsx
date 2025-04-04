@@ -1,6 +1,7 @@
 import { errorBoundary } from "@/helpers/errors/errorBoundary";
 import { GetSpotifyUserResponse } from "@/pages/api/spotify/users";
-import { Box, Button, Divider, FormControl, FormLabel, Input, Modal, ModalClose, ModalDialog, Switch, Typography } from "@mui/joy";
+import CloseIcon from '@mui/icons-material/Close';
+import { Box, Button, CircularProgress, Divider, FormControl, FormHelperText, FormLabel, IconButton, Modal, Switch, TextField, Typography } from "@mui/material";
 import axios from "axios";
 import { enqueueSnackbar } from "notistack";
 import { ChangeEvent, useCallback, useEffect, useState } from "react";
@@ -15,6 +16,7 @@ export default function UserSyncSettings(props: Props) {
     const [autoSync, setAutoSync] = useState(false);
     const [label, setLabel] = useState('')
     const [recentContext, setRecentContext] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     //////////////////////////////
     // Making changes
@@ -80,81 +82,52 @@ export default function UserSyncSettings(props: Props) {
         !!(Boolean(user?.recentContext) != recentContext)
     )
 
-    return (<Modal open onClose={onClose} disableEscapeKeyDown disablePortal>
-        <ModalDialog sx={{ maxWidth: '400px' }}>
-            <ModalClose />
+    return (<Modal open onClose={onClose}>
+        <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', maxWidth: 500, bgcolor: 'background.paper', p: 3, borderRadius: 1 }}>
+            <IconButton
+                size="small"
+                onClick={() => onClose('closeClick')}
+                sx={{ position: 'absolute', right: 8, top: 8 }}
+            >
+                <CloseIcon fontSize="small" />
+            </IconButton>
+            {!!loading && <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', p: 5 }}>
+                <CircularProgress />
+            </Box>}
 
-            {user ? <>
-                <Typography level="h1">{user.name}</Typography>
-                <Typography level="body-md">You can enable automatic syncing, which you can use to sync user specific playlists.</Typography>
-                <Box sx={{ mt: 2 }}>
-                    <FormControl orientation="horizontal" sx={{ justifyContent: 'space-between', mb: 2 }}>
-                        <FormLabel>Automatic syncing</FormLabel>
-                        <Switch
-                            checked={autoSync}
-                            onChange={onSwitchChange}
-                            color={autoSync ? 'success' : 'neutral'}
-                            variant={autoSync ? 'solid' : 'outlined'}
-                            endDecorator={autoSync ? 'On' : 'Off'}
-                            slotProps={{
-                                input: { 'data-id': 'autosync' },
-                                endDecorator: {
-                                    sx: {
-                                        minWidth: 24,
-                                    },
-                                },
-                            }}
-                        />
-                    </FormControl>
-
-                    {!!autoSync &&
-                        <>
-                            <Divider sx={{ mb: 2 }} />
-                            <Box sx={{ mb: 2, display: "flex", justifyContent: "space-between" }}>
-                                <Box>
-                                    <Typography level="h1">Label</Typography>
-                                    <Typography level="body-sm">Created playlists will get this label</Typography>
-                                </Box>
-                                <Box sx={{ width: 100, display: 'flex', alignItems: 'center' }}>
-                                    <Input value={label} size="sm" onChange={onLabelChange} />
-                                </Box>
-                            </Box>
-
-
-                            <FormControl orientation="horizontal" sx={{ justifyContent: 'space-between', mb: 3 }}>
-                                <FormLabel sx={{ flexDirection: 'column', alignItems: 'flex-start' }}>
-                                    <Typography level="body-md" fontWeight="bold">Recently playlists or albums</Typography>
-                                    <Typography level="body-sm" pr={3}>Syncs playlists and albums based on the last 50 played songs.</Typography>
-                                </FormLabel>
-                                <Switch
-                                    checked={recentContext}
-                                    onChange={onSwitchChange}
-                                    color={recentContext ? 'success' : 'neutral'}
-                                    variant={recentContext ? 'solid' : 'outlined'}
-                                    endDecorator={recentContext ? 'On' : 'Off'}
-                                    slotProps={{
-                                        input: { 'data-id': 'recent-context' },
-                                        endDecorator: {
-                                            sx: {
-                                                minWidth: 24,
-                                            },
-                                        },
-                                    }}
-                                />
-                            </FormControl>
-
-                        </>
-
-                    }
-
-                    <Divider sx={{ mt: 1, mb: 1 }} />
-                    <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-                        <Button disabled={!hasChanges} onClick={onSaveChangesClick}>Save changes</Button>
-                    </Box>
+            {!loading && <>
+                <Typography variant="h6">Sync settings</Typography>
+                <Box sx={{ mb: 2 }}>
+                    <Typography variant="body1">Below you find the settings for the selected items.</Typography>
                 </Box>
 
-            </> : null
-            }
-        </ModalDialog>
+                <FormControl sx={{ mb: 2 }}>
+                    <FormLabel component="legend">Automatic sync</FormLabel>
+                    <FormHelperText>When enabled, this item will be synced automatically.</FormHelperText>
+                    <Switch
+                        checked={autoSync}
+                        onChange={onSwitchChange}
+                        color="success"
+                    />
+                </FormControl>
+
+                {!!autoSync &&
+                    <FormControl sx={{ mb: 2 }}>
+                        <FormLabel component="legend">Label</FormLabel>
+                        <FormHelperText>Created playlists will get this label</FormHelperText>
+                        <TextField
+                            size="small"
+                            value={label}
+                            onChange={onLabelChange}
+                        />
+                    </FormControl>
+                }
+
+                <Divider sx={{ mt: 1, mb: 1 }} />
+                <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                    <Button variant="contained" disabled={!hasChanges} onClick={onSaveChangesClick}>Save changes</Button>
+                </Box>
+            </>}
+        </Box>
     </Modal>)
 }

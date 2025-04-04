@@ -2,7 +2,8 @@ import { errorBoundary } from "@/helpers/errors/errorBoundary";
 import { GetSpotifyUserResponse } from "@/pages/api/spotify/users";
 import { GetSpotifyAlbum, GetSpotifyPlaylist, SavedItem } from "@/types/SpotifyAPI";
 import { Add, Check } from "@mui/icons-material";
-import { Box, Button, CircularProgress, Divider, IconButton, Input, Modal, ModalClose, ModalDialog, Sheet, Tooltip, Typography } from "@mui/joy";
+import CloseIcon from '@mui/icons-material/Close';
+import { Box, Button, CircularProgress, Divider, IconButton, Modal, Paper, TextField, Tooltip, Typography } from "@mui/material";
 import axios from "axios";
 import { enqueueSnackbar } from "notistack";
 import { ChangeEvent, useCallback, useEffect, useState } from "react";
@@ -128,56 +129,68 @@ export default function UserItems(props: Props) {
         curEnd = items.length;
 
 
-    return (<Modal open onClose={onClose}  >
-        <ModalDialog sx={{ width: 500, overflowY: 'auto', gap: 0 }} >
-            <ModalClose />
+    return (<Modal open onClose={onClose}>
+        <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', maxWidth: 600, bgcolor: 'background.paper', p: 3, borderRadius: 1 }}>
+            <IconButton
+                size="small"
+                onClick={() => onClose('closeClick')}
+                sx={{ position: 'absolute', right: 8, top: 8 }}
+            >
+                <CloseIcon fontSize="small" />
+            </IconButton>
             {!!loading && <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', p: 5 }}>
                 <CircularProgress />
             </Box>}
 
             {!loading &&
                 <>
-                    <Typography level="h1" mb={.5}>Items</Typography>
-                    <Typography level="body-md">Below you find an overview of all the {type} that you have saved in Spotify.</Typography>
+                    <Typography variant="h6">Add {type}</Typography>
+                    <Typography variant="body1">Below you find an overview of all the {type} that you have saved in Spotify.</Typography>
                     <Divider sx={{ mt: 2, mb: 2 }} />
-                    <Sheet color="neutral" variant="soft" sx={{ p: 2 }}>
-                        <Typography level="h2" sx={{ mb: .5 }} >Label name</Typography>
-                        <Typography level="body-sm" sx={{ mb: 1 }}>This label will be connected to any items added.</Typography>
-                        <Input value={label} sx={{ maxWidth: 200 }} placeholder="Change label" onChange={onEditLabelChange} />
-                    </Sheet>
+                    <Paper elevation={0} sx={{ p: 2, bgcolor: 'action.hover' }}>
+                        <Typography variant="h6" sx={{ mb: 0.5 }}>Label name</Typography>
+                        <Typography variant="body2" sx={{ mb: 1 }}>This label will be connected to any items added.</Typography>
+                        <TextField
+                            value={label}
+                            size="small"
+                            sx={{ maxWidth: 200 }}
+                            placeholder="Change label"
+                            onChange={onEditLabelChange}
+                        />
+                    </Paper>
                     <Divider sx={{ mt: 2, mb: 2 }} />
                     <Box>
                         {visibleItems.map(item => {
-                            return <Sheet variant="soft" key={item.id} sx={{ p: 1, mb: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 1 }}>
+                            return <Paper elevation={0} key={item.id} sx={{ p: 1, mb: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 1, bgcolor: 'action.hover' }}>
                                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                                     <Box component="img" src={item.image} height={40} />
                                     <Box>
-                                        <Typography level="body-md" sx={{ lineHeight: '1em' }}>{item.title}</Typography>
-                                        {!!item.private && <Typography level="body-sm">Private</Typography>}
+                                        <Typography variant="body1" sx={{ lineHeight: '1em' }}>{item.title}</Typography>
+                                        {!!item.private && <Typography variant="body2">Private</Typography>}
                                     </Box>
                                 </Box>
                                 <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 1 }}>
                                     {!!item.added &&
-                                        <IconButton disabled variant="solid" size="sm" color="success"><Check sx={{ fontSize: '1em' }} /></IconButton>
+                                        <IconButton disabled size="small" color="success"><Check sx={{ fontSize: '1em' }} /></IconButton>
                                     }
 
                                     {!item.added &&
                                         <>
                                             {addingItems.indexOf(item.id) > -1 ?
-                                                <IconButton disabled variant="outlined" size="sm" ><CircularProgress size="sm" /></IconButton>
+                                                <IconButton disabled size="small" ><CircularProgress size={20} /></IconButton>
                                                 :
-                                                <Tooltip title="Add"><IconButton data-id={item.id} onClick={onAddClick} variant="outlined" size="sm" ><Add sx={{ fontSize: '1em' }} /></IconButton></Tooltip>
+                                                <Tooltip title="Add"><IconButton data-id={item.id} onClick={onAddClick} size="small" ><Add sx={{ fontSize: '1em' }} /></IconButton></Tooltip>
                                             }
                                         </>
                                     }
                                 </Box>
-                            </Sheet>
+                            </Paper>
                         })}
 
                         {totalPages > 1 &&
                             <Box mt={1} display="flex" justifyContent="space-between">
-                                <Button size="sm" variant="outlined" color="neutral" disabled={page <= 0} onClick={prevPageClick}>Previous</Button>
-                                <Button size="sm" variant="outlined" color="neutral" disabled={page >= totalPages - 1} onClick={nextPageClick}>Next</Button>
+                                <Button size="small" variant="outlined" disabled={page <= 0} onClick={prevPageClick}>Previous</Button>
+                                <Button size="small" variant="outlined" disabled={page >= totalPages - 1} onClick={nextPageClick}>Next</Button>
                             </Box>
                         }
 
@@ -185,6 +198,6 @@ export default function UserItems(props: Props) {
                     </Box>
                 </>
             }
-        </ModalDialog>
+        </Box>
     </Modal>)
 }

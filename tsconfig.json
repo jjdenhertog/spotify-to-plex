@@ -46,6 +46,9 @@
             "@/library/*": [
                 "src/library/*"
             ],
+            "@/utils/*": [
+                "src/utils/*"
+            ],
             "@/hoc/*": [
                 "src/hoc/*"
             ]

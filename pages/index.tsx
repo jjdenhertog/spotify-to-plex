@@ -1,37 +1,37 @@
-/* eslint-disable unicorn/prefer-node-protocol */
 import Logo from "@/components/Logo";
+import PlexConnection from "@/components/PlexConnection";
 import { errorBoundary } from "@/helpers/errors/errorBoundary";
 import MainLayout from "@/layouts/MainLayout";
-import { Alert, Box, Button, CircularProgress, List, ListItem, Option, Select, Sheet, Typography } from "@mui/joy";
+import { Assignment, ChevronLeft, People, PlaylistPlay, Search } from "@mui/icons-material";
+import { LoadingButton } from "@mui/lab";
+import { Alert, Box, Button, Card, CardActionArea, CardContent, Container, Divider, Paper, Typography } from "@mui/material";
+import Grid from '@mui/material/Grid2';
 import axios from "axios";
 import { NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { Fragment, useCallback, useEffect, useState } from "react";
+import { enqueueSnackbar } from "notistack";
+import { useCallback, useEffect, useState } from "react";
 import { GetAuthUrlResponse } from "./api/auth/url";
-import { GetPlexResourcesResponse } from "./api/plex/resources";
 import { GetSettingsResponse } from "./api/settings";
 
 const Page: NextPage = () => {
 
-    const [loading, setLoading] = useState<boolean>(true);
-    const [connected, setConnected] = useState<boolean>(false);
-    const [validated, setValidated] = useState<boolean>(false);
-    const [creatingUrl, setCreatingUrl] = useState<boolean>(false);
-    const [resources, setResources] = useState<GetPlexResourcesResponse[]>([]);
     const [settings, setSettings] = useState<GetSettingsResponse>();
-    const [newPlexUri, setNewPlexUri] = useState<string | null>(null);
-    const [saving, setSaving] = useState<boolean>(false);
+    const [connected, setConnected] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const [creatingUrl, setCreatingUrl] = useState(false);
+    const [editPlexConnection, setEditPlexConnection] = useState(false)
+    const router = useRouter()
 
-    const router = useRouter();
-
-    ////////////////////////////////////////
-    // Update plex data
-    ////////////////////////////////////////
-    // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
-    const onPlexUriChange = useCallback((_e: unknown | null, value: string | null) => {
-        setNewPlexUri(value)
-    }, [])
+    useEffect(() => {
+        errorBoundary(async () => {
+            const settings = await axios.get<GetSettingsResponse>("/api/settings");
+            setSettings(settings.data);
+            setConnected(settings.data.loggedin);
+            setLoading(false);
+        }, undefined, true);
+    }, []);
 
     const onPlexLoginClick = useCallback(() => {
         setCreatingUrl(true);
@@ -46,45 +46,10 @@ const Page: NextPage = () => {
         });
     }, []);
 
-    const onSaveClick = useCallback(() => {
-        // Attempt search
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 5000);
+    const onEditPlexConnectionClick = useCallback(() => {
+        setEditPlexConnection(prev => !prev);
+    }, []);
 
-        errorBoundary(async () => {
-            setSaving(true);
-            setValidated(false);
-
-            // eslint-disable-next-line @typescript-eslint/prefer-destructuring
-            const resource = resources.filter(item => item.connections.some(connection => connection.uri == newPlexUri))[0];
-            if (!resource)
-                throw new Error("Something went wrong selecting the resource");
-
-            // Store URI
-            const settings = await axios.post<GetSettingsResponse>("/api/settings", {
-                uri: newPlexUri,
-                id: resource.id
-            });
-
-            setSettings(settings.data);
-
-            try {
-                await axios.post("api/search", { query: "x", limit: 3 }, { signal: controller.signal });
-                clearTimeout(timeoutId);
-                setValidated(true);
-            } catch (_e) {
-            }
-            setSaving(false);
-        }, () => {
-            clearTimeout(timeoutId);
-            setSaving(false);
-        });
-    }, [newPlexUri, resources]);
-
-
-    ////////////////////////////////////////
-    // Loading data
-    ////////////////////////////////////////
     useEffect(() => {
         if (!router.isReady) return;
 
@@ -94,14 +59,14 @@ const Page: NextPage = () => {
                 if (result.data.ok) {
                     setLoading(true);
                     const settings = await axios.get<GetSettingsResponse>("/api/settings");
-                    if (settings.data.loggedin) {
-                        if (settings.data.uri)
-                            setNewPlexUri(settings.data.uri);
-
+                    if (settings.data.loggedin)
                         setSettings(settings.data);
-                    } else {
-                        setLoading(false);
-                    }
+
+                    setConnected(settings.data.loggedin);
+                    setLoading(false);
+
+                    enqueueSnackbar("Plex connection verified", { variant: "success" });
+
                 }
 
                 router.replace("/", undefined, { shallow: true });
@@ -109,118 +74,108 @@ const Page: NextPage = () => {
         }
     }, [router, router.isReady]);
 
-
-    useEffect(() => {
-        errorBoundary(async () => {
-            const settings = await axios.get<GetSettingsResponse>("/api/settings");
-            if (settings.data.loggedin) {
-                if (settings.data.uri)
-                    setNewPlexUri(settings.data.uri);
-
-                setSettings(settings.data);
-
-            } else {
-                setLoading(false);
-            }
-        }, undefined, true);
-    }, []);
-
-    useEffect(() => {
-
-        if (!settings) return;
-
-        // Attempt search
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 5000);
-        errorBoundary(async () => {
-
-            // Get resources
-            const resources = await axios.get<GetPlexResourcesResponse[]>("/api/plex/resources");
-            setResources(resources.data);
-            setConnected(true);
-
-            // Do search (if uri is set)
-            if (settings.uri) {
-                await axios.post("api/plex/search", { query: "x", limit: 3 }, { signal: controller.signal });
-                setValidated(true);
-            }
-
-            setLoading(false);
-            clearTimeout(timeoutId);
-        }, () => {
-            setLoading(false);
-            clearTimeout(timeoutId);
-        }, true);
-    }, [settings]);
-
-
-    const saveDisabled = !(newPlexUri && settings?.uri != newPlexUri);
+    const menuItems = [
+        {
+            title: 'Playlists & Albums',
+            description: 'Manage your Spotify playlists and albums synchronization',
+            icon: <PlaylistPlay sx={{ fontSize: 40 }} />,
+            path: '/spotify/manage-playlists'
+        },
+        {
+            title: 'Users',
+            description: 'Manage Spotify user connections',
+            icon: <People sx={{ fontSize: 40 }} />,
+            path: '/spotify/manage-users'
+        },
+        {
+            title: 'Search Analyzer',
+            description: 'Debug Spotify to Plex search results',
+            icon: <Search sx={{ fontSize: 40 }} />,
+            path: '/spotify/search-analyzer'
+        },
+        {
+            title: 'Logs',
+            description: 'View system logs and sync history',
+            icon: <Assignment sx={{ fontSize: 40 }} />,
+            path: '/spotify/logs'
+        }
+    ];
 
     return (<>
         <Head>
             <title>Spotify to Plex</title>
         </Head>
-        <MainLayout>
-            <Sheet sx={{ minHeight: "calc(100vh - 120px)" }} className="verticalCenter">
-                <Box textAlign="center">
-                    <Logo />
-                    {loading ? <>
-                        <CircularProgress size="sm" />
+        <MainLayout maxWidth="700px">
+            <Container>
+                <Logo />
+                <Paper elevation={0} sx={{ p: 2, bgcolor: 'action.hover' }}>
+
+                    {!!loading &&
                         <Box display="flex" justifyContent="center">
-                            <Alert variant="outlined">Checking your connection with Plex</Alert>
+                            <Alert severity="info" sx={{ ml: 2 }}>
+                                Checking your connection with Plex
+                            </Alert>
                         </Box>
-                    </> : null}
-                    {!loading && connected ? <>
+                    }
 
-                        <Box display="flex" gap={1} pb={2} justifyContent="center" maxWidth={400} margin="0 auto">
-                            <Button color="neutral" loading={creatingUrl} onClick={onPlexLoginClick}>Re-login to Plex</Button>
-                            <Button component="a" href="/spotify">Manage Spotify connection</Button>
+                    {!connected && !loading &&
+
+                        <Box textAlign="center">
+                            <Typography variant="body1" sx={{ mb: 2 }}>
+                                You need to login to Plex to continue.
+                            </Typography>
+                            <LoadingButton loading={creatingUrl} onClick={onPlexLoginClick} variant="contained" color="primary">
+                                Login to Plex
+                            </LoadingButton>
                         </Box>
+                    }
 
-                        <Box maxWidth={400} margin="0 auto" pt={3}>
-                            {resources.length == 0 &&
-                                <Alert variant="outlined" color="danger">We didn&apos;t find Plex Media Servers on your account.</Alert>}
+                    {!!connected && (!settings?.uri || !!editPlexConnection) &&
+                        <>
+                            {!!editPlexConnection && <Button onClick={onEditPlexConnectionClick} variant="outlined" color="inherit" size="small" startIcon={<ChevronLeft />}>
+                                Back
+                            </Button>
+                            }
+                            <PlexConnection settings={settings} setSettings={setSettings} connected={connected} setConnected={setConnected} />
+                        </>
+                    }
 
-                            {resources.length > 0 &&
-                                <>
-                                    <Typography mb={1} level="body-md">You are connected to Plex. Select and test the connection that you would like to use.</Typography>
-                                    <Typography mb={1} level="body-md" fontWeight={600}>Select Plex Media Server</Typography>
-                                    <Select defaultValue={newPlexUri} onChange={onPlexUriChange}>
-                                        <List>
-                                            {resources.map(item => {
+                    {!!connected && !!settings?.uri && !editPlexConnection &&
+                        <>
+                            <Typography variant="h4" sx={{ mb: 3 }}>
+                                Spotify to Plex
+                            </Typography>
+                            <Typography variant="body1" sx={{ mb: 3, maxWidth: 500 }}>
+                                Manage your Spotify connections, synchronization settings, and view system logs.
+                            </Typography>
+                            <Grid container spacing={2}>
+                                {menuItems.map((item) => (
+                                    <Grid size={{ xs: 12, sm: 6 }} key={item.path}>
+                                        <Card>
+                                            <CardActionArea component="a" href={item.path} sx={{ height: '100%' }}>
+                                                <CardContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', p: 3 }}>
+                                                    {item.icon}
+                                                    <Typography variant="h6" sx={{ mt: 2 }}>
+                                                        {item.title}
+                                                    </Typography>
+                                                    <Typography variant="body2" color="text.secondary">
+                                                        {item.description}
+                                                    </Typography>
+                                                </CardContent>
+                                            </CardActionArea>
+                                        </Card>
+                                    </Grid>
+                                ))}
+                            </Grid>
+                            <Divider sx={{ mb: 3, mt: 3 }} />
+                            <Button variant="outlined" color="primary" onClick={onEditPlexConnectionClick}>
+                                Edit Plex Connection
+                            </Button>
+                        </>
 
-                                                if (item.connections.length < 2)
-                                                    return null;
-
-                                                return <Fragment key={item.name}>
-                                                    <ListItem>
-                                                        <Typography level="body-xs" textTransform="uppercase">
-                                                            {item.name}
-                                                        </Typography>
-                                                    </ListItem>
-                                                    {item.connections.map(connection => {
-                                                        return <Option key={connection.uri} value={connection.uri}>{connection.uri}</Option>;
-                                                    })}
-                                                </Fragment>;
-                                            })}
-                                        </List>
-                                    </Select>
-                                </>}
-                            {connected && !saving && !validated && settings?.uri ? <Box mt={1}>
-                                <Alert variant="outlined" size="sm" color="danger">We can&apos;t connect to the selected Plex Media Server</Alert>
-                            </Box> : null}
-                            {connected && !saving && validated && settings?.uri ? <Box mt={1}>
-                                <Alert variant="outlined" size="sm" color="success">We&apos;re connected to the selected Plex Media Server</Alert>
-                            </Box> : null}
-                            <Box mt={1}>
-                                <Button disabled={saveDisabled} loading={saving} color="neutral" onClick={onSaveClick}>Save new connection</Button>
-                            </Box>
-                        </Box>
-                    </> : null}
-                    {!loading && !connected &&
-                        <Button loading={creatingUrl} onClick={onPlexLoginClick}>Login to Plex</Button>}
-                </Box>
-            </Sheet>
+                    }
+                </Paper>
+            </Container>
         </MainLayout>
     </>);
 };

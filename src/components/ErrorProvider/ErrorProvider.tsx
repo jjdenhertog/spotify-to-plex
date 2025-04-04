@@ -1,7 +1,8 @@
 "use client";
 
 import CloseOutlined from '@mui/icons-material/CloseOutlined';
-import { Accordion, AccordionDetails, AccordionGroup, AccordionSummary, Box, DialogContent, DialogTitle, IconButton, Modal, ModalDialog, Sheet, Typography } from "@mui/joy";
+import ExpandMore from '@mui/icons-material/ExpandMore';
+import { Accordion, AccordionDetails, AccordionSummary, Box, Dialog, DialogContent, DialogTitle, IconButton, Paper, Typography } from "@mui/material";
 import { Component } from "react";
 import { ErrorContext } from "./ErrorContext";
 import { ProviderContext } from "./types";
@@ -48,38 +49,49 @@ export default class ErrorProvider extends Component<ErrorProviderProps, State> 
             <>
                 <ErrorContext.Provider value={contextValue} />
                 {!!error &&
-                    <Modal open>
-                        <ModalDialog sx={{ maxWidth: 500 }}>
-                            <DialogTitle sx={{ paddingTop: 3, paddingBottom: .5 }}>
-                                <IconButton size="sm" onClick={(e) => handleClose()} sx={{ position: 'absolute', right: 8, top: 8 }}>
-                                    <CloseOutlined fontSize="small" />
-                                </IconButton>
-                                Error
-                            </DialogTitle>
-                            <DialogContent>
-                                <Typography>
-                                    {error}
-                                </Typography>
-                                {stack && stack != error ? <Box mt={2}>
-                                    <AccordionGroup variant="outlined">
-                                        <Accordion>
-                                            <AccordionSummary>Stack Trace</AccordionSummary>
-                                            <AccordionDetails>
-                                                <Sheet color="neutral" variant="soft">
-                                                    <Box p={1}>
-                                                        <Typography component="div" level="body-sm" mt={1} fontFamily="monospace" fontSize="12px" position="relative">
-                                                            <pre style={{ whiteSpace: "pre-wrap", wordWrap: "break-word" }}>{stack}</pre>
-                                                        </Typography>
-                                                    </Box>
-                                                </Sheet>
-                                            </AccordionDetails>
-                                        </Accordion>
-                                    </AccordionGroup>
-                                </Box> : null
-                                }
-                            </DialogContent>
-                        </ModalDialog>
-                    </Modal>
+                    <Dialog open maxWidth="sm" fullWidth>
+                        <DialogTitle sx={{ paddingTop: 3, paddingBottom: .5 }}>
+                            <IconButton
+                                size="small"
+                                onClick={handleClose}
+                                sx={{ position: 'absolute', right: 8, top: 8 }}
+                            >
+                                <CloseOutlined fontSize="small" />
+                            </IconButton>
+                            Error
+                        </DialogTitle>
+                        <DialogContent>
+                            <Typography>
+                                {error}
+                            </Typography>
+                            {stack && stack != error ? <Box mt={2}>
+                                <Accordion>
+                                    <AccordionSummary expandIcon={<ExpandMore />}>
+                                        <Typography>Stack Trace</Typography>
+                                    </AccordionSummary>
+                                    <AccordionDetails>
+                                        <Paper elevation={0} sx={{ bgcolor: 'action.hover' }}>
+                                            <Box p={1}>
+                                                <Typography
+                                                    component="div"
+                                                    variant="body2"
+                                                    mt={1}
+                                                    fontFamily="monospace"
+                                                    fontSize="12px"
+                                                    position="relative"
+                                                >
+                                                    <pre style={{ whiteSpace: "pre-wrap", wordWrap: "break-word" }}>
+                                                        {stack}
+                                                    </pre>
+                                                </Typography>
+                                            </Box>
+                                        </Paper>
+                                    </AccordionDetails>
+                                </Accordion>
+                            </Box> : null
+                            }
+                        </DialogContent>
+                    </Dialog>
                 }
             </>
 

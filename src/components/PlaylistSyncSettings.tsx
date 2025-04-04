@@ -1,19 +1,23 @@
 import { errorBoundary } from "@/helpers/errors/errorBoundary";
+import { filterUnique } from "@/helpers/filterUnique";
 import { SavedItem } from "@/types/SpotifyAPI";
-import { Box, Button, Divider, FormControl, FormHelperText, FormLabel, Input, Modal, ModalClose, ModalDialog, Switch, Typography } from "@mui/joy";
+import CloseIcon from '@mui/icons-material/Close';
+import { Box, Button, Checkbox, Chip, CircularProgress, Divider, FormControlLabel, FormGroup, IconButton, Modal, TextField, Typography } from "@mui/material";
 import axios from "axios";
 import { enqueueSnackbar } from "notistack";
 import { ChangeEvent, useCallback, useEffect, useState } from "react";
 
 type Props = {
     readonly onClose: (reload?: boolean) => void
+    readonly labels: string[],
     readonly items: SavedItem[]
 }
 
-export default function PlaylistSyncSettings(props: Props) {
-    const { items } = props;
+export default function PlaylistItemSettings(props: Props) {
+    const { items, labels, onClose } = props;
     const [autoSync, setAutoSync] = useState(false);
     const [days, setDays] = useState("2");
+    const [loading, setLoading] = useState(false);
 
     ///////////////////////////////////////////////
     // Modify labels
@@ -38,6 +42,7 @@ export default function PlaylistSyncSettings(props: Props) {
     const onSaveChangesClick = useCallback(() => {
 
         errorBoundary(async () => {
+            setLoading(true);
             if (!items)
                 return;
 
@@ -49,126 +54,120 @@ export default function PlaylistSyncSettings(props: Props) {
                 ids: items.map(item => item.id),
                 sync: autoSync,
                 sync_interval: days,
-                label: (items.length > 1 && label.trim() != '') ? label : undefined
+                label,
             })
 
             enqueueSnackbar(`Changes saved`)
 
-            // eslint-disable-next-line react/destructuring-assignment
-            props.onClose(true)
+            onClose(true)
+        }, () => {
+            setLoading(false);
         })
 
-    }, [autoSync, days, items, label, props])
+    }, [autoSync, days, items, label, onClose])
 
     //////////////////////////////
     // Close dialog
     //////////////////////////////
-    const onClose = useCallback((_e: unknown, reason: string) => {
-        if (reason == 'closeClick')
-            // eslint-disable-next-line react/destructuring-assignment
-            props.onClose()
-    }, [props])
+    const onCloseClick = useCallback(() => {
+        onClose()
+    }, [onClose])
 
     /////////////////////////////////////
     // Load item data
     /////////////////////////////////////
     useEffect(() => {
-        if (!items)
+        if (!items || items.length == 0)
             return;
 
-        // eslint-disable-next-line @typescript-eslint/prefer-destructuring
-        const firstItem = items[0]
-
+        const [firstItem] = items
         if (firstItem) {
             setAutoSync(!!firstItem.sync)
             setDays(firstItem.sync_interval ?? "2")
         }
 
+        const labels = items
+            .map(item => item.label || "")
+            .filter(filterUnique)
+
+        if (labels.length == 1)
+            setLabel(labels[0])
+
     }, [items])
 
-    return (<Modal open onClose={onClose} disableEscapeKeyDown disablePortal>
-        <ModalDialog sx={{ maxWidth: '400px' }}>
-            <ModalClose />
+    const onEditLabelChipClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+        const { label } = e.currentTarget.dataset;
+        if (typeof label == 'string' && label.trim())
+            setLabel(label.trim())
+    }, [])
 
-            {items ? <>
-                <Typography level="h1">{items.length > 1 ? "Settings" : items[0].title}</Typography>
-                <Typography level="body-md">The settings below are only used while synchronizing this item. These are ignored during manual syncing.</Typography>
+    return (<Modal open>
+        <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', maxWidth: 500, bgcolor: 'background.paper', p: 3, borderRadius: 1 }}>
+            <IconButton size="small" onClick={onCloseClick} sx={{ position: 'absolute', right: 8, top: 8 }}>
+                <CloseIcon fontSize="small" />
+            </IconButton>
+            {!!loading && <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', p: 5 }}>
+                <CircularProgress />
+            </Box>}
 
-                {items.length > 1 &&
-                    <>
-                        <Divider />
-                        <FormControl orientation="horizontal" sx={{ justifyContent: 'space-between' }}>
-                            <div>
-                                <FormLabel>Label</FormLabel>
-                                <FormHelperText sx={{ mt: 0 }}>This label will be connected<br />to any items added.</FormHelperText>
-                            </div>
-                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            {!loading && <>
 
-                                <Input
-                                    sx={{ width: 100 }}
-                                    value={label}
-                                    placeholder="Add label"
-                                    onChange={onEditLabelChange}
-                                />
-
-                            </Box>
-                        </FormControl>
-                    </>
-                }
-                <Divider sx={{ mt: 1, mb: 1 }} />
-                <Box>
-                    <FormControl orientation="horizontal" sx={{ justifyContent: 'space-between', mb: 3 }}>
-                        <FormLabel>Automatic syncing</FormLabel>
-                        <Switch
-                            checked={autoSync}
-                            onChange={onAutoSyncChange}
-                            color={autoSync ? 'success' : 'neutral'}
-                            variant={autoSync ? 'solid' : 'outlined'}
-                            endDecorator={autoSync ? 'On' : 'Off'}
-                            slotProps={{
-                                endDecorator: {
-                                    sx: {
-                                        minWidth: 24,
-                                    },
-                                },
+                <Typography variant="h6">Category name</Typography>
+                <Typography variant="body2" mb={1}>This name can be used to group playlists and album and use it for sorting and other purposes.</Typography>
+                <TextField
+                    autoFocus
+                    value={label}
+                    onChange={onEditLabelChange}
+                    size="small"
+                    fullWidth
+                />
+                <Box sx={{ mt: 1 }}>
+                    {labels.map(label => (
+                        <Chip
+                            variant="outlined"
+                            size="small"
+                            sx={{ mr: .5, mb: .5 }}
+                            key={label}
+                            // eslint-disable-next-line react/jsx-no-bind
+                            onClick={(e) => {
+                                e.currentTarget.dataset.label = label;
+                                onEditLabelChipClick(e);
                             }}
+                            label={label}
                         />
-                    </FormControl>
-
-                    {!!autoSync &&
-                        <FormControl orientation="horizontal" sx={{ justifyContent: 'space-between' }}>
-                            <div>
-                                <FormLabel>Interval (days)</FormLabel>
-                                <FormHelperText sx={{ mt: 0 }}>Read the sync instruction on Github for extra information.</FormHelperText>
-                            </div>
-                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
-
-                                <Input
-                                    sx={{ width: 100 }}
-                                    type="number"
-                                    value={days}
-                                    slotProps={{
-                                        input: {
-                                            min: 0
-                                        }
-                                    }}
-
-                                    onChange={onDaysChange}
-                                    endDecorator={<Typography level="body-xs">day{days == '1' ? '' : 's'}</Typography>}
-                                />
-
-                            </Box>
-                        </FormControl>
-                    }
-
-                    <Divider sx={{ mt: 1, mb: 1 }} />
-                    <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-                        <Button onClick={onSaveChangesClick}>Save changes</Button>
-                    </Box>
+                    ))}
                 </Box>
 
-            </> : null
-            }
-        </ModalDialog>
-    </Modal>)
+                <Divider sx={{ mt: 2, mb: 2 }} />
+                <Typography variant="h6">Sync settings</Typography>
+                <Box sx={{ mb: 2 }}>
+                    <Typography variant="body1">Below you find the settings for the selected items.</Typography>
+                </Box>
+
+                <Box display="flex" gap={2}>
+                    <FormGroup>
+                        <FormControlLabel control={<Checkbox checked={autoSync} onChange={onAutoSyncChange} />} label="Automatic sync" />
+                    </FormGroup>
+
+                    {!!autoSync &&
+                        <>
+                            <Box>
+                                <Divider orientation="vertical" />
+                            </Box>
+                            <Box>
+                                <Typography variant="body1" mt={1.5} mb={1}>Sync interval (in days)</Typography>
+                                <TextField type="number" value={days} size="small" onChange={onDaysChange} />
+                            </Box>
+                        </>
+
+                    }
+                </Box>
+
+                <Divider sx={{ mt: 3, mb: 1 }} />
+                <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                    <Button variant="contained" onClick={onSaveChangesClick}>Save changes</Button>
+                </Box>
+            </>}
+        </Box>
+    </Modal >)
 }

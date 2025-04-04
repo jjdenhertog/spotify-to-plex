@@ -1,7 +1,7 @@
 import { errorBoundary } from "@/helpers/errors/errorBoundary";
 import { GetSpotifyUserResponse } from "@/pages/api/spotify/users";
 import { Album, Close, QueueMusic, Settings } from "@mui/icons-material";
-import { Box, Button, CircularProgress, IconButton, Sheet, Tooltip, Typography } from "@mui/joy";
+import { Box, Button, CircularProgress, IconButton, Paper, Tooltip, Typography } from "@mui/material";
 import axios from "axios";
 import { enqueueSnackbar } from "notistack";
 import { useCallback, useEffect, useState } from "react";
@@ -80,32 +80,32 @@ export default function ManageUsers() {
             <Box sx={{ textAlign: 'center', p: 2 }}><CircularProgress /></Box>
             :
             <>
-                <Typography mb={.5} level="body-md">When connecting users you can sync recent songs, saved playlists and albums.</Typography>
+                <Typography sx={{ mb: 0.5 }} variant="body1">When connecting users you can sync recent songs, saved playlists and albums.</Typography>
 
                 {users.length > 0 ?
                     <>
-                        <Typography level="h2" mt={2} mb={.5}>Connected Spotify users</Typography>
+                        <Typography variant="h6" sx={{ mt: 2, mb: 0.5 }}>Connected Spotify users</Typography>
                         {users.map(item => {
 
-                            return <Sheet variant="outlined" key={item.id} sx={{ p: 1, mb: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 1 }}>
+                            return <Paper variant="outlined" key={item.id} sx={{ p: 1, mb: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 1 }}>
                                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                    <Typography level="body-md">{item.name}</Typography>
+                                    <Typography variant="body1">{item.name}</Typography>
                                 </Box>
                                 <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 1 }}>
-                                    <Tooltip title="Select albums to import" ><IconButton data-id={item.id} data-type="albums" onClick={onItemsUserClick} variant="outlined" size="sm" ><Album sx={{ fontSize: '1em' }} /></IconButton></Tooltip>
-                                    <Tooltip title="Select playlists to import" ><IconButton data-id={item.id} data-type="playlists" onClick={onItemsUserClick} variant="outlined" size="sm" ><QueueMusic sx={{ fontSize: '1em' }} /></IconButton></Tooltip>
-                                    <Tooltip title="Settings" ><IconButton data-id={item.id} onClick={onSettingsUserClick} variant="outlined" size="sm" ><Settings sx={{ fontSize: '1em' }} /></IconButton></Tooltip>
-                                    <Tooltip title="Delete user"><IconButton data-id={item.id} onClick={onDeleteUserClick} variant="outlined" color="danger" size="sm" ><Close sx={{ fontSize: '1em' }} /></IconButton></Tooltip>
+                                    <Tooltip title="Select albums to import" ><IconButton data-id={item.id} data-type="albums" onClick={onItemsUserClick} size="small" ><Album sx={{ fontSize: '1em' }} /></IconButton></Tooltip>
+                                    <Tooltip title="Select playlists to import" ><IconButton data-id={item.id} data-type="playlists" onClick={onItemsUserClick} size="small" ><QueueMusic sx={{ fontSize: '1em' }} /></IconButton></Tooltip>
+                                    <Tooltip title="Settings" ><IconButton data-id={item.id} onClick={onSettingsUserClick} size="small" ><Settings sx={{ fontSize: '1em' }} /></IconButton></Tooltip>
+                                    <Tooltip title="Delete user"><IconButton data-id={item.id} onClick={onDeleteUserClick} color="error" size="small" ><Close sx={{ fontSize: '1em' }} /></IconButton></Tooltip>
                                 </Box>
-                            </Sheet>
+                            </Paper>
                         })}
                         <Box pt={1}>
-                            <Typography level="body-sm" mb={1}>You can add more users if you want. But make sure to first log out of spotify.com or open this window in an incognito window. Otherwise it will simply reconnect the last user.</Typography>
-                            <Button size="sm" variant="outlined" component="a" href="/api/spotify/login" sx={{ borderColor: "#1db954" }}>Add another user</Button>
+                            <Typography variant="body2" sx={{ mb: 1 }}>You can add more users if you want. But make sure to first log out of spotify.com or open this window in an incognito window. Otherwise it will simply reconnect the last user.</Typography>
+                            <Button size="small" variant="outlined" component="a" href="/api/spotify/login" sx={{ borderColor: "#1db954" }}>Add another user</Button>
                         </Box>
                     </>
                     :
-                    <Button component="a" href="/api/spotify/login" size="sm" sx={{ background: "#1db954", mt: 1 }}>Connect Spotify Account</Button>
+                    <Button component="a" href="/api/spotify/login" size="small" variant="contained" sx={{ bgcolor: "#1db954", mt: 1, '&:hover': { bgcolor: "#1aa34a" } }}>Connect Spotify Account</Button>
 
                 }
 
