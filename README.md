@@ -108,7 +108,7 @@ docker run -d \
     -e SPOTIFY_API_REDIRECT_URI=http://[IP_OF_SPOTIFY_TO_PLEX]:9030/api/spotify/token \
     -e TIDAL_API_CLIENT_ID=PASTE_YOUR_TIDAL_CLIENT_ID_HERE \
     -e TIDAL_API_CLIENT_SECRET=PASTE_YOUR_TIDAL_CLIENT_SECRET_HERE \
-    -e TIDAL_API_REDIRECT_URI=http://[IP_OF_SPOTIFY_TO_PLEX]:3000/api/tidal/token \
+    -e TIDAL_API_REDIRECT_URI=http://[IP_OF_SPOTIFY_TO_PLEX]:9030/api/tidal/token \
     -e ENCRYPTION_KEY=PASTE_YOUR_ENCRYPTION_KEY \
     -v /local/directory/:/app/config:rw \
     --name=spotify-to-plex \
