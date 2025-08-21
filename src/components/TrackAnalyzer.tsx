@@ -26,7 +26,7 @@ export default function TrackAnalyzer(props: Props) {
 
         errorBoundary(async () => {
 
-            const result = await axios.post<SearchResponse>(`/api/plex/analyze`, {
+            const result = await axios.post(`/api/plex/analyze`, {
                 item: track,
                 fast
             })

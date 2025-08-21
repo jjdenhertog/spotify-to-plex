@@ -48,20 +48,20 @@ export default function PlexTrack(props: Props) {
         id,
         title: trackTitle,
         artists: artistNames,
-        reason
+        reason: _reason
     } = track
 
     const {
         artistName: songArtistName = '',
         trackTitle: songTrackTitle = '',
-        thumb
+        thumb: _thumb
     } = songs[songIdx] ?? { thumb: undefined };
 
 
 
     const thumbSize = window.innerWidth < 400 ? 50 : 80;
-    const isLoading = loading && songs.length == 0;
-    const notFound = !loading && songs.length == 0;
+    const _isLoading = loading && songs.length == 0;
+    const _notFound = !loading && songs.length == 0;
 
     ////////////////////////////////////
     // Handle multiple song results
@@ -80,7 +80,7 @@ export default function PlexTrack(props: Props) {
     ////////////////////////////////////
     // Handle not perfect songs
     ////////////////////////////////////
-    const perfectMatch = songArtistName == '' || songTrackTitle == '' || stringSimilarity(`${songArtistName} - ${songTrackTitle}`, `${artistNames.join(', ')} - ${trackTitle}`) > 0.9;
+    const _perfectMatch = songArtistName == '' || songTrackTitle == '' || stringSimilarity(`${songArtistName} - ${songTrackTitle}`, `${artistNames.join(', ')} - ${trackTitle}`) > 0.9;
     const [showMatchAnalyser, setShowMatchAnalyser] = useState(false)
     const onNotPerfectMatchClick = useCallback(() => {
         setShowMatchAnalyser(prev => !prev)

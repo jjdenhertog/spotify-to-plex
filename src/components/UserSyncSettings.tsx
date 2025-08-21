@@ -16,7 +16,7 @@ export default function UserSyncSettings(props: Props) {
     const [autoSync, setAutoSync] = useState(false);
     const [label, setLabel] = useState('')
     const [recentContext, setRecentContext] = useState(false);
-    const [loading, setLoading] = useState(false);
+    const [loading] = useState(false);
 
     //////////////////////////////
     // Making changes
@@ -51,7 +51,7 @@ export default function UserSyncSettings(props: Props) {
 
             enqueueSnackbar(`[${user.name}] Changes saved`)
 
-            // eslint-disable-next-line react/destructuring-assignment
+             
             props.onClose(true)
         })
 
@@ -62,7 +62,7 @@ export default function UserSyncSettings(props: Props) {
     //////////////////////////////
     const onClose = useCallback((_e: unknown, reason: string) => {
         if (reason == 'closeClick')
-            // eslint-disable-next-line react/destructuring-assignment
+             
             props.onClose()
     }, [props])
 

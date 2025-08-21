@@ -1,6 +1,6 @@
 /* eslint-disable unicorn/prefer-code-point */
 /* eslint-disable prefer-template */
-/* eslint-disable unicorn/prefer-string-replace-all */
+ 
 import { removeFeaturing } from "@spotify-to-plex/music-search";
 import { HubSearchResult } from "../types/actions/HubSearchResult";
 import { HubSearchResponse } from "../types/plex/HubSearchResponse";

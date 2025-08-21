@@ -38,7 +38,7 @@ const PlexConnection = (props: Props) => {
             setSaving(true);
             setValidated(false);
 
-            // eslint-disable-next-line @typescript-eslint/prefer-destructuring
+             
             const resource = resources.filter(item => item.connections.some(connection => connection.uri == newPlexUri))[0];
             if (!resource)
                 throw new Error("Something went wrong selecting the resource");

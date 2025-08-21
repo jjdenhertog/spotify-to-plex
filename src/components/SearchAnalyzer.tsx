@@ -25,7 +25,7 @@ export default function SearchAnalyzer() {
             const spotifyTrack = await axios.post<GetSpotifyTrackResponse>('/api/spotify/track', { search: spotifyURI })
             setLoading(false)
 
-            const result = await axios.post<SearchResponse>('/api/plex/analyze', { item: spotifyTrack.data })
+            const result = await axios.post('/api/plex/analyze', { item: spotifyTrack.data })
             setSearchResponse(result.data)
         }, () => {
             setLoading(false)

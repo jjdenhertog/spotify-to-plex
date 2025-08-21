@@ -9,8 +9,9 @@ export async function errorBoundary(toRun: Function, onError?: Function, blockEr
         if (typeof onError == 'function') {
             try {
                 onError(err);
-            } catch (e) { }
+            } catch (_e) { }
         }
+
         if (!blockError)
             showError(getErrorMessage(err), getErrorStack(err));
     }

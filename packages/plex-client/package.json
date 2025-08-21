@@ -12,7 +12,6 @@
   },
   "dependencies": {
     "@spotify-to-plex/shared": "workspace:*",
-    "@spotify-to-plex/music-search": "workspace:*",
     "plex-api": "^5.3.2",
     "axios": "^1.11.0"
   },

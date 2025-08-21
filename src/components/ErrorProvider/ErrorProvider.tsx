@@ -18,7 +18,7 @@ type ErrorProviderProps = {
 
 export let showError: ProviderContext['showError'];
 
-// eslint-disable-next-line react/require-optimization
+ 
 export default class ErrorProvider extends Component<ErrorProviderProps, State> {
 
     public constructor(props: ErrorProviderProps) {

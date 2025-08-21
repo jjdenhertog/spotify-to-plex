@@ -12,7 +12,6 @@
   },
   "dependencies": {
     "@spotify-to-plex/shared": "workspace:*",
-    "@spotify-to-plex/music-search": "workspace:*",
     "@spotify-to-plex/spotify-sdk": "workspace:*",
     "@spotify-to-plex/plex-client": "workspace:*",
     "@spotify-to-plex/tidal-client": "workspace:*",

@@ -32,7 +32,7 @@ const Page: NextPage = () => {
                 setShowOptimizer(true)
 
             const savedItems = await axios.get<[SavedItem]>(`/api/saved-items?id=${router.query.id}`)
-            // eslint-disable-next-line @typescript-eslint/prefer-destructuring
+             
             const savedItem = savedItems.data[0]
             if (!savedItem)
                 throw new Error(`Could not find saved item`)

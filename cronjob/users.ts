@@ -38,18 +38,19 @@ export async function syncUsers() {
             for (let j = 0; j < result.items.length; j++) {
                 const element = result.items[j];
 
-                // eslint-disable-next-line max-depth
+                 
                 if (!recentPlayedContexts.some(item => item.uri == element.context.uri))
                     recentPlayedContexts.push(element.context)
             }
 
-            const { label } = user;
+            const { label, id: userId } = user;
+
             for (let i = 0; i < recentPlayedContexts.length; i++) {
                 const context = recentPlayedContexts[i];
                 if (savedItems.items.some(item => item.uri == context.uri))
                     continue;
 
-                const data = await loadSpotifyData(context.uri, user.id, true)
+                const data = await loadSpotifyData(context.uri, userId, true)
                 if (!data)
                     continue;
 
@@ -63,7 +64,7 @@ export async function syncUsers() {
                     sync: true,
                     sync_interval: "0",
                     label,
-                    user: user.id
+                    user: userId
                 }
                 savedItems.add(savedItem);
             }

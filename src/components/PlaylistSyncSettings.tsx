@@ -128,7 +128,7 @@ export default function PlaylistItemSettings(props: Props) {
                             size="small"
                             sx={{ mr: .5, mb: .5 }}
                             key={label}
-                            // eslint-disable-next-line react/jsx-no-bind
+                             
                             onClick={(e) => {
                                 e.currentTarget.dataset.label = label;
                                 onEditLabelChipClick(e);

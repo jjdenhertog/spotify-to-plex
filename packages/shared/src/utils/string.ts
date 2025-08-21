@@ -3,7 +3,7 @@
 export function normalizeString(str: string): string {
   return str
     .toLowerCase()
-    .replace(/[^a-z0-9\s]/gi, '')
+    .replace(/[^\d\sa-z]/gi, '')
     .replace(/\s+/g, ' ')
     .trim();
 }
@@ -11,7 +11,7 @@ export function normalizeString(str: string): string {
 export function removeFeaturing(title: string): string {
   return title
     .replace(/\s*\(feat\.[^)]*\)/gi, '')
-    .replace(/\s*\[feat\.[^\]]*\]/gi, '')
+    .replace(/\s*\[feat\.[^\]]*]/gi, '')
     .replace(/\s*feat\.\s*.*/gi, '')
     .replace(/\s*ft\.\s*.*/gi, '')
     .trim();
@@ -22,6 +22,7 @@ export function createSearchString(title: string, artist?: string): string {
   if (artist) {
     search = `${artist} ${search}`;
   }
+
   return normalizeString(search);
 }
 
@@ -31,5 +32,6 @@ export function filterOutWords(text: string, wordsToFilter: string[]): string {
     const regex = new RegExp(`\\b${word}\\b`, 'gi');
     filtered = filtered.replace(regex, '');
   });
+
   return filtered.replace(/\s+/g, ' ').trim();
 }

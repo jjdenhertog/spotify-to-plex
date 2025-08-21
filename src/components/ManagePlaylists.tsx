@@ -1,4 +1,4 @@
-/* eslint-disable no-eq-null */
+ 
 import { errorBoundary } from "@/helpers/errors/errorBoundary";
 import { filterUnique } from "@/helpers/filterUnique";
 import { SavedItem } from "@/types/SpotifyAPI";

@@ -1,5 +1,5 @@
 import axios, { AxiosRequestConfig } from "axios";
-import { Agent } from "https";
+import { Agent } from "node:https";
 
 const agent = new Agent({ rejectUnauthorized: false });
 

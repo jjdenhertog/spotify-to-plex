@@ -50,7 +50,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                     try {
                         const metaData = await plexMusicSearch.getById(plexId)
 
-                        // eslint-disable-next-line max-depth
+                         
                         if (metaData)
                             foundTracks.push(metaData)
 

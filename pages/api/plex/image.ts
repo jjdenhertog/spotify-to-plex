@@ -27,7 +27,8 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 try {
 
                     const data = await AxiosRequest.get<any>(url, plex.settings.token, { responseType: "arraybuffer" })
-                    res.setHeader('content-type', String(data.headers['Content-Type']))
+                    const contentType = data.headers?.['Content-Type'];
+                    res.setHeader('content-type', typeof contentType === 'string' ? contentType : 'image/jpeg')
                     res.setHeader('content-length', data.data.length)
 
                     return res.status(200).send(data.data)

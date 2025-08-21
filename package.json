@@ -31,7 +31,8 @@
         "dev:sync:mqtt": "dotenv -e .env.local -- npx ts-node -r tsconfig-paths/register cronjob/mqtt.ts -- force",
         "dev:sync:users": "dotenv -e .env.local -- npx ts-node -r tsconfig-paths/register cronjob/users.ts -- force",
         "start": "next start",
-        "lint": "next lint"
+        "lint": "eslint src pages cronjob --max-warnings 50",
+        "lint:fix": "eslint src pages cronjob --fix"
     },
     "engines": {
         "node": ">=18.0.0",
@@ -42,9 +43,7 @@
         "@emotion/react": "^11.14.0",
         "@emotion/server": "^11.11.0",
         "@emotion/styled": "^11.14.1",
-        "@jjdenhertog/open-spotify-sdk": "file:packages/open-spotify-sdk",
         "@jjdenhertog/plex-music-search": "file:packages/plex-music-search",
-        "@jjdenhertog/tidal-music-search": "file:packages/tidal-music-search",
         "@mui/icons-material": "^6.5.0",
         "@mui/lab": "^6.0.0-alpha.134",
         "@mui/material": "^6.5.0",
@@ -75,6 +74,12 @@
         "@types/qs": "^6.14.0",
         "@types/react": "^18.3.23",
         "@types/react-dom": "^18.3.7",
-        "dotenv-cli": "^7.4.4"
+        "@typescript-eslint/eslint-plugin": "^8.40.0",
+        "@typescript-eslint/parser": "^8.40.0",
+        "dotenv-cli": "^7.4.4",
+        "eslint": "^9.33.0",
+        "eslint-plugin-react": "^7.37.5",
+        "eslint-plugin-react-hooks": "^5.2.0",
+        "eslint-plugin-unicorn": "^60.0.0"
     }
 }

@@ -7,7 +7,7 @@ import { createRouter } from 'next-connect';
 
 const router = createRouter<NextApiRequest, NextApiResponse>()
     .post(
-        async (req, res, next) => {
+        async (_req, res, _next) => {
             const result = await axios.get<GetPlexPinResponse>(`https://plex.tv/api/v2/pins/${plex.settings.pin_id}`, {
                 params: {
                     code: plex.settings.pin_code,

@@ -2,7 +2,7 @@
 
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 
-export interface HttpClientConfig {
+export type HttpClientConfig = {
   baseURL?: string;
   timeout?: number;
   headers?: Record<string, string>;
@@ -11,12 +11,12 @@ export interface HttpClientConfig {
 }
 
 export class HttpClient {
-  private client: AxiosInstance;
-  private config: HttpClientConfig;
+  private readonly client: AxiosInstance;
+  private readonly config: HttpClientConfig;
 
   constructor(config: HttpClientConfig = {}) {
     this.config = {
-      timeout: 30000,
+      timeout: 30_000,
       retries: 3,
       retryDelay: 1000,
       ...config
@@ -35,14 +35,14 @@ export class HttpClient {
     this.client.interceptors.response.use(
       response => response,
       async error => {
-        const config = error.config;
+        const {config} = error;
         
-        if (!config || !config.retry) {
+        if (!config?.retry) {
           config.retry = 0;
         }
 
         if (config.retry >= this.config.retries!) {
-          return Promise.reject(error);
+          throw error;
         }
 
         config.retry += 1;
@@ -52,6 +52,7 @@ export class HttpClient {
         );
 
         await delay;
+
         return this.client(config);
       }
     );
@@ -59,21 +60,25 @@ export class HttpClient {
 
   async get<T = unknown>(url: string, config?: AxiosRequestConfig): Promise<T> {
     const response = await this.client.get<T>(url, config);
+
     return response.data;
   }
 
   async post<T = unknown>(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<T> {
     const response = await this.client.post<T>(url, data, config);
+
     return response.data;
   }
 
   async put<T = unknown>(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<T> {
     const response = await this.client.put<T>(url, data, config);
+
     return response.data;
   }
 
   async delete<T = unknown>(url: string, config?: AxiosRequestConfig): Promise<T> {
     const response = await this.client.delete<T>(url, config);
+
     return response.data;
   }
 

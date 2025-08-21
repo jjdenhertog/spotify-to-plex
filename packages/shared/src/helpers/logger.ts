@@ -2,7 +2,7 @@
 
 import { LOG_LEVELS, LogLevel } from '../constants';
 
-export interface LogEntry {
+export type LogEntry = {
   level: LogLevel;
   message: string;
   timestamp: Date;
@@ -21,6 +21,7 @@ export class Logger {
     if (!Logger.instance) {
       Logger.instance = new Logger();
     }
+
     return Logger.instance;
   }
 
@@ -32,6 +33,7 @@ export class Logger {
     const levels = Object.values(LOG_LEVELS);
     const currentIndex = levels.indexOf(this.level);
     const messageIndex = levels.indexOf(level);
+
     return messageIndex <= currentIndex;
   }
 
@@ -94,6 +96,7 @@ export class Logger {
     if (!level) {
       return this.logs;
     }
+
     return this.logs.filter(log => log.level === level);
   }
 

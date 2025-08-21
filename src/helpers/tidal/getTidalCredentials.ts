@@ -23,7 +23,7 @@ export default async function getTidalCredentials() {
     const credentials: TidalCredentials = JSON.parse(readFileSync(credentialsPath, 'utf8'))
     const now = Date.now()
 
-    if (!credentials || !credentials.access_token || !credentials.access_token.refresh_token || !credentials.expires_at)
+    if (!credentials?.access_token?.refresh_token || !credentials.expires_at)
         return;
 
     if (now < credentials.expires_at)
@@ -62,6 +62,6 @@ export default async function getTidalCredentials() {
 
         return credentials;
         // Store
-    } catch (e) {
+    } catch (_e) {
     }
 }

@@ -1,6 +1,6 @@
 // Shared type definitions
 
-export interface Track {
+export type Track = {
   id: string;
   title: string;
   artist: string;
@@ -9,7 +9,7 @@ export interface Track {
   isrc?: string;
 }
 
-export interface Album {
+export type Album = {
   id: string;
   title: string;
   artist: string;
@@ -17,7 +17,7 @@ export interface Album {
   tracks?: Track[];
 }
 
-export interface Playlist {
+export type Playlist = {
   id: string;
   name: string;
   description?: string;
@@ -25,7 +25,7 @@ export interface Playlist {
   owner?: string;
 }
 
-export interface SyncResult {
+export type SyncResult = {
   success: boolean;
   added: number;
   removed: number;
@@ -33,18 +33,18 @@ export interface SyncResult {
   errors?: string[];
 }
 
-export interface SearchConfig {
+export type SearchConfig = {
   searchApproach?: 'fast' | 'balanced' | 'accurate';
   matchFilters?: MatchFilter[];
   minimumScore?: number;
 }
 
-export interface MatchFilter {
+export type MatchFilter = {
   field: 'title' | 'artist' | 'album';
   weight?: number;
 }
 
-export interface ApiResponse<T = any> {
+export type ApiResponse<T = any> = {
   success: boolean;
   data?: T;
   error?: string;

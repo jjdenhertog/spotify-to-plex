@@ -12,7 +12,7 @@ export type GetAuthUrlResponse = {
 }
 const router = createRouter<NextApiRequest, NextApiResponse>()
     .post(
-        async (req, res, next) => {
+        async (_req, res, _next) => {
 
             const result = await axios.post<PostPinResponse>("https://plex.tv/api/v2/pins", stringify({
                 strong: true,
@@ -21,7 +21,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
             }))
 
             const authUrl =
-                'https://app.plex.tv/auth#?' +
+                `https://app.plex.tv/auth#?${ 
                 stringify({
                     clientID: process.env.PLEX_APP_ID,
                     code: result.data.code,
@@ -31,12 +31,12 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                             product: 'Spotify to Plex',
                         },
                     },
-                });
+                })}`;
 
 
-            plex.saveConfig({ pin_id: `${result.data.id}`, pin_code: `${result.data.code}` })
+            plex.saveConfig({ pin_id: `${result.data.id}`, pin_code: result.data.code })
             res.json({
-                authUrl: authUrl
+                authUrl
             })
         })
 

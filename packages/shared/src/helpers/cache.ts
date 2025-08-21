@@ -1,16 +1,16 @@
 // Cache utilities
 
-export interface CacheEntry<T> {
+export type CacheEntry<T> = {
   data: T;
   timestamp: number;
   ttl: number;
 }
 
 export class MemoryCache<T = any> {
-  private cache: Map<string, CacheEntry<T>> = new Map();
-  private defaultTTL: number;
+  private readonly cache = new Map<string, CacheEntry<T>>();
+  private readonly defaultTTL: number;
 
-  constructor(defaultTTL: number = 3600000) { // 1 hour default
+  constructor(defaultTTL: number = 3_600_000) { // 1 hour default
     this.defaultTTL = defaultTTL;
   }
 
@@ -32,6 +32,7 @@ export class MemoryCache<T = any> {
     const now = Date.now();
     if (now - entry.timestamp > entry.ttl) {
       this.cache.delete(key);
+
       return undefined;
     }
 
@@ -56,6 +57,7 @@ export class MemoryCache<T = any> {
 
   cleanup(): void {
     const now = Date.now();
+
     for (const [key, entry] of this.cache.entries()) {
       if (now - entry.timestamp > entry.ttl) {
         this.cache.delete(key);
@@ -69,12 +71,14 @@ export class MemoryCache<T = any> {
 
   values(): T[] {
     const values: T[] = [];
+
     for (const key of this.cache.keys()) {
       const value = this.get(key);
       if (value !== undefined) {
         values.push(value);
       }
     }
+
     return values;
   }
 }

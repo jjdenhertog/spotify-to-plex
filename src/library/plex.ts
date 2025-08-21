@@ -27,7 +27,7 @@ declare global {
 }
 
 // @ts-expect-error I dodn't setup the global typing
-// eslint-disable-next-line @typescript-eslint/prefer-destructuring 
+ 
 let _plex = global._plex;
 
 if (!_plex) {

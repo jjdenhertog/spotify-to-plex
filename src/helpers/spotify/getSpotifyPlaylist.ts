@@ -56,5 +56,6 @@ export default async function getSpotifyPlaylist(api: SpotifyApi, id: string, si
 
     } catch (_e) {
     }
-    return undefined;
+
+    
 }
