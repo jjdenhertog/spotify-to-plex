@@ -2,7 +2,7 @@ import { generateError } from '@/helpers/errors/generateError';
 import getCachedTrackLinks from '@/helpers/getCachedTrackLink';
 import getTidalCredentials from '@/helpers/tidal/getTidalCredentials';
 import { Album, Track } from '@/types/SpotifyAPI';
-import { SearchResponse, TidalMusicSearch } from '@jjdenhertog/tidal-music-search';
+import { SearchResponse, TidalMusicSearch } from '@spotify-to-plex/tidal-music-search';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createRouter } from 'next-connect';
 

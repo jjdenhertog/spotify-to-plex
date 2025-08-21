@@ -1,6 +1,6 @@
 import getCachedTrackLinks from "@/helpers/getCachedTrackLink";
 import { GetSpotifyAlbum, GetSpotifyPlaylist } from "@/types/SpotifyAPI";
-import { PlexMusicSearch, PlexTrack, SearchResponse } from "@jjdenhertog/plex-music-search";
+import { PlexMusicSearch, PlexTrack, SearchResponse } from "@spotify-to-plex/plex-music-search";
 
 export async function getCachedPlexTracks(plexMusicSearch: PlexMusicSearch, data: GetSpotifyPlaylist | GetSpotifyAlbum) {
     const { add, found: cachedTrackLinks } = getCachedTrackLinks(data.tracks, 'plex');

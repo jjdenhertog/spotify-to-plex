@@ -1,7 +1,7 @@
 import { generateError } from '@/helpers/errors/generateError';
 import getCachedTrackLinks from '@/helpers/getCachedTrackLink';
 import { plex } from '@/library/plex';
-import { PlexMusicSearch, PlexMusicSearchTrack } from '@jjdenhertog/plex-music-search';
+import { PlexMusicSearch, PlexMusicSearchTrack } from '@spotify-to-plex/plex-music-search';
 
 type SearchResponse = any;
 import type { NextApiRequest, NextApiResponse } from 'next';

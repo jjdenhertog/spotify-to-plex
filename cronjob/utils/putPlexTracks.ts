@@ -6,7 +6,7 @@ import { storePlaylist } from "@/helpers/plex/storePlaylist";
 import { updatePlaylist } from "@/helpers/plex/updatePlaylist";
 import { plex } from "@/library/plex";
 import { Playlist } from "@/types/PlexAPI";
-import { SearchResponse } from "@jjdenhertog/plex-music-search";
+import { SearchResponse } from "@spotify-to-plex/plex-music-search";
 import { type } from "node:os";
 
 export async function putPlexPlaylist(id: string, plexPlaylist: Playlist | undefined | null, result: SearchResponse[], title: string, thumb: string) {

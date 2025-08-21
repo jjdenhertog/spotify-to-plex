@@ -1,5 +1,5 @@
 import { errorBoundary } from "@/helpers/errors/errorBoundary";
-import type { SearchResponse, PlexTrack } from "@jjdenhertog/plex-music-search";
+import type { SearchResponse, PlexTrack } from "@spotify-to-plex/plex-music-search";
 import CloseIcon from '@mui/icons-material/Close';
 import { Box, CircularProgress, Divider, IconButton, Modal, Typography } from "@mui/material";
 import axios from "axios";

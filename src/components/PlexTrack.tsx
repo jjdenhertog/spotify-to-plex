@@ -1,4 +1,4 @@
-import type { SearchResponse, PlexTrack } from "@jjdenhertog/plex-music-search";
+import type { SearchResponse, PlexTrack } from "@spotify-to-plex/plex-music-search";
 import { Check, LibraryMusicSharp, Warning } from "@mui/icons-material";
 import { Box, CircularProgress, Divider, FormControlLabel, IconButton, ListItem, Paper, Radio, RadioGroup, Tooltip, Typography } from "@mui/material";
 import { ChangeEvent, useCallback, useMemo, useState } from "react";

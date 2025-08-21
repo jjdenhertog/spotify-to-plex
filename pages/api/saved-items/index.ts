@@ -3,7 +3,7 @@ import getSpotifyData from '@/helpers/spotify/getSpotifyData';
 import { settingsDir } from "@/library/settingsDir";
 import { plex } from '@/library/plex';
 import { SavedItem } from '@/types/SpotifyAPI';
-import { PlexMusicSearch } from '@jjdenhertog/plex-music-search';
+import { PlexMusicSearch } from '@spotify-to-plex/plex-music-search';
 import { SpotifyApi } from '@spotify/web-api-ts-sdk';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createRouter } from 'next-connect';

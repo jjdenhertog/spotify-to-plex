@@ -3,7 +3,7 @@ import { plex } from '@/library/plex';
 import { MQTTItem } from '@/types/dashboard/MQTTItem';
 import { PlaylistData } from '@/types/dashboard/PlaylistData';
 import { TrackLink } from '@/types/TrackLink';
-import { PlexMusicSearch } from '@jjdenhertog/plex-music-search';
+import { PlexMusicSearch } from '@spotify-to-plex/plex-music-search';
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { mqttHelpers } from './helpers/mqttHelpers';

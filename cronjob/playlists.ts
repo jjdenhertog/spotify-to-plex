@@ -4,7 +4,7 @@ import { handleOneRetryAttempt } from "@/helpers/plex/handleOneRetryAttempt";
 import { settingsDir } from "@/library/settingsDir";
 import { plex } from "@/library/plex";
 import { Playlist } from "@/types/PlexAPI";
-import { GetPlaylistResponse, PlexMusicSearch, SearchResponse } from "@jjdenhertog/plex-music-search";
+import { GetPlaylistResponse, PlexMusicSearch, SearchResponse } from "@spotify-to-plex/plex-music-search";
 import { writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { findMissingTidalTracks } from "./utils/findMissingTidalTracks";

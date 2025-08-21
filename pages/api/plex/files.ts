@@ -1,6 +1,6 @@
 import { generateError } from "@/helpers/errors/generateError"
 import { plex } from "@/library/plex"
-import { PlexMusicSearch, Metadata } from "@jjdenhertog/plex-music-search"
+import { PlexMusicSearch, Metadata } from "@spotify-to-plex/plex-music-search"
 import { NextApiRequest, NextApiResponse } from "next"
 import { createRouter } from "next-connect"
 

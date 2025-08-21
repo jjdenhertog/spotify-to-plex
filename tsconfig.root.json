@@ -4,38 +4,21 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@spotify-to-plex/shared": ["packages/shared/src"],
-      "@spotify-to-plex/shared/*": ["packages/shared/src/*"],
       "@spotify-to-plex/music-search": ["packages/music-search/src"],
       "@spotify-to-plex/music-search/*": ["packages/music-search/src/*"],
-      "@spotify-to-plex/spotify-sdk": ["packages/spotify-sdk/src"],
-      "@spotify-to-plex/spotify-sdk/*": ["packages/spotify-sdk/src/*"],
-      "@spotify-to-plex/tidal-client": ["packages/tidal-client/src"],
-      "@spotify-to-plex/tidal-client/*": ["packages/tidal-client/src/*"],
-      "@spotify-to-plex/plex-client": ["packages/plex-client/src"],
-      "@spotify-to-plex/plex-client/*": ["packages/plex-client/src/*"],
-      "@spotify-to-plex/sync-engine": ["packages/sync-engine/src"],
-      "@spotify-to-plex/sync-engine/*": ["packages/sync-engine/src/*"],
-      "@spotify-to-plex/api": ["packages/api/src"],
-      "@spotify-to-plex/api/*": ["packages/api/src/*"],
-      "@spotify-to-plex/database": ["packages/database/src"],
-      "@spotify-to-plex/database/*": ["packages/database/src/*"],
-      "@spotify-to-plex/ui": ["packages/ui/src"],
-      "@spotify-to-plex/ui/*": ["packages/ui/src/*"]
+      "@spotify-to-plex/open-spotify-sdk": ["packages/open-spotify-sdk/src"],
+      "@spotify-to-plex/open-spotify-sdk/*": ["packages/open-spotify-sdk/src/*"],
+      "@spotify-to-plex/tidal-music-search": ["packages/tidal-music-search/src"],
+      "@spotify-to-plex/tidal-music-search/*": ["packages/tidal-music-search/src/*"],
+      "@spotify-to-plex/plex-music-search": ["packages/plex-music-search/src"],
+      "@spotify-to-plex/plex-music-search/*": ["packages/plex-music-search/src/*"]
     }
   },
   "references": [
-    { "path": "./packages/shared" },
     { "path": "./packages/music-search" },
-    { "path": "./packages/spotify-sdk" },
-    { "path": "./packages/tidal-client" },
-    { "path": "./packages/plex-client" },
-    { "path": "./packages/sync-engine" },
-    { "path": "./packages/api" },
-    { "path": "./packages/database" },
-    { "path": "./packages/ui" },
-    { "path": "./apps/web" },
-    { "path": "./apps/sync-worker" }
+    { "path": "./packages/open-spotify-sdk" },
+    { "path": "./packages/tidal-music-search" },
+    { "path": "./packages/plex-music-search" }
   ],
   "exclude": [
     "node_modules",
