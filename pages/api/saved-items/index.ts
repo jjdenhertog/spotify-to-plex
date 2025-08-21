@@ -1,6 +1,6 @@
 import { generateError } from '@/helpers/errors/generateError';
 import getSpotifyData from '@/helpers/spotify/getSpotifyData';
-import { configDir } from "@/library/configDir";
+import { settingsDir } from "@/library/settingsDir";
 import { plex } from '@/library/plex';
 import { SavedItem } from '@/types/SpotifyAPI';
 import { PlexMusicSearch } from '@jjdenhertog/plex-music-search';
@@ -15,7 +15,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
     .get(
         async (req, res) => {
 
-            const savedItemsPath = join(configDir, 'spotify_saved_items.json')
+            const savedItemsPath = join(settingsDir, 'spotify_saved_items.json')
             if (!existsSync(savedItemsPath))
                 return res.status(200).json([])
 
@@ -93,7 +93,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
             if (!savedItem)
                 return res.status(400).json({ error: "Could not find data to save" })
 
-            const savedItemsPath = join(configDir, 'spotify_saved_items.json')
+            const savedItemsPath = join(settingsDir, 'spotify_saved_items.json')
             if (existsSync(savedItemsPath)) {
 
                 const savedItems: SavedItem[] = JSON.parse(readFileSync(savedItemsPath, 'utf8'))
@@ -113,7 +113,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
     .delete(
         async (req, res) => {
 
-            const savedItemsPath = join(configDir, 'spotify_saved_items.json')
+            const savedItemsPath = join(settingsDir, 'spotify_saved_items.json')
             if (!existsSync(savedItemsPath))
                 return res.status(400).json({ error: `No items found` })
 
@@ -136,7 +136,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
     .put(
         async (req, res) => {
 
-            const savedItemsPath = join(configDir, 'spotify_saved_items.json')
+            const savedItemsPath = join(settingsDir, 'spotify_saved_items.json')
             if (!existsSync(savedItemsPath))
                 return res.status(400).json({ error: `No items found` })
 

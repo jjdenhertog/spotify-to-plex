@@ -1,4 +1,4 @@
-import { configDir } from "@/library/configDir";
+import { settingsDir } from "@/library/settingsDir";
 import { TidalCredentials } from "@/types/TidalAPI";
 import axios from "axios";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
@@ -6,7 +6,7 @@ import { join } from "node:path";
 import { decrypt, encrypt } from '../encryption';
 
 export default async function getTidalCredentials() {
-    const credentialsPath = join(configDir, 'tidal.json')
+    const credentialsPath = join(settingsDir, 'tidal.json')
     if (!existsSync(credentialsPath))
         return;
 

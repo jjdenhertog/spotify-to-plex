@@ -1,4 +1,4 @@
-import { configDir } from "@/library/configDir"
+import { settingsDir } from "@/library/settingsDir"
 import { TrackLink } from "@/types/TrackLink"
 import { PlexMusicSearchTrack } from "@jjdenhertog/plex-music-search"
 import { TidalMusicSearchTrack } from "@jjdenhertog/tidal-music-search"
@@ -10,7 +10,7 @@ export default function getCachedTrackLinks(searchItems: (PlexMusicSearchTrack |
     //////////////////////////////////////
     // Handeling cached links
     //////////////////////////////////////
-    const path = join(configDir, 'track_links.json')
+    const path = join(settingsDir, 'track_links.json')
     let all: TrackLink[] = []
 
     if (existsSync(path))

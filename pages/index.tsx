@@ -12,6 +12,7 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { enqueueSnackbar } from "notistack";
 import { useCallback, useEffect, useState } from "react";
+
 import { GetAuthUrlResponse } from "./api/auth/url";
 import { GetSettingsResponse } from "./api/settings";
 
@@ -172,7 +173,6 @@ const Page: NextPage = () => {
                                 Edit Plex Connection
                             </Button>
                         </>
-
                     }
                 </Paper>
             </Container>

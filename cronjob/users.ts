@@ -1,6 +1,6 @@
 import getAccessToken from "@/helpers/spotify/getAccessToken";
 import refreshAccessTokens from "@/helpers/spotify/refreshAccessTokens";
-import { configDir } from "@/library/configDir";
+import { settingsDir } from "@/library/settingsDir";
 import { RecentPlayedContext, SavedItem, SpotifyCredentials } from "@/types/SpotifyAPI";
 import { SpotifyApi } from "@spotify/web-api-ts-sdk";
 import { existsSync, readFileSync } from "node:fs";
@@ -10,7 +10,7 @@ import { loadSpotifyData } from "./utils/loadSpotifyData";
 
 
 export async function syncUsers() {
-    const credentialsPath = join(configDir, 'spotify.json')
+    const credentialsPath = join(settingsDir, 'spotify.json')
     if (!existsSync(credentialsPath))
         throw new Error("No users are currently connected.")
 

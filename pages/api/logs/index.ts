@@ -1,5 +1,5 @@
 import { generateError } from '@/helpers/errors/generateError';
-import { configDir } from "@/library/configDir";
+import { settingsDir } from "@/library/configDir";
 import { SyncLog } from 'cronjob/albums';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createRouter } from 'next-connect';
@@ -10,7 +10,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
     .get(
         async (_req, res) => {
 
-            const logsPath = join(configDir, 'sync_log.json')
+            const logsPath = join(settingsDir, 'sync_log.json')
             if (!existsSync(logsPath))
                 return res.status(200).json([])
 

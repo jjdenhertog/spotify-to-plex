@@ -1,4 +1,4 @@
-import { configDir } from "@/library/configDir";
+import { settingsDir } from "@/library/settingsDir";
 import { plex } from "@/library/plex";
 import { PlexMusicSearch, SearchResponse } from "@jjdenhertog/plex-music-search";
 import { writeFileSync } from "node:fs";
@@ -92,8 +92,8 @@ export async function syncAlbums() {
         logComplete(itemLog)
 
         // Store the missing albums
-        writeFileSync(join(configDir, 'missing_albums_spotify.txt'), missingSpotifyAlbums.map(id => `https://open.spotify.com/album/${id}`).join('\n'))
-        writeFileSync(join(configDir, 'missing_albums_tidal.txt'), missingTidalAlbums.map(id => `https://tidal.com/browse/album/${id}`).join('\n'))
+        writeFileSync(join(settingsDir, 'missing_albums_spotify.txt'), missingSpotifyAlbums.map(id => `https://open.spotify.com/album/${id}`).join('\n'))
+        writeFileSync(join(settingsDir, 'missing_albums_tidal.txt'), missingTidalAlbums.map(id => `https://tidal.com/browse/album/${id}`).join('\n'))
     }
 
 

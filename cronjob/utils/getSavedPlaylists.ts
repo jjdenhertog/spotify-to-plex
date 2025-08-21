@@ -1,4 +1,4 @@
-import { configDir } from "@/library/configDir";
+import { settingsDir } from "@/library/settingsDir";
 import { SavedItem } from "@/types/SpotifyAPI";
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
@@ -6,7 +6,7 @@ import { join } from "node:path";
 export function getSavedPlaylists() {
 
     // Get all saved items
-    const savedItemsPath = join(configDir, 'spotify_saved_items.json');
+    const savedItemsPath = join(settingsDir, 'spotify_saved_items.json');
     if (!existsSync(savedItemsPath))
         throw new Error(`Found no saved items to sync`);
 

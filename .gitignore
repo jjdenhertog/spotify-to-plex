@@ -5,6 +5,8 @@ node_modules/
 .pnp.js
 
 # Build outputs
+settings
+
 dist/
 **/dist/
 build/

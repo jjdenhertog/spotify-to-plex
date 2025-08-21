@@ -1,11 +1,11 @@
-import { configDir } from "@/library/configDir";
+import { settingsDir } from "@/library/settingsDir";
 import { SyncLog } from "@/types/SyncLog";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
 export function getSyncLogs() {
     // Get the logs
-    const logsPath = join(configDir, 'sync_log.json');
+    const logsPath = join(settingsDir, 'sync_log.json');
     let logs: SyncLog[] = [];
     if (existsSync(logsPath))
         logs = JSON.parse(readFileSync(logsPath, 'utf8'));

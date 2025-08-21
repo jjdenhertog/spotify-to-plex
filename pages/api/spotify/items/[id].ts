@@ -1,7 +1,7 @@
 import { generateError } from '@/helpers/errors/generateError';
 import getAccessToken from '@/helpers/spotify/getAccessToken';
 import getSpotifyData from '@/helpers/spotify/getSpotifyData';
-import { configDir } from "@/library/configDir";
+import { settingsDir } from "@/library/settingsDir";
 import { SavedItem } from '@/types/SpotifyAPI';
 import { SpotifyApi } from '@spotify/web-api-ts-sdk';
 import type { NextApiRequest, NextApiResponse } from 'next';
@@ -20,7 +20,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
             if (!process.env.SPOTIFY_API_CLIENT_ID || !process.env.SPOTIFY_API_CLIENT_SECRET)
                 return res.status(400).json({ error: "Spotify Credentials missing. Please add the environment variables to use this feature." })
 
-            const savedItemsPath = join(configDir, 'spotify_saved_items.json')
+            const savedItemsPath = join(settingsDir, 'spotify_saved_items.json')
             if (!existsSync(savedItemsPath))
                 return res.status(200).json([])
 

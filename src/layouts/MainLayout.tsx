@@ -1,6 +1,7 @@
 import { BSnackbarProvider } from "@/components/BSnackbarProvider";
 import { ConfirmProvider } from "@/components/ConfirmProvider/ConfirmProvider";
 import { Box, CircularProgress, Container } from "@mui/material";
+
 import ErrorProvider from "../components/ErrorProvider/ErrorProvider";
 
 type MainLayoutProps = {
@@ -23,7 +24,7 @@ export default function MainLayout(props: MainLayoutProps) {
                 </Box> : null}
                 {!loading &&
                     <Box pt={6}>
-                        {children}f
+                        {children}
                     </Box>
                 }
             </Container>

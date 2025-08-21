@@ -1,4 +1,4 @@
-import { configDir } from '@/library/configDir';
+import { settingsDir } from '@/library/settingsDir';
 import { MQTTItem } from '@/types/dashboard/MQTTItem';
 import mqtt, { MqttClient } from 'mqtt';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
@@ -6,7 +6,7 @@ import { join } from 'node:path';
 
 export function mqttHelpers() {
 
-    const publishedItemsPath = join(configDir, 'mqtt_published_items.json');
+    const publishedItemsPath = join(settingsDir, 'mqtt_published_items.json');
     const categoryTopic = `spotify-to-plex/categories`;
     const itemTopicBase = `spotify-to-plex/items`;
 

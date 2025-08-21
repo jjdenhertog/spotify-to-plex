@@ -1,7 +1,7 @@
 import { decrypt } from '@/helpers/encryption';
 import { generateError } from '@/helpers/errors/generateError';
 import refreshAccessTokens from '@/helpers/spotify/refreshAccessTokens';
-import { configDir } from "@/library/configDir";
+import { settingsDir } from "@/library/settingsDir";
 import { GetSpotifyAlbum, GetSpotifyPlaylist, SavedItem, SpotifyCredentials } from '@/types/SpotifyAPI';
 import { SavedAlbum, SimplifiedPlaylist, SpotifyApi } from '@spotify/web-api-ts-sdk';
 import type { NextApiRequest, NextApiResponse } from 'next';
@@ -12,7 +12,7 @@ import { join } from 'node:path';
 const router = createRouter<NextApiRequest, NextApiResponse>()
     .get(
         async (_req, res) => {
-            const credentialsPath = join(configDir, 'spotify.json')
+            const credentialsPath = join(settingsDir, 'spotify.json')
             if (!existsSync(credentialsPath))
                 throw new Error("No users are currently connected.")
 
@@ -46,7 +46,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
             ///////////////////////////////////
             // Get Saved items
             ///////////////////////////////////
-            const savedItemsPath = join(configDir, 'spotify_saved_items.json')
+            const savedItemsPath = join(settingsDir, 'spotify_saved_items.json')
             let savedItems: SavedItem[] = []
             if (existsSync(savedItemsPath))
                 savedItems = JSON.parse(readFileSync(savedItemsPath, 'utf8'))

@@ -1,7 +1,7 @@
 import { AxiosRequest } from "@/helpers/AxiosRequest";
 import getAPIUrl from "@/helpers/getAPIUrl";
 import { handleOneRetryAttempt } from "@/helpers/plex/handleOneRetryAttempt";
-import { configDir } from "@/library/configDir";
+import { settingsDir } from "@/library/settingsDir";
 import { plex } from "@/library/plex";
 import { Playlist } from "@/types/PlexAPI";
 import { GetPlaylistResponse, PlexMusicSearch, SearchResponse } from "@jjdenhertog/plex-music-search";
@@ -133,8 +133,8 @@ export async function syncPlaylists() {
             logComplete(itemLog)
 
             // Store missing tracks
-            writeFileSync(join(configDir, 'missing_tracks_spotify.txt'), missingSpotifyTracks.map(id => `https://open.spotify.com/track/${id}`).join('\n'))
-            writeFileSync(join(configDir, 'missing_tracks_tidal.txt'), missingTidalTracks.map(id => `https://tidal.com/browse/track/${id}`).join('\n'))
+            writeFileSync(join(settingsDir, 'missing_tracks_spotify.txt'), missingSpotifyTracks.map(id => `https://open.spotify.com/track/${id}`).join('\n'))
+            writeFileSync(join(settingsDir, 'missing_tracks_tidal.txt'), missingTidalTracks.map(id => `https://tidal.com/browse/track/${id}`).join('\n'))
 
         } catch (e) {
             console.log(e);

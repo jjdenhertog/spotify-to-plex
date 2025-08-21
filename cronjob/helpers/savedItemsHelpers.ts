@@ -1,4 +1,4 @@
-import { configDir } from "@/library/configDir";
+import { settingsDir } from "@/library/settingsDir";
 import { SavedItem } from "@/types/SpotifyAPI";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
@@ -6,7 +6,7 @@ import { join } from "node:path";
 export function savedItemsHelpers() {
 
     // Get all saved items
-    const savedItemsPath = join(configDir, 'spotify_saved_items.json');
+    const savedItemsPath = join(settingsDir, 'spotify_saved_items.json');
 
     let items: SavedItem[] = []
     if (existsSync(savedItemsPath))

@@ -1,5 +1,5 @@
 import { generateError } from '@/helpers/errors/generateError';
-import { configDir } from "@/library/configDir";
+import { settingsDir } from "@/library/settingsDir";
 import { TrackLink } from '@/types/TrackLink';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createRouter } from 'next-connect';
@@ -36,7 +36,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
 
             switch (type) {
                 case "tidal":
-                    const path = join(configDir, 'track_links.json')
+                    const path = join(settingsDir, 'track_links.json')
 
                     if (!existsSync(path))
                         throw new Error(`No Tidal links found`)

@@ -1,4 +1,4 @@
-import { configDir } from "@/library/configDir"
+import { settingsDir } from "@/library/settingsDir"
 import { SpotifyCredentials } from "@/types/SpotifyAPI"
 import axios from "axios"
 import { existsSync, readFileSync, writeFileSync } from "node:fs"
@@ -6,7 +6,7 @@ import { join } from "node:path"
 import { decrypt, encrypt } from "../encryption"
 
 export default async function refreshAccessTokens() {
-    const credentialsPath = join(configDir, 'spotify.json')
+    const credentialsPath = join(settingsDir, 'spotify.json')
     if (!existsSync(credentialsPath))
         throw new Error("No users are currently connected.");
 

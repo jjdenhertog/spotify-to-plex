@@ -1,6 +1,6 @@
 import { encrypt } from '@/helpers/encryption';
 import { generateError } from '@/helpers/errors/generateError';
-import { configDir } from "@/library/configDir";
+import { settingsDir } from "@/library/settingsDir";
 import { SpotifyCredentials } from '@/types/SpotifyAPI';
 import { SpotifyApi } from '@spotify/web-api-ts-sdk';
 import axios from 'axios';
@@ -70,7 +70,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                     expires_at: Date.now() + expires_in
                 }
 
-                const credentialsPath = join(configDir, 'spotify.json')
+                const credentialsPath = join(settingsDir, 'spotify.json')
 
                 if (existsSync(credentialsPath)) {
                     // Update

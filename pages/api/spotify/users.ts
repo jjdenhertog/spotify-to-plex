@@ -1,5 +1,5 @@
 import { generateError } from '@/helpers/errors/generateError';
-import { configDir } from "@/library/configDir";
+import { settingsDir } from "@/library/settingsDir";
 import { SpotifyCredentials, SpotifyUser } from '@/types/SpotifyAPI';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createRouter } from 'next-connect';
@@ -11,7 +11,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
     .get(
         async (_req, res) => {
 
-            const credentialsPath = join(configDir, 'spotify.json')
+            const credentialsPath = join(settingsDir, 'spotify.json')
             if (!existsSync(credentialsPath))
                 return res.status(400).json({ error: "No users are currently connected." })
 
@@ -23,7 +23,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
     .put(
         async (req, res) => {
 
-            const credentialsPath = join(configDir, 'spotify.json')
+            const credentialsPath = join(settingsDir, 'spotify.json')
             if (!existsSync(credentialsPath))
                 return res.status(400).json({ error: "No users are currently connected." })
 
@@ -54,7 +54,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
     .delete(
         async (req, res) => {
 
-            const credentialsPath = join(configDir, 'spotify.json')
+            const credentialsPath = join(settingsDir, 'spotify.json')
             if (!existsSync(credentialsPath))
                 return res.status(400).json({ error: `No users are currently connected.` })
 

@@ -1,4 +1,4 @@
-import { configDir } from '@/library/configDir';
+import { settingsDir } from '@/library/settingsDir';
 import { plex } from '@/library/plex';
 import { MQTTItem } from '@/types/dashboard/MQTTItem';
 import { PlaylistData } from '@/types/dashboard/PlaylistData';
@@ -17,11 +17,11 @@ export async function refreshMQTT() {
     if (savedItems.length == 0)
         throw new Error('Missing spotify saved items')
 
-    const playlistPath = join(configDir, 'playlists.json')
+    const playlistPath = join(settingsDir, 'playlists.json')
     if (!existsSync(playlistPath))
         throw new Error('Missing playlists')
 
-    const trackLinksPath = join(configDir, 'track_links.json')
+    const trackLinksPath = join(settingsDir, 'track_links.json')
     if (!existsSync(trackLinksPath))
         throw new Error('Track links missing')
 

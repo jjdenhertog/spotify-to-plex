@@ -1,4 +1,5 @@
-import { configDir } from "@/library/configDir"
+import { settingsDir } from "@/library/settingsDir"
+import { ensureDirSync } from "fs-extra"
 import { readFileSync, writeFileSync } from "node:fs"
 import { join } from "node:path"
 
@@ -34,13 +35,15 @@ if (!_plex) {
 
     let settings: PlexSettings = {}
     try {
-        const result = readFileSync(join(configDir, 'plex.json'))
+        ensureDirSync(settingsDir)
+        
+        const result = readFileSync(join(settingsDir, 'plex.json'))
         settings = JSON.parse(String(result));
     } catch (_e) { }
 
     let playlists: PlexPlaylists = {}
     try {
-        const result = readFileSync(join(configDir, 'playlists.json'))
+        const result = readFileSync(join(settingsDir, 'playlists.json'))
         playlists = JSON.parse(String(result));
     } catch (_e) { }
 
@@ -48,7 +51,7 @@ if (!_plex) {
         saveConfig: (settings: PlexSettings) => {
             // Save & Store
             _plex.settings = { ...plex.settings, ...settings };
-            writeFileSync(join(configDir, 'plex.json'), JSON.stringify(_plex.settings, null, 2), 'utf8');
+            writeFileSync(join(settingsDir, 'plex.json'), JSON.stringify(_plex.settings, null, 2), 'utf8');
         },
         savePlaylist: (type: string, id: string, plexId: string) => {
             //@ts-expect-error Needs refactoring
@@ -56,7 +59,7 @@ if (!_plex) {
 
             playlists.push({ type, id, plex: plexId })
             _plex.playlists = { ..._plex.playlists, data: playlists };
-            writeFileSync(join(configDir, 'playlists.json'), JSON.stringify(_plex.playlists, null, 2), 'utf8');
+            writeFileSync(join(settingsDir, 'playlists.json'), JSON.stringify(_plex.playlists, null, 2), 'utf8');
         },
         settings,
         playlists

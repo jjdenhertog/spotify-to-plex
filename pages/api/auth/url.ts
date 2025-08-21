@@ -2,6 +2,7 @@ import { generateError } from '@/helpers/errors/generateError';
 import { plex } from '@/library/plex';
 import { PostPinResponse } from '@/types/PlexAPI';
 import axios from 'axios';
+
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createRouter } from 'next-connect';
 import { stringify } from 'qs';
@@ -12,7 +13,7 @@ export type GetAuthUrlResponse = {
 }
 const router = createRouter<NextApiRequest, NextApiResponse>()
     .post(
-        async (_req, res, _next) => {
+        async (req, res, _next) => {
 
             const result = await axios.post<PostPinResponse>("https://plex.tv/api/v2/pins", stringify({
                 strong: true,
@@ -21,8 +22,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
             }))
 
             const authUrl =
-                `https://app.plex.tv/auth#?${ 
-                stringify({
+                `https://app.plex.tv/auth#?${stringify({
                     clientID: process.env.PLEX_APP_ID,
                     code: result.data.code,
                     forwardUrl: `${req.body.callback}?plex=1`,
