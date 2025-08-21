@@ -6,7 +6,7 @@ export type CacheEntry<T> = {
   ttl: number;
 }
 
-export class MemoryCache<T = any> {
+export class MemoryCache<T = unknown> {
   private readonly cache = new Map<string, CacheEntry<T>>();
   private readonly defaultTTL: number;
 

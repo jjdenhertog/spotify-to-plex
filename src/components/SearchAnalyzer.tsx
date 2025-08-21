@@ -1,7 +1,6 @@
 import { errorBoundary } from "@/helpers/errors/errorBoundary";
 import { GetSpotifyTrackResponse } from "@/pages/api/spotify/track";
-// import { SearchResponse } from "@jjdenhertog/plex-music-search";
-type SearchResponse = any;
+import type { SearchResponse, SearchQuery, PlexTrack } from "@jjdenhertog/plex-music-search";
 import { Box, Button, CircularProgress, Divider, Link, TextField, Typography } from "@mui/material";
 import axios from "axios";
 import { ChangeEvent, Fragment, useCallback, useState } from "react";
@@ -74,7 +73,7 @@ export default function SearchAnalyzer() {
                 {!!searchResponse.queries &&
                     <>
                         <Typography variant="h6" sx={{ mb: 1 }}>Search queries</Typography>
-                        {searchResponse.queries?.map((item: any, index: number) => {
+                        {searchResponse.queries?.map((item: SearchQuery, index: number) => {
 
                             const { approach, album, artist, title } = item;
                             const id = `query-${index}`;
@@ -105,7 +104,7 @@ export default function SearchAnalyzer() {
                 {searchResponse.result.length > 0 &&
                     <Typography variant="h6" sx={{ mb: 1 }}>Search Results</Typography>
                 }
-                {searchResponse.result.map((item: any) => {
+                {searchResponse.result.map((item: PlexTrack) => {
                     const { title, artist, id, matching, reason } = item;
 
                     if (!matching)
