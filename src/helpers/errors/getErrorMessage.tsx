@@ -1,6 +1,7 @@
 
-export function getErrorMessage(e: any): string {
-    const message = e.response?.data.error || e.response?.data.message || e.message;
+export function getErrorMessage(e: unknown): string {
+    const error = e as { response?: { data?: { error?: string; message?: string } }; message?: string };
+    const message = error.response?.data?.error || error.response?.data?.message || error.message;
     if (message)
         return message;
 

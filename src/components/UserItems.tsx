@@ -9,7 +9,7 @@ import { enqueueSnackbar } from "notistack";
 import { ChangeEvent, useCallback, useEffect, useState } from "react";
 
 type Props = {
-    readonly onClose: (event: any, reason?: string) => void,
+    readonly onClose: (event: React.MouseEvent | React.KeyboardEvent | Record<string, never>, reason?: string) => void,
     readonly user: GetSpotifyUserResponse
     readonly type: 'albums' | 'playlists'
 }
@@ -34,7 +34,7 @@ export default function UserItems(props: Props) {
 
     }, [type, user.id])
 
-    const onClose = useCallback((event: any, reason?: string) => {
+    const onClose = useCallback((event: React.MouseEvent | React.KeyboardEvent | Record<string, never>, reason?: string) => {
         const { onClose } = props;
         if (reason == 'closeClick')
             onClose(event, reason)

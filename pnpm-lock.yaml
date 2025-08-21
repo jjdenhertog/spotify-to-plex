@@ -296,35 +296,6 @@ importers:
         specifier: ^5.3.0
         version: 5.9.2
 
-  packages/music-search:
-    dependencies:
-      '@spotify-to-plex/shared':
-        specifier: workspace:*
-        version: link:../shared
-      string-similarity-js:
-        specifier: ^2.1.4
-        version: 2.1.4
-    devDependencies:
-      '@types/node':
-        specifier: ^20.19.11
-        version: 20.19.11
-      typescript:
-        specifier: ^5.3.0
-        version: 5.9.2
-
-  packages/open-spotify-sdk:
-    dependencies:
-      otpauth:
-        specifier: ^9.4.0
-        version: 9.4.1
-    devDependencies:
-      '@types/node':
-        specifier: ^20.3.2
-        version: 20.19.11
-      typescript:
-        specifier: ^5.1.6
-        version: 5.9.2
-
   packages/plex-client:
     dependencies:
       '@spotify-to-plex/shared':
@@ -443,28 +414,6 @@ importers:
         version: 6.14.0
       typescript:
         specifier: ^5.3.0
-        version: 5.9.2
-
-  packages/tidal-music-search:
-    dependencies:
-      '@spotify-to-plex/music-search':
-        specifier: workspace:*
-        version: link:../music-search
-      axios:
-        specifier: ^1.7.7
-        version: 1.11.0
-      qs:
-        specifier: ^6.13.0
-        version: 6.14.0
-    devDependencies:
-      '@types/node':
-        specifier: ^20.3.0
-        version: 20.19.11
-      '@types/qs':
-        specifier: ^6.9.14
-        version: 6.14.0
-      typescript:
-        specifier: '>=4.7.4'
         version: 5.9.2
 
   packages/ui:

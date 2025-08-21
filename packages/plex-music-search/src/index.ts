@@ -228,8 +228,8 @@ export class PlexMusicSearch {
                         matching: item.matching
                     }
                 })
-                .filter((item: any): item is any => !!item)
-                .map((item: any) => ({ ...hubSearchToPlexTrack(item), matching: item.matching, reason: item.reason }))
+                .filter((item): item is HubSearchResult & { reason?: string; matching?: Track["matching"] } => !!item)
+                .map((item) => ({ ...hubSearchToPlexTrack(item), matching: item.matching, reason: item.reason }))
 
             this._cache.push({ id: cacheId, result: plexTracks })
 

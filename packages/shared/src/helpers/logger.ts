@@ -6,7 +6,7 @@ export type LogEntry = {
   level: LogLevel;
   message: string;
   timestamp: Date;
-  context?: Record<string, any>;
+  context?: Record<string, unknown>;
   error?: Error;
 }
 
@@ -37,7 +37,7 @@ export class Logger {
     return messageIndex <= currentIndex;
   }
 
-  private log(level: LogLevel, message: string, context?: Record<string, any>, error?: Error): void {
+  private log(level: LogLevel, message: string, context?: Record<string, unknown>, error?: Error): void {
     if (!this.shouldLog(level)) {
       return;
     }
@@ -72,23 +72,23 @@ export class Logger {
     }
   }
 
-  error(message: string, error?: Error, context?: Record<string, any>): void {
+  error(message: string, error?: Error, context?: Record<string, unknown>): void {
     this.log(LOG_LEVELS.ERROR, message, context, error);
   }
 
-  warn(message: string, context?: Record<string, any>): void {
+  warn(message: string, context?: Record<string, unknown>): void {
     this.log(LOG_LEVELS.WARN, message, context);
   }
 
-  info(message: string, context?: Record<string, any>): void {
+  info(message: string, context?: Record<string, unknown>): void {
     this.log(LOG_LEVELS.INFO, message, context);
   }
 
-  debug(message: string, context?: Record<string, any>): void {
+  debug(message: string, context?: Record<string, unknown>): void {
     this.log(LOG_LEVELS.DEBUG, message, context);
   }
 
-  verbose(message: string, context?: Record<string, any>): void {
+  verbose(message: string, context?: Record<string, unknown>): void {
     this.log(LOG_LEVELS.VERBOSE, message, context);
   }
 
