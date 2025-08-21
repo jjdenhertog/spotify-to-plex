@@ -1,7 +1,9 @@
 import { generateError } from '@/helpers/errors/generateError';
 import getCachedTrackLinks from '@/helpers/getCachedTrackLink';
 import { plex } from '@/library/plex';
-import { PlexMusicSearch, PlexMusicSearchTrack, PlexTrack, SearchResponse } from '@jjdenhertog/plex-music-search';
+import { PlexMusicSearch, PlexMusicSearchTrack, PlexTrack } from '@jjdenhertog/plex-music-search';
+
+type SearchResponse = any;
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createRouter } from 'next-connect';
 
@@ -76,7 +78,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
 
 
 export default router.handler({
-    onError: (err: any, req, res) => {
+    onError: (err: unknown, req: NextApiRequest, res: NextApiResponse) => {
         console.log(err)
         generateError(req, res, "Songs", err);
     }

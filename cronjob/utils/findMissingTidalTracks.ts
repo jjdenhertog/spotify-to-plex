@@ -1,7 +1,7 @@
 import getCachedTrackLinks from "@/helpers/getCachedTrackLink";
 import getTidalCredentials from "@/helpers/tidal/getTidalCredentials";
 import { Track } from "@/types/SpotifyAPI";
-import { TidalMusicSearch } from "@jjdenhertog/tidal-music-search";
+import { TidalMusicSearch, SearchResponse } from "@jjdenhertog/tidal-music-search";
 
 export async function findMissingTidalTracks(missingTracks: Track[]) {
 
@@ -41,7 +41,7 @@ export async function findMissingTidalTracks(missingTracks: Track[]) {
 
         for (let i = 0; i < toSearchTidalTracks.length; i++) {
             const track = toSearchTidalTracks[i];
-            const tidalData = tidalSearchResponse.find(item => item.id == track.id);
+            const tidalData = tidalSearchResponse.find((item: SearchResponse) => item.id == track.id);
             if (tidalData && tidalData.result.length > 0)
                 result.push({ id: track.id, tidal_id: tidalData.result[0].id });
         }

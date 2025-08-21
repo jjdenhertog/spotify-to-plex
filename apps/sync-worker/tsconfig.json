@@ -1,0 +1,21 @@
+{
+  "extends": "../../config/typescript/node.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"],
+  "references": [
+    { "path": "../../packages/shared" },
+    { "path": "../../packages/sync-engine" },
+    { "path": "../../packages/spotify-sdk" },
+    { "path": "../../packages/plex-client" },
+    { "path": "../../packages/tidal-client" },
+    { "path": "../../packages/database" }
+  ]
+}

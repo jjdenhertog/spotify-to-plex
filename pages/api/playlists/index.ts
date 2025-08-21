@@ -72,7 +72,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
 
 
 export default router.handler({
-    onError: (err: any, req, res) => {
+    onError: (err: unknown, req: NextApiRequest, res: NextApiResponse) => {
         generateError(req, res, "Plex Playlists", err);
     }
 });

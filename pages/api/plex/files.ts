@@ -1,6 +1,6 @@
 import { generateError } from "@/helpers/errors/generateError"
 import { plex } from "@/library/plex"
-import { PlexMusicSearch } from "@jjdenhertog/plex-music-search"
+import { PlexMusicSearch, Metadata } from "@jjdenhertog/plex-music-search"
 import { NextApiRequest, NextApiResponse } from "next"
 import { createRouter } from "next-connect"
 
@@ -21,7 +21,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
 
             const libraryItem = await plexMusicSearch.getMetaData(mediaContentId)
             const trackMetaData = await plexMusicSearch.getMetaData(libraryItem[0].key)
-            const tracks = trackMetaData.map(metadata => {
+            const tracks = trackMetaData.map((metadata: Metadata) => {
                 try {
                     return metadata.Media[0].Part[0].file;
                 } catch (_e) {
@@ -29,13 +29,13 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 }
             })
 
-            const files = tracks.filter(item => item != null);
+            const files = tracks.filter((item: string | null): item is string => item != null);
             res.json(files)
         })
 
 
 export default router.handler({
-    onError: (err: any, req, res) => {
+    onError: (err: unknown, req: NextApiRequest, res: NextApiResponse) => {
         generateError(req, res, "Songs", err);
     }
 });

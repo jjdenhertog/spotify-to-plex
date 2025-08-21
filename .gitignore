@@ -1,45 +1,117 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-.reg
-
-# dependencies
+# Dependencies
+node_modules/
+**/node_modules/
 /.pnp
 .pnp.js
-node_modules/
 
-# testing
+# Build outputs
+dist/
+**/dist/
+build/
+**/build/
+.next/
+**/.next/
+out/
+**/out/
+
+# TypeScript build artifacts
+*.tsbuildinfo
+**/*.tsbuildinfo
+packages/**/*.d.ts
+packages/**/*.d.ts.map
+packages/**/*.js
+packages/**/*.js.map
+!packages/**/tsconfig.json
+!packages/**/package.json
+
+# Package manager files (we use pnpm)
+package-lock.json
+**/package-lock.json
+yarn.lock
+**/yarn.lock
+# Keep pnpm-lock.yaml
+!pnpm-lock.yaml
+
+# Turbo
+.turbo/
+**/.turbo/
+
+# Testing
 /coverage
+**/coverage/
+.nyc_output
 post.txt
 
-# next.js
+# Next.js specific
 .next/
 /.next/
 /out/
-dist/
-/dist/
-/config
-config.json
 
-# production
+# Production
 /build
 
-# misc
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
 .DS_Store
 *.pem
-.config
-package-lock.json
 
-# debug
+# Environment variables
+.env
+.env.*
+!.env.example
+!.env.*.example
+.config
+config.json
+
+# Logs
+logs/
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
 
-# local env files
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-
-# vercel
+# Vercel
 .vercel
 
+# ESLint
 .eslintrc.json
+
+# Claude Flow generated files
+.claude/settings.local.json
+.mcp.json
+claude-flow.config.json
+.swarm/
+.hive-mind/
+memory/claude-flow-data.json
+memory/sessions/*
+!memory/sessions/README.md
+memory/agents/*
+!memory/agents/README.md
+coordination/memory_bank/*
+coordination/subtasks/*
+coordination/orchestration/*
+*.db
+*.db-journal
+*.db-wal
+*.sqlite
+*.sqlite-journal
+*.sqlite-wal
+claude-flow
+claude-flow.bat
+claude-flow.ps1
+hive-mind-prompt-*.txt
+
+# Vibe Remote files and initiated folders
+.claude-flow-initialized
+.roomodes
+CLAUDE.md
+.claude-flow
+.claude
+memory
+.roo

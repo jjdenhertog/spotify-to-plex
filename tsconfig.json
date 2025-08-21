@@ -12,6 +12,7 @@
         "forceConsistentCasingInFileNames": true,
         "noEmit": true,
         "esModuleInterop": true,
+        "downlevelIteration": true,
         "module": "esnext",
         "moduleResolution": "node",
         "resolveJsonModule": true,
@@ -51,6 +52,12 @@
             ],
             "@/hoc/*": [
                 "src/hoc/*"
+            ],
+            "@spotify-to-plex/music-search": [
+                "packages/music-search/src/index.ts"
+            ],
+            "@spotify-to-plex/music-search/*": [
+                "packages/music-search/src/*"
             ]
         }
     },

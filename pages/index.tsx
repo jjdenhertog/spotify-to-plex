@@ -5,7 +5,7 @@ import MainLayout from "@/layouts/MainLayout";
 import { Assignment, ChevronLeft, People, PlaylistPlay, Search } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
 import { Alert, Box, Button, Card, CardActionArea, CardContent, Container, Divider, Paper, Typography } from "@mui/material";
-import Grid from '@mui/material/Grid2';
+import Grid2 from '@mui/material/Grid2';
 import axios from "axios";
 import { NextPage } from "next";
 import Head from "next/head";
@@ -148,9 +148,9 @@ const Page: NextPage = () => {
                             <Typography variant="body1" sx={{ mb: 3, maxWidth: 500 }}>
                                 Manage your Spotify connections, synchronization settings, and view system logs.
                             </Typography>
-                            <Grid container spacing={2}>
+                            <Grid2 container spacing={2}>
                                 {menuItems.map((item) => (
-                                    <Grid size={{ xs: 12, sm: 6 }} key={item.path}>
+                                    <Grid2 size={{ xs: 12, sm: 6 }} key={item.path}>
                                         <Card>
                                             <CardActionArea component="a" href={item.path} sx={{ height: '100%' }}>
                                                 <CardContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', p: 3 }}>
@@ -164,9 +164,9 @@ const Page: NextPage = () => {
                                                 </CardContent>
                                             </CardActionArea>
                                         </Card>
-                                    </Grid>
+                                    </Grid2>
                                 ))}
-                            </Grid>
+                            </Grid2>
                             <Divider sx={{ mb: 3, mt: 3 }} />
                             <Button variant="outlined" color="primary" onClick={onEditPlexConnectionClick}>
                                 Edit Plex Connection

@@ -46,11 +46,11 @@ export default async function getSpotifyData(api: SpotifyApi, id: string, simpli
                 title: playlist.name,
                 owner: playlist.owner.name,
                 image: playlist.images[0].url,
-                tracks: playlist.tracks.items.map(track => {
+                tracks: playlist.tracks.items.map((track: { artists: { name: string }[]; id: string; album: { name: string }; name: string }) => {
                     return {
                         artist: track.artists[0].name,
                         id: track.id,
-                        artists: track.artists.map(artist => artist.name),
+                        artists: track.artists.map((artist: { name: string }) => artist.name),
                         album: track.album.name,
                         title: track.name
                     }

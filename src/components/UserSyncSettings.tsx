@@ -86,7 +86,7 @@ export default function UserSyncSettings(props: Props) {
         <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', maxWidth: 500, bgcolor: 'background.paper', p: 3, borderRadius: 1 }}>
             <IconButton
                 size="small"
-                onClick={() => onClose('closeClick')}
+                onClick={(e) => onClose(e, 'closeClick')}
                 sx={{ position: 'absolute', right: 8, top: 8 }}
             >
                 <CloseIcon fontSize="small" />

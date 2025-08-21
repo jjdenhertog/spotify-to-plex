@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-export function generateError(req: NextApiRequest, res: NextApiResponse, subject: string, error: any) {
+export function generateError(req: NextApiRequest, res: NextApiResponse, subject: string, error: unknown) {
     let action: string;
     switch (req.method) {
         case "POST":
@@ -19,7 +19,7 @@ export function generateError(req: NextApiRequest, res: NextApiResponse, subject
     }
     if (typeof error == 'string') {
         res.status(400).json({ error });
-    } else if (typeof error.message == 'string') {
+    } else if (error instanceof Error && typeof error.message == 'string') {
         res.status(400).json({ error: error.message });
     } else {
         res.status(400).json({ error: `Could not ${action} ${subject}` });

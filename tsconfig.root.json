@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "Root TypeScript Config",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@spotify-to-plex/shared": ["packages/shared/src"],
+      "@spotify-to-plex/shared/*": ["packages/shared/src/*"],
+      "@spotify-to-plex/music-search": ["packages/music-search/src"],
+      "@spotify-to-plex/music-search/*": ["packages/music-search/src/*"],
+      "@spotify-to-plex/spotify-sdk": ["packages/spotify-sdk/src"],
+      "@spotify-to-plex/spotify-sdk/*": ["packages/spotify-sdk/src/*"],
+      "@spotify-to-plex/tidal-client": ["packages/tidal-client/src"],
+      "@spotify-to-plex/tidal-client/*": ["packages/tidal-client/src/*"],
+      "@spotify-to-plex/plex-client": ["packages/plex-client/src"],
+      "@spotify-to-plex/plex-client/*": ["packages/plex-client/src/*"],
+      "@spotify-to-plex/sync-engine": ["packages/sync-engine/src"],
+      "@spotify-to-plex/sync-engine/*": ["packages/sync-engine/src/*"],
+      "@spotify-to-plex/api": ["packages/api/src"],
+      "@spotify-to-plex/api/*": ["packages/api/src/*"],
+      "@spotify-to-plex/database": ["packages/database/src"],
+      "@spotify-to-plex/database/*": ["packages/database/src/*"],
+      "@spotify-to-plex/ui": ["packages/ui/src"],
+      "@spotify-to-plex/ui/*": ["packages/ui/src/*"]
+    }
+  },
+  "references": [
+    { "path": "./packages/shared" },
+    { "path": "./packages/music-search" },
+    { "path": "./packages/spotify-sdk" },
+    { "path": "./packages/tidal-client" },
+    { "path": "./packages/plex-client" },
+    { "path": "./packages/sync-engine" },
+    { "path": "./packages/api" },
+    { "path": "./packages/database" },
+    { "path": "./packages/ui" },
+    { "path": "./apps/web" },
+    { "path": "./apps/sync-worker" }
+  ],
+  "exclude": [
+    "node_modules",
+    "**/node_modules",
+    "dist",
+    "**/dist",
+    ".turbo",
+    "**/.turbo",
+    ".next",
+    "**/.next",
+    "coverage",
+    "**/coverage"
+  ]
+}

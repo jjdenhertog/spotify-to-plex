@@ -1,6 +1,6 @@
 import { configDir } from "@/library/configDir";
 import { plex } from "@/library/plex";
-import { PlexMusicSearch } from "@jjdenhertog/plex-music-search";
+import { PlexMusicSearch, SearchResponse } from "@jjdenhertog/plex-music-search";
 import { writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { findMissingTidalAlbums } from "./utils/findMissingTidalAlbums";
@@ -65,10 +65,10 @@ export async function syncAlbums() {
         const missingTracks = data.tracks.filter(item => {
             const { title: trackTitle, artists: trackArtists } = item;
 
-            return result.some(track => track.title == trackTitle && trackArtists.indexOf(track.artist) > - 1 && track.result.length == 0)
+            return result.some((track: SearchResponse) => track.title == trackTitle && trackArtists.indexOf(track.artist) > - 1 && track.result.length == 0)
         })
 
-        if (!result.some(item => item.result.length == 0)) {
+        if (!result.some((item: SearchResponse) => item.result.length == 0)) {
             logComplete(itemLog);
 
             // Store album id

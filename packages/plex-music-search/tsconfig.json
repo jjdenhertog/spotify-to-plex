@@ -1,0 +1,21 @@
+{
+  "extends": "../../config/typescript/legacy.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist",
+    "composite": true,
+    "declaration": true,
+    "declarationMap": true,
+    "tsBuildInfoFile": "./dist/.tsbuildinfo",
+    "baseUrl": ".",
+    "paths": {
+      "@spotify-to-plex/music-search": ["../music-search/src"],
+      "@spotify-to-plex/music-search/*": ["../music-search/src/*"]
+    }
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"],
+  "references": [
+    { "path": "../music-search" }
+  ]
+}

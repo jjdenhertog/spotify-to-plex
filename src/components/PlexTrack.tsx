@@ -1,4 +1,5 @@
-import { SearchResponse } from "@jjdenhertog/plex-music-search";
+// import { SearchResponse } from "@jjdenhertog/plex-music-search";
+type SearchResponse = any;
 import { Check, LibraryMusicSharp, Warning } from "@mui/icons-material";
 import { Box, CircularProgress, Divider, FormControlLabel, IconButton, ListItem, Paper, Radio, RadioGroup, Tooltip, Typography } from "@mui/material";
 import { ChangeEvent, useCallback, useMemo, useState } from "react";
@@ -26,7 +27,7 @@ export default function PlexTrack(props: Props) {
         if (!data)
             return []
 
-        return data.result.map(item => {
+        return data.result.map((item: any) => {
             const thumbUrl = item.image && item.image.indexOf('rovicorp') == -1 ? `/api/plex/image?path=${item.image}` : '';
             const albumThumbUrl = item.album?.image && item.image.indexOf('rovicorp') == -1 ? `/api/plex/image?path=${item.album.image}` : '';
 
@@ -123,7 +124,7 @@ export default function PlexTrack(props: Props) {
                 onChange={onChangeSongIdx}
                 sx={{ gap: 2 }}
             >
-                {songs.map((song, index) => {
+                {songs.map((song: any, index: number) => {
                     return <ListItem
                         key={`${id}-${song.trackTitle}`}
                         sx={{

@@ -1,5 +1,6 @@
 import { errorBoundary } from "@/helpers/errors/errorBoundary";
-import { SearchResponse } from "@jjdenhertog/plex-music-search";
+// import { SearchResponse } from "@jjdenhertog/plex-music-search";
+type SearchResponse = any;
 import CloseIcon from '@mui/icons-material/Close';
 import { Box, CircularProgress, Divider, IconButton, Modal, Typography } from "@mui/material";
 import axios from "axios";
@@ -56,7 +57,7 @@ export default function TrackAnalyzer(props: Props) {
             {!loading && !!searchResponse &&
                 <>
                     <Typography variant="h6" sx={{ mb: 1 }}>Results</Typography>
-                    {searchResponse.result.map(({ id, title, artist, matching, reason }) => {
+                    {searchResponse.result.map(({ id, title, artist, matching, reason }: any) => {
                         if (!matching)
                             return null;
 

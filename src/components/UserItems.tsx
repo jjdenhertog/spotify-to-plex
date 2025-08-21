@@ -9,7 +9,7 @@ import { enqueueSnackbar } from "notistack";
 import { ChangeEvent, useCallback, useEffect, useState } from "react";
 
 type Props = {
-    readonly onClose: () => void,
+    readonly onClose: (event: any, reason?: string) => void,
     readonly user: GetSpotifyUserResponse
     readonly type: 'albums' | 'playlists'
 }
@@ -34,10 +34,10 @@ export default function UserItems(props: Props) {
 
     }, [type, user.id])
 
-    const onClose = useCallback((_event: unknown, reason: string) => {
+    const onClose = useCallback((event: any, reason?: string) => {
         const { onClose } = props;
         if (reason == 'closeClick')
-            onClose()
+            onClose(event, reason)
 
     }, [props])
 
@@ -133,7 +133,7 @@ export default function UserItems(props: Props) {
         <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', maxWidth: 600, bgcolor: 'background.paper', p: 3, borderRadius: 1 }}>
             <IconButton
                 size="small"
-                onClick={() => onClose('closeClick')}
+                onClick={(e) => onClose(e, 'closeClick')}
                 sx={{ position: 'absolute', right: 8, top: 8 }}
             >
                 <CloseIcon fontSize="small" />

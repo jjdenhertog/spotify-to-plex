@@ -1,6 +1,6 @@
 import getTidalCredentials from "@/helpers/tidal/getTidalCredentials";
 import { Track } from "@/types/SpotifyAPI";
-import { TidalMusicSearch } from "@jjdenhertog/tidal-music-search";
+import { TidalMusicSearch, SearchResponse } from "@jjdenhertog/tidal-music-search";
 
 export async function findMissingTidalAlbums(missingTracks: Track[]) {
 
@@ -25,7 +25,7 @@ export async function findMissingTidalAlbums(missingTracks: Track[]) {
     const results = await tidalMusicSearch.searchAlbum([firstWithAlbum]);
 
     const albumIds: string[] = []
-    results.forEach(result => {
+    results.forEach((result: SearchResponse) => {
         result.result.forEach(item => {
             if (!albumIds.includes(item.album.id))
                 albumIds.push(item.album.id)

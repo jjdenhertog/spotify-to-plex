@@ -1,0 +1,42 @@
+{
+  "name": "@spotify-to-plex/monorepo",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Spotify to Plex sync - Modern monorepo architecture",
+  "keywords": [
+    "plex",
+    "spotify",
+    "tidal",
+    "sync",
+    "monorepo"
+  ],
+  "scripts": {
+    "dev": "turbo run dev",
+    "dev:web": "turbo run dev --filter=@spotify-to-plex/web",
+    "dev:worker": "turbo run dev --filter=@spotify-to-plex/sync-worker",
+    "build": "turbo run build",
+    "build:packages": "turbo run build --filter='./packages/*'",
+    "test": "turbo run test",
+    "lint": "turbo run lint",
+    "type-check": "turbo run type-check",
+    "clean": "turbo run clean",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
+    "sync:playlists": "pnpm --filter @spotify-to-plex/sync-worker sync:playlists",
+    "sync:albums": "pnpm --filter @spotify-to-plex/sync-worker sync:albums",
+    "sync:mqtt": "pnpm --filter @spotify-to-plex/sync-worker sync:mqtt",
+    "sync:users": "pnpm --filter @spotify-to-plex/sync-worker sync:users",
+    "docker": "docker buildx build --platform=linux/amd64,linux/arm64 -t jjdenhertog/spotify-to-plex -t jjdenhertog/spotify-to-plex:$npm_package_version --push .",
+    "deploy": "pnpm version patch --no-git-tag-version && pnpm run docker"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "packageManager": "pnpm@8.15.0",
+  "devDependencies": {
+    "@types/node": "^20.19.11",
+    "prettier": "^3.2.0",
+    "turbo": "^1.12.0",
+    "typescript": "^5.3.0"
+  }
+}

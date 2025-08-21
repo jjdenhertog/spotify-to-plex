@@ -4,7 +4,7 @@ import { handleOneRetryAttempt } from "@/helpers/plex/handleOneRetryAttempt";
 import { configDir } from "@/library/configDir";
 import { plex } from "@/library/plex";
 import { Playlist } from "@/types/PlexAPI";
-import { GetPlaylistResponse, PlexMusicSearch } from "@jjdenhertog/plex-music-search";
+import { GetPlaylistResponse, PlexMusicSearch, SearchResponse } from "@jjdenhertog/plex-music-search";
 import { writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { findMissingTidalTracks } from "./utils/findMissingTidalTracks";
@@ -73,7 +73,7 @@ export async function syncPlaylists() {
                 const url = getAPIUrl(plex.settings.uri, `/playlists`);
                 const result = await handleOneRetryAttempt<GetPlaylistResponse>(() => AxiosRequest.get(url, plex.settings.token));
                 // eslint-disable-next-line unicorn/consistent-destructuring
-                plexPlaylist = result.data.MediaContainer.Metadata.find(item => item.ratingKey == foundPlaylist.plex)
+                plexPlaylist = result.data.MediaContainer.Metadata.find((item: Playlist) => item.ratingKey == foundPlaylist.plex)
             }
 
             //////////////////////////////////////
@@ -88,7 +88,7 @@ export async function syncPlaylists() {
             let { result, add } = await getCachedPlexTracks(plexMusicSearch, data)
 
             // eslint-disable-next-line unicorn/consistent-destructuring
-            const toSearchItems = data.tracks.filter(track => !result.some(item => item.id == track.id))
+            const toSearchItems = data.tracks.filter(track => !result.some((item: SearchResponse) => item.id == track.id))
             if (toSearchItems.length > 0) {
                 console.log(`Searching for ${toSearchItems.length} tracks`)
                 const searchResult = await plexMusicSearch.search(toSearchItems)

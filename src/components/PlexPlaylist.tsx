@@ -1,7 +1,8 @@
 import { errorBoundary } from "@/helpers/errors/errorBoundary";
 import { GetPlexPlaylistIdResponse } from "@/pages/api/playlists/[id]";
 import { GetSpotifyAlbum, GetSpotifyPlaylist, Track } from "@/types/SpotifyAPI";
-import { SearchResponse } from "@jjdenhertog/plex-music-search";
+// import { SearchResponse } from "@jjdenhertog/plex-music-search";
+type SearchResponse = any;
 import { Edit, Refresh } from "@mui/icons-material";
 import CloseIcon from '@mui/icons-material/Close';
 import { Alert, Box, Button, CircularProgress, Divider, IconButton, Input, Modal, Paper, Stack, Tooltip, Typography } from "@mui/material";
