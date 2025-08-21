@@ -36,8 +36,10 @@
     },
     "engines": {
         "node": ">=18.0.0",
-        "npm": ">=10.0.0"
+        "pnpm": ">=8.0.0",
+        "npm": "please-use-pnpm"
     },
+    "packageManager": "pnpm@8.15.0",
     "dependencies": {
         "@emotion/cache": "^11.14.0",
         "@emotion/react": "^11.14.0",
