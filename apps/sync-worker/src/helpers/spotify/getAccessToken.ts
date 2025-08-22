@@ -39,5 +39,6 @@ export default async function getAccessToken(userId?: string): Promise<{ access_
     } catch (_e) {
 
     }
+
     return undefined;
 }

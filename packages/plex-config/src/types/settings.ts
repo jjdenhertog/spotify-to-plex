@@ -1,4 +1,4 @@
-export interface PlexSettings {
+export type PlexSettings = {
   readonly id?: string;
   readonly uri?: string;
   readonly token?: string;
@@ -6,7 +6,7 @@ export interface PlexSettings {
   readonly pin_id?: string;
 }
 
-export interface PlexSettingsUpdate {
+export type PlexSettingsUpdate = {
   id?: string;
   uri?: string;
   token?: string;

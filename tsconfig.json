@@ -41,8 +41,8 @@
       "@spotify-to-plex/plex-music-search/*": ["./packages/plex-music-search/src/*"],
       "@spotify-to-plex/tidal-music-search": ["./packages/tidal-music-search/src"],
       "@spotify-to-plex/tidal-music-search/*": ["./packages/tidal-music-search/src/*"],
-      "@vibe-kanban/plex-config": ["./packages/plex-config/src"],
-      "@vibe-kanban/plex-config/*": ["./packages/plex-config/src/*"]
+      "@spotify-to-plex/plex-config": ["./packages/plex-config/src"],
+      "@spotify-to-plex/plex-config/*": ["./packages/plex-config/src/*"]
     }
   },
   "ts-node": {

@@ -11,7 +11,7 @@ import {
   PlexConfigEvent
 } from '../types';
 
-export interface PlexConfigOptions {
+export type PlexConfigOptions = {
   storageDir: string;
   enableEvents?: boolean;
   enableCache?: boolean;
@@ -25,7 +25,7 @@ export class PlexConfigManager {
   private readonly storage: StorageAdapter;
   private initialized = false;
 
-  constructor(
+  public constructor(
     storage?: StorageAdapter,
     eventEmitter?: PlexEventEmitter
   ) {
@@ -36,9 +36,9 @@ export class PlexConfigManager {
   }
 
   // Static factory method for convenience
-  static create(options: PlexConfigOptions): PlexConfigManager {
+  public static create(options: PlexConfigOptions): PlexConfigManager {
     const storage = new FileStorageAdapter(options.storageDir);
-    const eventEmitter = options.enableEvents !== false ? new PlexEventEmitter() : new PlexEventEmitter();
+    const eventEmitter = options.enableEvents === false ? new PlexEventEmitter() : new PlexEventEmitter();
     const manager = new PlexConfigManager(storage, eventEmitter);
     
     if (options.preloadCache) {
@@ -49,7 +49,7 @@ export class PlexConfigManager {
   }
 
   // Initialize and preload cache for synchronous access
-  async initialize(): Promise<void> {
+  public async initialize(): Promise<void> {
     if (this.initialized) return;
     
     await Promise.all([
@@ -61,84 +61,86 @@ export class PlexConfigManager {
   }
 
   // Settings methods
-  async getSettings(): Promise<PlexSettings> {
+  public async getSettings(): Promise<PlexSettings> {
     return this.settingsService.getSettings();
   }
 
-  async updateSettings(settings: PlexSettingsUpdate): Promise<PlexSettings> {
+  public async updateSettings(settings: PlexSettingsUpdate): Promise<PlexSettings> {
     return this.settingsService.updateSettings(settings);
   }
 
-  async saveConfig(settings: PlexSettingsUpdate): Promise<PlexSettings> {
+  public async saveConfig(settings: PlexSettingsUpdate): Promise<PlexSettings> {
     // Alias for backward compatibility
     return this.updateSettings(settings);
   }
 
-  async hasValidConnection(): Promise<boolean> {
+  public async hasValidConnection(): Promise<boolean> {
     return this.settingsService.hasValidConnection();
   }
 
-  async clearSettings(): Promise<void> {
+  public async clearSettings(): Promise<void> {
     return this.settingsService.clearSettings();
   }
 
   // Playlist methods
-  async getPlaylists(): Promise<PlexPlaylists> {
+  public async getPlaylists(): Promise<PlexPlaylists> {
     return this.playlistService.getPlaylists();
   }
 
-  async addPlaylist(type: string, id: string, plexId: string): Promise<void> {
+  public async addPlaylist(type: string, id: string, plexId: string): Promise<void> {
     return this.playlistService.addPlaylist({ type, id, plex: plexId });
   }
 
-  async savePlaylist(type: string, id: string, plexId: string): Promise<void> {
+  public async savePlaylist(type: string, id: string, plexId: string): Promise<void> {
     // Alias for backward compatibility
     return this.addPlaylist(type, id, plexId);
   }
 
-  async removePlaylist(id: string): Promise<void> {
+  public async removePlaylist(id: string): Promise<void> {
     return this.playlistService.removePlaylist(id);
   }
 
-  async updatePlaylist(id: string, updates: Partial<PlaylistUpdate>): Promise<void> {
+  public async updatePlaylist(id: string, updates: Partial<PlaylistUpdate>): Promise<void> {
     return this.playlistService.updatePlaylist(id, updates);
   }
 
-  async clearPlaylists(): Promise<void> {
+  public async clearPlaylists(): Promise<void> {
     return this.playlistService.clearPlaylists();
   }
 
   // Synchronous methods for backward compatibility (requires initialization)
-  get settings(): PlexSettings {
+  public get settings(): PlexSettings {
     if (!this.initialized) {
       console.warn('PlexConfigManager not initialized. Call initialize() for synchronous access.');
     }
+
     return this.settingsService.getCachedSettings();
   }
 
-  get playlists(): PlexPlaylists {
+  public get playlists(): PlexPlaylists {
     if (!this.initialized) {
       console.warn('PlexConfigManager not initialized. Call initialize() for synchronous access.');
     }
+
     return this.playlistService.getCachedPlaylists();
   }
 
   // Event subscription
-  on<T extends PlexConfigEvent>(
+  public on<T extends PlexConfigEvent>(
     type: T['type'], 
     listener: (event: T) => void
   ): void {
     this.eventEmitter.on(type, listener);
   }
 
-  off<T extends PlexConfigEvent>(
+  public off<T extends PlexConfigEvent>(
     type: T['type'], 
     listener: (event: T) => void
   ): void {
     this.eventEmitter.off(type, listener);
   }
 
-  once<T extends PlexConfigEvent>(
+  public once<T extends PlexConfigEvent>(
     type: T['type'],
     listener: (event: T) => void
   ): void {
@@ -150,7 +152,7 @@ export class PlexConfigManager {
   }
 
   // Cleanup
-  async dispose(): Promise<void> {
+  public async dispose(): Promise<void> {
     this.eventEmitter.removeAllListeners();
   }
 }

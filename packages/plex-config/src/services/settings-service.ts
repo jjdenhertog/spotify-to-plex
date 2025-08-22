@@ -6,20 +6,21 @@ import { SettingsUpdatedEvent } from '../types/events';
 export class SettingsService {
   private cache: PlexSettings | null = null;
 
-  constructor(
+  public constructor(
     private readonly storage: StorageAdapter,
     private readonly eventEmitter: PlexEventEmitter
   ) {}
 
-  async getSettings(): Promise<PlexSettings> {
+  public async getSettings(): Promise<PlexSettings> {
     if (this.cache === null) {
       const settings = await this.storage.read<PlexSettings>('settings');
       this.cache = settings ?? {};
     }
+
     return this.cache;
   }
 
-  async updateSettings(updates: PlexSettingsUpdate): Promise<PlexSettings> {
+  public async updateSettings(updates: PlexSettingsUpdate): Promise<PlexSettings> {
     const current = await this.getSettings();
     const updated = { ...current, ...updates };
     
@@ -41,12 +42,13 @@ export class SettingsService {
     return updated;
   }
 
-  async hasValidConnection(): Promise<boolean> {
+  public async hasValidConnection(): Promise<boolean> {
     const settings = await this.getSettings();
+
     return !!(settings.uri && settings.token);
   }
 
-  async clearSettings(): Promise<void> {
+  public async clearSettings(): Promise<void> {
     const current = await this.getSettings();
     
     await this.storage.delete('settings');
@@ -63,12 +65,12 @@ export class SettingsService {
   }
 
   // Synchronous getter for backward compatibility (uses cached value)
-  getCachedSettings(): PlexSettings {
+  public getCachedSettings(): PlexSettings {
     return this.cache ?? {};
   }
 
   // Pre-load cache for synchronous access
-  async preloadCache(): Promise<void> {
+  public async preloadCache(): Promise<void> {
     await this.getSettings();
   }
 }

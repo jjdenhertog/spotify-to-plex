@@ -19,7 +19,7 @@
     "@spotify-to-plex/plex-music-search": "workspace:*",
     "@spotify-to-plex/tidal-music-search": "workspace:*",
     "@spotify-to-plex/open-spotify-sdk": "workspace:*",
-    "@vibe-kanban/plex-config": "workspace:*",
+    "@spotify-to-plex/plex-config": "workspace:*",
     "@mui/icons-material": "^6.5.0",
     "@mui/lab": "^6.0.0-alpha.134",
     "@mui/material": "^6.5.0",

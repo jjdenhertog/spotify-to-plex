@@ -1,14 +1,14 @@
-export interface PlaylistItem {
+export type PlaylistItem = {
   readonly type: string;
   readonly id: string;
   readonly plex: string;
 }
 
-export interface PlexPlaylists {
+export type PlexPlaylists = {
   readonly data?: readonly PlaylistItem[];
 }
 
-export interface PlaylistUpdate {
+export type PlaylistUpdate = {
   type: string;
   id: string;
   plex: string;

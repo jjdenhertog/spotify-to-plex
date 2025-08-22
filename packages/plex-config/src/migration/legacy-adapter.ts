@@ -1,23 +1,25 @@
 import { PlexConfigManager } from '../core/plex-config-manager';
 import { PlexSettings, PlexSettingsUpdate, PlexPlaylists } from '../types';
+import { readFileSync, existsSync } from 'node:fs';
+import { join } from 'node:path';
 
 /**
  * Legacy adapter to provide backward compatibility with the old global plex object
  * This allows gradual migration from the old implementation
  */
 export class LegacyPlexAdapter {
-  private manager: PlexConfigManager;
-  private _settings: PlexSettings = {};
-  private _playlists: PlexPlaylists = { data: [] };
+  private readonly manager: PlexConfigManager;
+  public _settings: PlexSettings = {};
+  public _playlists: PlexPlaylists = { data: [] };
 
-  constructor(manager: PlexConfigManager) {
+  public constructor(manager: PlexConfigManager) {
     this.manager = manager;
     
     // Initialize cached values
     this.initializeCache();
   }
 
-  private async initializeCache(): Promise<void> {
+  public async initializeCache(): Promise<void> {
     try {
       // Initialize the manager for synchronous access
       await this.manager.initialize();
@@ -43,27 +45,27 @@ export class LegacyPlexAdapter {
   }
 
   // Synchronous getters for backward compatibility
-  get settings(): PlexSettings {
+  public get settings(): PlexSettings {
     return this._settings;
   }
 
-  get playlists(): PlexPlaylists {
+  public get playlists(): PlexPlaylists {
     return this._playlists;
   }
 
   // Legacy methods
-  saveConfig(settings: PlexSettingsUpdate): void {
+  public saveConfig(settings: PlexSettingsUpdate): void {
     // Fire and forget for backward compatibility
     this.manager.updateSettings(settings)
       .then(updated => {
         this._settings = updated;
       })
-      .catch(error => {
+      .catch((error: unknown) => {
         console.error('Failed to save config:', error);
       });
   }
 
-  savePlaylist(type: string, id: string, plexId: string): void {
+  public savePlaylist(type: string, id: string, plexId: string): void {
     // Fire and forget for backward compatibility
     this.manager.addPlaylist(type, id, plexId)
       .then(() => {
@@ -73,7 +75,7 @@ export class LegacyPlexAdapter {
       .then(playlists => {
         this._playlists = playlists;
       })
-      .catch(error => {
+      .catch((error: unknown) => {
         console.error('Failed to save playlist:', error);
       });
   }
@@ -90,6 +92,40 @@ export function createLegacyPlex(storageDir: string): any {
   });
 
   const adapter = new LegacyPlexAdapter(manager);
+  
+  // Initialize the adapter synchronously - this is critical for backward compatibility
+  // The old implementation loads these values synchronously on startup
+  
+  // Load settings synchronously for backward compatibility
+  let initialSettings: PlexSettings = {};
+  try {
+    const settingsPath = join(storageDir, 'plex.json');
+    if (existsSync(settingsPath)) {
+      const content = readFileSync(settingsPath, 'utf8');
+      initialSettings = JSON.parse(content);
+    }
+  } catch (error) {
+    console.error('Failed to load initial settings:', error);
+  }
+  
+  // Load playlists synchronously for backward compatibility
+  let initialPlaylists: PlexPlaylists = { data: [] };
+  try {
+    const playlistsPath = join(storageDir, 'playlists.json');
+    if (existsSync(playlistsPath)) {
+      const content = readFileSync(playlistsPath, 'utf8');
+      initialPlaylists = JSON.parse(content);
+    }
+  } catch (error) {
+    console.error('Failed to load initial playlists:', error);
+  }
+  
+  // Set initial values
+  adapter._settings = initialSettings;
+  adapter._playlists = initialPlaylists;
+  
+  // Then initialize async updates in the background
+  adapter.initializeCache().catch(console.error);
 
   // Return object matching the old interface
   return {

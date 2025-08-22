@@ -93,10 +93,15 @@ function main() {
 }
 
 // Export functions for programmatic use
-export { syncAlbums, refreshMQTT, syncPlaylists, syncUsers };
+
 export type { SyncJobType };
 
 // Run CLI if this file is executed directly
 if (require.main === module) {
   main();
 }
+
+export {syncAlbums} from './jobs/albums';
+export {refreshMQTT} from './jobs/mqtt';
+export {syncPlaylists} from './jobs/playlists';
+export {syncUsers} from './jobs/users';

@@ -3,19 +3,20 @@ import { PlexConfigEvent } from '../types/events';
 type EventListener<T = any> = (event: T) => void;
 
 export class PlexEventEmitter {
-  private listeners: Map<string, Set<EventListener>> = new Map();
+  private readonly listeners = new Map<string, Set<EventListener>>();
 
-  on<T extends PlexConfigEvent>(
+  public on<T extends PlexConfigEvent>(
     type: T['type'],
     listener: EventListener<T>
   ): void {
     if (!this.listeners.has(type)) {
       this.listeners.set(type, new Set());
     }
+
     this.listeners.get(type)!.add(listener as EventListener);
   }
 
-  off<T extends PlexConfigEvent>(
+  public off<T extends PlexConfigEvent>(
     type: T['type'],
     listener: EventListener<T>
   ): void {
@@ -28,7 +29,7 @@ export class PlexEventEmitter {
     }
   }
 
-  emit<T extends PlexConfigEvent>(type: T['type'], event: T): void {
+  public emit<T extends PlexConfigEvent>(type: T['type'], event: T): void {
     const listeners = this.listeners.get(type);
     if (listeners) {
       listeners.forEach(listener => {
@@ -41,7 +42,7 @@ export class PlexEventEmitter {
     }
   }
 
-  removeAllListeners(type?: string): void {
+  public removeAllListeners(type?: string): void {
     if (type) {
       this.listeners.delete(type);
     } else {
@@ -49,8 +50,9 @@ export class PlexEventEmitter {
     }
   }
 
-  listenerCount(type: string): number {
+  public listenerCount(type: string): number {
     const listeners = this.listeners.get(type);
+
     return listeners ? listeners.size : 0;
   }
 }

@@ -1,20 +1,20 @@
 import { PlexSettings } from './settings';
 import { PlaylistItem } from './playlists';
 
-export interface ConfigEvent<T = any> {
+export type ConfigEvent<T = any> = {
   readonly type: string;
   readonly timestamp: number;
   readonly data: T;
 }
 
-export interface SettingsUpdatedEvent extends ConfigEvent<PlexSettings> {
+export type SettingsUpdatedEvent = {
   readonly type: 'settings:updated';
   readonly previous: PlexSettings | null;
-}
+} & ConfigEvent<PlexSettings>
 
-export interface PlaylistUpdatedEvent extends ConfigEvent<PlaylistItem> {
+export type PlaylistUpdatedEvent = {
   readonly type: 'playlist:updated';
   readonly action: 'added' | 'removed' | 'updated';
-}
+} & ConfigEvent<PlaylistItem>
 
 export type PlexConfigEvent = SettingsUpdatedEvent | PlaylistUpdatedEvent;

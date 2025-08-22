@@ -78,6 +78,9 @@ importers:
       '@spotify-to-plex/open-spotify-sdk':
         specifier: workspace:*
         version: link:../../packages/open-spotify-sdk
+      '@spotify-to-plex/plex-config':
+        specifier: workspace:*
+        version: link:../../packages/plex-config
       '@spotify-to-plex/plex-music-search':
         specifier: workspace:*
         version: link:../../packages/plex-music-search
@@ -87,9 +90,6 @@ importers:
       '@spotify/web-api-ts-sdk':
         specifier: ^1.2.0
         version: 1.2.0
-      '@vibe-kanban/plex-config':
-        specifier: workspace:*
-        version: link:../../packages/plex-config
       axios:
         specifier: ^1.11.0
         version: 1.11.0
@@ -172,6 +172,9 @@ importers:
       '@spotify-to-plex/open-spotify-sdk':
         specifier: workspace:*
         version: link:../../packages/open-spotify-sdk
+      '@spotify-to-plex/plex-config':
+        specifier: workspace:*
+        version: link:../../packages/plex-config
       '@spotify-to-plex/plex-music-search':
         specifier: workspace:*
         version: link:../../packages/plex-music-search
@@ -181,9 +184,6 @@ importers:
       '@spotify/web-api-ts-sdk':
         specifier: ^1.2.0
         version: 1.2.0
-      '@vibe-kanban/plex-config':
-        specifier: workspace:*
-        version: link:../../packages/plex-config
       axios:
         specifier: ^1.11.0
         version: 1.11.0

@@ -6,20 +6,21 @@ import { PlaylistUpdatedEvent } from '../types/events';
 export class PlaylistService {
   private cache: PlexPlaylists | null = null;
 
-  constructor(
+  public constructor(
     private readonly storage: StorageAdapter,
     private readonly eventEmitter: PlexEventEmitter
   ) {}
 
-  async getPlaylists(): Promise<PlexPlaylists> {
+  public async getPlaylists(): Promise<PlexPlaylists> {
     if (this.cache === null) {
       const playlists = await this.storage.read<PlexPlaylists>('playlists');
       this.cache = playlists ?? { data: [] };
     }
+
     return this.cache;
   }
 
-  async addPlaylist(item: PlaylistUpdate): Promise<void> {
+  public async addPlaylist(item: PlaylistUpdate): Promise<void> {
     const current = await this.getPlaylists();
     const existingData = current.data ?? [];
     
@@ -51,7 +52,7 @@ export class PlaylistService {
     this.eventEmitter.emit('playlist:updated', event);
   }
 
-  async removePlaylist(id: string): Promise<void> {
+  public async removePlaylist(id: string): Promise<void> {
     const current = await this.getPlaylists();
     const existingData = current.data ?? [];
     const item = existingData.find(p => p.id === id);
@@ -77,7 +78,7 @@ export class PlaylistService {
     this.eventEmitter.emit('playlist:updated', event);
   }
 
-  async updatePlaylist(id: string, updates: Partial<PlaylistUpdate>): Promise<void> {
+  public async updatePlaylist(id: string, updates: Partial<PlaylistUpdate>): Promise<void> {
     const current = await this.getPlaylists();
     const existingData = current.data ?? [];
     const index = existingData.findIndex(p => p.id === id);
@@ -114,7 +115,7 @@ export class PlaylistService {
     this.eventEmitter.emit('playlist:updated', event);
   }
 
-  async clearPlaylists(): Promise<void> {
+  public async clearPlaylists(): Promise<void> {
     await this.storage.delete('playlists');
     this.cache = { data: [] };
     
@@ -122,12 +123,12 @@ export class PlaylistService {
   }
 
   // Synchronous getter for backward compatibility (uses cached value)
-  getCachedPlaylists(): PlexPlaylists {
+  public getCachedPlaylists(): PlexPlaylists {
     return this.cache ?? { data: [] };
   }
 
   // Pre-load cache for synchronous access
-  async preloadCache(): Promise<void> {
+  public async preloadCache(): Promise<void> {
     await this.getPlaylists();
   }
 }

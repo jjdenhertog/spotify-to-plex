@@ -1,5 +1,5 @@
 {
-  "name": "@vibe-kanban/plex-config",
+  "name": "@spotify-to-plex/plex-config",
   "version": "1.0.0",
   "description": "Shared Plex configuration management",
   "main": "dist/index.js",
