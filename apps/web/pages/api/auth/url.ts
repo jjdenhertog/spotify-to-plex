@@ -15,6 +15,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
     .post(
         async (req, res, _next) => {
 
+            console.log("Getting auth url", process.env.PLEX_APP_ID);
             const result = await axios.post<PostPinResponse>("https://plex.tv/api/v2/pins", stringify({
                 strong: true,
                 "X-Plex-Product": "Spotify to Plex",
@@ -42,6 +43,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
 
 export default router.handler({
     onError: (err: unknown, req: NextApiRequest, res: NextApiResponse) => {
+
         generateError(req, res, "Plex Authentication", err);
     },
 });

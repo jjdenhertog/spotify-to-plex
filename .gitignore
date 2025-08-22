@@ -19,10 +19,16 @@ out/
 # TypeScript build artifacts
 *.tsbuildinfo
 **/*.tsbuildinfo
+*.d.ts.map
+**/*.d.ts.map
+*.js.map
+**/*.js.map
+*.jsx.map
+**/*.jsx.map
+
+# Package build outputs (these are generated and should not be committed)
 packages/**/*.d.ts
-packages/**/*.d.ts.map
 packages/**/*.js
-packages/**/*.js.map
 !packages/**/tsconfig.json
 !packages/**/package.json
 

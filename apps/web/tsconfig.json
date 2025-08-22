@@ -2,6 +2,11 @@
   "extends": "../../config/typescript/react.json",
   "compilerOptions": {
     "baseUrl": ".",
+    "noEmit": true,
+    "declaration": false,
+    "declarationMap": false,
+    "sourceMap": false,
+    "composite": false,
     "paths": {
       "@/helpers/*": [
         "src/helpers/*"
