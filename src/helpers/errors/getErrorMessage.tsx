@@ -5,15 +5,26 @@ export function getErrorMessage(e: unknown): string {
     if (message)
         return message;
 
-    try {
-        const data = JSON.parse(e);
-        if (data.error) {
-            return data.error;
+    // Type guard to check if the value is a string before parsing
+    if (typeof e === 'string') {
+        try {
+            const data = JSON.parse(e);
+            if (data && typeof data === 'object' && data.error) {
+                return typeof data.error === 'string' ? data.error : String(data.error);
+            }
+        } catch (_e) {
+            // If parsing fails, treat the string as the error message itself
+            return e;
         }
- 
-            return "Something went terribly wrong";
-        
-    } catch (_e) {
-        return "Something went extremely wrong";
     }
+
+    // Handle case where e is already an object with an error property
+    if (e && typeof e === 'object' && 'error' in e) {
+        const errorValue = (e as { error: unknown }).error;
+        if (typeof errorValue === 'string') {
+            return errorValue;
+        }
+    }
+
+    return "Something went terribly wrong";
 }

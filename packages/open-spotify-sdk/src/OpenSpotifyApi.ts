@@ -13,8 +13,8 @@ export class OpenSpotifyApi {
     public playlists: PlaylistsEndpoints;
     public tracks: TracksEndpoints;
 
-    public accessToken: AccessToken
-    public clientToken: ClientToken
+    public accessToken!: AccessToken
+    public clientToken!: ClientToken
 
     public constructor() {
         this.albums = new AlbumsEndpoints(this);
