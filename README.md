@@ -1,6 +1,8 @@
 <p align="center"><img src="misc/logo.png" width="90"></p>
 <p align="center" color="red">Spotify to Plex</p>
 
+> **⚠️ This project has been migrated to a monorepo structure. See [Migration Complete](docs/MIGRATION_COMPLETE.md) for details.**
+
 ------------
 
 A beautiful web application that you can use to sync your Spotify playlists with [Plex](https://plex.tv/). This application uses the data from Spotify (playlists or albums) and tries to find all the matching songs in Plex. With every playlists it gives you an overview of the songs that have been matched and how they have been matched.
@@ -24,6 +26,7 @@ This project started because I'm using Home Assistant together with Plex and Son
 * Add albums / playlist by searching Spotify
 
 # Table of Contents
+* [Monorepo Structure](#monorepo-structure)
 * [Installation](#installation)
   * [Encryption key](#encryption-key)
   * [Spotify credentials](#spotify-credentials)
@@ -50,6 +53,56 @@ This project started because I'm using Home Assistant together with Plex and Son
   * [Missing songs](#missing-songs-1)
 * [Dashboarding](#dashboarding)
 * [Support This Open-Source Project ❤️](#support-this-open-source-project-️)
+
+------------
+
+## Monorepo Structure
+
+This project uses a monorepo architecture with pnpm workspaces for better code organization and dependency management:
+
+```
+├── apps/                          # Application packages
+│   ├── web/                      # Next.js web application (@vibe-kanban/web)
+│   └── sync-worker/              # Background sync worker (@vibe-kanban/sync-worker)
+├── packages/                      # Shared library packages
+│   ├── music-search/             # Core music search utilities
+│   ├── open-spotify-sdk/         # Spotify SDK wrapper  
+│   ├── plex-music-search/        # Plex-specific search functionality
+│   └── tidal-music-search/       # Tidal-specific search functionality
+├── config/                        # Shared configuration files
+└── docs/                         # Documentation
+```
+
+### Development Commands
+
+```bash
+# Install dependencies
+pnpm install
+
+# Build all packages
+npm run build
+
+# Build only packages (libraries)
+npm run build:packages
+
+# Build specific workspaces
+npm run build:web
+npm run build:sync-worker
+
+# Development mode
+npm run dev:web
+
+# Run tests
+npm run test --workspaces --if-present
+
+# Lint code
+npm run lint --workspaces --if-present
+
+# Type checking
+npm run type-check
+```
+
+For detailed migration information, see [Migration Complete](docs/MIGRATION_COMPLETE.md).
 
 ------------
 

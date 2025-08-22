@@ -8,6 +8,143 @@ importers:
 
   .:
     dependencies:
+      axios:
+        specifier: ^1.11.0
+        version: 1.11.0
+      fs-extra:
+        specifier: ^11.3.1
+        version: 11.3.1
+      moment:
+        specifier: ^2.30.1
+        version: 2.30.1
+      mqtt:
+        specifier: ^5.14.0
+        version: 5.14.0
+      qs:
+        specifier: ^6.14.0
+        version: 6.14.0
+      string-similarity-js:
+        specifier: ^2.1.4
+        version: 2.1.4
+      tough-cookie:
+        specifier: ^4.1.4
+        version: 4.1.4
+      ts-node:
+        specifier: ^10.9.2
+        version: 10.9.2(@swc/core@1.13.4)(@types/node@20.19.11)(typescript@5.9.2)
+      tsconfig-paths:
+        specifier: ^4.2.0
+        version: 4.2.0
+    devDependencies:
+      '@types/fs-extra':
+        specifier: ^11.0.4
+        version: 11.0.4
+      '@types/node':
+        specifier: ^20.19.11
+        version: 20.19.11
+      '@types/qs':
+        specifier: ^6.14.0
+        version: 6.14.0
+      '@types/react':
+        specifier: ^18.3.23
+        version: 18.3.23
+      '@types/react-dom':
+        specifier: ^18.3.7
+        version: 18.3.7(@types/react@18.3.23)
+      '@typescript-eslint/eslint-plugin':
+        specifier: ^8.40.0
+        version: 8.40.0(@typescript-eslint/parser@8.40.0(eslint@9.33.0)(typescript@5.9.2))(eslint@9.33.0)(typescript@5.9.2)
+      '@typescript-eslint/parser':
+        specifier: ^8.40.0
+        version: 8.40.0(eslint@9.33.0)(typescript@5.9.2)
+      dotenv-cli:
+        specifier: ^7.4.4
+        version: 7.4.4
+      eslint:
+        specifier: ^9.33.0
+        version: 9.33.0
+      eslint-plugin-react:
+        specifier: ^7.37.5
+        version: 7.37.5(eslint@9.33.0)
+      eslint-plugin-react-hooks:
+        specifier: ^5.2.0
+        version: 5.2.0(eslint@9.33.0)
+      eslint-plugin-unicorn:
+        specifier: ^60.0.0
+        version: 60.0.0(eslint@9.33.0)
+
+  apps/sync-worker:
+    dependencies:
+      '@spotify-to-plex/open-spotify-sdk':
+        specifier: workspace:*
+        version: link:../../packages/open-spotify-sdk
+      '@spotify-to-plex/plex-music-search':
+        specifier: workspace:*
+        version: link:../../packages/plex-music-search
+      '@spotify-to-plex/tidal-music-search':
+        specifier: workspace:*
+        version: link:../../packages/tidal-music-search
+      '@spotify/web-api-ts-sdk':
+        specifier: ^1.2.0
+        version: 1.2.0
+      axios:
+        specifier: ^1.11.0
+        version: 1.11.0
+      fs-extra:
+        specifier: ^11.3.1
+        version: 11.3.1
+      moment:
+        specifier: ^2.30.1
+        version: 2.30.1
+      mqtt:
+        specifier: ^5.14.0
+        version: 5.14.0
+      qs:
+        specifier: ^6.14.0
+        version: 6.14.0
+      string-similarity-js:
+        specifier: ^2.1.4
+        version: 2.1.4
+      tough-cookie:
+        specifier: ^4.1.4
+        version: 4.1.4
+      ts-node:
+        specifier: ^10.9.2
+        version: 10.9.2(@swc/core@1.13.4)(@types/node@20.19.11)(typescript@5.9.2)
+      tsconfig-paths:
+        specifier: ^4.2.0
+        version: 4.2.0
+    devDependencies:
+      '@types/fs-extra':
+        specifier: ^11.0.4
+        version: 11.0.4
+      '@types/node':
+        specifier: ^20.19.11
+        version: 20.19.11
+      '@types/qs':
+        specifier: ^6.14.0
+        version: 6.14.0
+      '@typescript-eslint/eslint-plugin':
+        specifier: ^8.40.0
+        version: 8.40.0(@typescript-eslint/parser@8.40.0(eslint@9.33.0)(typescript@5.9.2))(eslint@9.33.0)(typescript@5.9.2)
+      '@typescript-eslint/parser':
+        specifier: ^8.40.0
+        version: 8.40.0(eslint@9.33.0)(typescript@5.9.2)
+      dotenv-cli:
+        specifier: ^7.4.4
+        version: 7.4.4
+      eslint:
+        specifier: ^9.33.0
+        version: 9.33.0
+      eslint-plugin-unicorn:
+        specifier: ^60.0.0
+        version: 60.0.0(eslint@9.33.0)
+      typescript:
+        specifier: ^5.7.2
+        version: 5.9.2
+
+  apps/web:
+    dependencies:
       '@emotion/cache':
         specifier: ^11.14.0
         version: 11.14.0
@@ -31,13 +168,13 @@ importers:
         version: 6.5.0(@emotion/react@11.14.0(@types/react@18.3.23)(react@18.3.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@18.3.23)(react@18.3.1))(@types/react@18.3.23)(react@18.3.1))(@types/react@18.3.23)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@spotify-to-plex/open-spotify-sdk':
         specifier: workspace:*
-        version: link:packages/open-spotify-sdk
+        version: link:../../packages/open-spotify-sdk
       '@spotify-to-plex/plex-music-search':
         specifier: workspace:*
-        version: link:packages/plex-music-search
+        version: link:../../packages/plex-music-search
       '@spotify-to-plex/tidal-music-search':
         specifier: workspace:*
-        version: link:packages/tidal-music-search
+        version: link:../../packages/tidal-music-search
       '@spotify/web-api-ts-sdk':
         specifier: ^1.2.0
         version: 1.2.0
@@ -92,12 +229,6 @@ importers:
       tough-cookie:
         specifier: ^4.1.4
         version: 4.1.4
-      ts-node:
-        specifier: ^10.9.2
-        version: 10.9.2(@swc/core@1.13.4)(@types/node@20.19.11)(typescript@5.9.2)
-      tsconfig-paths:
-        specifier: ^4.2.0
-        version: 4.2.0
     devDependencies:
       '@types/fs-extra':
         specifier: ^11.0.4
@@ -120,9 +251,6 @@ importers:
       '@typescript-eslint/parser':
         specifier: ^8.40.0
         version: 8.40.0(eslint@9.33.0)(typescript@5.9.2)
-      dotenv-cli:
-        specifier: ^7.4.4
-        version: 7.4.4
       eslint:
         specifier: ^9.33.0
         version: 9.33.0
@@ -135,6 +263,9 @@ importers:
       eslint-plugin-unicorn:
         specifier: ^60.0.0
         version: 60.0.0(eslint@9.33.0)
+      typescript:
+        specifier: ^5.7.2
+        version: 5.9.2
 
   packages/music-search:
     dependencies:

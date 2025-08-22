@@ -1,0 +1,43 @@
+{
+  "extends": "../../config/typescript/node.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "baseUrl": ".",
+    "rootDir": "./src",
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "composite": true,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": false,
+    "skipLibCheck": true,
+    "noEmit": false
+  },
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ],
+  "references": [
+    {
+      "path": "../../packages/music-search"
+    },
+    {
+      "path": "../../packages/open-spotify-sdk"
+    },
+    {
+      "path": "../../packages/plex-music-search"
+    },
+    {
+      "path": "../../packages/tidal-music-search"
+    }
+  ],
+  "ts-node": {
+    "transpileOnly": true,
+    "files": true,
+    "experimentalSpecifierResolution": "node"
+  }
+}

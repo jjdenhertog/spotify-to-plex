@@ -44,8 +44,11 @@ export class PlexMusicSearch {
         const result: SearchResponse[] = []
 
         for (let i = 0; i < tracks.length; i++) {
-            const trackResult = await this._newTrackSearch(approaches, tracks[i], false)
-            result.push(trackResult)
+            const track = tracks[i];
+            if (track) {
+                const trackResult = await this._newTrackSearch(approaches, track, false)
+                result.push(trackResult)
+            }
         }
 
         return result
@@ -75,13 +78,13 @@ export class PlexMusicSearch {
 
     public async searchAlbum(tracks: PlexMusicSearchTrack[]): Promise<SearchResponse[]> {
 
-        const firstValidAlbum = tracks.find(item => !!item.album);
+        const firstValidAlbum = tracks.find(item => !!item?.album);
         if (!firstValidAlbum)
-            return tracks.map(item => ({ id: item.id, title: item.title, artist: item.artists[0], album: item.album || "", result: [] }))
+            return tracks.map(item => ({ id: item.id, title: item.title, artist: item.artists[0] || '', album: item.album || "", result: [] }))
 
         const { album, artists } = firstValidAlbum;
         if (!album)
-            return tracks.map(item => ({ id: item.id, title: item.title, artist: item.artists[0], album: item.album || "", result: [] }))
+            return tracks.map(item => ({ id: item.id, title: item.title, artist: item.artists[0] || '', album: item.album || "", result: [] }))
 
         // Initialize music search with config
         const musicSearch = MusicSearch.getInstance();
@@ -91,7 +94,7 @@ export class PlexMusicSearch {
 
             for (let i = 0; i < find.artists.length; i++) {
                 const artist = find.artists[i]
-                const result = musicSearch.search({ id, title, album, artist }, tracks)
+                const result = musicSearch.search({ id, title, album: album || '', artist: artist || '' }, tracks)
                 if (result.length > 0)
                     return result;
 
@@ -103,13 +106,13 @@ export class PlexMusicSearch {
         for (let j = 0; j < artists.length; j++) {
             const artist = artists[j];
             try {
-                const foundAlbums = await searchForAlbum(this._config.uri, this._config.token, artist, album);
+                const foundAlbums = await searchForAlbum(this._config.uri, this._config.token, artist || '', album || '');
                 if (foundAlbums.length > 0) {
 
                     // We go for the first hit
                     // eslint-disable-next-line @typescript-eslint/prefer-destructuring
                     const album = foundAlbums[0];
-                    const albumTracks = await getAlbumTracks(this._config.uri, this._config.token, album.id)
+                    const albumTracks = await getAlbumTracks(this._config.uri, this._config.token, album?.id || '')
 
                     return tracks.map(item => {
 
@@ -122,8 +125,8 @@ export class PlexMusicSearch {
 
                         return {
                             ...item,
-                            artist: artists[0],
-                            album: album.title,
+                            artist: artists[0] || '',
+                            album: album?.title || '',
                             result: plexTracks
                         }
                     })
@@ -133,7 +136,7 @@ export class PlexMusicSearch {
             }
         }
 
-        return tracks.map(item => ({ id: item.id, title: item.title, artist: item.artists[0], album: item.album || "", result: [] }))
+        return tracks.map(item => ({ id: item.id, title: item.title, artist: item.artists[0] || '', album: item.album || "", result: [] }))
 
     }
 
@@ -144,31 +147,35 @@ export class PlexMusicSearch {
     public async getById(key: string): Promise<PlexTrack> {
         const metaData = await getMetadata(this._config.uri, this._config.token, key);
         // eslint-disable-next-line @typescript-eslint/prefer-destructuring
-        const item = metaData[0]
+        const item = metaData[0];
+        
+        if (!item) {
+            throw new Error('No metadata found for key: ' + key);
+        }
 
         let src = '';
         try {
-            src = item.Media[0].Part[0].file;
+            src = item.Media?.[0]?.Part?.[0]?.file || '';
         } catch (_e) {
         }
 
         return {
-            id: item.key,
-            guid: item.guid,
-            image: item.thumb,
-            title: item.title,
+            id: item.key || '',
+            guid: item.guid || '',
+            image: item.thumb || '',
+            title: item.title || '',
             src,
             album: {
-                guid: item.parentGuid,
-                id: item.parentKey,
-                title: item.parentTitle,
-                image: item.parentThumb,
+                guid: item.parentGuid || '',
+                id: item.parentKey || '',
+                title: item.parentTitle || '',
+                image: item.parentThumb || '',
             },
             artist: {
-                guid: item.grandparentGuid,
-                id: item.grandparentKey,
-                title: removeFeaturing(item.originalTitle || item.grandparentTitle),
-                image: item.grandparentThumb,
+                guid: item.grandparentGuid || '',
+                id: item.grandparentKey || '',
+                title: removeFeaturing(item.originalTitle || item.grandparentTitle || ''),
+                image: item.grandparentThumb || '',
             }
         };
 
@@ -183,7 +190,7 @@ export class PlexMusicSearch {
         for (let j = 0; j < artists.length; j++) {
             const artist = artists[j];
             try {
-                const result = await this._findTrack(approaches, { id, artist, title, album }, includeMatching);
+                const result = await this._findTrack(approaches, { id, artist: artist || '', title, album: album || '' }, includeMatching);
                 queries = queries.concat(result.queries)
 
                 if (result && result.result.length > 0)
@@ -192,7 +199,7 @@ export class PlexMusicSearch {
             }
         }
 
-        return { id, artist: artists[0], title, album: album || "", queries, result: [] }
+        return { id, artist: artists[0] || '', title, album: album || "", queries, result: [] }
     }
 
     private async _findTrack(approaches: PlexMusicSearchApproach[], find: Track, includeMatching: boolean) {
@@ -245,7 +252,12 @@ export class PlexMusicSearch {
 
         let searchApproachIndex = 0;
         while (approaches[searchApproachIndex]) {
-            const approach = approaches[searchApproachIndex]
+            const approach = approaches[searchApproachIndex];
+            if (!approach) {
+                searchApproachIndex++;
+                continue;
+            }
+            
             if (searchResult.length > 0) {
                 searchApproachIndex++;
                 continue;

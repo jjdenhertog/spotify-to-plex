@@ -1,9 +1,20 @@
 {
+    "$schema": "https://json.schemastore.org/tsconfig",
     "extends": "../../config/typescript/base.json",
     "compilerOptions": {
         "rootDir": "./src",
-        "outDir": "./dist"
+        "outDir": "./dist",
+        "composite": true,
+        "declaration": true,
+        "declarationMap": true,
+        "incremental": true,
+        "tsBuildInfoFile": "./dist/.tsbuildinfo"
     },
+    "references": [
+        {
+            "path": "../music-search"
+        }
+    ],
     "include": ["src/**/*"],
     "exclude": ["node_modules", "dist"]
 }

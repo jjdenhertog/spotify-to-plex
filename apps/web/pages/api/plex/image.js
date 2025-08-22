@@ -1,0 +1,39 @@
+import { AxiosRequest } from '@/helpers/AxiosRequest';
+import { generateError } from '@/helpers/errors/generateError';
+import { plex } from '@/library/plex';
+import { createRouter } from 'next-connect';
+export const config = {
+    api: {
+        externalResolver: true,
+    },
+};
+const router = createRouter()
+    .get(async (req, res) => {
+    const { path } = req.query;
+    if (!path || Array.isArray(path) || !plex.settings.token)
+        return res.status(400).end();
+    try {
+        res.setHeader("Cache-Control", `public, immutable, no-transform, s-maxage=31536000, max-age=31536000`);
+        const url = path.indexOf('http') > -1 ? path : `${plex.settings.uri}${path}`;
+        try {
+            const data = await AxiosRequest.get(url, plex.settings.token, { responseType: "arraybuffer" });
+            const contentType = data.headers?.['Content-Type'];
+            res.setHeader('content-type', typeof contentType === 'string' ? contentType : 'image/jpeg');
+            res.setHeader('content-length', data.data.length);
+            return res.status(200).send(data.data);
+        }
+        catch (e) {
+            console.log(e);
+        }
+        return res.status(200).send('[ ]');
+    }
+    catch (_error) {
+        return res.status(404).end();
+    }
+});
+export default router.handler({
+    onError: (err, req, res) => {
+        generateError(req, res, "Image", err);
+    },
+});
+//# sourceMappingURL=image.js.map

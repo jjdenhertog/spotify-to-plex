@@ -15,64 +15,70 @@ export default function hubSearch(uri: string, token: string, query: string, lim
 
         for (let i = 0; i < forbiddenCharacters.length; i++) {
             const element = forbiddenCharacters[i];
-            query = query.split(element).join('')
+            if (element) {
+                query = query.split(element).join('')
+            }
         }
 
         const url = getAPIUrl(uri, `/hubs/search?query=${fixedEncodeURIComponent(query.trim())}&limit=${limit}`);
         AxiosRequest.get<HubSearchResponse>(url, token)
             .then((result) => {
                 const response: HubSearchResult[] = [];
-                if (result.data.MediaContainer.Hub.length > 0) {
+                if (result.data.MediaContainer.Hub && result.data.MediaContainer.Hub.length > 0) {
                     for (let i = 0; i < result.data.MediaContainer.Hub.length; i++) {
                         const hub = result.data.MediaContainer.Hub[i];
-                        if (hub.type == "album" && hub.Metadata) {
+                        if (hub && hub.type == "album" && hub.Metadata) {
                             for (let j = 0; j < hub.Metadata.length; j++) {
                                 const metadata = hub.Metadata[j];
-                                response.push({
-                                    type: "album",
-                                    id: metadata.key,
-                                    ratingKey: metadata.ratingKey,
-                                    guid: metadata.guid,
-                                    score: metadata.score,
-                                    image: metadata.thumb,
-                                    year: metadata.year,
-                                    title: metadata.title,
-                                    artist: {
-                                        guid: metadata.parentGuid,
-                                        id: metadata.parentKey,
-                                        title: removeFeaturing(metadata.parentTitle),
-                                        alternative_title: "",
-                                        image: metadata.parentThumb,
-                                    },
-                                })
+                                if (metadata) {
+                                    response.push({
+                                        type: "album",
+                                        id: metadata.key || '',
+                                        ratingKey: metadata.ratingKey || '',
+                                        guid: metadata.guid || '',
+                                        score: metadata.score || 0,
+                                        image: metadata.thumb || '',
+                                        year: metadata.year || 0,
+                                        title: metadata.title || '',
+                                        artist: {
+                                            guid: metadata.parentGuid || '',
+                                            id: metadata.parentKey || '',
+                                            title: removeFeaturing(metadata.parentTitle || ''),
+                                            alternative_title: "",
+                                            image: metadata.parentThumb || '',
+                                        },
+                                    })
+                                }
                             }
                         }
 
-                        if (hub.type == "track" && hub.Metadata) {
+                        if (hub && hub.type == "track" && hub.Metadata) {
                             for (let j = 0; j < hub.Metadata.length; j++) {
                                 const metadata = hub.Metadata[j];
-                                response.push({
-                                    type: "track",
-                                    id: metadata.key,
-                                    ratingKey: metadata.ratingKey,
-                                    guid: metadata.guid,
-                                    score: metadata.score,
-                                    image: metadata.thumb,
-                                    title: metadata.title,
-                                    album: {
-                                        id: metadata.parentKey,
-                                        guid: metadata.parentGuid,
-                                        title: metadata.parentTitle,
-                                        year: metadata.parentYear,
-                                        image: metadata.parentThumb,
-                                    },
-                                    artist: {
-                                        id: metadata.grandparentKey,
-                                        guid: metadata.grandparentGuid,
-                                        title: removeFeaturing(metadata.originalTitle || metadata.grandparentTitle),
-                                        image: metadata.grandparentThumb,
-                                    }
-                                })
+                                if (metadata) {
+                                    response.push({
+                                        type: "track",
+                                        id: metadata.key || '',
+                                        ratingKey: metadata.ratingKey || '',
+                                        guid: metadata.guid || '',
+                                        score: metadata.score || 0,
+                                        image: metadata.thumb || '',
+                                        title: metadata.title || '',
+                                        album: {
+                                            id: metadata.parentKey || '',
+                                            guid: metadata.parentGuid || '',
+                                            title: metadata.parentTitle || '',
+                                            year: metadata.parentYear || 0,
+                                            image: metadata.parentThumb || '',
+                                        },
+                                        artist: {
+                                            id: metadata.grandparentKey || '',
+                                            guid: metadata.grandparentGuid || '',
+                                            title: removeFeaturing(metadata.originalTitle || metadata.grandparentTitle || ''),
+                                            image: metadata.grandparentThumb || '',
+                                        }
+                                    })
+                                }
                             }
                         }
                     }
