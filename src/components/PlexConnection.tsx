@@ -39,7 +39,7 @@ const PlexConnection = (props: Props) => {
             setValidated(false);
 
              
-            const resource = resources.filter(item => item.connections.some(connection => connection.uri == newPlexUri))[0];
+            const [resource] = resources.filter(item => item.connections.some(connection => connection.uri == newPlexUri));
             if (!resource)
                 throw new Error("Something went wrong selecting the resource");
 

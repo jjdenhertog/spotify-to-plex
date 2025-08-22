@@ -96,9 +96,9 @@ export default function PlaylistItemSettings(props: Props) {
     }, [items])
 
     const onEditLabelChipClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-        const { label } = e.currentTarget.dataset;
-        if (typeof label == 'string' && label.trim())
-            setLabel(label.trim())
+        const labelValue = e.currentTarget.dataset.label;
+        if (labelValue?.trim())
+            setLabel(labelValue.trim())
     }, [])
 
     return (<Modal open>
@@ -128,11 +128,8 @@ export default function PlaylistItemSettings(props: Props) {
                             size="small"
                             sx={{ mr: .5, mb: .5 }}
                             key={label}
-                             
-                            onClick={(e) => {
-                                e.currentTarget.dataset.label = label;
-                                onEditLabelChipClick(e);
-                            }}
+                            data-label={label}
+                            onClick={onEditLabelChipClick}
                             label={label}
                         />
                     ))}

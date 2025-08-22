@@ -12,10 +12,11 @@ type Props = {
 }
 
 export default function UserSyncSettings(props: Props) {
-    const { user } = props;
+    const { user, onClose } = props;
     const [autoSync, setAutoSync] = useState(false);
     const [label, setLabel] = useState('')
     const [recentContext, setRecentContext] = useState(false);
+    // eslint-disable-next-line react/hook-use-state
     const [loading] = useState(false);
 
     //////////////////////////////
@@ -52,19 +53,23 @@ export default function UserSyncSettings(props: Props) {
             enqueueSnackbar(`[${user.name}] Changes saved`)
 
              
-            props.onClose(true)
+            onClose(true)
         })
 
-    }, [user, autoSync, label, recentContext, props])
+    }, [user, autoSync, label, recentContext, onClose])
 
     //////////////////////////////
     // Close dialog
     //////////////////////////////
-    const onClose = useCallback((_e: unknown, reason: string) => {
+    const handleClose = useCallback((_e: unknown, reason: string) => {
         if (reason == 'closeClick')
              
-            props.onClose()
-    }, [props])
+            onClose()
+    }, [onClose])
+    
+    const handleCloseClick = useCallback((e: React.MouseEvent) => {
+        handleClose(e, 'closeClick')
+    }, [handleClose])
 
     /////////////////////////////////////
     // Load item data
@@ -82,11 +87,11 @@ export default function UserSyncSettings(props: Props) {
         !!(Boolean(user?.recentContext) != recentContext)
     )
 
-    return (<Modal open onClose={onClose}>
+    return (<Modal open onClose={handleClose}>
         <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', maxWidth: 500, bgcolor: 'background.paper', p: 3, borderRadius: 1 }}>
             <IconButton
                 size="small"
-                onClick={(e) => onClose(e, 'closeClick')}
+                onClick={handleCloseClick}
                 sx={{ position: 'absolute', right: 8, top: 8 }}
             >
                 <CloseIcon fontSize="small" />

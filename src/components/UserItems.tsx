@@ -16,7 +16,7 @@ type Props = {
 
 export default function UserItems(props: Props) {
 
-    const { type, user } = props;
+    const { type, user, onClose: propsOnClose } = props;
     const [items, setItems] = useState<(GetSpotifyAlbum | GetSpotifyPlaylist)[]>([])
 
     ///////////////////////////////////////////////
@@ -34,12 +34,15 @@ export default function UserItems(props: Props) {
 
     }, [type, user.id])
 
-    const onClose = useCallback((event: React.MouseEvent | React.KeyboardEvent | Record<string, never>, reason?: string) => {
-        const { onClose } = props;
+    const handleClose = useCallback((event: React.MouseEvent | React.KeyboardEvent | Record<string, never>, reason?: string) => {
         if (reason == 'closeClick')
-            onClose(event, reason)
+            propsOnClose(event, reason)
 
-    }, [props])
+    }, [propsOnClose])
+    
+    const handleCloseClick = useCallback((e: React.MouseEvent) => {
+        handleClose(e, 'closeClick')
+    }, [handleClose])
 
     ///////////////////////////////////////////////
     // Modify labels
@@ -129,11 +132,11 @@ export default function UserItems(props: Props) {
         curEnd = items.length;
 
 
-    return (<Modal open onClose={onClose}>
+    return (<Modal open onClose={handleClose}>
         <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', maxWidth: 600, bgcolor: 'background.paper', p: 3, borderRadius: 1 }}>
             <IconButton
                 size="small"
-                onClick={(e) => onClose(e, 'closeClick')}
+                onClick={handleCloseClick}
                 sx={{ position: 'absolute', right: 8, top: 8 }}
             >
                 <CloseIcon fontSize="small" />

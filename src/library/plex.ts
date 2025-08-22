@@ -29,7 +29,7 @@ declare global {
 
 // @ts-expect-error I dodn't setup the global typing
  
-let _plex = global._plex;
+let {_plex} = global;
 
 if (!_plex) {
 

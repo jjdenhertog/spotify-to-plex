@@ -33,7 +33,7 @@ const Page: NextPage = () => {
 
             const savedItems = await axios.get<[SavedItem]>(`/api/saved-items?id=${router.query.id}`)
              
-            const savedItem = savedItems.data[0]
+            const [savedItem] = savedItems.data
             if (!savedItem)
                 throw new Error(`Could not find saved item`)
 
@@ -73,7 +73,7 @@ const Page: NextPage = () => {
                 </Box>}
 
                 {!loading && !!playlist && !!showOptimizer &&
-                    <Dialog open onClose={() => setShowOptimizer(false)}>
+                    <Dialog open onClose={onUseNormalClick}>
                         <DialogTitle>Large playlist detected</DialogTitle>
                         <DialogContent>
                             <Typography variant="body2">

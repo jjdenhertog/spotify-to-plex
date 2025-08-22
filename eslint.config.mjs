@@ -1,3 +1,21 @@
+/**
+ * IMPORTANT FOR AI CODE GENERATORS:
+ * 
+ * This project enforces STRICT React patterns:
+ * 1. ALL event handlers MUST use useCallback - no inline functions allowed
+ * 2. Conditional rendering MUST use !! or explicit boolean checks to prevent leaks
+ * 3. Props MUST be destructured
+ * 4. Components SHOULD be memoized when receiving props
+ * 
+ * Example patterns:
+ * ✅ const handleClick = useCallback(() => {}, [])
+ * ✅ {!!value && <Component />}
+ * ❌ onClick={() => {}}
+ * ❌ {value && <Component />}
+ * 
+ * See AI_CODING_RULES.md for detailed examples
+ */
+
 import js from '@eslint/js';
 import typescriptPlugin from '@typescript-eslint/eslint-plugin';
 import typescriptParser from '@typescript-eslint/parser';
@@ -60,7 +78,7 @@ export default [
             }
         },
         rules: {
-            // indent: ['error', 4, { SwitchCase: 1 }], // Temporarily disabled due to stack overflow
+            // "indent": ['error', 4, { SwitchCase: 1 }], // Temporarily disabled - causes stack overflow in ESLint 9
             "comma-dangle": [
                 "error",
                 {
@@ -94,9 +112,9 @@ export default [
             "react/button-has-type": "error",
             "react/checked-requires-onchange-or-readonly": "error",
             "react/default-props-match-prop-types": "error",
-            "react/destructuring-assignment": "off", // Too many false positives
+            "react/destructuring-assignment": "error",
             "react/display-name": "error",
-            "react/hook-use-state": "off", // Too strict for existing code
+            "react/hook-use-state": "error",
             "react/iframe-missing-sandbox": "error",
             "react/jsx-boolean-value": "error",
             "react/jsx-curly-brace-presence": "error",
@@ -107,11 +125,19 @@ export default [
             "react/jsx-fragments": "error",
             "react/jsx-handler-names": "error",
             "react/jsx-key": "error",
-            "react/jsx-no-bind": ["error", { "allowArrowFunctions": true, "allowFunctions": true }],
+            "react/jsx-no-bind": ["error", {
+                "ignoreDOMComponents": false,
+                "ignoreRefs": false,
+                "allowArrowFunctions": false, // Force useCallback usage
+                "allowFunctions": false,
+                "allowBind": false
+            }],
             "react/jsx-no-comment-textnodes": "error",
             "react/jsx-no-constructed-context-values": "error",
             "react/jsx-no-duplicate-props": "error",
-            "react/jsx-no-leaked-render": "error",
+            "react/jsx-no-leaked-render": ["error", { 
+                "validStrategies": ["ternary", "coerce"]
+            }],
             "react/jsx-no-script-url": "error",
             "react/jsx-no-target-blank": "error",
             "react/jsx-no-undef": "error",
@@ -137,7 +163,7 @@ export default [
             "react/no-object-type-as-default-prop": "error",
             "react/no-redundant-should-component-update": "error",
             "react/no-render-return-value": "error",
-            "react/no-set-state": "off", // Using hooks instead
+            "react/no-set-state": "error",
             "react/no-string-refs": "error",
             "react/no-this-in-sfc": "error",
             "react/no-typos": "error",
@@ -149,11 +175,11 @@ export default [
             "react/no-unused-state": "error",
             "react/no-will-update-set-state": "error",
             "react/prefer-es6-class": "error",
-            "react/prefer-exact-props": "off", // Not compatible with TypeScript
-            "react/prefer-read-only-props": "off", // Too strict
+            "react/prefer-exact-props": "error",
+            "react/prefer-read-only-props": "error",
             "react/prefer-stateless-function": "error",
-            "react/prop-types": "off", // Using TypeScript for type checking
-            "react/require-optimization": "off", // Not all components need memo
+            "react/prop-types": "error",
+            "react/require-optimization": "error",
             "react/require-render-return": "error",
             "react/self-closing-comp": "error",
             "react/sort-comp": "error",
@@ -316,7 +342,7 @@ export default [
             "prefer-rest-params": "error",
             "prefer-spread": "error",
             "prefer-template": "error",
-            radix: "off",
+            radix: "error",
             "require-atomic-updates": "error",
             "require-await": "off",
             "require-yield": "error",
@@ -383,7 +409,7 @@ export default [
             "@typescript-eslint/no-non-null-asserted-nullish-coalescing": "off",
             "@typescript-eslint/no-non-null-asserted-optional-chain": "error",
             "@typescript-eslint/no-redeclare": "off",
-            "@typescript-eslint/no-redundant-type-constituents": "off", // False positives with imports
+            "@typescript-eslint/no-redundant-type-constituents": "error",
             "@typescript-eslint/no-require-imports": "error",
             "@typescript-eslint/no-restricted-imports": "error",
             "@typescript-eslint/no-shadow": "off",
@@ -421,7 +447,7 @@ export default [
             "@typescript-eslint/only-throw-error": "error",
             "@typescript-eslint/parameter-properties": "off",
             "@typescript-eslint/prefer-as-const": "error",
-            "@typescript-eslint/prefer-destructuring": "off", // Too many false positives
+            "@typescript-eslint/prefer-destructuring": "error",
             "@typescript-eslint/prefer-enum-initializers": "error",
             "@typescript-eslint/prefer-function-type": "error",
             "@typescript-eslint/prefer-literal-enum-member": "error",

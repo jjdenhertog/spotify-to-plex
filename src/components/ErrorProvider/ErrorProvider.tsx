@@ -3,98 +3,91 @@
 import CloseOutlined from '@mui/icons-material/CloseOutlined';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import { Accordion, AccordionDetails, AccordionSummary, Box, Dialog, DialogContent, DialogTitle, IconButton, Paper, Typography } from "@mui/material";
-import { Component } from "react";
+import { memo, useCallback, useMemo, useState } from "react";
 import { ErrorContext } from "./ErrorContext";
 import { ProviderContext } from "./types";
 
-type State = {
-    error: string;
-    stack?: string;
-    contextValue: ProviderContext
-}
 type ErrorProviderProps = {
     readonly children?: React.ReactNode | React.ReactNode[];
 }
 
 export let showError: ProviderContext['showError'];
 
- 
-export default class ErrorProvider extends Component<ErrorProviderProps, State> {
+const ErrorProviderComponent = ({ children }: ErrorProviderProps) => {
+    const [error, setError] = useState("");
+    const [stack, setStack] = useState<string | undefined>();
 
-    public constructor(props: ErrorProviderProps) {
-        super(props)
+    const showErrorHandler = useCallback((msg: string, stackTrace?: string) => {
+        setError(msg);
+        setStack(stackTrace);
+    }, []);
 
-        showError = this.showError;
+    showError = showErrorHandler;
 
-        this.state = {
-            error: "",
-            contextValue: {
-                showError: this.showError.bind(this),
+    const contextValue = useMemo<ProviderContext>(() => ({
+        showError: showErrorHandler
+    }), [showErrorHandler]);
+
+    const handleClose = useCallback(() => {
+        setError("");
+    }, []);
+
+    return (
+        <>
+            <ErrorContext.Provider value={contextValue}>
+                {children}
+            </ErrorContext.Provider>
+            {!!error &&
+                <Dialog open maxWidth="sm" fullWidth>
+                    <DialogTitle sx={{ paddingTop: 3, paddingBottom: .5 }}>
+                        <IconButton
+                            size="small"
+                            onClick={handleClose}
+                            sx={{ position: 'absolute', right: 8, top: 8 }}
+                        >
+                            <CloseOutlined fontSize="small" />
+                        </IconButton>
+                        Error
+                    </DialogTitle>
+                    <DialogContent>
+                        <Typography>
+                            {error}
+                        </Typography>
+                        {stack && stack != error ? <Box mt={2}>
+                            <Accordion>
+                                <AccordionSummary expandIcon={<ExpandMore />}>
+                                    <Typography>Stack Trace</Typography>
+                                </AccordionSummary>
+                                <AccordionDetails>
+                                    <Paper elevation={0} sx={{ bgcolor: 'action.hover' }}>
+                                        <Box p={1}>
+                                            <Typography
+                                                component="div"
+                                                variant="body2"
+                                                mt={1}
+                                                fontFamily="monospace"
+                                                fontSize="12px"
+                                                position="relative"
+                                            >
+                                                <pre style={{ whiteSpace: "pre-wrap", wordWrap: "break-word" }}>
+                                                    {stack}
+                                                </pre>
+                                            </Typography>
+                                        </Box>
+                                    </Paper>
+                                </AccordionDetails>
+                            </Accordion>
+                        </Box> : null
+                        }
+                    </DialogContent>
+                </Dialog>
             }
-        };
-    }
+        </>
+    );
+};
 
-    public showError = (msg: string, stack?: string) => {
-        this.setState({ error: msg, stack })
-    }
+ErrorProviderComponent.displayName = 'ErrorProvider';
 
-    public render() {
-        const { error, stack, contextValue } = this.state;
+const ErrorProvider = memo(ErrorProviderComponent);
 
-        const handleClose = () => {
-            this.setState({ error: "" });
-        };
-
-        return (
-            <>
-                <ErrorContext.Provider value={contextValue} />
-                {!!error &&
-                    <Dialog open maxWidth="sm" fullWidth>
-                        <DialogTitle sx={{ paddingTop: 3, paddingBottom: .5 }}>
-                            <IconButton
-                                size="small"
-                                onClick={handleClose}
-                                sx={{ position: 'absolute', right: 8, top: 8 }}
-                            >
-                                <CloseOutlined fontSize="small" />
-                            </IconButton>
-                            Error
-                        </DialogTitle>
-                        <DialogContent>
-                            <Typography>
-                                {error}
-                            </Typography>
-                            {stack && stack != error ? <Box mt={2}>
-                                <Accordion>
-                                    <AccordionSummary expandIcon={<ExpandMore />}>
-                                        <Typography>Stack Trace</Typography>
-                                    </AccordionSummary>
-                                    <AccordionDetails>
-                                        <Paper elevation={0} sx={{ bgcolor: 'action.hover' }}>
-                                            <Box p={1}>
-                                                <Typography
-                                                    component="div"
-                                                    variant="body2"
-                                                    mt={1}
-                                                    fontFamily="monospace"
-                                                    fontSize="12px"
-                                                    position="relative"
-                                                >
-                                                    <pre style={{ whiteSpace: "pre-wrap", wordWrap: "break-word" }}>
-                                                        {stack}
-                                                    </pre>
-                                                </Typography>
-                                            </Box>
-                                        </Paper>
-                                    </AccordionDetails>
-                                </Accordion>
-                            </Box> : null
-                            }
-                        </DialogContent>
-                    </Dialog>
-                }
-            </>
-
-        )
-    }
-}
+export default ErrorProvider;
