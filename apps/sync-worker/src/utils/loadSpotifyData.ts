@@ -1,5 +1,5 @@
-import getAccessToken from "@/web/helpers/spotify/getAccessToken";
-import getSpotifyData from "@/web/helpers/spotify/getSpotifyData";
+import getAccessToken from "../helpers/spotify/getAccessToken";
+import getSpotifyData from "../helpers/spotify/getSpotifyData";
 import { SpotifyApi } from "@spotify/web-api-ts-sdk";
 
 export async function loadSpotifyData(uri: string, user?: string, simplified: boolean = false) {

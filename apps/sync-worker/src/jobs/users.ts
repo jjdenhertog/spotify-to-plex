@@ -1,7 +1,7 @@
-import getAccessToken from "@/web/helpers/spotify/getAccessToken";
-import refreshAccessTokens from "@/web/helpers/spotify/refreshAccessTokens";
-import { settingsDir } from "@/web/library/settingsDir";
-import { RecentPlayedContext, SavedItem, SpotifyCredentials } from "@/web/types/SpotifyAPI";
+import getAccessToken from "../helpers/spotify/getAccessToken";
+import refreshAccessTokens from "../helpers/spotify/refreshAccessTokens";
+import { settingsDir } from "../library/settingsDir";
+import { RecentPlayedContext, SavedItem, SpotifyCredentials } from "../types/SpotifyAPI";
 import { SpotifyApi } from "@spotify/web-api-ts-sdk";
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";

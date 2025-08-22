@@ -1,5 +1,5 @@
-import { settingsDir } from '@/web/library/settingsDir';
-import { MQTTItem } from '@/web/types/dashboard/MQTTItem';
+import { settingsDir } from '../library/settingsDir';
+import { MQTTItem } from '../types/dashboard/MQTTItem';
 import mqtt, { MqttClient } from 'mqtt';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';

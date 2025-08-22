@@ -1,8 +1,8 @@
-import { settingsDir } from '@/web/library/settingsDir';
-import { plex } from '@/web/library/plex';
-import { MQTTItem } from '@/web/types/dashboard/MQTTItem';
-import { PlaylistData } from '@/web/types/dashboard/PlaylistData';
-import { TrackLink } from '@/web/types/TrackLink';
+import { settingsDir } from '../library/settingsDir';
+import { plex } from '../library/plex';
+import { MQTTItem } from '../types/dashboard/MQTTItem';
+import { PlaylistData } from '../types/dashboard/PlaylistData';
+import { TrackLink } from '../types/TrackLink';
 import { PlexMusicSearch } from '@spotify-to-plex/plex-music-search';
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';

@@ -29,6 +29,9 @@
       "path": "../../packages/open-spotify-sdk"
     },
     {
+      "path": "../../packages/plex-config"
+    },
+    {
       "path": "../../packages/plex-music-search"
     },
     {

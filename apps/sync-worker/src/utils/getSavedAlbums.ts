@@ -1,5 +1,5 @@
-import { settingsDir } from "@/web/library/settingsDir";
-import { SavedItem } from "@/web/types/SpotifyAPI";
+import { settingsDir } from "../library/settingsDir";
+import { SavedItem } from "../types/SpotifyAPI";
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 

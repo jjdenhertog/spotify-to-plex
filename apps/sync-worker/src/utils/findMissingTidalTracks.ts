@@ -1,6 +1,6 @@
-import getCachedTrackLinks from "@/web/helpers/getCachedTrackLink";
-import getTidalCredentials from "@/web/helpers/tidal/getTidalCredentials";
-import { Track } from "@/web/types/SpotifyAPI";
+import getCachedTrackLinks from "../helpers/getCachedTrackLink";
+import getTidalCredentials from "../helpers/tidal/getTidalCredentials";
+import { Track } from "../types/SpotifyAPI";
 import { TidalMusicSearch, SearchResponse } from "@spotify-to-plex/tidal-music-search";
 
 export async function findMissingTidalTracks(missingTracks: Track[]) {

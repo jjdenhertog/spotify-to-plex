@@ -1,4 +1,4 @@
-import { PlexPlaylists, plex } from "@/web/library/plex";
+import { plex, PlexPlaylists } from "../library/plex";
 
 export function getPlexPlaylists() {
     let playlists: PlexPlaylists["data"] = plex.playlists.data || [];

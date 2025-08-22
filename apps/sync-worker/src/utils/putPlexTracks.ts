@@ -1,11 +1,11 @@
-import { addItemsToPlaylist } from "@/web/helpers/plex/addItemsToPlaylist";
-import { getUri } from "@/web/helpers/plex/getUri";
-import { putPlaylistPoster } from "@/web/helpers/plex/putPlaylistPoster";
-import { removeItemsFromPlaylist } from "@/web/helpers/plex/removeItemsFromPlaylist";
-import { storePlaylist } from "@/web/helpers/plex/storePlaylist";
-import { updatePlaylist } from "@/web/helpers/plex/updatePlaylist";
-import { plex } from "@/web/library/plex";
-import { Playlist } from "@/web/types/PlexAPI";
+import { addItemsToPlaylist } from "../helpers/plex/addItemsToPlaylist";
+import { getUri } from "../helpers/plex/getUri";
+import { putPlaylistPoster } from "../helpers/plex/putPlaylistPoster";
+import { removeItemsFromPlaylist } from "../helpers/plex/removeItemsFromPlaylist";
+import { storePlaylist } from "../helpers/plex/storePlaylist";
+import { updatePlaylist } from "../helpers/plex/updatePlaylist";
+import { plex } from "../library/plex";
+import { Playlist } from "../types/PlexAPI";
 import { SearchResponse } from "@spotify-to-plex/plex-music-search";
 import { type } from "node:os";
 

@@ -1,9 +1,9 @@
-import { AxiosRequest } from "@/web/helpers/AxiosRequest";
-import getAPIUrl from "@/web/helpers/getAPIUrl";
-import { handleOneRetryAttempt } from "@/web/helpers/plex/handleOneRetryAttempt";
-import { settingsDir } from "@/web/library/settingsDir";
-import { plex } from "@/web/library/plex";
-import { Playlist } from "@/web/types/PlexAPI";
+import { AxiosRequest } from "../helpers/AxiosRequest";
+import getAPIUrl from "../helpers/getAPIUrl";
+import { handleOneRetryAttempt } from "../helpers/plex/handleOneRetryAttempt";
+import { settingsDir } from "../library/settingsDir";
+import { plex } from "../library/plex";
+import { Playlist } from "../types/PlexAPI";
 import { GetPlaylistResponse, PlexMusicSearch, SearchResponse } from "@spotify-to-plex/plex-music-search";
 import { writeFileSync } from "node:fs";
 import { join } from "node:path";

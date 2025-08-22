@@ -1,5 +1,5 @@
-import { settingsDir } from "@/web/library/settingsDir";
-import { plex } from "@/web/library/plex";
+import { settingsDir } from "../library/settingsDir";
+import { plex } from "../library/plex";
 import { PlexMusicSearch, SearchResponse } from "@spotify-to-plex/plex-music-search";
 import { writeFileSync } from "node:fs";
 import { join } from "node:path";

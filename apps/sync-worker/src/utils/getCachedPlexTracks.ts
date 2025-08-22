@@ -1,5 +1,5 @@
-import getCachedTrackLinks from "@/web/helpers/getCachedTrackLink";
-import { GetSpotifyAlbum, GetSpotifyPlaylist } from "@/web/types/SpotifyAPI";
+import getCachedTrackLinks from "../helpers/getCachedTrackLink";
+import { GetSpotifyAlbum, GetSpotifyPlaylist } from "../types/SpotifyAPI";
 import { PlexMusicSearch, PlexTrack, SearchResponse } from "@spotify-to-plex/plex-music-search";
 
 export async function getCachedPlexTracks(plexMusicSearch: PlexMusicSearch, data: GetSpotifyPlaylist | GetSpotifyAlbum) {

@@ -1,5 +1,5 @@
-import { settingsDir } from "@/web/library/settingsDir";
-import { SyncLog } from "@/web/types/SyncLog";
+import { settingsDir } from "../library/settingsDir";
+import { SyncLog } from "../types/SyncLog";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
