@@ -1,0 +1,24 @@
+{
+    "name": "@spotify-to-plex/music-search",
+    "version": "1.0.0",
+    "description": "Library to find tracks in a music library.",
+    "keywords": [
+        "search",
+        "music"
+    ],
+    "license": "MIT",
+    "main": "src/index.ts",
+    "scripts": {
+        "build": "tsc"
+    },
+    "engines": {
+        "node": ">=18.0.0"
+    },
+    "dependencies": {
+        "string-similarity-js": "^2.1.4"
+    },
+    "devDependencies": {
+        "@types/node": "^20.3.0",
+        "typescript": "^5.0.0"
+    }
+}

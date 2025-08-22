@@ -1,0 +1,28 @@
+{
+    "name": "@spotify-to-plex/tidal-music-search",
+    "version": "1.0.0",
+    "description": "Library to find tracks in Tidal music library.",
+    "keywords": [
+        "tidal",
+        "search",
+        "music"
+    ],
+    "license": "MIT",
+    "main": "src/index.ts",
+    "scripts": {
+        "build": "tsc"
+    },
+    "engines": {
+        "node": ">=18.0.0"
+    },
+    "dependencies": {
+        "@spotify-to-plex/music-search": "workspace:*",
+        "axios": "^1.11.0",
+        "string-similarity-js": "^2.1.4",
+        "tough-cookie": "^4.1.4"
+    },
+    "devDependencies": {
+        "@types/node": "^20.3.0",
+        "typescript": "^5.0.0"
+    }
+}

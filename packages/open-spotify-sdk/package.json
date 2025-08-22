@@ -1,0 +1,20 @@
+{
+    "name": "@spotify-to-plex/open-spotify-sdk",
+    "version": "1.0.0",
+    "description": "Open Spotify API SDK",
+    "license": "MIT",
+    "main": "src/index.ts",
+    "scripts": {
+        "build": "tsc"
+    },
+    "engines": {
+        "node": ">=18.0.0"
+    },
+    "dependencies": {
+        "otpauth": "^9.3.6"
+    },
+    "devDependencies": {
+        "@types/node": "^20.3.0",
+        "typescript": "^5.0.0"
+    }
+}
