@@ -14,9 +14,12 @@ export async function putPlexPlaylist(id: string, plexPlaylist: Playlist | undef
         if (item.result.length == 0)
             return null;
 
+        const firstResult = item.result[0];
+        if (!firstResult) return null;
+
         return {
-            key: item.result[0].id,
-            source: item.result[0].source
+            key: firstResult.id,
+            source: firstResult.source
         };
     }).filter(item => !!item);
 

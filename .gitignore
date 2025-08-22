@@ -33,6 +33,12 @@ packages/**/*.js
 !packages/**/tsconfig.json
 !packages/**/package.json
 
+# Prevent generated JS/JSX files next to source files
+apps/**/src/**/*.js
+apps/**/src/**/*.jsx
+packages/**/src/**/*.js
+packages/**/src/**/*.jsx
+
 # Package manager files (we use pnpm)
 package-lock.json
 **/package-lock.json

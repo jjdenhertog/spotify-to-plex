@@ -17,5 +17,5 @@ export default async function getClientToken(clientId: string) {
         }
     })
 
-    return await deserialize<ClientToken>(result)
+    return deserialize<ClientToken>(result)
 }

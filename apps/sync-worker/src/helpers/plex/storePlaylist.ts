@@ -16,7 +16,11 @@ export async function storePlaylist(name: string, uri: string) {
     });
 
     const result = await AxiosRequest.post<GetPlaylistResponse>(`${url}?${query.toString()}`, plex.settings.token)
-    const id = result.data.MediaContainer.Metadata[0].ratingKey;
+    const metadata = result.data.MediaContainer.Metadata?.[0];
+    if (!metadata) {
+        throw new Error('Failed to create playlist - no metadata returned');
+    }
+    const id = metadata.ratingKey;
 
     return id;
 }

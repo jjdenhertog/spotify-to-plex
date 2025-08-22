@@ -24,5 +24,5 @@ export { LegacyPlexAdapter, createLegacyPlex } from './migration/legacy-adapter'
 import { PlexConfigManager, PlexConfigOptions } from './core/plex-config-manager';
 
 export function createPlexConfigManager(options: PlexConfigOptions): PlexConfigManager {
-  return PlexConfigManager.create(options);
+    return PlexConfigManager.create(options);
 }

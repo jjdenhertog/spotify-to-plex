@@ -13,9 +13,9 @@ export default async function getSpotifyData(api: SpotifyApi, id: string, simpli
                 type: "spotify-album",
                 id: result.id,
                 title: result.name,
-                image: result.images[0].url,
+                image: result.images[0]?.url || '',
                 tracks: result.tracks.items.map(item => ({
-                    artist: item.artists[0].name,
+                    artist: item.artists[0]?.name,
                     id: item.id,
                     artists: item.artists.map(artist => artist.name),
                     album: result.name,
@@ -45,10 +45,10 @@ export default async function getSpotifyData(api: SpotifyApi, id: string, simpli
                 id: playlist.id,
                 title: playlist.name,
                 owner: playlist.owner.name,
-                image: playlist.images[0].url,
+                image: playlist.images[0]?.url || '',
                 tracks: playlist.tracks.items.map((track: { artists: { name: string }[]; id: string; album: { name: string }; name: string }) => {
                     return {
-                        artist: track.artists[0].name,
+                        artist: track.artists[0]?.name,
                         id: track.id,
                         artists: track.artists.map((artist: { name: string }) => artist.name),
                         album: track.album.name,
@@ -59,6 +59,10 @@ export default async function getSpotifyData(api: SpotifyApi, id: string, simpli
 
         } catch (_e) {
             console.log(_e)
+
+            return undefined
         }
     }
+    
+    return undefined
 }

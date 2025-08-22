@@ -1,5 +1,5 @@
 {
-  "name": "@vibe-kanban/sync-worker",
+  "name": "@spotify-to-plex/sync-worker",
   "version": "1.0.0",
   "private": true,
   "description": "Background sync worker for Spotify-to-Plex synchronization tasks",
@@ -17,8 +17,8 @@
     "dev:sync:albums": "dotenv -e ../../.env.local -- ts-node --transpile-only -r tsconfig-paths/register src/jobs/albums.ts -- force",
     "dev:sync:mqtt": "dotenv -e ../../.env.local -- ts-node --transpile-only -r tsconfig-paths/register src/jobs/mqtt.ts -- force",
     "dev:sync:users": "dotenv -e ../../.env.local -- ts-node --transpile-only -r tsconfig-paths/register src/jobs/users.ts -- force",
-    "lint": "eslint src --ext .ts,.tsx --max-warnings 0",
-    "lint:fix": "eslint src --ext .ts,.tsx --fix",
+    "lint": "eslint src",
+    "lint:fix": "eslint src --fix",
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
@@ -41,11 +41,11 @@
     "@types/fs-extra": "^11.0.4",
     "@types/node": "^20.19.11",
     "@types/qs": "^6.14.0",
-    "@typescript-eslint/eslint-plugin": "^8.40.0",
-    "@typescript-eslint/parser": "^8.40.0",
+    "@typescript-eslint/eslint-plugin": "^8.8.0",
+    "@typescript-eslint/parser": "^8.8.0",
     "dotenv-cli": "^7.4.4",
-    "eslint": "^9.33.0",
-    "eslint-plugin-unicorn": "^60.0.0",
+    "eslint": "^8.57.0",
+    "eslint-plugin-unicorn": "^56.0.0",
     "typescript": "^5.7.2"
   },
   "engines": {

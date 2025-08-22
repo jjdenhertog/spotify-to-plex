@@ -161,6 +161,7 @@ export class TidalAPI {
                 for (let i = 0; i < albums.length; i++) {
                     const album = albums[i];
                     if (!album) continue;
+
                     const { id } = album;
                     const albumData = result.data.included?.find(item => item.id == id)
                     if (albumData && albumData.type == 'albums' && albumData.attributes) {
@@ -241,6 +242,7 @@ export class TidalAPI {
             for (let i = 0; i < data.length; i++) {
                 const track = data[i];
                 if (!track) continue;
+
                 const { id, attributes, relationships } = track;
                 const title = attributes?.title;
                 const link = getLink(attributes?.externalLinks)
@@ -266,7 +268,7 @@ export class TidalAPI {
 
 
                 if (id && title && link && artists && albums && artists.length > 0 && albums.length > 0) {
-                    const album = albums[0];
+                    const [album] = albums;
                     if (album) {
                         result.push({ id, title, link, artists, album });
                     }

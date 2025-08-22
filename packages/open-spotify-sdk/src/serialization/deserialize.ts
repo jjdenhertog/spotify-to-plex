@@ -3,6 +3,7 @@ export default async function deserialize<TReturnType>(response: Response): Prom
 
     if (text.length > 0) {
         const json = JSON.parse(text);
+
         return json as TReturnType;
     }
 

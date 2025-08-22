@@ -24,63 +24,23 @@ export default function hubSearch(uri: string, token: string, query: string, lim
         AxiosRequest.get<HubSearchResponse>(url, token)
             .then((result) => {
                 const response: HubSearchResult[] = [];
-                if (result.data.MediaContainer.Hub && result.data.MediaContainer.Hub.length > 0) {
-                    for (let i = 0; i < result.data.MediaContainer.Hub.length; i++) {
-                        const hub = result.data.MediaContainer.Hub[i];
-                        if (hub && hub.type == "album" && hub.Metadata) {
-                            for (let j = 0; j < hub.Metadata.length; j++) {
-                                const metadata = hub.Metadata[j];
-                                if (metadata) {
-                                    response.push({
-                                        type: "album",
-                                        id: metadata.key || '',
-                                        ratingKey: metadata.ratingKey || '',
-                                        guid: metadata.guid || '',
-                                        score: metadata.score || 0,
-                                        image: metadata.thumb || '',
-                                        year: metadata.year || 0,
-                                        title: metadata.title || '',
-                                        artist: {
-                                            guid: metadata.parentGuid || '',
-                                            id: metadata.parentKey || '',
-                                            title: removeFeaturing(metadata.parentTitle || ''),
-                                            alternative_title: "",
-                                            image: metadata.parentThumb || '',
-                                        },
-                                    })
-                                }
-                            }
-                        }
+                const { Hub } = result.data.MediaContainer;
+                
+                if (!Hub || Hub.length === 0) {
+                    resolve(response);
 
-                        if (hub && hub.type == "track" && hub.Metadata) {
-                            for (let j = 0; j < hub.Metadata.length; j++) {
-                                const metadata = hub.Metadata[j];
-                                if (metadata) {
-                                    response.push({
-                                        type: "track",
-                                        id: metadata.key || '',
-                                        ratingKey: metadata.ratingKey || '',
-                                        guid: metadata.guid || '',
-                                        score: metadata.score || 0,
-                                        image: metadata.thumb || '',
-                                        title: metadata.title || '',
-                                        album: {
-                                            id: metadata.parentKey || '',
-                                            guid: metadata.parentGuid || '',
-                                            title: metadata.parentTitle || '',
-                                            year: metadata.parentYear || 0,
-                                            image: metadata.parentThumb || '',
-                                        },
-                                        artist: {
-                                            id: metadata.grandparentKey || '',
-                                            guid: metadata.grandparentGuid || '',
-                                            title: removeFeaturing(metadata.originalTitle || metadata.grandparentTitle || ''),
-                                            image: metadata.grandparentThumb || '',
-                                        }
-                                    })
-                                }
-                            }
-                        }
+                    return;
+                }
+
+                for (const hub of Hub) {
+                    if (!hub?.Metadata) continue;
+                    
+                    if (hub.type === "album") {
+                        processAlbumMetadata(hub.Metadata, response);
+                    }
+
+                    if (hub.type === "track") {
+                        processTrackMetadata(hub.Metadata, response);
                     }
                 }
 
@@ -92,6 +52,59 @@ export default function hubSearch(uri: string, token: string, query: string, lim
                 reject("Could not connect to server");
             })
     })
+}
+
+function processAlbumMetadata(metadata: any[], response: HubSearchResult[]) {
+    for (const item of metadata) {
+        if (!item) continue;
+        
+        response.push({
+            type: "album",
+            id: item.key || '',
+            ratingKey: item.ratingKey || '',
+            guid: item.guid || '',
+            score: item.score || 0,
+            image: item.thumb || '',
+            year: item.year || 0,
+            title: item.title || '',
+            artist: {
+                guid: item.parentGuid || '',
+                id: item.parentKey || '',
+                title: removeFeaturing(item.parentTitle || ''),
+                alternative_title: "",
+                image: item.parentThumb || '',
+            },
+        });
+    }
+}
+
+function processTrackMetadata(metadata: any[], response: HubSearchResult[]) {
+    for (const item of metadata) {
+        if (!item) continue;
+        
+        response.push({
+            type: "track",
+            id: item.key || '',
+            ratingKey: item.ratingKey || '',
+            guid: item.guid || '',
+            score: item.score || 0,
+            image: item.thumb || '',
+            title: item.title || '',
+            album: {
+                id: item.parentKey || '',
+                guid: item.parentGuid || '',
+                title: item.parentTitle || '',
+                year: item.parentYear || 0,
+                image: item.parentThumb || '',
+            },
+            artist: {
+                id: item.grandparentKey || '',
+                guid: item.grandparentGuid || '',
+                title: removeFeaturing(item.originalTitle || item.grandparentTitle || ''),
+                image: item.grandparentThumb || '',
+            }
+        });
+    }
 }
 
 function fixedEncodeURIComponent(str: string) {

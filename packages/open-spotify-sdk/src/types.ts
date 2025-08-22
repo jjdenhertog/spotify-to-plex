@@ -18,27 +18,27 @@ export type ClientToken = {
         domains: { domain: string }[]
     }
 }
-interface AlbumBase {
+type AlbumBase = {
     id: string
     images: Image[]
     name: string
     uri: string
 }
 
-export interface SimplifiedAlbum extends AlbumBase {
+export type SimplifiedAlbum = {
     artists: SimplifiedArtist[]
-}
+} & AlbumBase
 
-export interface Album extends AlbumBase {
+export type Album = {
     artists: Artist[]
     tracks: Page<SimplifiedTrack>
-}
+} & AlbumBase
 
-export interface Albums {
+export type Albums = {
     albums: Album[]
 }
 
-export interface Page<TItemType> {
+export type Page<TItemType> = {
     items: TItemType[]
     limit: number
     offset: number
@@ -47,7 +47,7 @@ export interface Page<TItemType> {
 
 
 
-export interface SimplifiedTrack {
+export type SimplifiedTrack = {
     id: string
     artists: SimplifiedArtist[]
     discNumber: number
@@ -58,46 +58,46 @@ export interface SimplifiedTrack {
 }
 
 
-export interface Track extends SimplifiedTrack {
+export type Track = {
     album: SimplifiedAlbum
-}
+} & SimplifiedTrack
 
-export interface Tracks {
+export type Tracks = {
     tracks: Track[]
 }
 
-interface SimplifiedArtist {
+type SimplifiedArtist = {
     name: string
     uri: string
 }
 
-export interface Artist extends SimplifiedArtist {
+export type Artist = {
     followers: Followers
     genres: string[]
     images: Image[]
     popularity: number
-}
+} & SimplifiedArtist
 
-export interface Artists {
+export type Artists = {
     artists: Artist[]
 }
 
-interface Followers {
+type Followers = {
     href: string | null
     total: number
 }
 
-export interface TopTracksResult {
+export type TopTracksResult = {
     tracks: Track[];
 }
 
-export interface Image {
+export type Image = {
     url: string;
     height: number | null;
     width: number | null;
 }
 
-interface PlaylistBase {
+type PlaylistBase = {
     id: string
     description: string
     href: string
@@ -107,11 +107,11 @@ interface PlaylistBase {
     uri: string
 }
 
-export interface Playlist<Item extends Track = Track> extends PlaylistBase {
+export type Playlist<Item extends Track = Track> = {
     tracks: Page<Item>
-}
+} & PlaylistBase
 
-interface UserReference {
+type UserReference = {
     avatar: {
         sources: { height: number; url: string; width: number }[];
     };

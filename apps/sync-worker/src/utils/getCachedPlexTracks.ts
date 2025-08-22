@@ -8,6 +8,7 @@ export async function getCachedPlexTracks(plexMusicSearch: PlexMusicSearch, data
 
     for (let i = 0; i < data.tracks.length; i++) {
         const searchItem = data.tracks[i];
+        if (!searchItem?.id) continue;
 
         // Process if no cached link has been found
         const trackLink = cachedTrackLinks.find(item => item.spotify_id == searchItem.id);
@@ -19,6 +20,7 @@ export async function getCachedPlexTracks(plexMusicSearch: PlexMusicSearch, data
 
         for (let j = 0; j < trackLink.plex_id.length; j++) {
             const plexId = trackLink.plex_id[j];
+            if (!plexId) continue;
             try {
                 const metaData = await plexMusicSearch.getById(plexId);
 
@@ -36,7 +38,7 @@ export async function getCachedPlexTracks(plexMusicSearch: PlexMusicSearch, data
         result.push({
             id: searchItem.id,
             title: searchItem.title,
-            artist: searchItem.artists[0],
+            artist: searchItem.artists?.[0] || 'Unknown',
             album: searchItem.album || "",
             result: foundTracks
         });

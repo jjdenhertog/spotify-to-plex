@@ -36,6 +36,7 @@ export async function refreshMQTT() {
 
     for (let i = 0; i < savedItems.length; i++) {
         const savedItem = savedItems[i];
+        if (!savedItem) continue;
 
         const { type, id, title, label, uri } = savedItem;
         if (!label)
@@ -71,7 +72,9 @@ export async function refreshMQTT() {
                 if (!trackLink?.plex_id || trackLink.plex_id.length == 0)
                     continue;
 
-                item = { id: entityId, category: label, name: title, media_content_id: trackLink.plex_id[0] }
+                const plexId = trackLink.plex_id?.[0];
+                if (!plexId) continue;
+                item = { id: entityId, category: label, name: title, media_content_id: plexId }
 
                 break;
             case "spotify-playlist":

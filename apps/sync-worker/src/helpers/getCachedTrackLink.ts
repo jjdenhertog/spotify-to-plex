@@ -21,7 +21,7 @@ export default function getCachedTrackLinks(searchItems: (PlexMusicSearchTrack |
     for (let i = 0; i < searchItems.length; i++) {
         const searchItem = searchItems[i];
 
-        const trackLink = all.find(item => item.spotify_id == searchItem.id)
+        const trackLink = all.find(item => item.spotify_id == searchItem?.id)
         if (!trackLink)
             continue;
 

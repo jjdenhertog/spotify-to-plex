@@ -150,7 +150,7 @@ export class PlexMusicSearch {
         const item = metaData[0];
         
         if (!item) {
-            throw new Error('No metadata found for key: ' + key);
+            throw new Error(`No metadata found for key: ${  key}`);
         }
 
         let src = '';

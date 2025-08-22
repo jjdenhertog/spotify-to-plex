@@ -1,5 +1,5 @@
 {
-  "name": "@vibe-kanban/web",
+  "name": "@spotify-to-plex/web",
   "version": "1.0.0",
   "private": true,
   "description": "Vibe Kanban Web Application - Main Next.js App",
@@ -48,12 +48,12 @@
     "@types/qs": "^6.14.0",
     "@types/react": "^18.3.23",
     "@types/react-dom": "^18.3.7",
-    "@typescript-eslint/eslint-plugin": "^8.40.0",
-    "@typescript-eslint/parser": "^8.40.0",
-    "eslint": "^9.33.0",
-    "eslint-plugin-react": "^7.37.5",
-    "eslint-plugin-react-hooks": "^5.2.0",
-    "eslint-plugin-unicorn": "^60.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.8.0",
+    "@typescript-eslint/parser": "^8.8.0",
+    "eslint": "^8.57.0",
+    "eslint-plugin-react": "^7.35.0",
+    "eslint-plugin-react-hooks": "^5.0.0",
+    "eslint-plugin-unicorn": "^56.0.0",
     "typescript": "^5.7.2"
   },
   "engines": {

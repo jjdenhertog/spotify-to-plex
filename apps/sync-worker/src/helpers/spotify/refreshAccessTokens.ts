@@ -26,9 +26,10 @@ export default async function refreshAccessTokens() {
 
     for (let i = 0; i < users.length; i++) {
         const user = users[i];
-        if (now > user.expires_at) {
+        if (!user || now > user.expires_at) {
 
             try {
+                if (!user?.access_token?.refresh_token) continue;
                 const refreshToken = decrypt(user.access_token.refresh_token);
 
                 const response = await axios.post(
@@ -68,7 +69,7 @@ export default async function refreshAccessTokens() {
     if (newUsers.length > 0) {
 
         const allUsers = users
-            .filter(item => !newUsers.some(newUser => newUser.user.id == item.user.id))
+            .filter(item => item?.user?.id && !newUsers.some(newUser => newUser?.user?.id === item.user.id))
             .concat(newUsers)
 
         writeFileSync(credentialsPath, JSON.stringify(allUsers, undefined, 4))

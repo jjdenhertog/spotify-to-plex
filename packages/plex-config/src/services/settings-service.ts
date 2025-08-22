@@ -4,73 +4,73 @@ import { PlexEventEmitter } from '../core/event-emitter';
 import { SettingsUpdatedEvent } from '../types/events';
 
 export class SettingsService {
-  private cache: PlexSettings | null = null;
+    private cache: PlexSettings | null = null;
 
-  public constructor(
+    public constructor(
     private readonly storage: StorageAdapter,
     private readonly eventEmitter: PlexEventEmitter
-  ) {}
+    ) {}
 
-  public async getSettings(): Promise<PlexSettings> {
-    if (this.cache === null) {
-      const settings = await this.storage.read<PlexSettings>('settings');
-      this.cache = settings ?? {};
+    public async getSettings(): Promise<PlexSettings> {
+        if (this.cache === null) {
+            const settings = await this.storage.read<PlexSettings>('settings');
+            this.cache = settings ?? {};
+        }
+
+        return this.cache;
     }
 
-    return this.cache;
-  }
-
-  public async updateSettings(updates: PlexSettingsUpdate): Promise<PlexSettings> {
-    const current = await this.getSettings();
-    const updated = { ...current, ...updates };
+    public async updateSettings(updates: PlexSettingsUpdate): Promise<PlexSettings> {
+        const current = await this.getSettings();
+        const updated = { ...current, ...updates };
     
-    await this.storage.write('settings', updated);
+        await this.storage.write('settings', updated);
     
-    // Update cache
-    this.cache = updated;
+        // Update cache
+        this.cache = updated;
     
-    // Emit event
-    const event: SettingsUpdatedEvent = {
-      type: 'settings:updated',
-      timestamp: Date.now(),
-      data: updated,
-      previous: current
-    };
+        // Emit event
+        const event: SettingsUpdatedEvent = {
+            type: 'settings:updated',
+            timestamp: Date.now(),
+            data: updated,
+            previous: current
+        };
     
-    this.eventEmitter.emit('settings:updated', event);
+        this.eventEmitter.emit('settings:updated', event);
 
-    return updated;
-  }
+        return updated;
+    }
 
-  public async hasValidConnection(): Promise<boolean> {
-    const settings = await this.getSettings();
+    public async hasValidConnection(): Promise<boolean> {
+        const settings = await this.getSettings();
 
-    return !!(settings.uri && settings.token);
-  }
+        return !!(settings.uri && settings.token);
+    }
 
-  public async clearSettings(): Promise<void> {
-    const current = await this.getSettings();
+    public async clearSettings(): Promise<void> {
+        const current = await this.getSettings();
     
-    await this.storage.delete('settings');
-    this.cache = {};
+        await this.storage.delete('settings');
+        this.cache = {};
     
-    const event: SettingsUpdatedEvent = {
-      type: 'settings:updated',
-      timestamp: Date.now(),
-      data: {},
-      previous: current
-    };
+        const event: SettingsUpdatedEvent = {
+            type: 'settings:updated',
+            timestamp: Date.now(),
+            data: {},
+            previous: current
+        };
     
-    this.eventEmitter.emit('settings:updated', event);
-  }
+        this.eventEmitter.emit('settings:updated', event);
+    }
 
-  // Synchronous getter for backward compatibility (uses cached value)
-  public getCachedSettings(): PlexSettings {
-    return this.cache ?? {};
-  }
+    // Synchronous getter for backward compatibility (uses cached value)
+    public getCachedSettings(): PlexSettings {
+        return this.cache ?? {};
+    }
 
-  // Pre-load cache for synchronous access
-  public async preloadCache(): Promise<void> {
-    await this.getSettings();
-  }
+    // Pre-load cache for synchronous access
+    public async preloadCache(): Promise<void> {
+        await this.getSettings();
+    }
 }

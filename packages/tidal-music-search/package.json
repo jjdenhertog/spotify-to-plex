@@ -10,7 +10,10 @@
     "license": "MIT",
     "main": "src/index.ts",
     "scripts": {
-        "build": "tsc"
+        "build": "tsc",
+        "type-check": "tsc --noEmit",
+        "lint": "eslint src",
+        "lint:fix": "eslint src --fix"
     },
     "engines": {
         "node": ">=18.0.0"

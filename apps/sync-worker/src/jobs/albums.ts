@@ -27,6 +27,7 @@ export async function syncAlbums() {
 
     for (let i = 0; i < toSyncAlbums.length; i++) {
         const item = toSyncAlbums[i];
+        if (!item) continue;
         const { id, title, uri, user, sync_interval } = item;
 
         //////////////////////////////////

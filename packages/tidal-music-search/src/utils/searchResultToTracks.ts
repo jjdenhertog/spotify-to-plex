@@ -12,6 +12,7 @@ export default function searchResultToTracks(items: TidalTrack[]): Track[] {
         for (let j = 0; j < item.artists.length; j++) {
             const artist = item.artists[j];
             if (!artist) continue;
+
             tracks.push({
                 id: item.id,
                 artist: artist.name || "",

@@ -16,26 +16,46 @@
  * See AI_CODING_RULES.md for detailed examples
  */
 
-import js from '@eslint/js';
 import typescriptPlugin from '@typescript-eslint/eslint-plugin';
 import typescriptParser from '@typescript-eslint/parser';
 import reactPlugin from 'eslint-plugin-react';
 import reactHooksPlugin from 'eslint-plugin-react-hooks';
-import unicorn from 'eslint-plugin-unicorn';
+import unicorn from "eslint-plugin-unicorn";
 
-export default [
-    js.configs.recommended,
+const config = [
     {
-        files: ['**/*.{js,jsx,ts,tsx}'],
+        files: ["**/*.{ts,tsx}"],
+        ignores: [
+            'node_modules/**',
+            'dist/**',
+            'build/**',
+            '.next/**',
+            'out/**',
+            '*.config.{js,mjs,cjs,ts}',
+            '*.min.js',
+            'coverage/**',
+            '.turbo/**',
+            'packages/*/dist/**',
+            'apps/*/dist/**',
+            'apps/*/.next/**',
+            '.claude/**',
+            'memory/**',
+            'coordination/**',
+            'claude-flow',
+            'claude-flow.*',
+            '**/*.{js,jsx}',
+            '**/*.js.map',
+            '**/*.jsx.map'
+        ],
         languageOptions: {
-            ecmaVersion: 'latest',
-            sourceType: 'module',
             parser: typescriptParser,
+            ecmaVersion: 2021,
+            sourceType: 'module',
             parserOptions: {
                 ecmaFeatures: {
                     jsx: true
                 },
-                project: ['./tsconfig.json', './packages/*/tsconfig.json', './apps/*/tsconfig.json']
+                projectService: true
             },
             globals: {
                 console: 'readonly',
@@ -78,7 +98,33 @@ export default [
             }
         },
         rules: {
-            // "indent": ['error', 4, { SwitchCase: 1 }], // Temporarily disabled - causes stack overflow in ESLint 9
+            indent: ['error', 4, { 
+                SwitchCase: 1,
+                ignoredNodes: [
+                    'JSXElement',
+                    'JSXElement > *',
+                    'JSXAttribute',
+                    'JSXIdentifier',
+                    'JSXNamespacedName',
+                    'JSXMemberExpression',
+                    'JSXSpreadAttribute',
+                    'JSXExpressionContainer',
+                    'JSXOpeningElement',
+                    'JSXClosingElement',
+                    'JSXFragment',
+                    'JSXOpeningFragment',
+                    'JSXClosingFragment',
+                    'JSXText',
+                    'JSXEmptyExpression',
+                    'JSXSpreadChild',
+                    'TSTypeParameterInstantiation',
+                    'FunctionExpression > .params[decorators.length > 0]',
+                    'FunctionExpression > .params > :matches(Decorator, :not(:first-child))',
+                    'ClassBody.body > PropertyDefinition[decorators.length > 0] > .key'
+                ]
+            }],
+            "react/jsx-indent": ["error", 4],
+            "react/jsx-indent-props": ["error", 4],
             "comma-dangle": [
                 "error",
                 {
@@ -128,7 +174,7 @@ export default [
             "react/jsx-no-bind": ["error", {
                 "ignoreDOMComponents": false,
                 "ignoreRefs": false,
-                "allowArrowFunctions": false, // Force useCallback usage
+                "allowArrowFunctions": false,
                 "allowFunctions": false,
                 "allowBind": false
             }],
@@ -614,26 +660,7 @@ export default [
             "unicorn/text-encoding-identifier-case": "error",
             "unicorn/throw-new-error": "error"
         }
-    },
-    {
-        ignores: [
-            'node_modules/**',
-            'dist/**',
-            'build/**',
-            '.next/**',
-            'out/**',
-            '*.config.{js,mjs,cjs,ts}',
-            '*.min.js',
-            'coverage/**',
-            '.turbo/**',
-            'packages/*/dist/**',
-            'apps/*/dist/**',
-            'apps/*/.next/**',
-            '.claude/**',
-            'memory/**',
-            'coordination/**',
-            'claude-flow',
-            'claude-flow.*'
-        ]
     }
-];
+]
+
+export default config;

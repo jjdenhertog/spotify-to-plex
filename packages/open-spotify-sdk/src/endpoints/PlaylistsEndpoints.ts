@@ -1,6 +1,6 @@
 import getRequestHash from '../authentication/getRequestHash';
 import getId from '../serialization/getId';
-import { Image, MaxInt, Playlist, SimplifiedAlbum, Track } from './../types';
+import { Image, MaxInt, Playlist, SimplifiedAlbum } from './../types';
 import EndpointsBase from './EndpointsBase';
 
 export default class PlaylistsEndpoints extends EndpointsBase {
@@ -20,10 +20,11 @@ export default class PlaylistsEndpoints extends EndpointsBase {
             playlist.tracks.items = playlist.tracks.items.concat(result.tracks.items)
             hasMoreResults = result.tracks.offset + result.tracks.limit < result.tracks.total;
         }
+
         return playlist;
     }
 
-    public async get(uri: string, offset: number = 0, limit: MaxInt<100> = 100): Promise<Playlist<Track>> {
+    public async get(uri: string, offset: number = 0, limit: MaxInt<100> = 100): Promise<Playlist> {
 
         if (uri.split(':').length != 3)
             throw new Error(`A playlist uri should be structured as "spotify:playlist:uid"`)
@@ -32,8 +33,8 @@ export default class PlaylistsEndpoints extends EndpointsBase {
         url.searchParams.append('operationName', 'fetchPlaylist')
         url.searchParams.append('variables', JSON.stringify({
             uri,
-            offset: offset,
-            limit: limit
+            offset,
+            limit
         }))
         url.searchParams.append('extensions', JSON.stringify({
             persistedQuery: {
@@ -52,45 +53,55 @@ export default class PlaylistsEndpoints extends EndpointsBase {
         })
 
         const { content } = playlistV2
-        const { pagingInfo, totalCount } = content;
+        const { pagingInfo, totalCount, items } = content;
 
-        const result: Playlist<Track> = {
-            id: getId(playlistV2.uri),
-            description: playlistV2.description,
-            href: playlistV2.sharingInfo.shareUrl,
+        const { description, name, uri: playlistUri, sharingInfo, ownerV2 } = playlistV2;
+        const { offset: pagingOffset, limit: pagingLimit } = pagingInfo;
+        const { shareUrl } = sharingInfo;
+        const { data: ownerData } = ownerV2;
+        
+        const result: Playlist = {
+            id: getId(playlistUri),
+            description,
+            href: shareUrl,
             images,
-            name: playlistV2.name,
-            owner: playlistV2.ownerV2.data,
-            uri: playlistV2.uri,
+            name,
+            owner: ownerData,
+            uri: playlistUri,
             tracks: {
-                items: content.items.map(item => {
+                items: items.map(({ itemV2 }) => {
 
-                    const { data } = item.itemV2;
-                    const { albumOfTrack } = data;
+                    const { data } = itemV2;
+                    const { albumOfTrack, artists: trackArtists, discNumber, trackNumber, trackDuration, name: trackName, uri: trackUri } = data;
+                    const { uri: albumUri, name: albumName, coverArt, artists: albumArtists } = albumOfTrack;
+                    const { totalMilliseconds } = trackDuration;
+                    
                     const album: SimplifiedAlbum = {
-                        id: getId(albumOfTrack.uri),
-                        uri: albumOfTrack.uri,
-                        name: albumOfTrack.name,
-                        images: albumOfTrack.coverArt.sources,
-                        artists: albumOfTrack.artists.items.map(artist => ({ name: artist.profile.name, uri: artist.uri })),
+                        id: getId(albumUri),
+                        uri: albumUri,
+                        name: albumName,
+                        images: coverArt.sources,
+                        artists: albumArtists.items.map(artist => ({ name: artist.profile.name, uri: artist.uri })),
                     }
-                    const artists = data.artists.items.map(artist => ({ name: artist.profile.name, uri: artist.uri }))
+                    const artists = trackArtists.items.map(artist => ({ name: artist.profile.name, uri: artist.uri }))
+
                     return {
-                        id: getId(data.uri),
+                        id: getId(trackUri),
                         album,
                         artists,
-                        discNumber: data.discNumber,
-                        trackNumber: data.trackNumber,
-                        trackDuration: data.trackDuration.totalMilliseconds,
-                        name: data.name,
-                        uri: data.uri,
+                        discNumber,
+                        trackNumber,
+                        trackDuration: totalMilliseconds,
+                        name: trackName,
+                        uri: trackUri,
                     }
                 }),
-                offset: pagingInfo.offset,
-                limit: pagingInfo.limit,
+                offset: pagingOffset,
+                limit: pagingLimit,
                 total: totalCount
             }
         }
+
         return result;
 
     }

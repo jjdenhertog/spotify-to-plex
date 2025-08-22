@@ -2,7 +2,7 @@ import { GetSpotifyPlaylist } from "../../types/SpotifyAPI";
 import { SpotifyApi } from "@spotify/web-api-ts-sdk";
 
 
-export default async function getSpotifyPlaylist(api: SpotifyApi, id: string, simplified: boolean) {
+export default async function getSpotifyPlaylist(api: SpotifyApi, id: string, simplified: boolean): Promise<GetSpotifyPlaylist | null> {
 
     // const result: GetSpotifyPlaylist = {}
     // let allTracks: GetSpotifyPlaylist["tracks"] = []
@@ -13,19 +13,24 @@ export default async function getSpotifyPlaylist(api: SpotifyApi, id: string, si
             type: "spotify-playlist",
             id: result.id,
             title: result.name,
-            owner: result.owner.display_name,
-            image: result.images[0].url,
+            owner: result.owner?.display_name || 'Unknown',
+            image: result.images?.[0]?.url || '',
             tracks: []
         }
-        playlist.tracks = playlist.tracks.concat(result.tracks.items.map(item => {
-            return {
-                id: item.track.id,
-                title: item.track.name,
-                artist: item.track.artists[0].name,
-                album: item.track.album.name,
-                artists: item.track.artists.map(item => item.name),
-            }
-        }));
+        const validTracks = result.tracks.items
+            .map(item => {
+                if (!item.track) return null;
+                return {
+                    id: item.track.id,
+                    title: item.track.name,
+                    artist: item.track.artists?.[0]?.name || 'Unknown',
+                    album: item.track.album?.name || 'Unknown',
+                    artists: item.track.artists?.map(artist => artist.name) || [],
+                }
+            })
+            .filter((track): track is NonNullable<typeof track> => track !== null);
+        
+        playlist.tracks = playlist.tracks.concat(validTracks);
 
         if (simplified)
             return playlist;
@@ -37,15 +42,20 @@ export default async function getSpotifyPlaylist(api: SpotifyApi, id: string, si
         if (nextUrl) {
             while (hasMoreResults) {
                 const loadMore = await api.playlists.getPlaylistItems(id, undefined, undefined, 50, offset)
-                playlist.tracks = playlist.tracks.concat(loadMore.items.map(item => {
-                    return {
-                        id: item.track.id,
-                        title: item.track.name,
-                        artist: item.track.artists[0].name,
-                        album: item.track.album.name,
-                        artists: item.track.artists.map(item => item.name),
-                    }
-                }));
+                const validLoadMoreTracks = loadMore.items
+                    .map(item => {
+                        if (!item.track) return null;
+                        return {
+                            id: item.track.id,
+                            title: item.track.name,
+                            artist: item.track.artists?.[0]?.name || 'Unknown',
+                            album: item.track.album?.name || 'Unknown',
+                            artists: item.track.artists?.map(artist => artist.name) || [],
+                        }
+                    })
+                    .filter((track): track is NonNullable<typeof track> => track !== null);
+                
+                playlist.tracks = playlist.tracks.concat(validLoadMoreTracks);
 
                 hasMoreResults = loadMore.offset + loadMore.limit < loadMore.total;
                 offset = loadMore.offset + loadMore.limit;
@@ -55,7 +65,6 @@ export default async function getSpotifyPlaylist(api: SpotifyApi, id: string, si
         return playlist;
 
     } catch (_e) {
+        return null;
     }
-
-    
 }

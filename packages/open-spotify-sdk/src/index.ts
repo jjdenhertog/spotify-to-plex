@@ -1,8 +1,6 @@
-import { OpenSpotifyApi } from "./OpenSpotifyApi";
 
-export {
-    OpenSpotifyApi
-};
+
+
 
 export type * from "./types";
 
@@ -16,3 +14,4 @@ export type * from "./types";
 //     .catch((err) => {
 //         console.log(err)
 //     })
+export {OpenSpotifyApi} from "./OpenSpotifyApi";

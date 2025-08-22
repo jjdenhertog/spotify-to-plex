@@ -5,7 +5,7 @@ import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { decrypt, encrypt } from '../encryption';
 
-export default async function getTidalCredentials() {
+export default async function getTidalCredentials(): Promise<TidalCredentials | undefined> {
     const credentialsPath = join(settingsDir, 'tidal.json')
     if (!existsSync(credentialsPath))
         return;
@@ -63,5 +63,6 @@ export default async function getTidalCredentials() {
         return credentials;
         // Store
     } catch (_e) {
+        return undefined;
     }
 }

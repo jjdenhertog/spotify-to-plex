@@ -21,7 +21,9 @@ export async function syncUsers() {
 
     for (let i = 0; i < credentials.length; i++) {
         try {
-            const { user } = credentials[i];
+            const credential = credentials[i];
+            if (!credential?.user) continue;
+            const { user } = credential;
             if (!user.sync)
                 continue;
 
@@ -39,7 +41,7 @@ export async function syncUsers() {
                 const element = result.items[j];
 
                  
-                if (!recentPlayedContexts.some(item => item.uri == element.context.uri))
+                if (element?.context && !recentPlayedContexts.some(item => item.uri == element.context.uri))
                     recentPlayedContexts.push(element.context)
             }
 
@@ -47,7 +49,7 @@ export async function syncUsers() {
 
             for (let i = 0; i < recentPlayedContexts.length; i++) {
                 const context = recentPlayedContexts[i];
-                if (savedItems.items.some(item => item.uri == context.uri))
+                if (!context?.uri || savedItems.items.some(item => item.uri == context.uri))
                     continue;
 
                 const data = await loadSpotifyData(context.uri, userId, true)

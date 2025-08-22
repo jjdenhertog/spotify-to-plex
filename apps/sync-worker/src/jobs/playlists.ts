@@ -35,6 +35,7 @@ export async function syncPlaylists() {
 
     for (let i = 0; i < toSyncPlaylists.length; i++) {
         const item = toSyncPlaylists[i];
+        if (!item) continue;
         const { id, title, uri, user, sync_interval } = item;
 
         //////////////////////////////////

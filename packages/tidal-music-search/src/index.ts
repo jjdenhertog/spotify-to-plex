@@ -110,6 +110,7 @@ export class TidalMusicSearch {
         for (let j = 0; j < artists.length; j++) {
             const artist = artists[j];
             if (!artist) continue;
+
             try {
                 const foundAlbums = await searchForAlbum(artist, album);
                 if (foundAlbums.length > 0) {
@@ -119,21 +120,21 @@ export class TidalMusicSearch {
                     if (foundAlbum) {
                         const albumTracks = await getAlbumTracks(foundAlbum.id);
 
-                    return tracks.map(item => {
+                        return tracks.map(item => {
 
-                        const result = getMusicSearchResult(item, searchResultToTracks(albumTracks))
-                        const tidalTracks = result
-                            .map(item => albumTracks
-                                .find(track => track.id == item.id))
-                            .filter(item => !!item)
+                            const result = getMusicSearchResult(item, searchResultToTracks(albumTracks))
+                            const tidalTracks = result
+                                .map(item => albumTracks
+                                    .find(track => track.id == item.id))
+                                .filter(item => !!item)
 
-                        return {
-                            ...item,
-                            artist: artists[0] || "",
-                            album: foundAlbum.title || "",
-                            result: tidalTracks
-                        }
-                    })
+                            return {
+                                ...item,
+                                artist: artists[0] || "",
+                                album: foundAlbum.title || "",
+                                result: tidalTracks
+                            }
+                        })
                     }
                 }
                 // return foundAlbums;
@@ -160,6 +161,7 @@ export class TidalMusicSearch {
         for (let i = 0; i < artists.length; i++) {
             const artist = artists[i];
             if (!artist) continue;
+
             try {
                 const result = await this._findTrack(approaches, { id, artist, title, album: album || "" });
                 if (result && result.result.length > 0)

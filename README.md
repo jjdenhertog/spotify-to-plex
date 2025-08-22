@@ -62,8 +62,8 @@ This project uses a monorepo architecture with pnpm workspaces for better code o
 
 ```
 ├── apps/                          # Application packages
-│   ├── web/                      # Next.js web application (@vibe-kanban/web)
-│   └── sync-worker/              # Background sync worker (@vibe-kanban/sync-worker)
+│   ├── web/                      # Next.js web application (@spotify-to-plex/web)
+│   └── sync-worker/              # Background sync worker (@spotify-to-plex/sync-worker)
 ├── packages/                      # Shared library packages
 │   ├── music-search/             # Core music search utilities
 │   ├── open-spotify-sdk/         # Spotify SDK wrapper  
