@@ -78,7 +78,9 @@ export default class MusicSearch {
 
 
         for (let i = 0; i < matchFilters.length; i++) {
-            const { reason, filter } = matchFilters[i];
+            const matchFilter = matchFilters[i];
+            if (!matchFilter) continue;
+            const { reason, filter } = matchFilter;
             const result = results.filter(filter)
             if (result.length > 0) {
                 // Return matching tracks

@@ -69,8 +69,11 @@ export class TidalMusicSearch {
         const result: SearchResponse[] = []
 
         for (let i = 0; i < tracks.length; i++) {
-            const trackResult = await this._newTrackSearch(approaches, tracks[i])
-            result.push(trackResult)
+            const track = tracks[i];
+            if (track) {
+                const trackResult = await this._newTrackSearch(approaches, track);
+                result.push(trackResult);
+            }
         }
 
         return result
@@ -80,11 +83,11 @@ export class TidalMusicSearch {
 
         const firstValidAlbum = tracks.find(item => !!item.album);
         if (!firstValidAlbum)
-            return tracks.map(item => ({ id: item.id, title: item.title, artist: item.artists[0], album: item.album || "", result: [] }))
+            return tracks.map(item => ({ id: item.id, title: item.title, artist: item.artists[0] || "", album: item.album || "", result: [] }))
 
         const { album, artists } = firstValidAlbum;
         if (!album)
-            return tracks.map(item => ({ id: item.id, title: item.title, artist: item.artists[0], album: item.album || "", result: [] }))
+            return tracks.map(item => ({ id: item.id, title: item.title, artist: item.artists[0] || "", album: item.album || "", result: [] }))
 
         // Initialize music search with config
         const musicSearch = MusicSearch.getInstance();
@@ -93,11 +96,12 @@ export class TidalMusicSearch {
             const { id, title, album } = find;
 
             for (let i = 0; i < find.artists.length; i++) {
-                const artist = find.artists[i]
-                const result = musicSearch.search({ id, title, album, artist }, tracks)
-                if (result.length > 0)
-                    return result;
-
+                const artist = find.artists[i];
+                if (artist && album) {
+                    const result = musicSearch.search({ id, title, album, artist }, tracks);
+                    if (result.length > 0)
+                        return result;
+                }
             }
 
             return []
@@ -105,13 +109,15 @@ export class TidalMusicSearch {
 
         for (let j = 0; j < artists.length; j++) {
             const artist = artists[j];
+            if (!artist) continue;
             try {
                 const foundAlbums = await searchForAlbum(artist, album);
                 if (foundAlbums.length > 0) {
                     // We go for the first hit
                     // eslint-disable-next-line @typescript-eslint/prefer-destructuring
-                    const album = foundAlbums[0];
-                    const albumTracks = await getAlbumTracks(album.id)
+                    const foundAlbum = foundAlbums[0];
+                    if (foundAlbum) {
+                        const albumTracks = await getAlbumTracks(foundAlbum.id);
 
                     return tracks.map(item => {
 
@@ -123,11 +129,12 @@ export class TidalMusicSearch {
 
                         return {
                             ...item,
-                            artist: artists[0],
-                            album: album.title,
+                            artist: artists[0] || "",
+                            album: foundAlbum.title || "",
                             result: tidalTracks
                         }
                     })
+                    }
                 }
                 // return foundAlbums;
             } catch (_e) {
@@ -135,7 +142,7 @@ export class TidalMusicSearch {
             }
         }
 
-        return tracks.map(item => ({ id: item.id, title: item.title, artist: item.artists[0], album: item.album || "", result: [] }))
+        return tracks.map(item => ({ id: item.id, title: item.title, artist: item.artists[0] || "", album: item.album || "", result: [] }))
     }
 
     public async getByIds(ids: string[], countryCode: string = "NL") {
@@ -152,8 +159,9 @@ export class TidalMusicSearch {
 
         for (let i = 0; i < artists.length; i++) {
             const artist = artists[i];
+            if (!artist) continue;
             try {
-                const result = await this._findTrack(approaches, { id, artist, title, album });
+                const result = await this._findTrack(approaches, { id, artist, title, album: album || "" });
                 if (result && result.result.length > 0)
                     return result;
             } catch (_e) {
@@ -162,7 +170,7 @@ export class TidalMusicSearch {
         }
 
         // When nothing is found
-        return { id, artist: artists[0], title, album: album || "", result: [] }
+        return { id, artist: artists[0] || "", title, album: album || "", result: [] }
     }
 
     private async _findTrack(approaches: TidalMusicSearchApproach[], find: Track) {
@@ -204,13 +212,18 @@ export class TidalMusicSearch {
 
             let searchApproachIndex = 0;
             while (approaches[searchApproachIndex]) {
-                const approach = approaches[searchApproachIndex]
+                const approach = approaches[searchApproachIndex];
                 if (searchResult.length > 0) {
                     searchApproachIndex++;
                     continue;
                 }
 
-                const { trim, filtered, ignoreQuotes: removeQuotes } = approach
+                if (!approach) {
+                    searchApproachIndex++;
+                    continue;
+                }
+
+                const { trim, filtered, ignoreQuotes: removeQuotes } = approach;
 
                 const searchArtist = filterOutWords(artist.toLowerCase(), filtered, trim, removeQuotes);
                 const searchAlbum = filterOutWords(album.toLowerCase(), filtered, trim, removeQuotes)

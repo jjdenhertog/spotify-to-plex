@@ -1,5 +1,5 @@
 import { generateError } from '@/helpers/errors/generateError';
-import { settingsDir } from "@/library/configDir";
+import { settingsDir } from "@/library/settingsDir";
 import { SyncLog } from 'cronjob/albums';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createRouter } from 'next-connect';
