@@ -1,80 +1,48 @@
 {
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "Root TypeScript Config with Project References",
+  "files": [],
+  "references": [
+    {
+      "path": "./packages/music-search"
+    },
+    {
+      "path": "./packages/open-spotify-sdk"
+    },
+    {
+      "path": "./packages/plex-music-search"
+    },
+    {
+      "path": "./packages/tidal-music-search"
+    },
+    {
+      "path": "./apps/sync-worker"
+    },
+    {
+      "path": "./apps/web"
+    }
+  ],
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationMap": true,
+    "incremental": true,
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@spotify-to-plex/music-search": ["./packages/music-search/src"],
+      "@spotify-to-plex/music-search/*": ["./packages/music-search/src/*"],
+      "@spotify-to-plex/open-spotify-sdk": ["./packages/open-spotify-sdk/src"],
+      "@spotify-to-plex/open-spotify-sdk/*": ["./packages/open-spotify-sdk/src/*"],
+      "@spotify-to-plex/plex-music-search": ["./packages/plex-music-search/src"],
+      "@spotify-to-plex/plex-music-search/*": ["./packages/plex-music-search/src/*"],
+      "@spotify-to-plex/tidal-music-search": ["./packages/tidal-music-search/src"],
+      "@spotify-to-plex/tidal-music-search/*": ["./packages/tidal-music-search/src/*"]
+    }
+  },
+  "ts-node": {
     "compilerOptions": {
-        "target": "es5",
-        "lib": [
-            "dom",
-            "dom.iterable",
-            "esnext"
-        ],
-        "allowJs": true,
-        "skipLibCheck": true,
-        "strict": true,
-        "forceConsistentCasingInFileNames": true,
-        "noEmit": true,
-        "esModuleInterop": true,
-        "downlevelIteration": true,
-        "module": "esnext",
-        "moduleResolution": "node",
-        "resolveJsonModule": true,
-        "isolatedModules": true,
-        "jsx": "preserve",
-        "incremental": true,
-        "plugins": [
-            {
-                "name": "next"
-            }
-        ],
-        "baseUrl": ".",
-        "paths": {
-            "@/helpers/*": [
-                "src/helpers/*"
-            ],
-            "@/components/*": [
-                "src/components/*"
-            ],
-            "@/styles/*": [
-                "src/styles/*"
-            ],
-            "@/types/*": [
-                "src/types/*"
-            ],
-            "@/pages/*": [
-                "pages/*"
-            ],
-            "@/layouts/*": [
-                "src/layouts/*"
-            ],
-            "@/library/*": [
-                "src/library/*"
-            ],
-            "@/utils/*": [
-                "src/utils/*"
-            ],
-            "@/hoc/*": [
-                "src/hoc/*"
-            ],
-            "@spotify-to-plex/music-search": [
-                "packages/music-search/src/index.ts"
-            ],
-            "@spotify-to-plex/music-search/*": [
-                "packages/music-search/src/*"
-            ]
-        }
-    },
-    "ts-node": {
-        "compilerOptions": {
-            "module": "commonjs"
-        }
-    },
-    "include": [
-        "next-env.d.ts",
-        "**/*.ts",
-        "**/*.tsx",
-        "lib/utils/cache.js",
-        ".next/types/**/*.ts",
-        "dist/types/**/*.ts"
-    ],
-    "exclude": [
-        "node_modules"
-    ]
+      "module": "commonjs"
+    }
+  }
 }

@@ -1,0 +1,54 @@
+{
+  "name": "@vibe-kanban/sync-worker",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Background sync worker for Spotify-to-Plex synchronization tasks",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "ts-node --transpile-only -r tsconfig-paths/register src/index.ts",
+    "sync:playlists": "ts-node --transpile-only -r tsconfig-paths/register src/jobs/playlists.ts",
+    "sync:albums": "ts-node --transpile-only -r tsconfig-paths/register src/jobs/albums.ts",
+    "sync:mqtt": "ts-node --transpile-only -r tsconfig-paths/register src/jobs/mqtt.ts",
+    "sync:users": "ts-node --transpile-only -r tsconfig-paths/register src/jobs/users.ts",
+    "dev:sync:playlists": "dotenv -e ../../.env.local -- ts-node --transpile-only -r tsconfig-paths/register src/jobs/playlists.ts -- force",
+    "dev:sync:albums": "dotenv -e ../../.env.local -- ts-node --transpile-only -r tsconfig-paths/register src/jobs/albums.ts -- force",
+    "dev:sync:mqtt": "dotenv -e ../../.env.local -- ts-node --transpile-only -r tsconfig-paths/register src/jobs/mqtt.ts -- force",
+    "dev:sync:users": "dotenv -e ../../.env.local -- ts-node --transpile-only -r tsconfig-paths/register src/jobs/users.ts -- force",
+    "lint": "eslint src --ext .ts,.tsx --max-warnings 0",
+    "lint:fix": "eslint src --ext .ts,.tsx --fix",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@spotify-to-plex/plex-music-search": "workspace:*",
+    "@spotify-to-plex/tidal-music-search": "workspace:*",
+    "@spotify-to-plex/open-spotify-sdk": "workspace:*",
+    "@spotify/web-api-ts-sdk": "^1.2.0",
+    "axios": "^1.11.0",
+    "fs-extra": "^11.3.1",
+    "moment": "^2.30.1",
+    "mqtt": "^5.14.0",
+    "qs": "^6.14.0",
+    "string-similarity-js": "^2.1.4",
+    "tough-cookie": "^4.1.4",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.4",
+    "@types/node": "^20.19.11",
+    "@types/qs": "^6.14.0",
+    "@typescript-eslint/eslint-plugin": "^8.40.0",
+    "@typescript-eslint/parser": "^8.40.0",
+    "dotenv-cli": "^7.4.4",
+    "eslint": "^9.33.0",
+    "eslint-plugin-unicorn": "^60.0.0",
+    "typescript": "^5.7.2"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  }
+}

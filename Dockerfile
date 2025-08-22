@@ -10,20 +10,25 @@ WORKDIR /app
 ENV NODE_ENV development
 
 # Install dependencies based on the preferred package manager
-COPY package.json package-lock.json* ./
+COPY package.json pnpm-workspace.yaml pnpm-lock.yaml ./
+COPY packages ./packages
+COPY apps/web/package.json ./apps/web/
 
-RUN npm install
+RUN npm install -g pnpm@10.15.0
+RUN pnpm install
 
 # Rebuild the source code only when needed
 FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
+COPY --from=deps /app/packages ./packages
+COPY --from=deps /app/apps ./apps
 COPY . .
 
 ENV NEXT_DOCKER 1
 
 # If using npm comment out above and use below instead
-RUN NEXT_DOCKER=1 npm run build
+RUN NEXT_DOCKER=1 pnpm build
 
 # Production image, copy all the files and run next
 FROM base AS runner
@@ -34,24 +39,26 @@ ENV NODE_ENV production
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-COPY --from=builder /app/public ./public
+COPY --from=builder /app/apps/web/public ./public
 
 # Needed for cronjobs
 COPY --from=builder /app/cronjob ./cronjob
-COPY --from=builder /app/src ./src
-COPY --from=builder /app/tsconfig.json ./tsconfig.json
+COPY --from=builder /app/apps/web/src ./src
+COPY --from=builder /app/apps/web/tsconfig.json ./tsconfig.json
+COPY --from=builder /app/packages ./packages
 
 # Set the correct permission for prerender cache
-RUN mkdir dist
+RUN mkdir -p apps/web/dist
 RUN mkdir config
 
 # Automatically leverage output traces to reduce image size
 # https://nextjs.org/docs/advanced-features/output-file-tracing
-COPY --from=builder /app/dist/standalone ./
-COPY --from=builder /app/dist/static ./dist/static
+COPY --from=builder /app/apps/web/dist/standalone ./
+COPY --from=builder /app/apps/web/dist/static ./apps/web/dist/static
 
 RUN rm -rf pages/
-RUN npm install --omit=dev
+RUN npm install -g pnpm@10.15.0
+RUN pnpm install --prod --frozen-lockfile
 
 # EXPOSE 9030
 ENV PORT 9030

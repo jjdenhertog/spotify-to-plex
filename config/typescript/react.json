@@ -11,6 +11,6 @@
     "types": ["react", "react-dom", "node"],
     
     "allowJs": true,
-    "noEmit": true
+    "noEmit": false
   }
 }

@@ -1,0 +1,67 @@
+{
+  "extends": "../../config/typescript/react.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/helpers/*": [
+        "src/helpers/*"
+      ],
+      "@/components/*": [
+        "src/components/*"
+      ],
+      "@/styles/*": [
+        "src/styles/*"
+      ],
+      "@/types/*": [
+        "src/types/*"
+      ],
+      "@/pages/*": [
+        "pages/*"
+      ],
+      "@/layouts/*": [
+        "src/layouts/*"
+      ],
+      "@/library/*": [
+        "src/library/*"
+      ],
+      "@/utils/*": [
+        "src/utils/*"
+      ],
+      "@/hoc/*": [
+        "src/hoc/*"
+      ],
+      "cronjob/*": [
+        "../sync-worker/src/jobs/*"
+      ]
+    },
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    ".next"
+  ],
+  "references": [
+    {
+      "path": "../../packages/music-search"
+    },
+    {
+      "path": "../../packages/open-spotify-sdk"
+    },
+    {
+      "path": "../../packages/plex-music-search"
+    },
+    {
+      "path": "../../packages/tidal-music-search"
+    }
+  ]
+}
