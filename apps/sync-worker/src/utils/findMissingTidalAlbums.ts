@@ -1,5 +1,5 @@
 import getTidalCredentials from "../helpers/tidal/getTidalCredentials";
-import { Track } from "../types/SpotifyAPI";
+import { Track } from "@spotify-to-plex/shared-types";
 import { TidalMusicSearch, SearchResponse } from "@spotify-to-plex/tidal-music-search";
 
 export async function findMissingTidalAlbums(missingTracks: Track[]) {

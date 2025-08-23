@@ -1,5 +1,5 @@
 import { settingsDir } from "../library/settingsDir";
-import { SyncLog } from "../types/SyncLog";
+import { SyncLog } from "@spotify-to-plex/shared-types";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 

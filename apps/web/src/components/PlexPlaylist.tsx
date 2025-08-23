@@ -1,6 +1,7 @@
 import { errorBoundary } from "@/helpers/errors/errorBoundary";
 import { GetPlexPlaylistIdResponse } from "@/pages/api/playlists/[id]";
-import { GetSpotifyAlbum, GetSpotifyPlaylist, Track } from "@/types/SpotifyAPI";
+import { GetSpotifyAlbum, GetSpotifyPlaylist, Track } from "@spotify-to-plex/shared-types";
+// MIGRATED: Updated to use shared types package
 import type { SearchResponse } from "@spotify-to-plex/plex-music-search";
 import { Edit, Refresh } from "@mui/icons-material";
 import CloseIcon from '@mui/icons-material/Close';
@@ -268,8 +269,9 @@ export default function PlexPlaylist(props: PlexPlaylistProps) {
 
         for (let i = 0; i < tracks.length; i++) {
             const item = tracks[i];
-            const trackSelectIdx = trackSelections.find(selectionItem => selectionItem.artist == item.artist && selectionItem.title == item.title)
-            const song = item.result[trackSelectIdx ? trackSelectIdx.idx : 0];
+            if (!item) continue;
+            const trackSelectIdx = trackSelections.find(selectionItem => selectionItem.artist == item?.artist && selectionItem.title == item?.title)
+            const song = item.result?.[trackSelectIdx ? trackSelectIdx.idx : 0];
             if (song)
                 data.items.push({ key: song.id, source: song.source })
         }

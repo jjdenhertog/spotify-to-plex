@@ -1,4 +1,4 @@
-import { GetSpotifyAlbum, GetSpotifyPlaylist } from "../../types/SpotifyAPI";
+import { GetSpotifyAlbum, GetSpotifyPlaylist } from "@spotify-to-plex/shared-types";
 import { OpenSpotifyApi } from "@spotify-to-plex/open-spotify-sdk";
 import { SpotifyApi } from "@spotify/web-api-ts-sdk";
 import getSpotifyPlaylist from "./getSpotifyPlaylist";

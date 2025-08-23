@@ -32,7 +32,10 @@ const SpotifyNavigation = () => {
     const currentPath = router.pathname;
 
     const onChange = useCallback((_event: React.SyntheticEvent, value: number) => {
-        router.push(navigationItems[value].path);
+        const item = navigationItems[value];
+        if (item?.path) {
+            router.push(item.path);
+        }
     }, [router]);
 
     return (

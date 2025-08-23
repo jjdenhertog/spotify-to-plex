@@ -1,6 +1,7 @@
 import { generateError } from '@/helpers/errors/generateError';
-import getCachedTrackLinks from '@/helpers/getCachedTrackLink';
+import { getCachedTrackLinks } from '@spotify-to-plex/shared-utils/server';
 import { plex } from '@/library/plex';
+import { settingsDir } from '@/library/settingsDir';
 import { PlexMusicSearch, PlexMusicSearchTrack, PlexTrack } from '@spotify-to-plex/plex-music-search';
 
 type SearchResponse = any;
@@ -30,12 +31,13 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
             //////////////////////////////////////
             // Handeling cached links
             //////////////////////////////////////
-            const { found: cachedTrackLinks } = getCachedTrackLinks(searchItems, 'plex')
+            const { found: cachedTrackLinks } = getCachedTrackLinks(searchItems, 'plex', settingsDir)
 
             const result: SearchResponse[] = []
 
             for (let i = 0; i < searchItems.length; i++) {
                 const searchItem = searchItems[i];
+                if (!searchItem) continue;
 
                 // Process if no cached link has been found
                 const trackLink = cachedTrackLinks.find(item => item.spotify_id == searchItem.id)
@@ -47,6 +49,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
 
                 for (let j = 0; j < trackLink.plex_id.length; j++) {
                     const plexId = trackLink.plex_id[j]
+                    if (!plexId) continue;
                     try {
                         const metaData = await plexMusicSearch.getById(plexId)
 
@@ -66,7 +69,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 result.push({
                     id: searchItem.id,
                     title: searchItem.title,
-                    artist: searchItem.artists[0],
+                    artist: searchItem.artists?.[0] || '',
                     album: searchItem.album || "",
                     result: foundTracks
                 })

@@ -1,4 +1,4 @@
-import { GetSpotifyPlaylist } from "../../types/SpotifyAPI";
+import { GetSpotifyPlaylist } from "@spotify-to-plex/shared-types";
 import { SpotifyApi } from "@spotify/web-api-ts-sdk";
 
 
@@ -20,6 +20,7 @@ export default async function getSpotifyPlaylist(api: SpotifyApi, id: string, si
         const validTracks = result.tracks.items
             .map(item => {
                 if (!item.track) return null;
+
                 return {
                     id: item.track.id,
                     title: item.track.name,
@@ -45,6 +46,7 @@ export default async function getSpotifyPlaylist(api: SpotifyApi, id: string, si
                 const validLoadMoreTracks = loadMore.items
                     .map(item => {
                         if (!item.track) return null;
+
                         return {
                             id: item.track.id,
                             title: item.track.name,

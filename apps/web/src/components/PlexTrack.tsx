@@ -2,7 +2,6 @@ import type { SearchResponse, PlexTrack } from "@spotify-to-plex/plex-music-sear
 import { Check, LibraryMusicSharp, Warning } from "@mui/icons-material";
 import { Box, CircularProgress, Divider, FormControlLabel, IconButton, ListItem, Paper, Radio, RadioGroup, Tooltip, Typography } from "@mui/material";
 import { ChangeEvent, useCallback, useMemo, useState } from "react";
-import stringSimilarity from "string-similarity-js";
 import TrackAnalyzer from "./TrackAnalyzer";
 type Props = {
     readonly loading: boolean
@@ -51,16 +50,12 @@ export default function PlexTrack(props: Props) {
     } = track
 
     const {
-        artistName: songArtistName = '',
-        trackTitle: songTrackTitle = '',
         thumb: _thumb
     } = songs[songIdx] ?? { thumb: undefined };
 
 
 
     const thumbSize = window.innerWidth < 400 ? 50 : 80;
-    const _isLoading = loading && songs.length == 0;
-    const _notFound = !loading && songs.length == 0;
 
     ////////////////////////////////////
     // Handle multiple song results
@@ -71,7 +66,7 @@ export default function PlexTrack(props: Props) {
     }, [])
     const onChangeSongIdx = useCallback((e: ChangeEvent<HTMLInputElement>) => {
         const songIdx = Number(e.currentTarget.value)
-        if (setSongIdx)
+        if (setSongIdx && artistNames[0])
             setSongIdx(artistNames[0], trackTitle, songIdx)
 
     }, [artistNames, setSongIdx, trackTitle])
@@ -79,7 +74,6 @@ export default function PlexTrack(props: Props) {
     ////////////////////////////////////
     // Handle not perfect songs
     ////////////////////////////////////
-    const _perfectMatch = songArtistName == '' || songTrackTitle == '' || stringSimilarity(`${songArtistName} - ${songTrackTitle}`, `${artistNames.join(', ')} - ${trackTitle}`) > 0.9;
     const [showMatchAnalyser, setShowMatchAnalyser] = useState(false)
     const onNotPerfectMatchClick = useCallback(() => {
         setShowMatchAnalyser(prev => !prev)

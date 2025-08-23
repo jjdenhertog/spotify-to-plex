@@ -2,7 +2,8 @@ import { generateError } from '@/helpers/errors/generateError';
 import getSpotifyData from '@/helpers/spotify/getSpotifyData';
 import { settingsDir } from "@/library/settingsDir";
 import { plex } from '@/library/plex';
-import { SavedItem } from '@/types/SpotifyAPI';
+import { SavedItem } from '@spotify-to-plex/shared-types';
+// MIGRATED: Updated to use shared types package
 import { PlexMusicSearch } from '@spotify-to-plex/plex-music-search';
 import { SpotifyApi } from '@spotify/web-api-ts-sdk';
 import type { NextApiRequest, NextApiResponse } from 'next';

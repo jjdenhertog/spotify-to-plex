@@ -75,6 +75,9 @@ importers:
 
   apps/sync-worker:
     dependencies:
+      '@spotify-to-plex/http-client':
+        specifier: workspace:*
+        version: link:../../packages/http-client
       '@spotify-to-plex/open-spotify-sdk':
         specifier: workspace:*
         version: link:../../packages/open-spotify-sdk
@@ -84,6 +87,12 @@ importers:
       '@spotify-to-plex/plex-music-search':
         specifier: workspace:*
         version: link:../../packages/plex-music-search
+      '@spotify-to-plex/shared-types':
+        specifier: workspace:*
+        version: link:../../packages/shared-types
+      '@spotify-to-plex/shared-utils':
+        specifier: workspace:*
+        version: link:../../packages/shared-utils
       '@spotify-to-plex/tidal-music-search':
         specifier: workspace:*
         version: link:../../packages/tidal-music-search
@@ -169,6 +178,9 @@ importers:
       '@mui/material':
         specifier: ^6.5.0
         version: 6.5.0(@emotion/react@11.14.0(@types/react@18.3.24)(react@18.3.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@18.3.24)(react@18.3.1))(@types/react@18.3.24)(react@18.3.1))(@types/react@18.3.24)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@spotify-to-plex/http-client':
+        specifier: workspace:*
+        version: link:../../packages/http-client
       '@spotify-to-plex/open-spotify-sdk':
         specifier: workspace:*
         version: link:../../packages/open-spotify-sdk
@@ -178,6 +190,12 @@ importers:
       '@spotify-to-plex/plex-music-search':
         specifier: workspace:*
         version: link:../../packages/plex-music-search
+      '@spotify-to-plex/shared-types':
+        specifier: workspace:*
+        version: link:../../packages/shared-types
+      '@spotify-to-plex/shared-utils':
+        specifier: workspace:*
+        version: link:../../packages/shared-utils
       '@spotify-to-plex/tidal-music-search':
         specifier: workspace:*
         version: link:../../packages/tidal-music-search
@@ -273,6 +291,19 @@ importers:
         specifier: ^5.7.2
         version: 5.9.2
 
+  packages/http-client:
+    dependencies:
+      axios:
+        specifier: ^1.11.0
+        version: 1.11.0
+    devDependencies:
+      '@types/node':
+        specifier: ^20.19.11
+        version: 20.19.11
+      typescript:
+        specifier: ^5.3.3
+        version: 5.9.2
+
   packages/music-search:
     dependencies:
       string-similarity-js:
@@ -335,6 +366,31 @@ importers:
         version: 20.19.11
       typescript:
         specifier: ^5.0.0
+        version: 5.9.2
+
+  packages/shared-types:
+    devDependencies:
+      typescript:
+        specifier: ^5.3.3
+        version: 5.9.2
+
+  packages/shared-utils:
+    dependencies:
+      axios:
+        specifier: ^1.11.0
+        version: 1.11.0
+      fs-extra:
+        specifier: ^11.3.1
+        version: 11.3.1
+    devDependencies:
+      '@types/fs-extra':
+        specifier: ^11.0.4
+        version: 11.0.4
+      '@types/node':
+        specifier: ^20.19.11
+        version: 20.19.11
+      typescript:
+        specifier: ^5.3.3
         version: 5.9.2
 
   packages/tidal-music-search:

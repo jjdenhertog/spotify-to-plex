@@ -1,4 +1,5 @@
-import { GetSpotifyAlbum, GetSpotifyPlaylist } from "@/types/SpotifyAPI";
+import { GetSpotifyAlbum, GetSpotifyPlaylist } from "@spotify-to-plex/shared-types";
+// MIGRATED: Updated to use shared types package
 import { OpenSpotifyApi } from "@spotify-to-plex/open-spotify-sdk";
 import { SpotifyApi } from "@spotify/web-api-ts-sdk";
 import getSpotifyPlaylist from "./getSpotifyPlaylist";
@@ -13,9 +14,9 @@ export default async function getSpotifyData(api: SpotifyApi, id: string, simpli
                 type: "spotify-album",
                 id: result.id,
                 title: result.name,
-                image: result.images[0].url,
+                image: result.images?.[0]?.url || '',
                 tracks: result.tracks.items.map(item => ({
-                    artist: item.artists[0].name,
+                    artist: item.artists?.[0]?.name || '',
                     id: item.id,
                     artists: item.artists.map(artist => artist.name),
                     album: result.name,
@@ -45,13 +46,13 @@ export default async function getSpotifyData(api: SpotifyApi, id: string, simpli
                 id: playlist.id,
                 title: playlist.name,
                 owner: playlist.owner.name,
-                image: playlist.images[0].url,
+                image: playlist.images?.[0]?.url || '',
                 tracks: playlist.tracks.items.map((track: { artists: { name: string }[]; id: string; album: { name: string }; name: string }) => {
                     return {
-                        artist: track.artists[0].name,
+                        artist: track.artists?.[0]?.name || '',
                         id: track.id,
-                        artists: track.artists.map((artist: { name: string }) => artist.name),
-                        album: track.album.name,
+                        artists: track.artists?.map((artist: { name: string }) => artist.name) || [],
+                        album: track.album?.name || '',
                         title: track.name
                     }
                 })
@@ -61,4 +62,6 @@ export default async function getSpotifyData(api: SpotifyApi, id: string, simpli
             console.log(_e)
         }
     }
+    
+    return undefined;
 }

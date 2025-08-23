@@ -1,7 +1,7 @@
 import getAccessToken from "../helpers/spotify/getAccessToken";
 import refreshAccessTokens from "../helpers/spotify/refreshAccessTokens";
 import { settingsDir } from "../library/settingsDir";
-import { RecentPlayedContext, SavedItem, SpotifyCredentials } from "../types/SpotifyAPI";
+import { RecentPlayedContext, SavedItem, SpotifyCredentials } from "@spotify-to-plex/shared-types";
 import { SpotifyApi } from "@spotify/web-api-ts-sdk";
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
@@ -23,6 +23,7 @@ export async function syncUsers() {
         try {
             const credential = credentials[i];
             if (!credential?.user) continue;
+
             const { user } = credential;
             if (!user.sync)
                 continue;

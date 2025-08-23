@@ -1,6 +1,7 @@
 import { errorBoundary } from "@/helpers/errors/errorBoundary";
 import { GetTidalTracksResponse } from "@/pages/api/tidal";
-import { Track } from "@/types/SpotifyAPI";
+import { Track } from "@spotify-to-plex/shared-types";
+// MIGRATED: Updated to use shared types package
 import CloseIcon from '@mui/icons-material/Close';
 import { Alert, Box, Button, CircularProgress, Divider, IconButton, Modal, Typography } from "@mui/material";
 import axios from "axios";
@@ -56,6 +57,7 @@ export default function ExportMissingTracks(props: Props) {
 
         for (let i = 0; i < tracks.length; i++) {
             const track = tracks[i];
+            if (!track) continue;
             const tidalTrack = tidalTracks.find(item => item.id == track.id)
             if (!tidalTrack || tidalTrack.tidal_ids?.length == 0)
                 result.push(track);

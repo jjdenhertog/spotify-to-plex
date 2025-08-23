@@ -1,6 +1,8 @@
 import { generateError } from '@/helpers/errors/generateError';
-import getCachedTrackLinks from '@/helpers/getCachedTrackLink';
+import { getCachedTrackLinks } from '@spotify-to-plex/shared-utils/server';
+// MIGRATED: Updated to use shared utils package
 import { plex } from '@/library/plex';
+import { settingsDir } from '@/library/settingsDir';
 import { PlexMusicSearch, PlexMusicSearchTrack } from '@spotify-to-plex/plex-music-search';
 
 type SearchResponse = any;
@@ -44,7 +46,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
             ///////////////////////////
             // Update track links
             ///////////////////////////
-            const { add } = getCachedTrackLinks(searchItems, 'plex')
+            const { add } = getCachedTrackLinks(searchItems, 'plex', settingsDir)
             add(searchResult, 'plex', album ? { id: album } : undefined)
 
             res.status(200).json(searchResult);

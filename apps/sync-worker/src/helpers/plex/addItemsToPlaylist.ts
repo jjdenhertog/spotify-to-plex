@@ -1,6 +1,6 @@
 import getAPIUrl from '../getAPIUrl';
 import { plex } from '../../library/plex';
-import { AxiosRequest } from '../AxiosRequest';
+import { AxiosRequest } from '@spotify-to-plex/http-client';
 import { getUri } from './getUri';
 
 export async function addItemsToPlaylist(id: string, items: { key: string; source?: string; }[]) {
@@ -12,6 +12,7 @@ export async function addItemsToPlaylist(id: string, items: { key: string; sourc
     for (let i = 0; i < items.length; i++) {
         const item = items[i];
         if (!item?.key) continue;
+
         const uri = getUri(item.key, item.source);
         const putRequestUrl = `${url}?uri=${encodeURIComponent(uri)}`;
         try {

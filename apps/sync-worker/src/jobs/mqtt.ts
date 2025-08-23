@@ -1,8 +1,8 @@
 import { settingsDir } from '../library/settingsDir';
 import { plex } from '../library/plex';
-import { MQTTItem } from '../types/dashboard/MQTTItem';
-import { PlaylistData } from '../types/dashboard/PlaylistData';
-import { TrackLink } from '../types/TrackLink';
+import { MQTTItem } from '@spotify-to-plex/shared-types';
+import { PlaylistData } from '@spotify-to-plex/shared-types';
+import { TrackLink } from '@spotify-to-plex/shared-types';
 import { PlexMusicSearch } from '@spotify-to-plex/plex-music-search';
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -74,6 +74,7 @@ export async function refreshMQTT() {
 
                 const plexId = trackLink.plex_id?.[0];
                 if (!plexId) continue;
+
                 item = { id: entityId, category: label, name: title, media_content_id: plexId }
 
                 break;

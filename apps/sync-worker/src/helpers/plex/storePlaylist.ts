@@ -1,7 +1,7 @@
 import getAPIUrl from '../getAPIUrl';
 import { plex } from '../../library/plex';
-import { GetPlaylistResponse } from '../../types/PlexAPI';
-import { AxiosRequest } from '../AxiosRequest';
+import { GetPlaylistResponse } from '@spotify-to-plex/shared-types';
+import { AxiosRequest } from '@spotify-to-plex/http-client';
 
 export async function storePlaylist(name: string, uri: string) {
     if (!plex.settings.uri || !plex.settings.token)
@@ -20,6 +20,7 @@ export async function storePlaylist(name: string, uri: string) {
     if (!metadata) {
         throw new Error('Failed to create playlist - no metadata returned');
     }
+
     const id = metadata.ratingKey;
 
     return id;

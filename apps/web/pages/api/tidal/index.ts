@@ -1,7 +1,10 @@
 import { generateError } from '@/helpers/errors/generateError';
-import getCachedTrackLinks from '@/helpers/getCachedTrackLink';
+import { getCachedTrackLinks } from '@spotify-to-plex/shared-utils/server';
+// MIGRATED: Updated to use shared utils package
 import getTidalCredentials from '@/helpers/tidal/getTidalCredentials';
-import { Album, Track } from '@/types/SpotifyAPI';
+import { settingsDir } from '@/library/settingsDir';
+import { Album, Track } from '@spotify-to-plex/shared-types';
+// MIGRATED: Updated to use shared types package
 import { SearchResponse, TidalMusicSearch } from '@spotify-to-plex/tidal-music-search';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createRouter } from 'next-connect';
@@ -58,7 +61,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
             ///////////////////////////
             // Store caching
             ///////////////////////////
-            const { add } = getCachedTrackLinks(searchItems, 'tidal')
+            const { add } = getCachedTrackLinks(searchItems, 'tidal', settingsDir)
             add(searchResult, 'tidal', album)
 
             return res.status(200).json(searchResult.map(item => ({ ...item, tidal_ids: item.result.map(item => item.id) })))

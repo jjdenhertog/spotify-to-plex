@@ -1,6 +1,8 @@
 import { errorBoundary } from "@/helpers/errors/errorBoundary";
-import { filterUnique } from "@/helpers/filterUnique";
-import { SavedItem } from "@/types/SpotifyAPI";
+import { filterUnique } from "@spotify-to-plex/shared-utils";
+// MIGRATED: Updated to use shared utils package
+import { SavedItem } from "@spotify-to-plex/shared-types";
+// MIGRATED: Updated to use shared types package
 import CloseIcon from '@mui/icons-material/Close';
 import { Box, Button, Checkbox, Chip, CircularProgress, Divider, FormControlLabel, FormGroup, IconButton, Modal, TextField, Typography } from "@mui/material";
 import axios from "axios";
@@ -90,7 +92,7 @@ export default function PlaylistItemSettings(props: Props) {
             .map(item => item.label || "")
             .filter(filterUnique)
 
-        if (labels.length == 1)
+        if (labels.length == 1 && labels[0])
             setLabel(labels[0])
 
     }, [items])

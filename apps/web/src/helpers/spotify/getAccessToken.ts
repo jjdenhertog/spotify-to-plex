@@ -1,8 +1,10 @@
 import { settingsDir } from "@/library/settingsDir"
-import { SpotifyCredentials } from "@/types/SpotifyAPI"
+import { SpotifyCredentials } from "@spotify-to-plex/shared-types"
+// MIGRATED: Updated to use shared types package
 import { existsSync, readFileSync } from "node:fs"
 import { join } from "node:path"
-import { decrypt } from "../encryption"
+import { decrypt } from "@spotify-to-plex/shared-utils/server"
+// MIGRATED: Updated to use shared utils package
 import refreshAccessTokens from "./refreshAccessTokens"
 
 export default async function getAccessToken(userId?: string) {
@@ -21,22 +23,24 @@ export default async function getAccessToken(userId?: string) {
 
         for (let i = 0; i < users.length; i++) {
             const user = users[i];
+            if (!user) continue;
 
-            if (userId && user.user.id != userId)
+            if (userId && user.user?.id != userId)
                 continue;
 
-            if (now < user.expires_at) {
+            if (user.expires_at && now < user.expires_at) {
                 return {
-                    access_token: decrypt(user.access_token.access_token),
-                    refresh_token: decrypt(user.access_token.refresh_token),
-                    expires_in: user.access_token.expires_in,
-                    token_type: user.access_token.token_type
+                    access_token: decrypt(user.access_token?.access_token || ''),
+                    refresh_token: decrypt(user.access_token?.refresh_token || ''),
+                    expires_in: user.access_token?.expires_in || 0,
+                    token_type: user.access_token?.token_type || 'Bearer'
                 }
             }
         }
 
-    } catch (_e) {
-
+        throw new Error('No valid access token found');
+    } catch (error) {
+        throw error;
     }
 }
 

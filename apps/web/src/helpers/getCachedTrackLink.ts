@@ -1,10 +1,12 @@
 import { settingsDir } from "@/library/settingsDir"
-import { TrackLink } from "@/types/TrackLink"
+import { TrackLink } from "@spotify-to-plex/shared-types"
+// MIGRATED: Updated to use shared types package
 import { PlexMusicSearchTrack } from "@spotify-to-plex/plex-music-search"
 import { TidalMusicSearchTrack } from "@spotify-to-plex/tidal-music-search"
 import { existsSync, readFileSync, writeFileSync } from "node:fs"
 import { join } from "node:path"
-import { filterUnique } from "./filterUnique"
+import { filterUnique } from "@spotify-to-plex/shared-utils"
+// MIGRATED: Updated to use shared utils package
 
 export default function getCachedTrackLinks(searchItems: (PlexMusicSearchTrack | TidalMusicSearchTrack)[], type: 'plex' | 'tidal') {
     //////////////////////////////////////
@@ -20,6 +22,7 @@ export default function getCachedTrackLinks(searchItems: (PlexMusicSearchTrack |
 
     for (let i = 0; i < searchItems.length; i++) {
         const searchItem = searchItems[i];
+        if (!searchItem) continue;
 
         const trackLink = all.find(item => item.spotify_id == searchItem.id)
         if (!trackLink)

@@ -76,8 +76,7 @@ export const ConfirmProvider = () => {
     }
     const [options, setOptions] = useState<ConfirmOptions>({})
     const [resolveReject, setResolveReject] = useState<Function[]>([]);
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [context, setContext] = useState<ProviderContext>({ confirm })
+    const [context] = useState<ProviderContext>({ confirm })
 
     const handleClose = useCallback(() => {
         setResolveReject([])
