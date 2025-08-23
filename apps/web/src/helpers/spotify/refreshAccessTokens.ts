@@ -29,6 +29,7 @@ export default async function refreshAccessTokens() {
     for (let i = 0; i < users.length; i++) {
         const user = users[i];
         if (!user) continue;
+
         if (user.expires_at && now > user.expires_at) {
 
             try {

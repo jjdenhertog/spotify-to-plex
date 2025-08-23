@@ -50,6 +50,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 for (let j = 0; j < trackLink.plex_id.length; j++) {
                     const plexId = trackLink.plex_id[j]
                     if (!plexId) continue;
+
                     try {
                         const metaData = await plexMusicSearch.getById(plexId)
 

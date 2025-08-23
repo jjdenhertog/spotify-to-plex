@@ -23,7 +23,7 @@ export async function findMissingTidalTracks(missingTracks: Track[]) {
         if (!tidalIds || tidalIds.length == 0)
             continue;
 
-        const firstTidalId = tidalIds[0];
+        const [firstTidalId] = tidalIds;
         if (firstTidalId) {
             result.push({ id: searchItem.id, tidal_id: firstTidalId });
         }

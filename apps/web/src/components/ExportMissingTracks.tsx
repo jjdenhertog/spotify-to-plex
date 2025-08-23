@@ -58,6 +58,7 @@ export default function ExportMissingTracks(props: Props) {
         for (let i = 0; i < tracks.length; i++) {
             const track = tracks[i];
             if (!track) continue;
+
             const tidalTrack = tidalTracks.find(item => item.id == track.id)
             if (!tidalTrack || tidalTrack.tidal_ids?.length == 0)
                 result.push(track);
