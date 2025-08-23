@@ -4,6 +4,15 @@
   "files": [],
   "references": [
     {
+      "path": "./packages/shared-types"
+    },
+    {
+      "path": "./packages/http-client"
+    },
+    {
+      "path": "./packages/shared-utils"
+    },
+    {
       "path": "./packages/music-search"
     },
     {
@@ -33,6 +42,12 @@
     "skipLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@spotify-to-plex/shared-types": ["./packages/shared-types/src"],
+      "@spotify-to-plex/shared-types/*": ["./packages/shared-types/src/*"],
+      "@spotify-to-plex/http-client": ["./packages/http-client/src"],
+      "@spotify-to-plex/http-client/*": ["./packages/http-client/src/*"],
+      "@spotify-to-plex/shared-utils": ["./packages/shared-utils/src"],
+      "@spotify-to-plex/shared-utils/*": ["./packages/shared-utils/src/*"],
       "@spotify-to-plex/music-search": ["./packages/music-search/src"],
       "@spotify-to-plex/music-search/*": ["./packages/music-search/src/*"],
       "@spotify-to-plex/open-spotify-sdk": ["./packages/open-spotify-sdk/src"],

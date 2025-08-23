@@ -1,6 +1,7 @@
 import getAPIUrl from '@/helpers/getAPIUrl';
 import { plex } from '@/library/plex';
-import { AxiosRequest } from '../AxiosRequest';
+import { AxiosRequest } from '@spotify-to-plex/http-client';
+// MIGRATED: Updated to use http-client package
 
 export async function removeItemsFromPlaylist(id: string) {
     if (!plex.settings.uri || !plex.settings.token)

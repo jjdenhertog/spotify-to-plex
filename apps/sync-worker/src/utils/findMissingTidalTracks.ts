@@ -1,7 +1,8 @@
-import getCachedTrackLinks from "../helpers/getCachedTrackLink";
+import { getCachedTrackLinks } from "@spotify-to-plex/shared-utils/server";
 import getTidalCredentials from "../helpers/tidal/getTidalCredentials";
-import { Track } from "../types/SpotifyAPI";
+import { Track } from "@spotify-to-plex/shared-types";
 import { TidalMusicSearch, SearchResponse } from "@spotify-to-plex/tidal-music-search";
+import { settingsDir } from "../library/settingsDir";
 
 export async function findMissingTidalTracks(missingTracks: Track[]) {
 
@@ -9,7 +10,7 @@ export async function findMissingTidalTracks(missingTracks: Track[]) {
         return [];
 
     // Caching
-    const { add, found: cachedTidalLinks } = getCachedTrackLinks(missingTracks, 'tidal');
+    const { add, found: cachedTidalLinks } = getCachedTrackLinks(missingTracks, 'tidal', settingsDir);
     const result: { id: string; tidal_id: string; }[] = [];
 
     for (let i = 0; i < missingTracks.length; i++) {
@@ -46,6 +47,7 @@ export async function findMissingTidalTracks(missingTracks: Track[]) {
         for (let i = 0; i < toSearchTidalTracks.length; i++) {
             const track = toSearchTidalTracks[i];
             if (!track?.id) continue;
+
             const tidalData = tidalSearchResponse.find((item: SearchResponse) => item.id == track.id);
             if (tidalData?.result?.[0]?.id) {
                 result.push({ id: track.id, tidal_id: tidalData.result[0].id });

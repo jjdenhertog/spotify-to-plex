@@ -1,4 +1,3 @@
-
 export type SyncLog = {
     id: string;
     title: string;

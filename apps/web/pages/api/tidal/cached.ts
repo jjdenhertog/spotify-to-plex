@@ -1,6 +1,9 @@
 import { generateError } from '@/helpers/errors/generateError';
-import getCachedTrackLinks from '@/helpers/getCachedTrackLink';
-import { Track } from '@/types/SpotifyAPI';
+import { getCachedTrackLinks } from '@spotify-to-plex/shared-utils/server';
+// MIGRATED: Updated to use shared utils package
+import { Track } from '@spotify-to-plex/shared-types';
+// MIGRATED: Updated to use shared types package
+import { settingsDir } from '@/library/settingsDir';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createRouter } from 'next-connect';
 
@@ -23,12 +26,13 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
             //////////////////////////////////////
             // Handeling cached links
             //////////////////////////////////////
-            const { found: cachedTrackLinks } = getCachedTrackLinks(searchItems, 'tidal')
+            const { found: cachedTrackLinks } = getCachedTrackLinks(searchItems, 'tidal', settingsDir)
 
             const result: GetTidalTracksResponse[] = []
 
             for (let i = 0; i < searchItems.length; i++) {
                 const searchItem = searchItems[i];
+                if (!searchItem) continue;
 
                 // Process if no cached link has been found
                 const trackLink = cachedTrackLinks.find(item => item.spotify_id == searchItem.id)
@@ -39,7 +43,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 result.push({
                     id: searchItem.id,
                     title: searchItem.title,
-                    artist: searchItem.artists[0],
+                    artist: searchItem.artists?.[0] || '',
                     album: searchItem.album || "",
                     tidal_ids: tidalIds,
                 })

@@ -1,9 +1,9 @@
-import { AxiosRequest } from "../helpers/AxiosRequest";
+import { AxiosRequest } from "@spotify-to-plex/http-client";
 import getAPIUrl from "../helpers/getAPIUrl";
 import { handleOneRetryAttempt } from "../helpers/plex/handleOneRetryAttempt";
 import { settingsDir } from "../library/settingsDir";
 import { plex } from "../library/plex";
-import { Playlist } from "../types/PlexAPI";
+import { Playlist } from "@spotify-to-plex/shared-types";
 import { GetPlaylistResponse, PlexMusicSearch, SearchResponse } from "@spotify-to-plex/plex-music-search";
 import { writeFileSync } from "node:fs";
 import { join } from "node:path";
@@ -36,6 +36,7 @@ export async function syncPlaylists() {
     for (let i = 0; i < toSyncPlaylists.length; i++) {
         const item = toSyncPlaylists[i];
         if (!item) continue;
+
         const { id, title, uri, user, sync_interval } = item;
 
         //////////////////////////////////

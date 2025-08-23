@@ -12,7 +12,8 @@
     "declarationMap": true,
     "sourceMap": false,
     "skipLibCheck": true,
-    "noEmit": false
+    "noEmit": false,
+    "tsBuildInfoFile": "./dist/.tsbuildinfo"
   },
   "include": [
     "src/**/*"
@@ -22,6 +23,15 @@
     "dist"
   ],
   "references": [
+    {
+      "path": "../../packages/shared-types"
+    },
+    {
+      "path": "../../packages/http-client"
+    },
+    {
+      "path": "../../packages/shared-utils"
+    },
     {
       "path": "../../packages/music-search"
     },

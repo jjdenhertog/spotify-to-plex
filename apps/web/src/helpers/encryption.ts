@@ -2,7 +2,7 @@ import { createCipheriv, createDecipheriv, randomBytes } from 'node:crypto';
 
 const algorithm = 'aes-256-cbc';
 const iv = randomBytes(16); // Initialization vector
-const key = Buffer.from(process.env.ENCRYPTION_KEY || "XClkSCrJoAxXZGVv8KZF1csyyscyLYEIy5TEIWXIZw", 'hex');
+const key = Buffer.from(process.env.ENCRYPTION_KEY || "XClkSCrJoAxXZGVv8KZF1csyyscyLYEIy5TEIWXIZw", 'utf8');
 
 // Encrypt
 export function encrypt(text: string): string {
@@ -17,6 +17,9 @@ export function encrypt(text: string): string {
 // Decrypt
 export function decrypt(encryptedText: string): string {
     const [ivHex, encrypted] = encryptedText.split(':');
+    if (!ivHex || !encrypted) {
+        throw new Error('Invalid encrypted text format');
+    }
     const ivBuffer = Buffer.from(ivHex, 'hex');
     const decipher = createDecipheriv(algorithm, key, ivBuffer);
     let decrypted = decipher.update(encrypted, 'hex', 'utf8');

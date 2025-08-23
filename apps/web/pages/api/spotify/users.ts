@@ -1,6 +1,7 @@
 import { generateError } from '@/helpers/errors/generateError';
 import { settingsDir } from "@/library/settingsDir";
-import { SpotifyCredentials, SpotifyUser } from '@/types/SpotifyAPI';
+import { SpotifyCredentials, SpotifyUser } from '@spotify-to-plex/shared-types';
+// MIGRATED: Updated to use shared types package
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createRouter } from 'next-connect';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';

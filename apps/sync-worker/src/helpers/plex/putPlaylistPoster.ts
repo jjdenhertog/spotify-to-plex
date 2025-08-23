@@ -1,5 +1,5 @@
 import { plex } from "../../library/plex";
-import { AxiosRequest } from '../AxiosRequest';
+import { AxiosRequest } from '@spotify-to-plex/http-client';
 import getAPIUrl from "../getAPIUrl";
 import { handleOneRetryAttempt } from "./handleOneRetryAttempt";
 

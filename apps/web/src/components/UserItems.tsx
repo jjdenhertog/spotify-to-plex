@@ -1,6 +1,7 @@
 import { errorBoundary } from "@/helpers/errors/errorBoundary";
 import { GetSpotifyUserResponse } from "@/pages/api/spotify/users";
-import { GetSpotifyAlbum, GetSpotifyPlaylist, SavedItem } from "@/types/SpotifyAPI";
+import { GetSpotifyAlbum, GetSpotifyPlaylist, SavedItem } from "@spotify-to-plex/shared-types";
+// MIGRATED: Updated to use shared types package
 import { Add, Check } from "@mui/icons-material";
 import CloseIcon from '@mui/icons-material/Close';
 import { Box, Button, CircularProgress, Divider, IconButton, Modal, Paper, TextField, Tooltip, Typography } from "@mui/material";

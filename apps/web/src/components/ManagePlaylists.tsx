@@ -1,7 +1,9 @@
  
 import { errorBoundary } from "@/helpers/errors/errorBoundary";
-import { filterUnique } from "@/helpers/filterUnique";
-import { SavedItem } from "@/types/SpotifyAPI";
+import { filterUnique } from "@spotify-to-plex/shared-utils";
+// MIGRATED: Updated to use shared utils package
+import { SavedItem } from "@spotify-to-plex/shared-types";
+// MIGRATED: Updated to use shared types package
 import { Box, Button, CircularProgress, Divider, Link, Paper, TextField, Typography } from "@mui/material";
 import Grid from '@mui/material/Grid2';
 import axios from "axios";
@@ -57,8 +59,10 @@ export default function ManagePlaylists() {
         });
 
         items.forEach(item => {
-            const label = item.label || "Uncategorized";
-            groups[label].push(item);
+            const label = item?.label || "Uncategorized";
+            if (groups[label]) {
+                groups[label].push(item);
+            }
         });
 
         return groups;

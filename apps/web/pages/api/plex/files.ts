@@ -20,10 +20,13 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
             })
 
             const libraryItem = await plexMusicSearch.getMetaData(mediaContentId)
+            if (!libraryItem || !libraryItem[0]?.key) {
+                return res.status(200).json([])
+            }
             const trackMetaData = await plexMusicSearch.getMetaData(libraryItem[0].key)
             const tracks = trackMetaData.map((metadata: Metadata) => {
                 try {
-                    return metadata.Media[0].Part[0].file;
+                    return metadata.Media?.[0]?.Part?.[0]?.file || null;
                 } catch (_e) {
                     return null;
                 }

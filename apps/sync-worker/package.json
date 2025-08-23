@@ -22,6 +22,9 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
+    "@spotify-to-plex/shared-types": "workspace:*",
+    "@spotify-to-plex/http-client": "workspace:*",
+    "@spotify-to-plex/shared-utils": "workspace:*",
     "@spotify-to-plex/plex-music-search": "workspace:*",
     "@spotify-to-plex/tidal-music-search": "workspace:*",
     "@spotify-to-plex/open-spotify-sdk": "workspace:*",

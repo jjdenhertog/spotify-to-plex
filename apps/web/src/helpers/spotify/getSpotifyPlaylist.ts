@@ -1,8 +1,9 @@
-import { GetSpotifyPlaylist } from "@/types/SpotifyAPI";
+import { GetSpotifyPlaylist } from "@spotify-to-plex/shared-types";
+// MIGRATED: Updated to use shared types package
 import { SpotifyApi } from "@spotify/web-api-ts-sdk";
 
 
-export default async function getSpotifyPlaylist(api: SpotifyApi, id: string, simplified: boolean) {
+export default async function getSpotifyPlaylist(api: SpotifyApi, id: string, simplified: boolean): Promise<GetSpotifyPlaylist | undefined> {
 
     // const result: GetSpotifyPlaylist = {}
     // let allTracks: GetSpotifyPlaylist["tracks"] = []
@@ -13,16 +14,16 @@ export default async function getSpotifyPlaylist(api: SpotifyApi, id: string, si
             type: "spotify-playlist",
             id: result.id,
             title: result.name,
-            owner: result.owner.display_name,
-            image: result.images[0].url,
+            owner: result.owner?.display_name || '',
+            image: result.images?.[0]?.url || '',
             tracks: []
         }
         playlist.tracks = playlist.tracks.concat(result.tracks.items.map(item => {
             return {
                 id: item.track.id,
                 title: item.track.name,
-                artist: item.track.artists[0].name,
-                album: item.track.album.name,
+                artist: item.track.artists?.[0]?.name || '',
+                album: item.track.album?.name || '',
                 artists: item.track.artists.map(item => item.name),
             }
         }));
@@ -41,8 +42,8 @@ export default async function getSpotifyPlaylist(api: SpotifyApi, id: string, si
                     return {
                         id: item.track.id,
                         title: item.track.name,
-                        artist: item.track.artists[0].name,
-                        album: item.track.album.name,
+                        artist: item.track.artists?.[0]?.name || '',
+                        album: item.track.album?.name || '',
                         artists: item.track.artists.map(item => item.name),
                     }
                 }));
@@ -55,7 +56,6 @@ export default async function getSpotifyPlaylist(api: SpotifyApi, id: string, si
         return playlist;
 
     } catch (_e) {
+        return undefined;
     }
-
-    
 }

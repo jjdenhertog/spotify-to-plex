@@ -5,7 +5,7 @@ import { removeItemsFromPlaylist } from "../helpers/plex/removeItemsFromPlaylist
 import { storePlaylist } from "../helpers/plex/storePlaylist";
 import { updatePlaylist } from "../helpers/plex/updatePlaylist";
 import { plex } from "../library/plex";
-import { Playlist } from "../types/PlexAPI";
+import { Playlist } from "@spotify-to-plex/shared-types";
 import { SearchResponse } from "@spotify-to-plex/plex-music-search";
 import { type } from "node:os";
 

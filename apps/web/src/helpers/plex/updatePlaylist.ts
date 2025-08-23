@@ -1,7 +1,9 @@
 import getAPIUrl from '@/helpers/getAPIUrl';
 import { plex } from '@/library/plex';
-import { GetPlaylistResponse } from '@/types/PlexAPI';
-import { AxiosRequest } from '../AxiosRequest';
+import { GetPlaylistResponse } from '@spotify-to-plex/shared-types';
+// MIGRATED: Updated to use shared types package
+import { AxiosRequest } from '@spotify-to-plex/http-client';
+// MIGRATED: Updated to use http-client package
 import { handleOneRetryAttempt } from './handleOneRetryAttempt';
 
 export async function updatePlaylist(id: string, data: { title: string }) {

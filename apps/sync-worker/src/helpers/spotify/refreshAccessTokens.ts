@@ -1,9 +1,9 @@
 import { settingsDir } from "../../library/settingsDir"
-import { SpotifyCredentials } from "../../types/SpotifyAPI"
+import { SpotifyCredentials } from "@spotify-to-plex/shared-types"
 import axios from "axios"
 import { existsSync, readFileSync, writeFileSync } from "node:fs"
 import { join } from "node:path"
-import { decrypt, encrypt } from "../encryption"
+import { decrypt, encrypt } from "@spotify-to-plex/shared-utils/server"
 
 export default async function refreshAccessTokens() {
     const credentialsPath = join(settingsDir, 'spotify.json')
@@ -30,6 +30,7 @@ export default async function refreshAccessTokens() {
 
             try {
                 if (!user?.access_token?.refresh_token) continue;
+
                 const refreshToken = decrypt(user.access_token.refresh_token);
 
                 const response = await axios.post(

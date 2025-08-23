@@ -1,4 +1,5 @@
-import { AxiosRequest } from '@/helpers/AxiosRequest';
+import { AxiosRequest } from '@spotify-to-plex/http-client';
+// MIGRATED: Updated to use http-client package
 import { generateError } from '@/helpers/errors/generateError';
 import { plex } from '@/library/plex';
 import type { NextApiRequest, NextApiResponse } from 'next';

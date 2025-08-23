@@ -1,12 +1,31 @@
-import { settingsDir } from "../library/settingsDir"
-import { TrackLink } from "../types/TrackLink"
-import { PlexMusicSearchTrack } from "@spotify-to-plex/plex-music-search"
-import { TidalMusicSearchTrack } from "@spotify-to-plex/tidal-music-search"
 import { existsSync, readFileSync, writeFileSync } from "node:fs"
 import { join } from "node:path"
-import { filterUnique } from "./filterUnique"
+import { filterUnique } from "../array/filterUnique"
 
-export default function getCachedTrackLinks(searchItems: (PlexMusicSearchTrack | TidalMusicSearchTrack)[], type: 'plex' | 'tidal') {
+// Import from shared types when packages are linked
+export type TrackLink = {
+    spotify_id: string
+    plex_id?: string[]
+    tidal_id?: string[]
+}
+
+export type PlexMusicSearchTrack = {
+    id: string;
+    title: string;
+    artists: string[];
+}
+
+export type TidalMusicSearchTrack = {
+    id: string;
+    title: string;
+    artists: string[];
+}
+
+export default function getCachedTrackLinks(
+    searchItems: (PlexMusicSearchTrack | TidalMusicSearchTrack)[], 
+    type: 'plex' | 'tidal',
+    settingsDir: string
+) {
     //////////////////////////////////////
     // Handeling cached links
     //////////////////////////////////////
