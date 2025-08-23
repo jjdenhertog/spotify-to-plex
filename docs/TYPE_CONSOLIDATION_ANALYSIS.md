@@ -143,7 +143,7 @@ packages/shared-types/
 4. Add proper package.json with TypeScript configuration
 
 #### Phase 2: Update Applications
-1. Add `@vibe-kanban/shared-types` dependency to both apps
+1. Add `@spotify-to-plex/shared-types` dependency to both apps
 2. Replace local type imports with shared package imports
 3. Update all import statements across both applications
 4. Run comprehensive type checking to ensure no breaks

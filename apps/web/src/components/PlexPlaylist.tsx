@@ -270,6 +270,7 @@ export default function PlexPlaylist(props: PlexPlaylistProps) {
         for (let i = 0; i < tracks.length; i++) {
             const item = tracks[i];
             if (!item) continue;
+
             const trackSelectIdx = trackSelections.find(selectionItem => selectionItem.artist == item?.artist && selectionItem.title == item?.title)
             const song = item.result?.[trackSelectIdx ? trackSelectIdx.idx : 0];
             if (song)
