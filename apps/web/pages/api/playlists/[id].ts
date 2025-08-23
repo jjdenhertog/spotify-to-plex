@@ -19,42 +19,54 @@ export type GetPlexPlaylistIdResponse = {
 const router = createRouter<NextApiRequest, NextApiResponse>()
     .get(
         async (req, res) => {
-            if (!plex.settings.uri || !plex.settings.token)
-                return res.status(400).json({ msg: "No plex connection found" });
+            try {
+                const settings = await plex.getSettings();
+                
+                if (!settings.uri || !settings.token)
+                    return res.status(400).json({ msg: "No plex connection found" });
 
-            const { id } = req.query
-            if (typeof id != 'string')
-                return res.status(400).json({ msg: "Invalid ID given" });
+                const { id } = req.query
+                if (typeof id != 'string')
+                    return res.status(400).json({ msg: "Invalid ID given" });
 
-            const playlists: PlexPlaylists["data"] = plex.playlists.data || [];
-            if (!playlists)
-                return res.status(400).json({ msg: "Invalid playlists" });
+                const playlistsData = await plex.getPlaylists();
+                const playlists: PlexPlaylists["data"] = playlistsData.data || [];
+                if (!playlists)
+                    return res.status(400).json({ msg: "Invalid playlists" });
 
-            const playlistIds = playlists.find(item => item.id == id)
-            if (!playlistIds)
-                return res.status(404).json({ error: `Playlist not found connected to ${id}` })
+                const playlistIds = playlists.find(item => item.id == id)
+                if (!playlistIds)
+                    return res.status(404).json({ error: `Playlist not found connected to ${id}` })
 
-            // Check the existence
-            const url = getAPIUrl(plex.settings.uri, `/playlists`);
-            const result = await AxiosRequest.get<GetPlaylistResponse>(url, plex.settings.token);
-            const playlist = result.data.MediaContainer.Metadata.find(item => item.ratingKey == playlistIds.plex)
-            if (!playlist)
-                return res.status(404).json({ error: `Playlist not found with id ${playlistIds.plex}` })
+                // Check the existence
+                const url = getAPIUrl(settings.uri, `/playlists`);
+                const result = await AxiosRequest.get<GetPlaylistResponse>(url, settings.token);
+                const playlist = result.data.MediaContainer.Metadata.find(item => item.ratingKey == playlistIds.plex)
+                if (!playlist)
+                    return res.status(404).json({ error: `Playlist not found with id ${playlistIds.plex}` })
 
-            const link = getAPIUrl(plex.settings.uri, `/web/index.html#!/server/${plex.settings.id}/playlist?key=${encodeURIComponent(`/playlists/${playlist.ratingKey}`)}`)
-            res.json({ id: playlistIds.plex, link })
+                const link = getAPIUrl(settings.uri, `/web/index.html#!/server/${settings.id}/playlist?key=${encodeURIComponent(`/playlists/${playlist.ratingKey}`)}`)
+                res.json({ id: playlistIds.plex, link })
+            } catch (error) {
+                console.error('Error getting Plex playlist by ID:', error);
+                res.status(500).json({ error: 'Failed to get playlist' });
+            }
         })
     .put(
         async (req, res) => {
-            const { id, name, label: _label, thumb } = req.body;
+            try {
+                const { id, name, label: _label, thumb } = req.body;
             const items: { key: string, source?: string }[] = req.body.items;
             if (!items || items.length == 0 || typeof name != 'string' || typeof id != 'string')
                 return res.status(400).json({ msg: "Invalid data given" });
 
-            if (!plex.settings.uri || !plex.settings.token || !plex.settings.id)
-                return res.status(400).json({ msg: "No plex connection found" });
+                const settings = await plex.getSettings();
 
-            const playlists: PlexPlaylists["data"] = plex.playlists.data || [];
+                if (!settings.uri || !settings.token || !settings.id)
+                    return res.status(400).json({ msg: "No plex connection found" });
+
+                const playlistsData = await plex.getPlaylists();
+                const playlists: PlexPlaylists["data"] = playlistsData.data || [];
             if (!playlists)
                 return res.status(400).json({ msg: "Invalid playlists" });
 
@@ -62,9 +74,9 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
             if (!playlistIds)
                 return res.status(404).json({ error: `Playlist not found connected to ${id}` })
 
-            // Check the existence
-            const url = getAPIUrl(plex.settings.uri, `/playlists`);
-            const result = await AxiosRequest.get<GetPlaylistResponse>(url, plex.settings.token);
+                // Check the existence
+                const url = getAPIUrl(settings.uri, `/playlists`);
+                const result = await AxiosRequest.get<GetPlaylistResponse>(url, settings.token);
             const playlist = result.data.MediaContainer.Metadata.find(item => item.ratingKey == playlistIds.plex);
             if (!playlist)
                 return res.status(404).json({ error: `Playlist not found with id ${playlistIds.plex}` })
@@ -86,9 +98,12 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 }
             }
 
-            const link = getAPIUrl(plex.settings.uri, `/web/index.html#!/server/${plex.settings.id}/playlist?key=${encodeURIComponent(`/playlists/${playlist.ratingKey}`)}`)
-            res.json({ id: playlist.ratingKey, link })
-
+                const link = getAPIUrl(settings.uri, `/web/index.html#!/server/${settings.id}/playlist?key=${encodeURIComponent(`/playlists/${playlist.ratingKey}`)}`)
+                res.json({ id: playlist.ratingKey, link })
+            } catch (error) {
+                console.error('Error updating Plex playlist:', error);
+                res.status(500).json({ error: 'Failed to update playlist' });
+            }
         })
 
 

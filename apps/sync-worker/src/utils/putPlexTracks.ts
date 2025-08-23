@@ -56,7 +56,7 @@ export async function putPlexPlaylist(id: string, plexPlaylist: Playlist | undef
                 console.log(`* Could not update poster image`)
             }
             // Store new playlist
-            plex.savePlaylist(type, id, playlistId);
+            plex.savePlaylist(type(), id, playlistId);
 
 
         }

@@ -21,34 +21,43 @@ export type GetPlexPlaylistResponse = {
 const router = createRouter<NextApiRequest, NextApiResponse>()
     .get(
         async (_req, res, _next) => {
+            try {
+                const settings = await plex.getSettings();
 
-            if (!plex.settings.uri || !plex.settings.token)
-                return res.status(400).json({ msg: "No plex connection found" });
+                if (!settings.uri || !settings.token)
+                    return res.status(400).json({ msg: "No plex connection found" });
 
-            const url = getAPIUrl(plex.settings.uri, `/playlists`);
-            const playlistResult = await AxiosRequest.get<GetPlaylistResponse>(url, plex.settings.token)
-            const { data: plexData } = playlistResult;
+                const url = getAPIUrl(settings.uri, `/playlists`);
+                const playlistResult = await AxiosRequest.get<GetPlaylistResponse>(url, settings.token)
+                const { data: plexData } = playlistResult;
 
-            const result: GetPlexPlaylistResponse[] = []
-            plexData.MediaContainer.Metadata.forEach((item) => {
-                if (!item.smart && item.playlistType == 'audio') {
-                    result.push({
-                        key: item.key,
-                        guid: item.guid,
-                        title: item.title,
-                    })
-                }
-            })
-            res.json(result);
+                const result: GetPlexPlaylistResponse[] = []
+                plexData.MediaContainer.Metadata.forEach((item) => {
+                    if (!item.smart && item.playlistType == 'audio') {
+                        result.push({
+                            key: item.key,
+                            guid: item.guid,
+                            title: item.title,
+                        })
+                    }
+                })
+                res.json(result);
+            } catch (error) {
+                console.error('Error getting Plex playlists:', error);
+                res.status(500).json({ error: 'Failed to get playlists' });
+            }
         })
     .post(
         async (req, res) => {
-            const { id, name, type, thumb } = req.body
+            try {
+                const { id, name, type, thumb } = req.body
             const items: { key: string, source?: string }[] = req.body.items;
             if (!items || items.length == 0 || typeof name != 'string' || typeof id != 'string' || typeof type != 'string')
                 return res.status(400).json({ msg: "Invalid data given" });
 
-            if (!plex.settings.uri || !plex.settings.token || !plex.settings.id)
+            const settings = await plex.getSettings();
+
+            if (!settings.uri || !settings.token || !settings.id)
                 return res.status(400).json({ msg: "No plex connection found" });
 
             const firstItem = items.shift();
@@ -66,10 +75,14 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 }
             }
 
-            plex.savePlaylist(type, id, playlistId)
+                await plex.addPlaylist(type, id, playlistId)
 
-            const link = getAPIUrl(plex.settings.uri, `/web/index.html#!/server/${plex.settings.id}/playlist?key=${encodeURIComponent(`/playlists/${playlistId}`)}`)
-            res.json({ id: playlistId, link })
+                const link = getAPIUrl(settings.uri, `/web/index.html#!/server/${settings.id}/playlist?key=${encodeURIComponent(`/playlists/${playlistId}`)}`)
+                res.json({ id: playlistId, link })
+            } catch (error) {
+                console.error('Error creating Plex playlist:', error);
+                res.status(500).json({ error: 'Failed to create playlist' });
+            }
         })
 
 
