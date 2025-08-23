@@ -8,30 +8,37 @@ import { createRouter } from 'next-connect';
 const router = createRouter<NextApiRequest, NextApiResponse>()
     .post(
         async (req, res) => {
-            const searchItem: PlexMusicSearchTrack = req.body.item;
-            const { fast = false } = req.body;
+            try {
+                const searchItem: PlexMusicSearchTrack = req.body.item;
+                const { fast = false } = req.body;
 
-            if (!searchItem?.id)
-                return res.status(400).json({ msg: "No items given" });
+                if (!searchItem?.id)
+                    return res.status(400).json({ msg: "No items given" });
 
-            if (!plex.settings.token || !plex.settings.uri)
-                return res.status(400).json({ msg: "Plex not configured" });
+                const settings = await plex.getSettings();
 
-            //////////////////////////////////////
-            // Initiate the plexMusicSearch
-            //////////////////////////////////////
-            // Faster searching
-            const plexMusicSearch = new PlexMusicSearch({
-                uri: plex.settings.uri,
-                token: plex.settings.token,
-                searchApproaches: fast ? [
-                    { id: 'fast', filtered: true }
-                ] : undefined
-            })
+                if (!settings.token || !settings.uri)
+                    return res.status(400).json({ msg: "Plex not configured" });
 
-            const searchResponse = await plexMusicSearch.analyze(searchItem)
+                //////////////////////////////////////
+                // Initiate the plexMusicSearch
+                //////////////////////////////////////
+                // Faster searching
+                const plexMusicSearch = new PlexMusicSearch({
+                    uri: settings.uri,
+                    token: settings.token,
+                    searchApproaches: fast ? [
+                        { id: 'fast', filtered: true }
+                    ] : undefined
+                })
 
-            res.status(200).json(searchResponse);
+                const searchResponse = await plexMusicSearch.analyze(searchItem)
+
+                res.status(200).json(searchResponse);
+            } catch (error) {
+                console.error('Error analyzing Plex music:', error);
+                res.status(500).json({ error: 'Failed to analyze music' });
+            }
         })
 
 

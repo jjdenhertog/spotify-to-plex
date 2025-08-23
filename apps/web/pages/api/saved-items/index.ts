@@ -36,7 +36,8 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
     )
     .post(
         async (req, res) => {
-            const { search, id: searchId, user_id, label } = req.body;
+            try {
+                const { search, id: searchId, user_id, label } = req.body;
             if (typeof search != 'string' && typeof searchId != 'string')
                 return res.status(400).json({ error: "Search query missing" })
 
@@ -47,12 +48,14 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
             if (typeof search == 'string' && search.trim().startsWith('/library')) {
                 const plexMediaId = search.trim();
 
-                if (!plex.settings.token || !plex.settings.uri)
+                const settings = await plex.getSettings();
+
+                if (!settings.token || !settings.uri)
                     return res.status(400).json({ msg: "Plex not configured" });
 
                 const plexMusicSearch = new PlexMusicSearch({
-                    uri: plex.settings.uri,
-                    token: plex.settings.token
+                    uri: settings.uri,
+                    token: settings.token
                 })
 
                 const metaData = await plexMusicSearch.getById(plexMediaId)
@@ -107,9 +110,13 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 writeFileSync(savedItemsPath, JSON.stringify([savedItem], undefined, 4))
             }
 
-            const savedItems: SavedItem[] = JSON.parse(readFileSync(savedItemsPath, 'utf8'))
+                const savedItems: SavedItem[] = JSON.parse(readFileSync(savedItemsPath, 'utf8'))
 
-            return res.status(200).json(savedItems.reverse())
+                return res.status(200).json(savedItems.reverse())
+            } catch (error) {
+                console.error('Error saving items:', error);
+                res.status(500).json({ error: 'Failed to save items' });
+            }
         })
     .delete(
         async (req, res) => {

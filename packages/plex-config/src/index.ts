@@ -17,8 +17,7 @@ export * from './types';
 // Utils
 export * from './utils/error-handler';
 
-// Migration support
-export { LegacyPlexAdapter, createLegacyPlex } from './migration/legacy-adapter';
+// Legacy migration support removed - use PlexConfigManager directly
 
 // Convenience factory function
 import { PlexConfigManager, PlexConfigOptions } from './core/plex-config-manager';

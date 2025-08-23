@@ -29,6 +29,7 @@
     "@spotify-to-plex/tidal-music-search": "workspace:*",
     "@spotify-to-plex/open-spotify-sdk": "workspace:*",
     "@spotify-to-plex/plex-config": "workspace:*",
+    "@spotify-to-plex/plex-helpers": "workspace:*",
     "@spotify/web-api-ts-sdk": "^1.2.0",
     "axios": "^1.11.0",
     "fs-extra": "^11.3.1",

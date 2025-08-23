@@ -11,14 +11,27 @@ export type GetSettingsResponse = {
 const router = createRouter<NextApiRequest, NextApiResponse>()
     .post(
         async (req, res) => {
-            if (req.body.uri)
-                plex.saveConfig({ uri: req.body.uri, id: req.body.id })
+            try {
+                if (req.body.uri) {
+                    await plex.updateSettings({ uri: req.body.uri, id: req.body.id })
+                }
 
-            res.json({ loggedin: !!plex.settings.token, uri: plex.settings.uri, id: plex.settings.id })
+                const settings = await plex.getSettings();
+                res.json({ loggedin: !!settings.token, uri: settings.uri, id: settings.id })
+            } catch (error) {
+                console.error('Error updating Plex settings:', error);
+                res.status(500).json({ error: 'Failed to update settings' });
+            }
         })
     .get(
         async (_req, res) => {
-            res.json({ loggedin: !!plex.settings.token, uri: plex.settings.uri, id: plex.settings.id })
+            try {
+                const settings = await plex.getSettings();
+                res.json({ loggedin: !!settings.token, uri: settings.uri, id: settings.id })
+            } catch (error) {
+                console.error('Error getting Plex settings:', error);
+                res.status(500).json({ error: 'Failed to get settings' });
+            }
         })
 
 

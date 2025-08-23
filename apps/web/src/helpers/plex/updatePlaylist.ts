@@ -1,18 +1,28 @@
 import getAPIUrl from '@/helpers/getAPIUrl';
 import { plex } from '@/library/plex';
-import { GetPlaylistResponse } from '@spotify-to-plex/shared-types';
-// MIGRATED: Updated to use shared types package
-import { AxiosRequest } from '@spotify-to-plex/http-client';
-// MIGRATED: Updated to use http-client package
-import { handleOneRetryAttempt } from './handleOneRetryAttempt';
+import {
+    updatePlaylist as updatePlaylistCore,
+    PlexSettings,
+    PlaylistUpdateData,
+    RetryConfig
+} from '@spotify-to-plex/plex-helpers';
 
-export async function updatePlaylist(id: string, data: { title: string }) {
-    if (!plex.settings.uri || !plex.settings.token)
-        throw new Error('No Plex connection found');
+/**
+ * Legacy wrapper for updatePlaylist - maintains backward compatibility
+ * @deprecated Use updatePlaylistWithSettings instead
+ */
+export async function updatePlaylist(id: string, data: { title: string }): Promise<void> {
+    return updatePlaylistCore(plex.settings, getAPIUrl, id, data);
+}
 
-    const url = getAPIUrl(plex.settings.uri, `/playlists/${id}`);
-
-    const query = new URLSearchParams(data);
-
-    await handleOneRetryAttempt(() => AxiosRequest.put<GetPlaylistResponse>(`${url}?${query.toString()}`, plex.settings.token))
+/**
+ * Modern version that accepts settings as parameter
+ */
+export async function updatePlaylistWithSettings(
+    settings: PlexSettings,
+    playlistId: string,
+    data: PlaylistUpdateData,
+    config?: RetryConfig
+): Promise<void> {
+    return updatePlaylistCore(settings, getAPIUrl, playlistId, data, config);
 }

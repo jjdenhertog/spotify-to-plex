@@ -12,21 +12,24 @@ import { createRouter } from 'next-connect';
 const router = createRouter<NextApiRequest, NextApiResponse>()
     .post(
         async (req, res) => {
-            const searchItems: PlexMusicSearchTrack[] = req.body.items;
+            try {
+                const searchItems: PlexMusicSearchTrack[] = req.body.items;
 
-            if (!plex.settings.token || !plex.settings.uri)
-                return res.status(400).json({ msg: "Plex not configured" });
+                if (!Array.isArray(searchItems))
+                    return res.status(200).json([]);
 
-            if (!Array.isArray(searchItems))
-                return res.status(200).json([]);
+                const settings = await plex.getSettings();
 
-            //////////////////////////////////////
-            // Initiate the plexMusicSearch
-            //////////////////////////////////////
-            const plexMusicSearch = new PlexMusicSearch({
-                uri: plex.settings.uri,
-                token: plex.settings.token
-            })
+                if (!settings.token || !settings.uri)
+                    return res.status(400).json({ msg: "Plex not configured" });
+
+                //////////////////////////////////////
+                // Initiate the plexMusicSearch
+                //////////////////////////////////////
+                const plexMusicSearch = new PlexMusicSearch({
+                    uri: settings.uri,
+                    token: settings.token
+                })
 
             //////////////////////////////////////
             // Handeling cached links
@@ -77,7 +80,11 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
 
             }
 
-            res.status(200).json(result);
+                res.status(200).json(result);
+            } catch (error) {
+                console.error('Error getting cached Plex tracks:', error);
+                res.status(500).json({ error: 'Failed to get cached tracks' });
+            }
         })
 
 

@@ -20,15 +20,16 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
 
             try {
 
-                if (!plex.settings?.token)
-                    return res.status(400).json({ message: "No Plex connection found" });
+                const settings = await plex.getSettings();
 
+                if (!settings?.token)
+                    return res.status(400).json({ message: "No Plex connection found" });
 
                 const result = await axios.get(`https://plex.tv/api/v2/resources`, {
                     params: {
                         "X-Plex-Product": "Spotify to Plex",
                         "X-Plex-Client-Identifier": process.env.PLEX_APP_ID,
-                        "X-Plex-Token": plex.settings?.token,
+                        "X-Plex-Token": settings?.token,
                     }
                 })
 

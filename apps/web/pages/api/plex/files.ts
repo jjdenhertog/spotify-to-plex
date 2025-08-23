@@ -7,34 +7,41 @@ import { createRouter } from "next-connect"
 const router = createRouter<NextApiRequest, NextApiResponse>()
     .get(
         async (req, res) => {
-            const { media_content_id: mediaContentId } = req.query
-            if (typeof mediaContentId != "string")
-                return res.status(200).json([])
+            try {
+                const { media_content_id: mediaContentId } = req.query
+                if (typeof mediaContentId != "string")
+                    return res.status(200).json([])
 
-            if (!plex.settings.token || !plex.settings.uri)
-                throw new Error('Missing plex')
+                const settings = await plex.getSettings();
 
-            const plexMusicSearch = new PlexMusicSearch({
-                uri: plex.settings.uri,
-                token: plex.settings.token,
-            })
+                if (!settings.token || !settings.uri)
+                    return res.status(400).json({ error: 'Missing plex configuration' })
 
-            const libraryItem = await plexMusicSearch.getMetaData(mediaContentId)
-            if (!libraryItem?.[0]?.key) {
-                return res.status(200).json([])
-            }
+                const plexMusicSearch = new PlexMusicSearch({
+                    uri: settings.uri,
+                    token: settings.token,
+                })
 
-            const trackMetaData = await plexMusicSearch.getMetaData(libraryItem[0].key)
-            const tracks = trackMetaData.map((metadata: Metadata) => {
-                try {
-                    return metadata.Media?.[0]?.Part?.[0]?.file || null;
-                } catch (_e) {
-                    return null;
+                const libraryItem = await plexMusicSearch.getMetaData(mediaContentId)
+                if (!libraryItem?.[0]?.key) {
+                    return res.status(200).json([])
                 }
-            })
 
-            const files = tracks.filter((item: string | null): item is string => item != null);
-            res.json(files)
+                const trackMetaData = await plexMusicSearch.getMetaData(libraryItem[0].key)
+                const tracks = trackMetaData.map((metadata: Metadata) => {
+                    try {
+                        return metadata.Media?.[0]?.Part?.[0]?.file || null;
+                    } catch (_e) {
+                        return null;
+                    }
+                })
+
+                const files = tracks.filter((item: string | null): item is string => item != null);
+                res.json(files)
+            } catch (error) {
+                console.error('Error getting Plex files:', error);
+                res.status(500).json({ error: 'Failed to get files' });
+            }
         })
 
 

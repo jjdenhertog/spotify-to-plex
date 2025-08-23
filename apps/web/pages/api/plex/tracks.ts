@@ -12,44 +12,51 @@ import { createRouter } from 'next-connect';
 const router = createRouter<NextApiRequest, NextApiResponse>()
     .post(
         async (req, res) => {
-            const searchItems: PlexMusicSearchTrack[] = req.body.items;
-            const { type = 'spotify-playlist', fast = false, album } = req.body;
+            try {
+                const searchItems: PlexMusicSearchTrack[] = req.body.items;
+                const { type = 'spotify-playlist', fast = false, album } = req.body;
 
-            if (!searchItems || searchItems.length == 0)
-                return res.status(400).json({ msg: "No items given" });
+                if (!searchItems || searchItems.length == 0)
+                    return res.status(400).json({ msg: "No items given" });
 
-            if (!plex.settings.token || !plex.settings.uri)
-                return res.status(400).json({ msg: "Plex not configured" });
+                const settings = await plex.getSettings();
 
-            //////////////////////////////////////
-            // Initiate the plexMusicSearch
-            //////////////////////////////////////
-            const plexMusicSearch = new PlexMusicSearch({
-                uri: plex.settings.uri,
-                token: plex.settings.token,
-                searchApproaches: fast ? [
-                    { id: 'fast', filtered: true }
-                ] : undefined
-            })
+                if (!settings.token || !settings.uri)
+                    return res.status(400).json({ msg: "Plex not configured" });
 
-            let searchResult: SearchResponse[] = []
-            switch (type) {
-                case "spotify-album":
-                    searchResult = await plexMusicSearch.searchAlbum(searchItems)
-                    break;
+                //////////////////////////////////////
+                // Initiate the plexMusicSearch
+                //////////////////////////////////////
+                const plexMusicSearch = new PlexMusicSearch({
+                    uri: settings.uri,
+                    token: settings.token,
+                    searchApproaches: fast ? [
+                        { id: 'fast', filtered: true }
+                    ] : undefined
+                })
 
-                default:
-                    searchResult = await plexMusicSearch.search(searchItems)
-                    break;
+                let searchResult: SearchResponse[] = []
+                switch (type) {
+                    case "spotify-album":
+                        searchResult = await plexMusicSearch.searchAlbum(searchItems)
+                        break;
+
+                    default:
+                        searchResult = await plexMusicSearch.search(searchItems)
+                        break;
+                }
+
+                ///////////////////////////
+                // Update track links
+                ///////////////////////////
+                const { add } = getCachedTrackLinks(searchItems, 'plex', settingsDir)
+                add(searchResult, 'plex', album ? { id: album } : undefined)
+
+                res.status(200).json(searchResult);
+            } catch (error) {
+                console.error('Error searching Plex tracks:', error);
+                res.status(500).json({ error: 'Failed to search tracks' });
             }
-
-            ///////////////////////////
-            // Update track links
-            ///////////////////////////
-            const { add } = getCachedTrackLinks(searchItems, 'plex', settingsDir)
-            add(searchResult, 'plex', album ? { id: album } : undefined)
-
-            res.status(200).json(searchResult);
         })
 
 

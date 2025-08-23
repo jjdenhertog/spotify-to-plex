@@ -1,12 +1,17 @@
+import { getPlexUri, PlexSettings } from '@spotify-to-plex/plex-helpers';
 import { plex } from '../../library/plex';
 
+/**
+ * Legacy wrapper for getUri - maintains backward compatibility
+ * @deprecated Use getPlexUri with explicit settings parameter instead
+ */
+export function getUri(key: string, source?: string): string {
+    return getPlexUri(plex.settings, key, source);
+}
 
-export function getUri(key: string, source?: string) {
-    if (!plex.settings.uri || !plex.settings.token)
-        throw new Error('No Plex connection found');
-
-    if (source)
-        return `${source}${key}`;
-
-    return `server://${plex.settings.id}/com.plexapp.plugins.library${key}`;
+/**
+ * Modern version that accepts settings as parameter
+ */
+export function getUriWithSettings(settings: PlexSettings, key: string, source?: string): string {
+    return getPlexUri(settings, key, source);
 }

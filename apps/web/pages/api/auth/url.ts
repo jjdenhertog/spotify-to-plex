@@ -14,30 +14,33 @@ export type GetAuthUrlResponse = {
 const router = createRouter<NextApiRequest, NextApiResponse>()
     .post(
         async (req, res, _next) => {
+            try {
+                const result = await axios.post<PostPinResponse>("https://plex.tv/api/v2/pins", stringify({
+                    strong: true,
+                    "X-Plex-Product": "Spotify to Plex",
+                    "X-Plex-Client-Identifier": process.env.PLEX_APP_ID,
+                }))
 
-            const result = await axios.post<PostPinResponse>("https://plex.tv/api/v2/pins", stringify({
-                strong: true,
-                "X-Plex-Product": "Spotify to Plex",
-                "X-Plex-Client-Identifier": process.env.PLEX_APP_ID,
-            }))
-
-            const authUrl =
-                `https://app.plex.tv/auth#?${stringify({
-                    clientID: process.env.PLEX_APP_ID,
-                    code: result.data.code,
-                    forwardUrl: `${req.body.callback}?plex=1`,
-                    context: {
-                        device: {
-                            product: 'Spotify to Plex',
+                const authUrl =
+                    `https://app.plex.tv/auth#?${stringify({
+                        clientID: process.env.PLEX_APP_ID,
+                        code: result.data.code,
+                        forwardUrl: `${req.body.callback}?plex=1`,
+                        context: {
+                            device: {
+                                product: 'Spotify to Plex',
+                            },
                         },
-                    },
-                })}`;
+                    })}`;
 
-
-            plex.saveConfig({ pin_id: `${result.data.id}`, pin_code: result.data.code })
-            res.json({
-                authUrl
-            })
+                await plex.updateSettings({ pin_id: `${result.data.id}`, pin_code: result.data.code })
+                res.json({
+                    authUrl
+                })
+            } catch (error) {
+                console.error('Error creating Plex auth URL:', error);
+                res.status(500).json({ error: 'Failed to create authentication URL' });
+            }
         })
 
 export default router.handler({
