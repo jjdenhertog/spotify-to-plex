@@ -19,6 +19,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 return res.json({ ok: true })
             } catch (error) {
                 console.error('Error performing Plex search:', error);
+
                 return res.status(500).json({ message: "Something went wrong while connecting to this server." })
             }
         })

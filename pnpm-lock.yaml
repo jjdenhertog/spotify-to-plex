@@ -84,6 +84,9 @@ importers:
       '@spotify-to-plex/plex-config':
         specifier: workspace:*
         version: link:../../packages/plex-config
+      '@spotify-to-plex/plex-helpers':
+        specifier: workspace:*
+        version: link:../../packages/plex-helpers
       '@spotify-to-plex/plex-music-search':
         specifier: workspace:*
         version: link:../../packages/plex-music-search
@@ -187,6 +190,9 @@ importers:
       '@spotify-to-plex/plex-config':
         specifier: workspace:*
         version: link:../../packages/plex-config
+      '@spotify-to-plex/plex-helpers':
+        specifier: workspace:*
+        version: link:../../packages/plex-helpers
       '@spotify-to-plex/plex-music-search':
         specifier: workspace:*
         version: link:../../packages/plex-music-search
@@ -350,6 +356,22 @@ importers:
         version: 29.7.0(@types/node@20.19.11)(babel-plugin-macros@3.1.0)(ts-node@10.9.2(@swc/core@1.13.4)(@types/node@20.19.11)(typescript@5.9.2))
       typescript:
         specifier: ^5.7.2
+        version: 5.9.2
+
+  packages/plex-helpers:
+    dependencies:
+      '@spotify-to-plex/http-client':
+        specifier: workspace:*
+        version: link:../http-client
+      '@spotify-to-plex/shared-types':
+        specifier: workspace:*
+        version: link:../shared-types
+      axios:
+        specifier: ^1.0.0
+        version: 1.11.0
+    devDependencies:
+      typescript:
+        specifier: ^5.0.0
         version: 5.9.2
 
   packages/plex-music-search:

@@ -46,6 +46,9 @@
     },
     {
       "path": "../../packages/tidal-music-search"
+    },
+    {
+      "path": "../../packages/plex-helpers"
     }
   ],
   "ts-node": {

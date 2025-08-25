@@ -6,15 +6,19 @@ import {
 } from '@spotify-to-plex/plex-helpers';
 
 /**
- * Legacy wrapper for storePlaylist - maintains backward compatibility
- * @deprecated Use storePlaylistWithSettings instead
+ * Convenience wrapper for storePlaylist
  */
 export async function storePlaylist(name: string, uri: string): Promise<string> {
-    return storePlaylistCore(plex.settings, getAPIUrl, name, uri);
+    const settings = await plex.getSettings();
+    if (!settings.uri || !settings.token || !settings.id) {
+        throw new Error('Plex settings not configured properly');
+    }
+
+    return storePlaylistCore(settings as Required<typeof settings>, getAPIUrl, name, uri);
 }
 
 /**
- * Modern version that accepts settings as parameter
+ * Version that accepts settings as parameter
  */
 export async function storePlaylistWithSettings(
     settings: PlexSettings,

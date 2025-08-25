@@ -9,8 +9,7 @@ import { AxiosRequest } from '@spotify-to-plex/http-client';
 import getAPIUrl from "../getAPIUrl";
 
 /**
- * Legacy wrapper for putPlaylistPoster with complex poster management
- * @deprecated Use putPlaylistPosterWithSettings instead
+ * Convenience wrapper for putPlaylistPoster with complex poster management
  */
 export async function putPlaylistPoster(id: string, image: string): Promise<void> {
     let posters = await getPosters(id);
@@ -27,7 +26,7 @@ export async function putPlaylistPoster(id: string, image: string): Promise<void
 }
 
 /**
- * Modern version that accepts settings as parameter
+ * Version that accepts settings as parameter
  */
 export async function putPlaylistPosterWithSettings(
     settings: PlexSettings,
@@ -42,11 +41,13 @@ export async function putPlaylistPosterWithSettings(
  * Get playlist metadata
  */
 export async function getPlaylist(id: string) {
-    const uri = plex.settings.uri;
-    const token = plex.settings.token;
+    const settings = await plex.getSettings();
+    const {uri} = settings;
+    const {token} = settings;
     if (!uri || !token) {
         throw new Error('Plex settings not configured');
     }
+
     const url = getAPIUrl(uri, `/library/metadata/${id}`);
     const currentPlaylist = await handleOneRetryAttempt(() => AxiosRequest.get<any>(url, token))
 
@@ -54,45 +55,52 @@ export async function getPlaylist(id: string) {
 }
 
 /**
- * Modern version that accepts settings as parameter
+ * Version that accepts settings as parameter
  */
 export async function getPlaylistWithSettings(settings: PlexSettings, id: string) {
     if (!settings.uri || !settings.token) {
         throw new Error('Plex settings not configured');
     }
+
     const url = getAPIUrl(settings.uri, `/library/metadata/${id}`);
     const currentPlaylist = await handleOneRetryAttempt(() => AxiosRequest.get<any>(url, settings.token))
 
     return currentPlaylist.data.MediaContainer.Metadata[0];
 }
 async function getPosters(id: string) {
-    const uri = plex.settings.uri;
-    const token = plex.settings.token;
+    const settings = await plex.getSettings();
+    const {uri} = settings;
+    const {token} = settings;
     if (!uri || !token) {
         throw new Error('Plex settings not configured');
     }
+
     const url = getAPIUrl(uri, `/library/metadata/${id}/posters`);
     const currentPosters = await handleOneRetryAttempt(() => AxiosRequest.get<any>(url, token))
 
     return currentPosters.data.MediaContainer;
 }
 async function putPoster(id: string, uploadUrl: string) {
-    const uri = plex.settings.uri;
-    const token = plex.settings.token;
+    const settings = await plex.getSettings();
+    const {uri} = settings;
+    const {token} = settings;
     if (!uri || !token) {
         throw new Error('Plex settings not configured');
     }
+
     const url = getAPIUrl(uri, `/library/metadata/${id}/poster?url=${encodeURIComponent(uploadUrl)}`);
 
     return handleOneRetryAttempt(() => AxiosRequest.put<any>(url, token))
 }
 
 async function uploadPoster(id: string, image: string) {
-    const uri = plex.settings.uri;
-    const token = plex.settings.token;
+    const settings = await plex.getSettings();
+    const {uri} = settings;
+    const {token} = settings;
     if (!uri || !token) {
         throw new Error('Plex settings not configured');
     }
+
     const url = getAPIUrl(uri, `/library/metadata/${id}/posters?url=${encodeURIComponent(image)}`);
 
     return AxiosRequest.post<any>(url, token)

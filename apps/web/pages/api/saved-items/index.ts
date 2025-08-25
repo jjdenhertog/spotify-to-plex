@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-redundant-type-constituents */
+/* eslint-disable men-in-green/one-line-if */
 import { generateError } from '@/helpers/errors/generateError';
 import getSpotifyData from '@/helpers/spotify/getSpotifyData';
-import { settingsDir } from "@/library/settingsDir";
 import { plex } from '@/library/plex';
-import { SavedItem } from '@spotify-to-plex/shared-types';
-// MIGRATED: Updated to use shared types package
+import { settingsDir } from "@/library/settingsDir";
+
+import type { SavedItem } from '@spotify-to-plex/shared-types';
 import { PlexMusicSearch } from '@spotify-to-plex/plex-music-search';
 import { SpotifyApi } from '@spotify/web-api-ts-sdk';
 import type { NextApiRequest, NextApiResponse } from 'next';
@@ -38,83 +40,85 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
         async (req, res) => {
             try {
                 const { search, id: searchId, user_id, label } = req.body;
-            if (typeof search != 'string' && typeof searchId != 'string')
-                return res.status(400).json({ error: "Search query missing" })
+                if (typeof search != 'string' && typeof searchId != 'string')
+                    return res.status(400).json({ error: "Search query missing" })
 
-            if (!process.env.SPOTIFY_API_CLIENT_ID || !process.env.SPOTIFY_API_CLIENT_SECRET)
-                return res.status(400).json({ error: "Spotify Credentials missing. Please add the environment variables to use this feature." })
+                if (!process.env.SPOTIFY_API_CLIENT_ID || !process.env.SPOTIFY_API_CLIENT_SECRET)
+                    return res.status(400).json({ error: "Spotify Credentials missing. Please add the environment variables to use this feature." })
 
-            let savedItem: SavedItem | null = null;
-            if (typeof search == 'string' && search.trim().startsWith('/library')) {
-                const plexMediaId = search.trim();
+                let savedItem: SavedItem | null = null;
+                if (typeof search == 'string' && search.trim().startsWith('/library')) {
+                    const plexMediaId = search.trim();
 
-                const settings = await plex.getSettings();
+                    const settings = await plex.getSettings();
 
-                if (!settings.token || !settings.uri)
-                    return res.status(400).json({ msg: "Plex not configured" });
+                    if (!settings.token || !settings.uri)
+                        return res.status(400).json({ msg: "Plex not configured" });
 
-                const plexMusicSearch = new PlexMusicSearch({
-                    uri: settings.uri,
-                    token: settings.token
-                })
+                    const plexMusicSearch = new PlexMusicSearch({
+                        uri: settings.uri,
+                        token: settings.token
+                    })
 
-                const metaData = await plexMusicSearch.getById(plexMediaId)
-                if (metaData)
-                    savedItem = { type: 'plex-media', uri: metaData.id, id: metaData.guid, title: metaData.title, image: `/api/plex/image?path=${encodeURIComponent(metaData.image)}` }
-            } else {
+                    const metaData = await plexMusicSearch.getById(plexMediaId)
+                    if (metaData)
+                        savedItem = { type: 'plex-media', uri: metaData.id, id: metaData.guid, title: metaData.title, image: `/api/plex/image?path=${encodeURIComponent(metaData.image)}` }
+                } else {
+                    let id = searchId || '';
 
-                let id = searchId || '';
-                if (search) {
-                    if (search.indexOf('http') > -1) {
+                    if (!search) {
+                        // Do nothing, keep searchId
+                    } else if (search.indexOf('http') > -1) {
                         const { path } = parse(search, true);
-                        if (path) {
-                            id = path.split("/").join(":");
-                            id = `spotify${id}`;
+                        
+                        if (!path) {
+                            return res.status(400).json({ error: "Invalid URL" });
                         }
+
+                        id = path.split("/").join(":");
+                        id = `spotify${id}`;
                     } else if (search.split(":").length == 3) {
                         id = search;
                     } else {
-                        return res.status(400).json({ error: "Invalid Spotify URI, expecting spotify:playlist:id" })
+                        return res.status(400).json({ error: "Invalid Spotify URI, expecting spotify:playlist:id" });
                     }
+
+                    const api = SpotifyApi.withClientCredentials(process.env.SPOTIFY_API_CLIENT_ID, process.env.SPOTIFY_API_CLIENT_SECRET);
+                    const data = await getSpotifyData(api, id)
+
+                    if (!data)
+                        return res.status(400).json({ error: "No datas found, it might be a private playlist" })
+
+                    const { type, id: resultId, title: name, image } = data;
+                    savedItem = { type, uri: id, id: resultId, title: name, image }
+                    if (typeof user_id == 'string')
+                        savedItem.user = user_id;
+
+                    if (typeof label == 'string')
+                        savedItem.label = label;
+
                 }
 
-                const api = SpotifyApi.withClientCredentials(process.env.SPOTIFY_API_CLIENT_ID, process.env.SPOTIFY_API_CLIENT_SECRET);
-                const data = await getSpotifyData(api, id)
+                if (!savedItem)
+                    return res.status(400).json({ error: "Could not find data to save" })
 
-                if (!data)
-                    return res.status(400).json({ error: "No datas found, it might be a private playlist" })
+                const savedItemsPath = join(settingsDir, 'spotify_saved_items.json')
+                if (existsSync(savedItemsPath)) {
 
-                const { type, id: resultId, title: name, image } = data;
-                savedItem = { type, uri: id, id: resultId, title: name, image }
-                if (typeof user_id == 'string')
-                    savedItem.user = user_id;
+                    const savedItems: SavedItem[] = JSON.parse(readFileSync(savedItemsPath, 'utf8'))
+                    if (savedItems.some(item => item.id == savedItem.id))
+                        return res.status(400).json({ error: `${savedItem.title} (spotify id: ${savedItem.id}) is already added.` })
 
-                if (typeof label == 'string')
-                    savedItem.label = label;
-
-            }
-
-            if (!savedItem)
-                return res.status(400).json({ error: "Could not find data to save" })
-
-            const savedItemsPath = join(settingsDir, 'spotify_saved_items.json')
-            if (existsSync(savedItemsPath)) {
-
-                const savedItems: SavedItem[] = JSON.parse(readFileSync(savedItemsPath, 'utf8'))
-                if (savedItems.some(item => item.id == savedItem.id))
-                    return res.status(400).json({ error: `${savedItem.title} (spotify id: ${savedItem.id}) is already added.` })
-
-                savedItems.push(savedItem)
-                writeFileSync(savedItemsPath, JSON.stringify(savedItems, undefined, 4))
-            } else {
-                writeFileSync(savedItemsPath, JSON.stringify([savedItem], undefined, 4))
-            }
+                    savedItems.push(savedItem)
+                    writeFileSync(savedItemsPath, JSON.stringify(savedItems, undefined, 4))
+                } else {
+                    writeFileSync(savedItemsPath, JSON.stringify([savedItem], undefined, 4))
+                }
 
                 const savedItems: SavedItem[] = JSON.parse(readFileSync(savedItemsPath, 'utf8'))
 
                 return res.status(200).json(savedItems.reverse())
-            } catch (error) {
-                console.error('Error saving items:', error);
+            } catch {
                 res.status(500).json({ error: 'Failed to save items' });
             }
         })

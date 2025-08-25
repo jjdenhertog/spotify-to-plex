@@ -5,8 +5,7 @@ import {
 import { AxiosResponse } from 'axios';
 
 /**
- * Legacy wrapper for handleOneRetryAttempt - maintains backward compatibility
- * @deprecated Use handleOneRetryAttemptWithConfig instead
+ * Convenience wrapper for handleOneRetryAttempt
  */
 export async function handleOneRetryAttempt<T = any>(
     request: () => Promise<AxiosResponse<T>>
@@ -15,7 +14,7 @@ export async function handleOneRetryAttempt<T = any>(
 }
 
 /**
- * Modern version that accepts retry configuration
+ * Version that accepts retry configuration
  */
 export async function handleOneRetryAttemptWithConfig<T = any>(
     request: () => Promise<AxiosResponse<T>>,

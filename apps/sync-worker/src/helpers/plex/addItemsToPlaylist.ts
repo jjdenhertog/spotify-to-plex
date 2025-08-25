@@ -8,18 +8,22 @@ import {
 } from '@spotify-to-plex/plex-helpers';
 
 /**
- * Legacy wrapper for addItemsToPlaylist - maintains backward compatibility
- * @deprecated Use addItemsToPlaylistWithSettings instead
+ * Convenience wrapper for addItemsToPlaylist
  */
 export async function addItemsToPlaylist(
     id: string,
     items: { key: string; source?: string; }[]
 ): Promise<void> {
-    return addItemsToPlaylistCore(plex.settings, getAPIUrl, id, items);
+    const settings = await plex.getSettings();
+    if (!settings.uri || !settings.token || !settings.id) {
+        throw new Error('Plex settings not configured properly');
+    }
+
+    return addItemsToPlaylistCore(settings as Required<typeof settings>, getAPIUrl, id, items);
 }
 
 /**
- * Modern version that accepts settings as parameter
+ * Version that accepts settings as parameter
  */
 export async function addItemsToPlaylistWithSettings(
     settings: PlexSettings,

@@ -122,10 +122,6 @@ export class PlaylistService {
     // We could emit a clear event if needed
     }
 
-    // Synchronous getter for backward compatibility (uses cached value)
-    public getCachedPlaylists(): PlexPlaylists {
-        return this.cache ?? { data: [] };
-    }
 
     // Pre-load cache for synchronous access
     public async preloadCache(): Promise<void> {

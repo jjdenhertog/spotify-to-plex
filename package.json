@@ -23,7 +23,7 @@
         "build": "tsc --build",
         "build:clean": "tsc --build --clean",
         "build:force": "tsc --build --force",
-        "type-check": "pnpm run type-check --workspaces --if-present",
+        "type-check": "pnpm -r run type-check",
         "type-check:build": "tsc --build --noEmit",
         "type-check:watch": "tsc --build --watch --noEmit",
         "test:packages": "npm run test --workspaces --if-present",

@@ -1,17 +1,15 @@
 {
-  "extends": "../../config/typescript/base.json",
-  "compilerOptions": {
-    "outDir": "./dist",
-    "declaration": true,
-    "declarationMap": true,
-    "composite": true,
-    "rootDir": "./src"
-  },
-  "include": [
-    "src/**/*"
-  ],
-  "exclude": [
-    "dist",
-    "node_modules"
-  ]
+    "$schema": "https://json.schemastore.org/tsconfig",
+    "extends": "../../config/typescript/base.json",
+    "compilerOptions": {
+        "rootDir": "./src",
+        "outDir": "./dist",
+        "composite": true,
+        "declaration": true,
+        "declarationMap": true,
+        "incremental": true,
+        "tsBuildInfoFile": "./dist/.tsbuildinfo"
+    },
+    "include": ["src/**/*"],
+    "exclude": ["node_modules", "dist"]
 }

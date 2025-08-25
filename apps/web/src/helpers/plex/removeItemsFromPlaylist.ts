@@ -9,20 +9,20 @@ import {
 import { AxiosRequest } from '@spotify-to-plex/http-client';
 
 /**
- * Legacy wrapper for removeItemsFromPlaylist - maintains backward compatibility
+ * Convenience wrapper for removeItemsFromPlaylist
  * Note: Original function only cleared entire playlist, not specific items
- * @deprecated Use removeItemsFromPlaylistWithSettings or clearPlaylistWithSettings instead
  */
 export async function removeItemsFromPlaylist(id: string): Promise<void> {
-    if (!plex.settings.uri || !plex.settings.token)
+    const settings = await plex.getSettings();
+    if (!settings.uri || !settings.token)
         throw new Error('No Plex connection found');
 
-    const url = getAPIUrl(plex.settings.uri, `/playlists/${id}/items`);
-    await AxiosRequest.delete(url, plex.settings.token);
+    const url = getAPIUrl(settings.uri, `/playlists/${id}/items`);
+    await AxiosRequest.delete(url, settings.token);
 }
 
 /**
- * Modern version that removes specific items from playlist
+ * Version that removes specific items from playlist
  */
 export async function removeItemsFromPlaylistWithSettings(
     settings: PlexSettings,

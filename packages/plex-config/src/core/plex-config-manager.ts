@@ -69,10 +69,6 @@ export class PlexConfigManager {
         return this.settingsService.updateSettings(settings);
     }
 
-    public async saveConfig(settings: PlexSettingsUpdate): Promise<PlexSettings> {
-    // Alias for backward compatibility
-        return this.updateSettings(settings);
-    }
 
     public async hasValidConnection(): Promise<boolean> {
         return this.settingsService.hasValidConnection();
@@ -91,10 +87,6 @@ export class PlexConfigManager {
         return this.playlistService.addPlaylist({ type, id, plex: plexId });
     }
 
-    public async savePlaylist(type: string, id: string, plexId: string): Promise<void> {
-    // Alias for backward compatibility
-        return this.addPlaylist(type, id, plexId);
-    }
 
     public async removePlaylist(id: string): Promise<void> {
         return this.playlistService.removePlaylist(id);
@@ -108,22 +100,6 @@ export class PlexConfigManager {
         return this.playlistService.clearPlaylists();
     }
 
-    // Synchronous methods for backward compatibility (requires initialization)
-    public get settings(): PlexSettings {
-        if (!this.initialized) {
-            console.warn('PlexConfigManager not initialized. Call initialize() for synchronous access.');
-        }
-
-        return this.settingsService.getCachedSettings();
-    }
-
-    public get playlists(): PlexPlaylists {
-        if (!this.initialized) {
-            console.warn('PlexConfigManager not initialized. Call initialize() for synchronous access.');
-        }
-
-        return this.playlistService.getCachedPlaylists();
-    }
 
     // Event subscription
     public on<T extends PlexConfigEvent>(

@@ -51,29 +51,29 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
         async (req, res) => {
             try {
                 const { id, name, type, thumb } = req.body
-            const items: { key: string, source?: string }[] = req.body.items;
-            if (!items || items.length == 0 || typeof name != 'string' || typeof id != 'string' || typeof type != 'string')
-                return res.status(400).json({ msg: "Invalid data given" });
+                const items: { key: string, source?: string }[] = req.body.items;
+                if (!items || items.length == 0 || typeof name != 'string' || typeof id != 'string' || typeof type != 'string')
+                    return res.status(400).json({ msg: "Invalid data given" });
 
-            const settings = await plex.getSettings();
+                const settings = await plex.getSettings();
 
-            if (!settings.uri || !settings.token || !settings.id)
-                return res.status(400).json({ msg: "No plex connection found" });
+                if (!settings.uri || !settings.token || !settings.id)
+                    return res.status(400).json({ msg: "No plex connection found" });
 
-            const firstItem = items.shift();
-            if (!firstItem)
-                return res.status(400).json({ msg: "No items given" });
+                const firstItem = items.shift();
+                if (!firstItem)
+                    return res.status(400).json({ msg: "No items given" });
 
-            const playlistId = await storePlaylist(name, getUri(firstItem.key, firstItem.source))
-            await addItemsToPlaylist(playlistId, items)
+                const playlistId = await storePlaylist(name, await getUri(firstItem.key, firstItem.source))
+                await addItemsToPlaylist(playlistId, items)
 
-            // Update thumbnail of playlist
-            if (typeof thumb == 'string') {
-                try {
-                    await putPlaylistPoster(playlistId, thumb)
-                } catch (_e) {
+                // Update thumbnail of playlist
+                if (typeof thumb == 'string') {
+                    try {
+                        await putPlaylistPoster(playlistId, thumb)
+                    } catch (_e) {
+                    }
                 }
-            }
 
                 await plex.addPlaylist(type, id, playlistId)
 

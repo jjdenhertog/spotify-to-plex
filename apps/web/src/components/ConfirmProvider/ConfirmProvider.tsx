@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import ConfirmationDialog from "./ConfirmationDialog";
 import { ConfirmContext } from "./ConfirmContext";
 import { ConfirmOptions, ProviderContext } from './types';
@@ -67,6 +67,9 @@ const buildOptions = (options: ConfirmOptions) => {
 export let confirm: ProviderContext['confirm'];
 export const ConfirmProvider = () => {
 
+    const [options, setOptions] = useState<ConfirmOptions>({})
+    const [resolveReject, setResolveReject] = useState<Function[]>([]);
+    
     // Set confirm
     confirm = (options: ConfirmOptions = {}) => {
         return new Promise<void>((resolve, reject) => {
@@ -74,9 +77,8 @@ export const ConfirmProvider = () => {
             setResolveReject([resolve, reject]);
         })
     }
-    const [options, setOptions] = useState<ConfirmOptions>({})
-    const [resolveReject, setResolveReject] = useState<Function[]>([]);
-    const [context] = useState<ProviderContext>({ confirm })
+    
+    const context = useMemo<ProviderContext>(() => ({ confirm }), [confirm])
 
     const handleClose = useCallback(() => {
         setResolveReject([])

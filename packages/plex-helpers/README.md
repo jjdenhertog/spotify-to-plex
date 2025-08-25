@@ -11,12 +11,12 @@ This package consolidates duplicate Plex helper functions from both `apps/web` a
 - **Modern async patterns**: All functions accept settings as parameters instead of accessing global state
 - **Type safety**: Full TypeScript support with proper interfaces
 - **Error handling**: Consistent error handling and retry mechanisms  
-- **Backward compatibility**: Legacy wrappers maintain existing API contracts
+- **Convenience wrappers**: Simple interfaces that use the synchronous plex object
 - **Consolidation**: Eliminates duplication between web and sync-worker apps
 
-## Migration from Legacy Patterns
+## Usage Patterns
 
-### Before (Legacy)
+### Before (Direct Implementation)
 ```typescript
 // Direct access to global plex instance
 import { plex } from '@/library/plex';
@@ -79,12 +79,12 @@ interface RetryConfig {
 }
 ```
 
-## Legacy Compatibility
+## Convenience Functions
 
-All legacy functions are still available with `@deprecated` annotations:
+Convenience wrapper functions are available for simpler usage:
 
 ```typescript
-// Still works, but deprecated
+// Simple convenience function
 import { addItemsToPlaylist } from '@spotify-to-plex/plex-helpers';
 await addItemsToPlaylist(playlistId, items);
 

@@ -8,6 +8,20 @@ type SearchResponse = any;
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createRouter } from 'next-connect';
 
+async function getPlexTracks(plexIds: string[], plexMusicSearch: PlexMusicSearch): Promise<PlexTrack[]> {
+    const foundTracks: PlexTrack[] = []
+    
+    for (const plexId of plexIds.filter(Boolean)) {
+        try {
+            const metaData = await plexMusicSearch.getById(plexId)
+            if (metaData) foundTracks.push(metaData)
+        } catch (_e) {
+        }
+    }
+    
+    return foundTracks
+}
+
 
 const router = createRouter<NextApiRequest, NextApiResponse>()
     .post(
@@ -31,54 +45,39 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                     token: settings.token
                 })
 
-            //////////////////////////////////////
-            // Handeling cached links
-            //////////////////////////////////////
-            const { found: cachedTrackLinks } = getCachedTrackLinks(searchItems, 'plex', settingsDir)
+                //////////////////////////////////////
+                // Handeling cached links
+                //////////////////////////////////////
+                const { found: cachedTrackLinks } = getCachedTrackLinks(searchItems, 'plex', settingsDir)
 
-            const result: SearchResponse[] = []
+                const result: SearchResponse[] = []
 
-            for (let i = 0; i < searchItems.length; i++) {
-                const searchItem = searchItems[i];
-                if (!searchItem) continue;
+                for (let i = 0; i < searchItems.length; i++) {
+                    const searchItem = searchItems[i];
+                    if (!searchItem) continue;
 
-                // Process if no cached link has been found
-                const trackLink = cachedTrackLinks.find(item => item.spotify_id == searchItem.id)
-                if (!trackLink?.plex_id || trackLink.plex_id?.length == 0)
-                    continue;
+                    // Process if no cached link has been found
+                    const trackLink = cachedTrackLinks.find(item => item.spotify_id == searchItem.id)
+                    if (!trackLink?.plex_id || trackLink.plex_id?.length == 0)
+                        continue;
 
-                // Load the plex tracks data
-                const foundTracks: PlexTrack[] = []
+                    // Load the plex tracks data
+                    const foundTracks = await getPlexTracks(trackLink.plex_id, plexMusicSearch)
 
-                for (let j = 0; j < trackLink.plex_id.length; j++) {
-                    const plexId = trackLink.plex_id[j]
-                    if (!plexId) continue;
+                    // Try searching again if no tracks are found
+                    if (foundTracks.length == 0)
+                        continue;
 
-                    try {
-                        const metaData = await plexMusicSearch.getById(plexId)
+                    // Add the result
+                    result.push({
+                        id: searchItem.id,
+                        title: searchItem.title,
+                        artist: searchItem.artists?.[0] || '',
+                        album: searchItem.album || "",
+                        result: foundTracks
+                    })
 
-                         
-                        if (metaData)
-                            foundTracks.push(metaData)
-
-                    } catch (_e) {
-                    }
                 }
-
-                // Try searching again if no tracks are found
-                if (foundTracks.length == 0)
-                    continue;
-
-                // Add the result
-                result.push({
-                    id: searchItem.id,
-                    title: searchItem.title,
-                    artist: searchItem.artists?.[0] || '',
-                    album: searchItem.album || "",
-                    result: foundTracks
-                })
-
-            }
 
                 res.status(200).json(result);
             } catch (error) {

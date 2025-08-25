@@ -25,7 +25,8 @@ export async function refreshMQTT() {
     if (!existsSync(trackLinksPath))
         throw new Error('Track links missing')
 
-    if (!plex.settings.token || !plex.settings.uri)
+    const settings = await plex.getSettings();
+    if (!settings.token || !settings.uri)
         throw new Error('Missing plex')
 
     const playlists: PlaylistData = JSON.parse(readFileSync(playlistPath, 'utf8'))
@@ -47,8 +48,8 @@ export async function refreshMQTT() {
 
         const entityId = id.slice(Math.max(0, id.lastIndexOf("/") + 1))
         const plexMusicSearch = new PlexMusicSearch({
-            uri: plex.settings.uri,
-            token: plex.settings.token,
+            uri: settings.uri,
+            token: settings.token,
         })
 
         let item: { id: string, category: string, name: string, media_content_id: string } | null = null;

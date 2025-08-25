@@ -1,7 +1,8 @@
 import { plex, PlexPlaylists } from "../library/plex";
 
-export function getPlexPlaylists() {
-    let playlists: PlexPlaylists["data"] = plex.playlists.data || [];
+export async function getPlexPlaylists() {
+    const plexPlaylists = await plex.getPlaylists();
+    let playlists: PlexPlaylists["data"] = plexPlaylists.data || [];
     if (!playlists)
         playlists = [];
 

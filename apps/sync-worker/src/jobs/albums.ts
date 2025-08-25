@@ -19,7 +19,8 @@ export async function syncAlbums() {
     const { toSyncAlbums } = getSavedAlbums()
     const { putLog, logError, logComplete } = getSyncLogs()
 
-    if (!plex.settings.uri || !plex.settings.token)
+    const settings = await plex.getSettings();
+    if (!settings.uri || !settings.token)
         throw new Error("No plex connection found")
 
     const missingSpotifyAlbums: string[] = []
@@ -58,8 +59,8 @@ export async function syncAlbums() {
         // Initiate the plexMusicSearch
         //////////////////////////////////////
         const plexMusicSearch = new PlexMusicSearch({
-            uri: plex.settings.uri,
-            token: plex.settings.token,
+            uri: settings.uri,
+            token: settings.token,
         })
         const result = await plexMusicSearch.searchAlbum(data.tracks)
         const { add } = await getCachedPlexTracks(plexMusicSearch, data)

@@ -25,10 +25,11 @@ export async function syncPlaylists() {
     const { toSyncPlaylists } = getSavedPlaylists()
     const { putLog, logError, logComplete } = getSyncLogs()
 
-    if (!plex.settings.uri || !plex.settings.token)
+    const settings = await plex.getSettings();
+    if (!settings.uri || !settings.token)
         throw new Error("No plex connection found")
 
-    const { playlists } = getPlexPlaylists()
+    const { playlists } = await getPlexPlaylists()
 
     const missingSpotifyTracks: string[] = []
     const missingTidalTracks: string[] = []
@@ -72,8 +73,12 @@ export async function syncPlaylists() {
             const foundPlaylist = playlists.find(item => item.id == id)
             let plexPlaylist: Playlist | undefined | null = null
             if (foundPlaylist) {
-                const url = getAPIUrl(plex.settings.uri, `/playlists`);
-                const result = await handleOneRetryAttempt<GetPlaylistResponse>(() => AxiosRequest.get(url, plex.settings.token));
+                if (!settings.uri || !settings.token) {
+                    throw new Error('Plex settings not configured properly');
+                }
+
+                const url = getAPIUrl(settings.uri, `/playlists`);
+                const result = await handleOneRetryAttempt<GetPlaylistResponse>(() => AxiosRequest.get(url, settings.token!));
                 // eslint-disable-next-line unicorn/consistent-destructuring
                 plexPlaylist = result.data.MediaContainer.Metadata.find((item: Playlist) => item.ratingKey == foundPlaylist.plex)
             }
@@ -82,8 +87,8 @@ export async function syncPlaylists() {
             // Initiate the plexMusicSearch
             //////////////////////////////////////
             const plexMusicSearch = new PlexMusicSearch({
-                uri: plex.settings.uri,
-                token: plex.settings.token,
+                uri: settings.uri,
+                token: settings.token,
             })
 
             // eslint-disable-next-line prefer-const

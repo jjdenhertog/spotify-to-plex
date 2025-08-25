@@ -64,10 +64,6 @@ export class SettingsService {
         this.eventEmitter.emit('settings:updated', event);
     }
 
-    // Synchronous getter for backward compatibility (uses cached value)
-    public getCachedSettings(): PlexSettings {
-        return this.cache ?? {};
-    }
 
     // Pre-load cache for synchronous access
     public async preloadCache(): Promise<void> {

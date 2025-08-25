@@ -47,7 +47,7 @@ export async function putPlexPlaylist(id: string, plexPlaylist: Playlist | undef
         } else {
             console.log(`Create new playlist`);
 
-            const playlistId = await storePlaylist(title, getUri(firstItem.key, firstItem.source));
+            const playlistId = await storePlaylist(title, await getUri(firstItem.key, firstItem.source));
             await addItemsToPlaylist(playlistId, plexTracks);
 
             try {
@@ -56,7 +56,7 @@ export async function putPlexPlaylist(id: string, plexPlaylist: Playlist | undef
                 console.log(`* Could not update poster image`)
             }
             // Store new playlist
-            plex.savePlaylist(type(), id, playlistId);
+            await plex.addPlaylist(type(), id, playlistId);
 
 
         }
