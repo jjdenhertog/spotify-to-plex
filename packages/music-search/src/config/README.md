@@ -1,47 +1,34 @@
-# Music Search Configuration System
+# Music Search Configuration System - Simplified
 
 ## Overview
 
-This configuration system provides a flexible, type-safe way to manage music search behavior while preserving all current hardcoded logic without any loss.
+This simplified configuration system provides an easy-to-use, maintainable way to manage music search behavior using function strings in JSON, replacing the previous complex compilation system.
 
 ## Key Components
 
 ### 1. Configuration Types (`config.ts`)
 - **MusicSearchConfig**: Complete configuration structure
-- **MatchFilterConfig**: Structured representation of match filters
-- **MatchCondition**: Boolean logic conditions (AND/OR combinations)
+- **MatchFilterConfig**: Simple filter with reason and function string
 - **TextProcessingConfig**: Text processing arrays and flags
 - **PlatformSearchConfig**: Platform-specific search approaches
 
 ### 2. Default Configuration (`default-config.ts`)
-- Contains ALL current hardcoded values from the codebase
+- Contains ALL current hardcoded values as function strings
 - Preserves exact thresholds, reason strings (including typos)
 - Maintains filter priority order
 - Includes Plex vs Tidal differences
 
-### 3. Configuration Compiler (`config-compiler.ts`)
-- Converts structured config into executable runtime functions
-- Handles complex boolean logic (AND/OR combinations)
-- Validates configuration structure and values
-- Compiles to the exact same logic as current hardcoded filters
-
-### 4. Configuration Manager (`music-search-config-manager.ts`)
-- File-based configuration storage
-- Atomic write operations
+### 3. Configuration Manager (`music-search-config-manager.ts`)
+- Simple JSON loader and saver
+- Converts function strings to runtime functions using Function constructor
 - Caching for performance
-- Integration with existing PlexConfigManager pattern
 - Graceful fallback to defaults
-
-### 5. JSON Schema (`music-search.schema.json`)
-- Complete validation schema
-- IDE/editor support for configuration files
-- API validation and documentation
 
 ## Integration Strategy
 
 ### With Existing Singleton Pattern
 
-The MusicSearch class maintains its singleton pattern but now accepts configuration:
+The MusicSearch class maintains its singleton pattern but now uses function strings:
 
 ```typescript
 // Current usage (unchanged)
@@ -55,20 +42,6 @@ const runtimeFilters = await configManager.getRuntimeFilters();
 musicSearch.config = { matchFilters: runtimeFilters };
 ```
 
-### With PlexConfigManager
-
-The `ExtendedPlexConfigManager` provides unified configuration access:
-
-```typescript
-const configManager = ExtendedPlexConfigManager.create({
-  storageDir: settingsDir,
-  enableMusicSearchConfig: true
-});
-
-const musicSearchConfig = configManager.getMusicSearchConfig();
-const runtimeFilters = await musicSearchConfig.getRuntimeFilters();
-```
-
 ## Configuration File Structure
 
 Default location: `{settingsDir}/music-search.json`
@@ -78,18 +51,17 @@ Default location: `{settingsDir}/music-search.json`
   "matchFilters": [
     {
       "reason": "Full match on Artist & Title",
-      "condition": {
-        "type": "and",
-        "left": { "field": "artist", "type": "match" },
-        "right": { "field": "title", "type": "match" }
-      }
+      "filter": "(item) => item.matching.artist.match && item.matching.title.match"
+    },
+    {
+      "reason": "Artist matches and Title has 80% similarity",
+      "filter": "(item) => item.matching.artist.match && (item.matching.title.similarity ?? 0) >= 0.8"
     }
-    // ... more filters
   ],
   "textProcessing": {
-    "filterOutWords": ["original mix", "radio edit", ...],
-    "filterOutQuotes": ["'", "\"", ...],
-    "cutOffSeparators": ["(", "[", ...],
+    "filterOutWords": ["original mix", "radio edit"],
+    "filterOutQuotes": ["'", "\""],
+    "cutOffSeparators": ["(", "["],
     "processing": {
       "filtered": false,
       "cutOffSeperators": false,
@@ -97,18 +69,17 @@ Default location: `{settingsDir}/music-search.json`
     }
   },
   "searchApproaches": {
-    "plex": [...],
-    "tidal": [...]
+    "plex": [
+      { "id": "normal", "filtered": false, "trim": false },
+      { "id": "filtered", "filtered": true, "trim": false, "removeQuotes": true }
+    ],
+    "tidal": [
+      { "id": "normal", "filtered": false, "trim": false },
+      { "id": "filtered", "filtered": true, "trim": false }
+    ]
   }
 }
 ```
-
-## Migration Plan
-
-1. **Phase 1**: Add configuration system alongside existing hardcoded logic
-2. **Phase 2**: Update all instantiation points to use configuration
-3. **Phase 3**: Remove hardcoded logic after validation
-4. **Phase 4**: Add web interface for configuration management
 
 ## Usage Examples
 
@@ -123,16 +94,7 @@ const configManager = MusicSearchConfigManager.create({
 
 // Get compiled runtime filters
 const filters = await configManager.getRuntimeFilters();
-musicSearch.config = { matchFilters: filters };
-```
-
-### Configuration Validation
-
-```typescript
-const validation = await configManager.validateConfig();
-if (!validation.isValid) {
-  console.error('Configuration errors:', validation.errors);
-}
+musicSearch.setMusicSearchConfig(await configManager.getConfig());
 ```
 
 ### Configuration Updates
@@ -143,35 +105,48 @@ await configManager.updateConfig({
   matchFilters: [
     {
       reason: "Custom filter",
-      condition: {
-        field: "artist",
-        type: "similarity",
-        threshold: 0.9
-      }
+      filter: "(item) => (item.matching.artist.similarity ?? 0) >= 0.9"
     }
   ]
 });
+```
+
+## Function String Format
+
+Function strings are simple JavaScript expressions that take an `item` parameter:
+
+```javascript
+// Basic field checks
+"(item) => item.matching.artist.match"
+"(item) => item.matching.title.contains"
+
+// Similarity thresholds
+"(item) => (item.matching.artist.similarity ?? 0) >= 0.8"
+
+// Complex combinations
+"(item) => item.matching.artist.match && item.matching.title.contains"
 ```
 
 ## Compatibility
 
 - ✅ Maintains existing MusicSearch singleton pattern
 - ✅ Preserves all current matching behavior exactly
-- ✅ Supports gradual migration of instantiation points
+- ✅ Simple JSON configuration
+- ✅ Function strings are easy to read and edit
 - ✅ Fallback to defaults when configuration missing/invalid
-- ✅ Type-safe configuration management
-- ✅ JSON Schema validation support
+- ✅ Safe function evaluation using Function constructor
 
 ## Error Handling
 
 - Configuration file missing → Use default configuration
 - Configuration file invalid → Log error, use defaults
-- Configuration compilation fails → Throw descriptive error
+- Function string compilation fails → Return false filter, log warning
 - Storage directory missing → Create directory automatically
 
 ## Performance Considerations
 
 - Configuration loaded once and cached
-- Runtime filters compiled once per configuration change
+- Function strings compiled once per configuration change
 - Atomic file operations prevent corruption
-- Minimal memory footprint with readonly types
+- Minimal memory footprint
+- ~100 lines of code vs previous 700+ lines

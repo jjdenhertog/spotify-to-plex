@@ -66,49 +66,26 @@ const Page: NextPage = () => {
                                 Fine-tune how music tracks are matched and searched between Spotify and Plex.
                             </Typography>
                             
-                            <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 2 }}>
-                                <Card variant="outlined">
-                                    <CardContent>
-                                        <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 1 }}>
-                                            Music Search Configuration
-                                        </Typography>
-                                        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                                            Configure matching filters, text processing, and search approaches for optimal track matching.
-                                        </Typography>
-                                    </CardContent>
-                                    <CardActions>
-                                        <Button 
-                                            component="a" 
-                                            href="/plex/music-search-config"
-                                            variant="contained"
-                                            size="small"
-                                        >
-                                            Configure Search
-                                        </Button>
-                                    </CardActions>
-                                </Card>
-
-                                {/* Placeholder for future settings */}
-                                <Card variant="outlined" sx={{ opacity: 0.6 }}>
-                                    <CardContent>
-                                        <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 1 }}>
-                                            Library Settings
-                                        </Typography>
-                                        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                                            Configure library-specific settings and preferences.
-                                        </Typography>
-                                    </CardContent>
-                                    <CardActions>
-                                        <Button 
-                                            variant="outlined"
-                                            size="small"
-                                            disabled
-                                        >
-                                            Coming Soon
-                                        </Button>
-                                    </CardActions>
-                                </Card>
-                            </Box>
+                            <Card variant="outlined">
+                                <CardContent>
+                                    <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 1 }}>
+                                        Music Search Configuration
+                                    </Typography>
+                                    <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                                        Configure matching filters, text processing, and search approaches for optimal track matching.
+                                    </Typography>
+                                </CardContent>
+                                <CardActions>
+                                    <Button 
+                                        component="a" 
+                                        href="/plex/music-search-config"
+                                        variant="contained"
+                                        size="small"
+                                    >
+                                        Configure Search
+                                    </Button>
+                                </CardActions>
+                            </Card>
                         </CardContent>
                     </Card>
                 </Container>

@@ -1,10 +1,11 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { unlinkSync, existsSync } from 'fs';
-import { join } from 'path';
+import { unlinkSync, existsSync } from 'node:fs';
+import { join } from 'node:path';
 
 // Configuration file path
 const getConfigPath = (): string => {
     const settingsDir = process.env.SETTINGS_DIR || process.cwd();
+
     return join(settingsDir, 'music-search-config.json');
 };
 
@@ -12,6 +13,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     try {
         if (req.method !== 'POST') {
             res.setHeader('Allow', ['POST']);
+
             return res.status(405).json({ error: 'Method not allowed' });
         }
 
@@ -29,6 +31,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         
     } catch (error) {
         console.error('Error resetting music search config:', error);
+
         return res.status(500).json({ 
             error: 'Internal server error', 
             message: error instanceof Error ? error.message : 'Unknown error' 

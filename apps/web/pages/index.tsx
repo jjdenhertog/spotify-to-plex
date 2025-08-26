@@ -2,8 +2,7 @@ import Logo from "@/components/Logo";
 import PlexConnection from "@/components/PlexConnection";
 import { errorBoundary } from "@/helpers/errors/errorBoundary";
 import MainLayout from "@/layouts/MainLayout";
-import { Assignment, ChevronLeft, People, PlaylistPlay, Search } from "@mui/icons-material";
-import { LoadingButton } from "@mui/lab";
+import { Assignment, People, PlaylistPlay, Search } from "@mui/icons-material";
 import { Alert, Box, Button, Card, CardActionArea, CardContent, Container, Divider, Paper, Typography } from "@mui/material";
 import Grid2 from '@mui/material/Grid2';
 import axios from "axios";
@@ -13,7 +12,6 @@ import { useRouter } from "next/router";
 import { enqueueSnackbar } from "notistack";
 import { useCallback, useEffect, useState } from "react";
 
-import { GetAuthUrlResponse } from "./api/auth/url";
 import { GetSettingsResponse } from "./api/settings";
 
 const Page: NextPage = () => {
@@ -21,8 +19,6 @@ const Page: NextPage = () => {
     const [settings, setSettings] = useState<GetSettingsResponse>();
     const [connected, setConnected] = useState(false);
     const [loading, setLoading] = useState(true);
-    const [creatingUrl, setCreatingUrl] = useState(false);
-    const [editPlexConnection, setEditPlexConnection] = useState(false)
     const router = useRouter()
 
     useEffect(() => {
@@ -34,22 +30,9 @@ const Page: NextPage = () => {
         }, undefined, true);
     }, []);
 
-    const onPlexLoginClick = useCallback(() => {
-        setCreatingUrl(true);
-        errorBoundary(async () => {
-            const result = await axios.post<GetAuthUrlResponse>('/api/auth/url', {
-                callback: window.location.href
-            });
-            if (top)
-                top.location.href = result.data.authUrl;
-        }, () => {
-            setCreatingUrl(false);
-        });
-    }, []);
-
     const onEditPlexConnectionClick = useCallback(() => {
-        setEditPlexConnection(prev => !prev);
-    }, []);
+        router.push('/plex/connection');
+    }, [router]);
 
     useEffect(() => {
         if (!router.isReady) return;
@@ -120,28 +103,14 @@ const Page: NextPage = () => {
                     }
 
                     {!connected && !loading &&
-
-                        <Box textAlign="center">
-                            <Typography variant="body1" sx={{ mb: 2 }}>
-                                You need to login to Plex to continue.
-                            </Typography>
-                            <LoadingButton loading={creatingUrl} onClick={onPlexLoginClick} variant="contained" color="primary">
-                                Login to Plex
-                            </LoadingButton>
-                        </Box>
+                        <PlexConnection settings={settings} setSettings={setSettings} connected={connected} setConnected={setConnected} />
                     }
 
-                    {!!connected && (!settings?.uri || !!editPlexConnection) &&
-                        <>
-                            {!!editPlexConnection && <Button onClick={onEditPlexConnectionClick} variant="outlined" color="inherit" size="small" startIcon={<ChevronLeft />}>
-                                Back
-                            </Button>
-                            }
-                            <PlexConnection settings={settings} setSettings={setSettings} connected={connected} setConnected={setConnected} />
-                        </>
+                    {!!connected && !settings?.uri &&
+                        <PlexConnection settings={settings} setSettings={setSettings} connected={connected} setConnected={setConnected} />
                     }
 
-                    {!!connected && !!settings?.uri && !editPlexConnection &&
+                    {!!connected && !!settings?.uri &&
                         <>
                             <Typography variant="h4" sx={{ mb: 3 }}>
                                 Spotify to Plex

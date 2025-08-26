@@ -306,10 +306,16 @@ importers:
 
   packages/music-search:
     dependencies:
+      fs-extra:
+        specifier: ^11.3.1
+        version: 11.3.1
       string-similarity-js:
         specifier: ^2.1.4
         version: 2.1.4
     devDependencies:
+      '@types/fs-extra':
+        specifier: ^11.0.4
+        version: 11.0.4
       '@types/node':
         specifier: ^20.3.0
         version: 20.19.11

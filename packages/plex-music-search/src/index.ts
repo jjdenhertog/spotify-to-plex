@@ -39,8 +39,9 @@ export class PlexMusicSearch {
         musicSearch.config = this._config;
         
         // Set music search configuration if available
-        if (this._config.musicSearchConfig) {
-            musicSearch.setMusicSearchConfig(this._config.musicSearchConfig);
+        const { musicSearchConfig } = this._config;
+        if (musicSearchConfig) {
+            musicSearch.setMusicSearchConfig(musicSearchConfig);
         }
 
         // Reset cache
@@ -79,8 +80,9 @@ export class PlexMusicSearch {
         musicSearch.config = this._config;
         
         // Set music search configuration if available
-        if (this._config.musicSearchConfig) {
-            musicSearch.setMusicSearchConfig(this._config.musicSearchConfig);
+        const { musicSearchConfig } = this._config;
+        if (musicSearchConfig) {
+            musicSearch.setMusicSearchConfig(musicSearchConfig);
         }
 
         return this._newTrackSearch(approaches, track, true)

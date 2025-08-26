@@ -1,9 +1,9 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { readFileSync, writeFileSync, existsSync } from 'fs';
-import { join } from 'path';
+import { readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { join } from 'node:path';
 
 // Types for the configuration
-interface MatchFilter {
+type MatchFilter = {
     id: string;
     name: string;
     enabled: boolean;
@@ -15,7 +15,7 @@ interface MatchFilter {
     reason: string;
 }
 
-interface TextProcessingConfig {
+type TextProcessingConfig = {
     filterOutWords: string[];
     filterOutQuotes: string[];
     cutOffSeparators: string[];
@@ -26,14 +26,14 @@ interface TextProcessingConfig {
     };
 }
 
-interface SearchApproachConfig {
+type SearchApproachConfig = {
     name: string;
     filtered: boolean;
     cutOffSeperators: boolean; // Note: preserving typo from original
     removeQuotes: boolean;
 }
 
-interface MusicSearchConfig {
+type MusicSearchConfig = {
     matchFilters: MatchFilter[];
     textProcessing: TextProcessingConfig;
     searchApproaches: {
@@ -215,6 +215,7 @@ const getDefaultConfig = (): MusicSearchConfig => ({
 const getConfigPath = (): string => {
     // Try to use SETTINGS_DIR from environment, fallback to current directory
     const settingsDir = process.env.SETTINGS_DIR || process.cwd();
+
     return join(settingsDir, 'music-search-config.json');
 };
 
@@ -228,13 +229,14 @@ const loadConfig = (): MusicSearchConfig => {
             
             // Validate and merge with defaults to ensure all fields are present
             const defaultConfig = getDefaultConfig();
+
             return {
                 ...defaultConfig,
                 ...config,
                 matchFilters: config.matchFilters || defaultConfig.matchFilters,
                 textProcessing: {
                     ...defaultConfig.textProcessing,
-                    ...(config.textProcessing || {})
+                    ...config.textProcessing
                 },
                 searchApproaches: {
                     plex: config.searchApproaches?.plex || defaultConfig.searchApproaches.plex,
@@ -282,6 +284,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         if (req.method === 'GET') {
             // Load and return current configuration
             const config = loadConfig();
+
             return res.status(200).json(config);
             
         } else if (req.method === 'POST') {
@@ -293,15 +296,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             }
             
             saveConfig(newConfig);
+
             return res.status(200).json({ success: true, message: 'Configuration saved successfully' });
             
-        } else {
-            res.setHeader('Allow', ['GET', 'POST']);
-            return res.status(405).json({ error: 'Method not allowed' });
         }
+ 
+        res.setHeader('Allow', ['GET', 'POST']);
+
+        return res.status(405).json({ error: 'Method not allowed' });
+        
         
     } catch (error) {
         console.error('Error in music search config API:', error);
+
         return res.status(500).json({ 
             error: 'Internal server error', 
             message: error instanceof Error ? error.message : 'Unknown error' 
