@@ -21,10 +21,9 @@ export class PlexConfigManager {
     
         // Auto-initialize if preloadCache is true (default)
         if (options.preloadCache !== false) {
-            this.initialize().catch((error: unknown) => {
+            this.initialize().catch(() => {
                 // Silent initialization error - will be handled on first access
                 // Errors during pre-initialization are non-fatal
-                const _ = error;
             });
         }
     }

@@ -1,0 +1,185 @@
+{
+  "passed": 5,
+  "failed": 1,
+  "results": [
+    {
+      "name": "Service Initialization",
+      "status": "PASS",
+      "details": {
+        "message": "Service initialized successfully"
+      }
+    },
+    {
+      "name": "URL Validation",
+      "status": "PASS",
+      "details": {
+        "test_cases": 6,
+        "results": [
+          {
+            "url": "https://open.spotify.com/playlist/4uVxy6Q8dYH2lRRXzA1nLt",
+            "expected": true,
+            "actual": true
+          },
+          {
+            "url": "https://spotify.com/playlist/4uVxy6Q8dYH2lRRXzA1nLt",
+            "expected": true,
+            "actual": true
+          },
+          {
+            "url": "https://open.spotify.com/album/4uVxy6Q8dYH2lRRXzA1nLt",
+            "expected": false,
+            "actual": false
+          },
+          {
+            "url": "https://youtube.com/playlist/123",
+            "expected": false,
+            "actual": false
+          },
+          {
+            "url": "invalid-url",
+            "expected": false,
+            "actual": false
+          },
+          {
+            "url": "",
+            "expected": false,
+            "actual": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "Playlist ID Extraction",
+      "status": "PASS",
+      "details": {
+        "test_cases": 3,
+        "results": [
+          {
+            "url": "https://open.spotify.com/playlist/4uVxy6Q8dYH2lRRXzA1nLt",
+            "expected": "4uVxy6Q8dYH2lRRXzA1nLt",
+            "actual": "4uVxy6Q8dYH2lRRXzA1nLt"
+          },
+          {
+            "url": "https://open.spotify.com/playlist/4uVxy6Q8dYH2lRRXzA1nLt?si=123",
+            "expected": "4uVxy6Q8dYH2lRRXzA1nLt",
+            "actual": "4uVxy6Q8dYH2lRRXzA1nLt"
+          },
+          {
+            "url": "https://spotify.com/playlist/xyz123",
+            "expected": "xyz123",
+            "actual": "xyz123"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Track Data Transformation",
+      "status": "PASS",
+      "details": {
+        "original": {
+          "id": "track123",
+          "name": "Test Song",
+          "duration_ms": 180000,
+          "popularity": 75,
+          "preview_url": "https://preview.url",
+          "explicit": false,
+          "external_urls": {
+            "spotify": "https://open.spotify.com/track/track123"
+          },
+          "artists": [
+            {
+              "name": "Artist 1"
+            },
+            {
+              "name": "Artist 2"
+            }
+          ],
+          "album": {
+            "name": "Test Album"
+          }
+        },
+        "transformed": {
+          "id": "track123",
+          "name": "Test Song",
+          "artists": [
+            "Artist 1",
+            "Artist 2"
+          ],
+          "album": "Test Album",
+          "duration": 180,
+          "popularity": 75,
+          "preview_url": "https://preview.url",
+          "external_urls": {
+            "spotify": "https://open.spotify.com/track/track123"
+          },
+          "explicit": false
+        }
+      }
+    },
+    {
+      "name": "Playlist Scraping",
+      "status": "PASS",
+      "details": {
+        "playlist_data": {
+          "type": "spotify-playlist",
+          "id": "test123",
+          "title": "Test Playlist",
+          "owner": "Test User",
+          "image": "",
+          "tracks": [
+            {
+              "id": "track123",
+              "name": "Test Song",
+              "artists": [
+                "Test Artist"
+              ],
+              "album": "Test Album",
+              "duration": 180,
+              "popularity": 75,
+              "preview_url": "https://p.scdn.co/preview/track123",
+              "external_urls": {
+                "spotify": "https://open.spotify.com/track/track123"
+              },
+              "explicit": false
+            },
+            {
+              "id": "track456",
+              "name": "Another Song",
+              "artists": [
+                "Another Artist",
+                "Feat. Artist"
+              ],
+              "album": "Another Album",
+              "duration": 210,
+              "popularity": 80,
+              "preview_url": null,
+              "external_urls": {
+                "spotify": "https://open.spotify.com/track/track456"
+              },
+              "explicit": true
+            }
+          ],
+          "total_tracks": 2,
+          "public": true,
+          "collaborative": false,
+          "description": "Mock playlist for testing",
+          "followers": 100,
+          "external_urls": {
+            "spotify": "https://open.spotify.com/playlist/test123"
+          },
+          "href": "https://api.spotify.com/v1/playlists/test123",
+          "uri": "spotify:playlist:test123"
+        },
+        "tracks_count": 2
+      }
+    },
+    {
+      "name": "Error Handling",
+      "status": "FAIL",
+      "details": {
+        "error": "",
+        "traceback": "Traceback (most recent call last):\n  File \"/var/tmp/vibe-kanban/worktrees/vk-d41b-implement/apps/spotify-scraper/../../tests/spotify-scraper-validation.py\", line 88, in run_test\n    result = test_func()\n  File \"/var/tmp/vibe-kanban/worktrees/vk-d41b-implement/apps/spotify-scraper/../../tests/spotify-scraper-validation.py\", line 212, in test_error_handling\n    assert transformed_empty[\"name\"] == \"Unknown\"\nAssertionError\n"
+      }
+    }
+  ]
+}

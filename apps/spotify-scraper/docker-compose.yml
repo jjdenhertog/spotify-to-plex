@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  spotify-scraper:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: spotify-scraper-service
+    ports:
+      - "5000:5000"
+    environment:
+      - PORT=5000
+      - DEBUG=true
+      - PYTHONPATH=/app
+      - FLASK_APP=app.py
+      - FLASK_ENV=development
+    volumes:
+      - .:/app
+      - /app/__pycache__
+    working_dir: /app
+    command: python app.py
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+networks:
+  default:
+    name: spotify-scraper-network
