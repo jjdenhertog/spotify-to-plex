@@ -54,8 +54,7 @@ This document describes the Docker configuration for the Vibe Kanban application
 
 1. **Supervisord** starts as the main process
 2. **SpotifyScraper Service** starts first (priority 100)
-3. **Health Check** - Wait for SpotifyScraper to be ready
-4. **Main Application** starts after SpotifyScraper is healthy (priority 200)
+3. **Main Application** starts after a delay (priority 200)
 
 ## Port Configuration
 
@@ -68,10 +67,7 @@ Both ports are exposed and mapped in the Docker configuration.
 
 The main application communicates with SpotifyScraper via HTTP requests to:
 ```
-http://localhost:3020/health        - Health check
-http://localhost:3020/search/tracks - Track search API
-http://localhost:3020/scrape/playlist/{id} - Playlist scraping
-http://localhost:3020/metrics       - Service metrics
+http://localhost:3020/playlist      - Playlist scraping API
 ```
 
 ## Build and Deployment
@@ -96,33 +92,9 @@ docker-compose up --build
 ./scripts/test-docker-setup.sh
 ```
 
-## Health Monitoring
+## Service Monitoring
 
-### Container Health Check
-The main container includes a health check that verifies the main application is responding:
-```yaml
-healthcheck:
-  test: ["CMD", "curl", "-f", "http://localhost:9030/api/health"]
-  interval: 30s
-  timeout: 10s
-  retries: 3
-  start_period: 60s
-```
-
-### SpotifyScraper Health Check
-The SpotifyScraper service provides a health endpoint:
-```
-GET http://localhost:3020/health
-```
-
-Response:
-```json
-{
-  "status": "healthy",
-  "service": "spotify-scraper",
-  "version": "1.0.0"
-}
-```
+Services are managed by supervisord which handles automatic restarts and process monitoring.
 
 ## Logging
 
@@ -141,7 +113,7 @@ Supervisord manages logging for both services:
 ### Production
 - Single container with supervisord
 - Optimized for deployment
-- Health checks and restart policies
+- Automatic restart policies
 
 ## Troubleshooting
 
@@ -154,7 +126,7 @@ Supervisord manages logging for both services:
 
 2. **Communication Issues**
    - Verify SPOTIFY_SCRAPER_URL is set correctly
-   - Test service health: `curl http://localhost:3020/health`
+   - Test service connectivity: `curl http://localhost:3020/playlist`
    - Check network configuration
 
 3. **Build Issues**
@@ -171,8 +143,8 @@ docker exec -it <container> supervisorctl status
 docker exec -it <container> supervisorctl tail -f spotify-scraper
 docker exec -it <container> supervisorctl tail -f main-app
 
-# Test service connectivity
-docker exec -it <container> curl http://localhost:3020/health
+# Test service connectivity  
+docker exec -it <container> curl -X POST http://localhost:3020/playlist -H "Content-Type: application/json" -d '{"url":"https://open.spotify.com/playlist/test"}'
 ```
 
 ## Security Considerations

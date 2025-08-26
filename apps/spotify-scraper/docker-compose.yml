@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   spotify-scraper:
     build:
@@ -7,25 +5,16 @@ services:
       dockerfile: Dockerfile
     container_name: spotify-scraper-service
     ports:
-      - "5000:5000"
+      - "3020:3020"
     environment:
-      - PORT=5000
-      - DEBUG=true
+      - PORT=3020
       - PYTHONPATH=/app
-      - FLASK_APP=app.py
-      - FLASK_ENV=development
     volumes:
       - .:/app
       - /app/__pycache__
     working_dir: /app
-    command: python app.py
+    command: gunicorn --bind 0.0.0.0:3020 --workers 1 app:app
     restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 30s
 
 networks:
   default:

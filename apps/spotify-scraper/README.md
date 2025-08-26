@@ -85,7 +85,7 @@ Health check endpoint.
 
 3. **Test the service:**
    ```bash
-   curl -X POST http://localhost:5000/playlist \
+   curl -X POST http://localhost:3020/playlist \
      -H "Content-Type: application/json" \
      -d '{"url": "https://open.spotify.com/playlist/37i9dQZF1DXcBWIGoYBM5M"}'
    ```
@@ -104,14 +104,14 @@ Health check endpoint.
 
 3. **The service will be available at:**
    ```
-   http://localhost:5000
+   http://localhost:3020
    ```
 
 ## Configuration
 
 Environment variables:
 
-- `PORT`: Server port (default: 5000)
+- `PORT`: Server port (default: 3020)
 - `DEBUG`: Debug mode (default: false)
 - `FLASK_APP`: Flask application entry point
 - `FLASK_ENV`: Flask environment (development/production)
@@ -212,13 +212,13 @@ For production deployment:
 1. **Set environment variables:**
    ```bash
    export DEBUG=false
-   export PORT=5000
+   export PORT=3020
    ```
 
 2. **Use production WSGI server:**
    ```bash
    pip install gunicorn
-   gunicorn -w 4 -b 0.0.0.0:5000 app:app
+   gunicorn -w 4 -b 0.0.0.0:3020 app:app
    ```
 
 3. **Configure reverse proxy** (nginx, Apache, etc.)

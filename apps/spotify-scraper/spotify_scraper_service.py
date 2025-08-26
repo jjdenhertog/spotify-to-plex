@@ -8,7 +8,7 @@ import re
 import logging
 from typing import Dict, List, Any, Optional
 from urllib.parse import urlparse, parse_qs
-from spotifyscraper import SpotifyScraper
+from spotify_scraper import SpotifyClient
 
 logger = logging.getLogger(__name__)
 
@@ -17,7 +17,7 @@ class SpotifyScraperService:
     
     def __init__(self):
         """Initialize the scraper service"""
-        self.scraper = SpotifyScraper()
+        self.scraper = SpotifyClient()
         logger.info("SpotifyScraperService initialized")
     
     def is_valid_spotify_url(self, url: str) -> bool:
@@ -146,8 +146,8 @@ class SpotifyScraperService:
             playlist_id = self.extract_playlist_id(url)
             logger.info(f"Extracted playlist ID: {playlist_id}")
             
-            # Scrape playlist data
-            raw_data = self.scraper.get_playlist(playlist_id)
+            # Scrape playlist data - using the correct method name from documentation
+            raw_data = self.scraper.get_playlist_info(f"https://open.spotify.com/playlist/{playlist_id}")
             
             if not raw_data:
                 raise ValueError("Failed to scrape playlist data")

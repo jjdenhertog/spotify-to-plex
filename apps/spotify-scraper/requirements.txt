@@ -3,7 +3,7 @@ Flask==2.3.2
 flask-cors==4.0.0
 
 # Spotify scraping library
-git+https://github.com/raitonoberu/SpotifyScraper.git
+git+https://github.com/AliAkhtari78/SpotifyScraper.git
 
 # HTTP client and utilities
 requests==2.31.0

@@ -19,12 +19,6 @@ services:
       - ./logs:/var/log/supervisor:rw
     networks:
       - vibe-network
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9030/api/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 60s
 
 networks:
   vibe-network:

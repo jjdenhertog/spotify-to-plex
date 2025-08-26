@@ -14,11 +14,6 @@ app = FastAPI(
     version="1.0.0"
 )
 
-class HealthResponse(BaseModel):
-    status: str
-    service: str
-    version: str
-
 class SpotifyTrackRequest(BaseModel):
     query: str
     limit: Optional[int] = 10
@@ -26,15 +21,6 @@ class SpotifyTrackRequest(BaseModel):
 class SpotifyTrackResponse(BaseModel):
     tracks: List[Dict[str, Any]]
     total: int
-
-@app.get("/health", response_model=HealthResponse)
-async def health_check():
-    """Health check endpoint"""
-    return HealthResponse(
-        status="healthy",
-        service="spotify-scraper",
-        version="1.0.0"
-    )
 
 @app.get("/")
 async def root():

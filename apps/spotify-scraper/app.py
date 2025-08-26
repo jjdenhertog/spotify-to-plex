@@ -82,7 +82,7 @@ def internal_error(error):
     return jsonify({"error": "Internal server error"}), 500
 
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5000))
+    port = int(os.environ.get('PORT', 3020))
     debug = os.environ.get('DEBUG', 'false').lower() == 'true'
     
     logger.info(f"Starting Spotify Scraper API on port {port}")
