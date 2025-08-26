@@ -1,31 +1,116 @@
 import Logo from "@/components/Logo";
 import MainLayout from "@/layouts/MainLayout";
-import { ChevronLeft } from "@mui/icons-material";
-import { Button, Container, Paper, Typography } from "@mui/material";
+import PlexConnection from "@/components/PlexConnection";
+import { ChevronLeft, Settings, Tune } from "@mui/icons-material";
+import { Button, Container, Paper, Typography, Box, Card, CardContent, CardActions, Divider } from "@mui/material";
 import { NextPage } from "next";
 import Head from "next/head";
+import { useState } from "react";
+import { GetSettingsResponse } from "../api/settings";
 
 const Page: NextPage = () => {
+    const [settings, setSettings] = useState<GetSettingsResponse | undefined>();
+    const [connected, setConnected] = useState(false);
 
     return (
         <>
             <Head>
-                <title>Plex Connection - Spotify to Plex</title>
+                <title>Plex Configuration - Spotify to Plex</title>
             </Head>
-            <MainLayout maxWidth="700px">
+            <MainLayout maxWidth="800px">
                 <Container>
                     <Logo />
-                    <Paper elevation={0} sx={{ p: 2, bgcolor: 'action.hover' }}>
-                        <Button component="a" href="/" variant="outlined" color="inherit" size="small" startIcon={<ChevronLeft />}> Back</Button>
+                    <Paper elevation={0} sx={{ p: 2, bgcolor: 'action.hover', mb: 3 }}>
+                        <Button component="a" href="/" variant="outlined" color="inherit" size="small" startIcon={<ChevronLeft />}>
+                            Back
+                        </Button>
 
                         <Typography variant="h4" sx={{ mt: 2, mb: 0.5 }}>
-                            Plex Connection
+                            Plex Configuration
                         </Typography>
-                        <Typography variant="body1" sx={{ mb: 3, maxWidth: 500 }}>
-                            Manage your Plex Media Server connection settings.
+                        <Typography variant="body1" sx={{ mb: 1, maxWidth: 600 }}>
+                            Configure your Plex Media Server connection and music search settings.
                         </Typography>
-
                     </Paper>
+
+                    {/* Connection Settings */}
+                    <Card sx={{ mb: 3 }}>
+                        <CardContent>
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+                                <Settings color="primary" />
+                                <Typography variant="h6">Server Connection</Typography>
+                            </Box>
+                            <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+                                Connect to your Plex Media Server to enable music synchronization.
+                            </Typography>
+                            
+                            <PlexConnection 
+                                settings={settings}
+                                setSettings={setSettings}
+                                connected={connected}
+                                setConnected={setConnected}
+                            />
+                        </CardContent>
+                    </Card>
+
+                    <Divider sx={{ my: 3 }} />
+
+                    {/* Advanced Settings */}
+                    <Card>
+                        <CardContent>
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+                                <Tune color="secondary" />
+                                <Typography variant="h6">Advanced Configuration</Typography>
+                            </Box>
+                            <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+                                Fine-tune how music tracks are matched and searched between Spotify and Plex.
+                            </Typography>
+                            
+                            <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 2 }}>
+                                <Card variant="outlined">
+                                    <CardContent>
+                                        <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 1 }}>
+                                            Music Search Configuration
+                                        </Typography>
+                                        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                                            Configure matching filters, text processing, and search approaches for optimal track matching.
+                                        </Typography>
+                                    </CardContent>
+                                    <CardActions>
+                                        <Button 
+                                            component="a" 
+                                            href="/plex/music-search-config"
+                                            variant="contained"
+                                            size="small"
+                                        >
+                                            Configure Search
+                                        </Button>
+                                    </CardActions>
+                                </Card>
+
+                                {/* Placeholder for future settings */}
+                                <Card variant="outlined" sx={{ opacity: 0.6 }}>
+                                    <CardContent>
+                                        <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 1 }}>
+                                            Library Settings
+                                        </Typography>
+                                        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                                            Configure library-specific settings and preferences.
+                                        </Typography>
+                                    </CardContent>
+                                    <CardActions>
+                                        <Button 
+                                            variant="outlined"
+                                            size="small"
+                                            disabled
+                                        >
+                                            Coming Soon
+                                        </Button>
+                                    </CardActions>
+                                </Card>
+                            </Box>
+                        </CardContent>
+                    </Card>
                 </Container>
             </MainLayout>
         </>

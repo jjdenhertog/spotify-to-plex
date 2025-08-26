@@ -2,33 +2,17 @@ import MusicSearch from "..";
 
 export function filterOutWords(input: string, filtered: boolean = false, cutOffSeperators: boolean = false, removeQuotes = false) {
 
-    // Get the config for word filtering
+    // Get the config for word filtering - now uses the new configuration system
     const musicSearch = MusicSearch.getInstance();
-    const { config } = musicSearch;
+    const musicSearchConfig = musicSearch.getMusicSearchConfig();
+    const {textProcessing} = musicSearchConfig;
 
     let result = input.toLowerCase();
     const {
-        filterOutWords: words = [
-            "original mix",
-            "radio edit",
-            "single edit",
-            "alternate mix",
-            "remastered",
-            "remaster",
-            "single version",
-            "retail mix",
-            "quartet"
-        ],
-        filterOutQuotes: quotes = [
-            "'", '"', "´", "`"
-        ],
-        cutOffSeparators: separators = [
-            "(",
-            "[",
-            "{",
-            "-"
-        ]
-    } = config;
+        filterOutWords: words,
+        filterOutQuotes: quotes,
+        cutOffSeparators: separators
+    } = textProcessing;
     if (filtered)
         for (let i = 0; i < words.length; i++) {
             const word = words[i];

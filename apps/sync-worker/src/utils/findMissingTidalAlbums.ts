@@ -1,6 +1,7 @@
-import { getTidalCredentials } from "@spotify-to-plex/shared-utils/server";
+import { getTidalCredentials, settingsDir } from "@spotify-to-plex/shared-utils/server";
 import { Track } from "@spotify-to-plex/shared-types";
 import { TidalMusicSearch, SearchResponse } from "@spotify-to-plex/tidal-music-search";
+import { MusicSearchConfigManager } from "@spotify-to-plex/music-search";
 
 export async function findMissingTidalAlbums(missingTracks: Track[]) {
 
@@ -11,9 +12,24 @@ export async function findMissingTidalAlbums(missingTracks: Track[]) {
 
     // Credentials
     const tidalUser = await getTidalCredentials();
+    
+    // Load music search configuration
+    const musicSearchConfigManager = MusicSearchConfigManager.create({
+        storageDir: settingsDir,
+        preloadCache: true
+    });
+    let musicSearchConfig;
+    try {
+        musicSearchConfig = await musicSearchConfigManager.getConfig();
+    } catch (error) {
+        // Fallback to default config if error loading
+        console.warn('Failed to load music search config, using defaults:', error);
+    }
+
     const tidalMusicSearch = new TidalMusicSearch({
         clientId: process.env.TIDAL_API_CLIENT_ID,
-        clientSecret: process.env.TIDAL_API_CLIENT_SECRET
+        clientSecret: process.env.TIDAL_API_CLIENT_SECRET,
+        musicSearchConfig,
     });
     tidalMusicSearch.user = tidalUser;
 

@@ -4,6 +4,7 @@ import { MQTTItem } from '@spotify-to-plex/shared-types';
 import { PlaylistData } from '@spotify-to-plex/shared-types';
 import { TrackLink } from '@spotify-to-plex/shared-types';
 import { PlexMusicSearch } from '@spotify-to-plex/plex-music-search';
+import { ExtendedPlexConfigManager } from "@spotify-to-plex/plex-config";
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { mqttHelpers } from '../helpers/mqttHelpers';
@@ -63,9 +64,27 @@ export async function refreshMQTT(options: MQTTRefreshOptions = {}) {
         }
 
         const entityId = id.slice(Math.max(0, id.lastIndexOf('/') + 1));
+        
+        // Load music search configuration
+        const plexConfigManager = ExtendedPlexConfigManager.create({ 
+            storageDir: settingsDir, 
+            preloadCache: true 
+        });
+        let musicSearchConfig;
+        try {
+            if (plexConfigManager.hasMusicSearchConfig()) {
+                const musicSearchConfigManager = plexConfigManager.getMusicSearchConfig();
+                musicSearchConfig = await musicSearchConfigManager.getConfig();
+            }
+        } catch (error) {
+            // Fallback to default config if error loading
+            console.warn('Failed to load music search config, using defaults:', error);
+        }
+
         const plexMusicSearch = new PlexMusicSearch({
             uri: settings.uri || '',
             token: settings.token || '',
+            musicSearchConfig,
         });
 
         let item: { id: string; category: string; name: string; media_content_id: string } | null = null;
