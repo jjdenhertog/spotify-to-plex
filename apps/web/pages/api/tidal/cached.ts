@@ -3,7 +3,7 @@ import { getCachedTrackLinks } from '@spotify-to-plex/shared-utils/server';
 // MIGRATED: Updated to use shared utils package
 import { Track } from '@spotify-to-plex/shared-types';
 // MIGRATED: Updated to use shared types package
-import { settingsDir } from '@/library/settingsDir';
+import { settingsDir } from '@spotify-to-plex/shared-utils/server';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createRouter } from 'next-connect';
 

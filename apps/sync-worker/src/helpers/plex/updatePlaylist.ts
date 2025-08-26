@@ -1,4 +1,4 @@
-import getAPIUrl from '../getAPIUrl';
+import { getAPIUrl } from '@spotify-to-plex/shared-utils/server';
 import { plex } from '../../library/plex';
 import {
     updatePlaylist as updatePlaylistCore,

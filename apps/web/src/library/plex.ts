@@ -1,4 +1,4 @@
-import { settingsDir } from "@/library/settingsDir";
+import { settingsDir } from "@spotify-to-plex/shared-utils/server";
 import { PlexConfigManager } from '@spotify-to-plex/plex-config';
 
 // Re-export types

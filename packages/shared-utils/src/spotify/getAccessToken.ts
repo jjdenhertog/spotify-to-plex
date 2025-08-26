@@ -1,8 +1,8 @@
-import { settingsDir } from "../../library/settingsDir"
+import { settingsDir } from "../utils/settingsDir"
 import { SpotifyCredentials } from "@spotify-to-plex/shared-types"
 import { existsSync, readFileSync } from "node:fs"
 import { join } from "node:path"
-import { decrypt } from "@spotify-to-plex/shared-utils/server"
+import { decrypt } from "../security/encryption"
 import refreshAccessTokens from "./refreshAccessTokens"
 
 export default async function getAccessToken(userId?: string): Promise<{ access_token: string; refresh_token: string; expires_in: number; token_type: string; } | undefined> {

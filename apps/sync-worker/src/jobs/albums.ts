@@ -1,4 +1,4 @@
-import { settingsDir } from "../library/settingsDir";
+import { settingsDir } from '@spotify-to-plex/shared-utils/server';
 import { plex } from "../library/plex";
 import { PlexMusicSearch, SearchResponse } from "@spotify-to-plex/plex-music-search";
 import { writeFileSync } from "node:fs";

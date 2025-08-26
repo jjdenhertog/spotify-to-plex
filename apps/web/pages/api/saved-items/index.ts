@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/no-redundant-type-constituents */
 import { generateError } from '@/helpers/errors/generateError';
-import getSpotifyData from '@/helpers/spotify/getSpotifyData';
+import { getSpotifyData, settingsDir } from '@spotify-to-plex/shared-utils/server';
 import { plex } from '@/library/plex';
-import { settingsDir } from "@/library/settingsDir";
 
 import type { SavedItem } from '@spotify-to-plex/shared-types';
 import { PlexMusicSearch } from '@spotify-to-plex/plex-music-search';

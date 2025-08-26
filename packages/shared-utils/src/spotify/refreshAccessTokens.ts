@@ -1,11 +1,9 @@
-import { settingsDir } from "@/library/settingsDir"
+import { settingsDir } from "../utils/settingsDir"
 import { SpotifyCredentials } from "@spotify-to-plex/shared-types"
-// MIGRATED: Updated to use shared types package
 import axios from "axios"
 import { existsSync, readFileSync, writeFileSync } from "node:fs"
 import { join } from "node:path"
-import { decrypt, encrypt } from "@spotify-to-plex/shared-utils/server"
-// MIGRATED: Updated to use shared utils package
+import { decrypt, encrypt } from "../security/encryption"
 
 export default async function refreshAccessTokens() {
     const credentialsPath = join(settingsDir, 'spotify.json')
@@ -28,12 +26,12 @@ export default async function refreshAccessTokens() {
 
     for (let i = 0; i < users.length; i++) {
         const user = users[i];
-        if (!user) continue;
-
-        if (user.expires_at && now > user.expires_at) {
+        if (!user || now > user.expires_at) {
 
             try {
-                const refreshToken = decrypt(user.access_token?.refresh_token || '');
+                if (!user?.access_token?.refresh_token) continue;
+
+                const refreshToken = decrypt(user.access_token.refresh_token);
 
                 const response = await axios.post(
                     'https://accounts.spotify.com/api/token',
@@ -57,7 +55,7 @@ export default async function refreshAccessTokens() {
                     user: user.user,
                     access_token: {
                         access_token: encrypt(access_token),
-                        refresh_token: newRefreshToken || user.access_token?.refresh_token || '',
+                        refresh_token: newRefreshToken || user.access_token.refresh_token,
                         expires_in,
                         token_type
                     },
@@ -72,11 +70,10 @@ export default async function refreshAccessTokens() {
     if (newUsers.length > 0) {
 
         const allUsers = users
-            .filter(item => !newUsers.some(newUser => newUser.user.id == item.user.id))
+            .filter(item => item?.user?.id && !newUsers.some(newUser => newUser?.user?.id === item.user.id))
             .concat(newUsers)
 
         writeFileSync(credentialsPath, JSON.stringify(allUsers, undefined, 4))
     }
 
 }
-

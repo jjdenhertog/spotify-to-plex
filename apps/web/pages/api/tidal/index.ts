@@ -1,8 +1,7 @@
 import { generateError } from '@/helpers/errors/generateError';
 import { getCachedTrackLinks } from '@spotify-to-plex/shared-utils/server';
 // MIGRATED: Updated to use shared utils package
-import getTidalCredentials from '@/helpers/tidal/getTidalCredentials';
-import { settingsDir } from '@/library/settingsDir';
+import { getTidalCredentials, settingsDir } from '@spotify-to-plex/shared-utils/server';
 import { Album, Track } from '@spotify-to-plex/shared-types';
 // MIGRATED: Updated to use shared types package
 import { SearchResponse, TidalMusicSearch } from '@spotify-to-plex/tidal-music-search';

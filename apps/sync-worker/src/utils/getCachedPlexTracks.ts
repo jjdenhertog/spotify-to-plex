@@ -1,7 +1,7 @@
 import { getCachedTrackLinks } from "@spotify-to-plex/shared-utils/server";
 import { GetSpotifyAlbum, GetSpotifyPlaylist } from "@spotify-to-plex/shared-types";
 import { PlexMusicSearch, PlexTrack, SearchResponse } from "@spotify-to-plex/plex-music-search";
-import { settingsDir } from "../library/settingsDir";
+import { settingsDir } from '@spotify-to-plex/shared-utils/server';
 
 export async function getCachedPlexTracks(plexMusicSearch: PlexMusicSearch, data: GetSpotifyPlaylist | GetSpotifyAlbum) {
     const { add, found: cachedTrackLinks } = getCachedTrackLinks(data.tracks, 'plex', settingsDir);

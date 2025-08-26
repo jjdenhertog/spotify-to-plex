@@ -1,5 +1,4 @@
-import getAccessToken from "../helpers/spotify/getAccessToken";
-import getSpotifyData from "../helpers/spotify/getSpotifyData";
+import { getAccessToken, getSpotifyData } from "@spotify-to-plex/shared-utils/server";
 import { SpotifyApi } from "@spotify/web-api-ts-sdk";
 
 export async function loadSpotifyData(uri: string, user?: string, simplified: boolean = false) {
@@ -11,5 +10,5 @@ export async function loadSpotifyData(uri: string, user?: string, simplified: bo
     if (accessToken)
         api = SpotifyApi.withAccessToken(process.env.SPOTIFY_API_CLIENT_ID, accessToken);
 
-    return getSpotifyData(api, uri, simplified);
+    return getSpotifyData(api as any, uri, simplified);
 }

@@ -1,7 +1,7 @@
 import { generateError } from '@/helpers/errors/generateError';
 import { getCachedTrackLinks } from '@spotify-to-plex/shared-utils/server';
 import { plex } from '@/library/plex';
-import { settingsDir } from '@/library/settingsDir';
+import { settingsDir } from '@spotify-to-plex/shared-utils/server';
 import { PlexMusicSearch, PlexMusicSearchTrack, PlexTrack } from '@spotify-to-plex/plex-music-search';
 
 type SearchResponse = any;

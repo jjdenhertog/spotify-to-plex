@@ -1,7 +1,7 @@
 import { AxiosRequest } from '@spotify-to-plex/http-client';
 // MIGRATED: Updated to use http-client package
 import { generateError } from '@/helpers/errors/generateError';
-import getAPIUrl from '@/helpers/getAPIUrl';
+import { getAPIUrl } from '@spotify-to-plex/shared-utils/server';
 import { putPlaylistPoster } from '@/helpers/plex/putPlaylistPoster';
 import { plex } from '@/library/plex';
 import { GetPlaylistResponse, Playlist } from '@spotify-to-plex/shared-types';

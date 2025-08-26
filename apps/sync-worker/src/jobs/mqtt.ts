@@ -1,4 +1,4 @@
-import { settingsDir } from '../library/settingsDir';
+import { settingsDir } from '@spotify-to-plex/shared-utils/server';
 import { plex } from '../library/plex';
 import { MQTTItem } from '@spotify-to-plex/shared-types';
 import { PlaylistData } from '@spotify-to-plex/shared-types';

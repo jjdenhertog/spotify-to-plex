@@ -78,7 +78,7 @@ export const ConfirmProvider = () => {
         })
     }
     
-    const context = useMemo<ProviderContext>(() => ({ confirm }), [confirm])
+    const context = useMemo<ProviderContext>(() => ({ confirm }), [])
 
     const handleClose = useCallback(() => {
         setResolveReject([])

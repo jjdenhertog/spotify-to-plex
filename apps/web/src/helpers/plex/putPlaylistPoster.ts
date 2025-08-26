@@ -6,7 +6,7 @@ import {
     handleOneRetryAttempt
 } from '@spotify-to-plex/plex-helpers';
 import { AxiosRequest } from '@spotify-to-plex/http-client';
-import getAPIUrl from "../getAPIUrl";
+import { getAPIUrl } from '@spotify-to-plex/shared-utils/server';
 
 /**
  * Convenience wrapper for putPlaylistPoster with complex poster management

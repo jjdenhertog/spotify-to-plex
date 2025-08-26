@@ -1,4 +1,4 @@
-import { settingsDir } from "../library/settingsDir";
+import { settingsDir } from '@spotify-to-plex/shared-utils/server';
 import { SavedItem } from "@spotify-to-plex/shared-types";
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";

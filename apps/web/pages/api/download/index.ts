@@ -1,5 +1,5 @@
 import { generateError } from '@/helpers/errors/generateError';
-import { settingsDir } from "@/library/settingsDir";
+import { settingsDir } from "@spotify-to-plex/shared-utils/server";
 import { TrackLink } from '@spotify-to-plex/shared-types';
 // MIGRATED: Updated to use shared types package
 import type { NextApiRequest, NextApiResponse } from 'next';

@@ -1,7 +1,6 @@
 import { AxiosRequest } from "@spotify-to-plex/http-client";
-import getAPIUrl from "../helpers/getAPIUrl";
+import { getAPIUrl, settingsDir } from "@spotify-to-plex/shared-utils/server";
 import { handleOneRetryAttempt } from "../helpers/plex/handleOneRetryAttempt";
-import { settingsDir } from "../library/settingsDir";
 import { plex } from "../library/plex";
 import { Playlist } from "@spotify-to-plex/shared-types";
 import { GetPlaylistResponse, PlexMusicSearch, SearchResponse } from "@spotify-to-plex/plex-music-search";

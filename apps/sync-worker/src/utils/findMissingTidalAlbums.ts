@@ -1,4 +1,4 @@
-import getTidalCredentials from "../helpers/tidal/getTidalCredentials";
+import { getTidalCredentials } from "@spotify-to-plex/shared-utils/server";
 import { Track } from "@spotify-to-plex/shared-types";
 import { TidalMusicSearch, SearchResponse } from "@spotify-to-plex/tidal-music-search";
 

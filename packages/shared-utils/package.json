@@ -27,6 +27,9 @@
     "access": "restricted"
   },
   "dependencies": {
+    "@spotify-to-plex/shared-types": "workspace:*",
+    "@spotify-to-plex/plex-helpers": "workspace:*",
+    "@spotify/web-api-ts-sdk": "^1.2.0",
     "axios": "^1.11.0",
     "fs-extra": "^11.3.1"
   },

@@ -6,3 +6,16 @@ export { default as getCachedTrackLinks } from './cache/getCachedTrackLink';
 
 // Security utilities that use Node.js crypto
 export { encrypt, decrypt } from './security/encryption';
+
+// Utility functions
+export { default as getAPIUrl } from './utils/getAPIUrl';
+export { settingsDir } from './utils/settingsDir';
+
+// Spotify helpers
+export { default as getAccessToken } from './spotify/getAccessToken';
+export { default as refreshAccessTokens } from './spotify/refreshAccessTokens';
+export { default as getSpotifyData } from './spotify/getSpotifyData';
+export { default as getSpotifyPlaylist } from './spotify/getSpotifyPlaylist';
+
+// Tidal helpers
+export { default as getTidalCredentials } from './tidal/getTidalCredentials';

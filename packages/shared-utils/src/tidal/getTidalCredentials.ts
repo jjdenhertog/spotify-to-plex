@@ -1,9 +1,9 @@
-import { settingsDir } from "../../library/settingsDir";
+import { settingsDir } from "../utils/settingsDir";
 import { TidalCredentials } from "@spotify-to-plex/shared-types";
 import axios from "axios";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { decrypt, encrypt } from '@spotify-to-plex/shared-utils/server';
+import { decrypt, encrypt } from '../security/encryption';
 
 export default async function getTidalCredentials(): Promise<TidalCredentials | undefined> {
     const credentialsPath = join(settingsDir, 'tidal.json')
