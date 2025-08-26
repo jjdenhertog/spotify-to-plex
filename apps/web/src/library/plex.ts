@@ -7,7 +7,6 @@ export type { PlexSettings, PlexPlaylists, PlexConfigOptions } from '@spotify-to
 // PlexConfigManager instance - this is the new approach
 export const plexConfigManager = PlexConfigManager.create({
     storageDir: settingsDir,
-    enableEvents: true,
     preloadCache: true
 });
 
