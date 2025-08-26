@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-redundant-type-constituents */
 import { generateError } from '@/helpers/errors/generateError';
-import { getSpotifyData, settingsDir } from '@spotify-to-plex/shared-utils/server';
 import { plex } from '@/library/plex';
+import { getSpotifyData, settingsDir } from '@spotify-to-plex/shared-utils/server';
 
 import type { SavedItem } from '@spotify-to-plex/shared-types';
 import { PlexMusicSearch } from '@spotify-to-plex/plex-music-search';
@@ -64,14 +64,12 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 } else {
                     let id = searchId || '';
 
-                    if (!search) {
-                        // Do nothing, keep searchId
-                    } else if (search.indexOf('http') > -1) {
+                    if (search.indexOf('http') > -1) {
+                        
                         const { path } = parse(search, true);
                         
-                        if (!path) {
+                        if (!path) 
                             return res.status(400).json({ error: "Invalid URL" });
-                        }
 
                         id = path.split("/").join(":");
                         id = `spotify${id}`;
@@ -83,7 +81,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
 
                     const api = SpotifyApi.withClientCredentials(process.env.SPOTIFY_API_CLIENT_ID, process.env.SPOTIFY_API_CLIENT_SECRET);
                     const data = await getSpotifyData(api, id)
-
+                    console.log(data)
                     if (!data)
                         return res.status(400).json({ error: "No datas found, it might be a private playlist" })
 
