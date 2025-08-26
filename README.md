@@ -66,7 +66,6 @@ This project uses a monorepo architecture with pnpm workspaces for better code o
 │   └── sync-worker/              # Background sync worker (@spotify-to-plex/sync-worker)
 ├── packages/                      # Shared library packages
 │   ├── music-search/             # Core music search utilities
-│   ├── open-spotify-sdk/         # Spotify SDK wrapper  
 │   ├── plex-music-search/        # Plex-specific search functionality
 │   └── tidal-music-search/       # Tidal-specific search functionality
 ├── config/                        # Shared configuration files

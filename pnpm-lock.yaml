@@ -78,9 +78,6 @@ importers:
       '@spotify-to-plex/http-client':
         specifier: workspace:*
         version: link:../../packages/http-client
-      '@spotify-to-plex/open-spotify-sdk':
-        specifier: workspace:*
-        version: link:../../packages/open-spotify-sdk
       '@spotify-to-plex/plex-config':
         specifier: workspace:*
         version: link:../../packages/plex-config
@@ -184,9 +181,6 @@ importers:
       '@spotify-to-plex/http-client':
         specifier: workspace:*
         version: link:../../packages/http-client
-      '@spotify-to-plex/open-spotify-sdk':
-        specifier: workspace:*
-        version: link:../../packages/open-spotify-sdk
       '@spotify-to-plex/plex-config':
         specifier: workspace:*
         version: link:../../packages/plex-config
@@ -315,19 +309,6 @@ importers:
       string-similarity-js:
         specifier: ^2.1.4
         version: 2.1.4
-    devDependencies:
-      '@types/node':
-        specifier: ^20.3.0
-        version: 20.19.11
-      typescript:
-        specifier: ^5.0.0
-        version: 5.9.2
-
-  packages/open-spotify-sdk:
-    dependencies:
-      otpauth:
-        specifier: ^9.3.6
-        version: 9.4.1
     devDependencies:
       '@types/node':
         specifier: ^20.3.0

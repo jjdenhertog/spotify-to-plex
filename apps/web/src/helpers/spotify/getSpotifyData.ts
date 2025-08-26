@@ -1,6 +1,5 @@
 import { GetSpotifyAlbum, GetSpotifyPlaylist } from "@spotify-to-plex/shared-types";
 // MIGRATED: Updated to use shared types package
-import { OpenSpotifyApi } from "@spotify-to-plex/open-spotify-sdk";
 import { SpotifyApi } from "@spotify/web-api-ts-sdk";
 import getSpotifyPlaylist from "./getSpotifyPlaylist";
 
@@ -33,34 +32,6 @@ export default async function getSpotifyData(api: SpotifyApi, id: string, simpli
         if (playlist)
             return playlist;
 
-        // Attempt using the partner api
-        try {
-            const openSpotifyAPI = new OpenSpotifyApi()
-
-            let playlist = await openSpotifyAPI.playlists.get(id, 0, 1)
-            if (!simplified)
-                playlist = await openSpotifyAPI.playlists.getFull(id)
-
-            return {
-                type: "spotify-playlist",
-                id: playlist.id,
-                title: playlist.name,
-                owner: playlist.owner.name,
-                image: playlist.images?.[0]?.url || '',
-                tracks: playlist.tracks.items.map((track: { artists: { name: string }[]; id: string; album: { name: string }; name: string }) => {
-                    return {
-                        artist: track.artists?.[0]?.name || '',
-                        id: track.id,
-                        artists: track.artists?.map((artist: { name: string }) => artist.name) || [],
-                        album: track.album?.name || '',
-                        title: track.name
-                    }
-                })
-            }
-
-        } catch (_e) {
-            console.log(_e)
-        }
     }
     
     return undefined;

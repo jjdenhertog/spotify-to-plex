@@ -8,7 +8,6 @@ module.exports = {
     transpilePackages: [
         '@spotify-to-plex/plex-music-search',
         '@spotify-to-plex/tidal-music-search',
-        '@spotify-to-plex/open-spotify-sdk',
         '@spotify-to-plex/music-search'
     ],
     

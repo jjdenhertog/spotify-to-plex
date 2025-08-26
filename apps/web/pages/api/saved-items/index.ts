@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-redundant-type-constituents */
-/* eslint-disable men-in-green/one-line-if */
 import { generateError } from '@/helpers/errors/generateError';
 import getSpotifyData from '@/helpers/spotify/getSpotifyData';
 import { plex } from '@/library/plex';

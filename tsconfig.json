@@ -16,9 +16,6 @@
       "path": "./packages/music-search"
     },
     {
-      "path": "./packages/open-spotify-sdk"
-    },
-    {
       "path": "./packages/plex-config"
     },
     {
@@ -50,8 +47,6 @@
       "@spotify-to-plex/shared-utils/*": ["./packages/shared-utils/src/*"],
       "@spotify-to-plex/music-search": ["./packages/music-search/src"],
       "@spotify-to-plex/music-search/*": ["./packages/music-search/src/*"],
-      "@spotify-to-plex/open-spotify-sdk": ["./packages/open-spotify-sdk/src"],
-      "@spotify-to-plex/open-spotify-sdk/*": ["./packages/open-spotify-sdk/src/*"],
       "@spotify-to-plex/plex-music-search": ["./packages/plex-music-search/src"],
       "@spotify-to-plex/plex-music-search/*": ["./packages/plex-music-search/src/*"],
       "@spotify-to-plex/tidal-music-search": ["./packages/tidal-music-search/src"],
