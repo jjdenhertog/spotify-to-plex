@@ -63,7 +63,8 @@ This project uses a monorepo architecture with pnpm workspaces for better code o
 ```
 ├── apps/                          # Application packages
 │   ├── web/                      # Next.js web application (@spotify-to-plex/web)
-│   └── sync-worker/              # Background sync worker (@spotify-to-plex/sync-worker)
+│   ├── sync-worker/              # Background sync worker (@spotify-to-plex/sync-worker)
+│   └── spotify-scraper/          # Spotify playlist scraper service (uses SpotifyScraper)
 ├── packages/                      # Shared library packages
 │   ├── music-search/             # Core music search utilities
 │   ├── plex-music-search/        # Plex-specific search functionality
@@ -198,6 +199,8 @@ services:
 ## Matching songs
 
 To match songs with Plex I'm using [plex-music-searcher](https://github.com/jjdenhertog/plex-music-searcher). This tries to match songs as best as possible and taking different approaches. When a song can&apos;t be matched even though you have it, it&apos;s best to raise an issue so I can dive into it. When a song is found but it&apos;t not a perfect match you will see a warning.
+
+For Spotify playlist data extraction, this project uses [SpotifyScraper](https://github.com/AliAkhtari78/SpotifyScraper) to fetch playlist information without requiring official API credentials.
 
 When the matched song is indeed totally wrong, you can find more info by clicking on the warning. This tells you why the song was matched. You can use this information to raise an issue so I can look into it.
 
