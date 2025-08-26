@@ -1,0 +1,221 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.vibe-kanban.com/music-search-config.json",
+  "title": "Music Search Configuration",
+  "description": "Configuration schema for music search functionality",
+  "type": "object",
+  "properties": {
+    "matchFilters": {
+      "type": "array",
+      "description": "Ordered list of match filters - first matching filter wins",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/matchFilterConfig"
+      }
+    },
+    "textProcessing": {
+      "$ref": "#/$defs/textProcessingConfig"
+    },
+    "searchApproaches": {
+      "$ref": "#/$defs/platformSearchConfig"
+    },
+    "options": {
+      "$ref": "#/$defs/runtimeOptions"
+    }
+  },
+  "required": ["matchFilters", "textProcessing", "searchApproaches", "options"],
+  "additionalProperties": false,
+
+  "$defs": {
+    "matchFilterConfig": {
+      "type": "object",
+      "properties": {
+        "reason": {
+          "type": "string",
+          "description": "Human-readable description of the match condition"
+        },
+        "condition": {
+          "$ref": "#/$defs/matchCondition"
+        }
+      },
+      "required": ["reason", "condition"],
+      "additionalProperties": false
+    },
+
+    "matchCondition": {
+      "oneOf": [
+        { "$ref": "#/$defs/compoundCondition" },
+        { "$ref": "#/$defs/fieldCondition" }
+      ]
+    },
+
+    "compoundCondition": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "enum": ["and", "or"]
+        },
+        "left": {
+          "$ref": "#/$defs/matchCondition"
+        },
+        "right": {
+          "$ref": "#/$defs/matchCondition"
+        }
+      },
+      "required": ["type", "left", "right"],
+      "additionalProperties": false
+    },
+
+    "fieldCondition": {
+      "type": "object",
+      "properties": {
+        "field": {
+          "enum": ["artist", "title", "album", "artistWithTitle"]
+        },
+        "type": {
+          "enum": ["match", "contains", "similarity"]
+        },
+        "threshold": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Similarity threshold (0-1) - required for similarity type"
+        }
+      },
+      "required": ["field", "type"],
+      "additionalProperties": false,
+      "if": {
+        "properties": { "type": { "const": "similarity" } }
+      },
+      "then": {
+        "required": ["threshold"]
+      },
+      "else": {
+        "not": {
+          "required": ["threshold"]
+        }
+      }
+    },
+
+    "textProcessingConfig": {
+      "type": "object",
+      "properties": {
+        "filterOutWords": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Words to filter out during text processing"
+        },
+        "filterOutQuotes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Quote characters to remove"
+        },
+        "cutOffSeparators": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Characters that truncate text when found"
+        },
+        "processing": {
+          "type": "object",
+          "properties": {
+            "filtered": {
+              "type": "boolean",
+              "description": "Enable word filtering"
+            },
+            "cutOffSeperators": {
+              "type": "boolean",
+              "description": "Enable separator-based truncation (preserves original typo)"
+            },
+            "removeQuotes": {
+              "type": "boolean",
+              "description": "Enable quote removal"
+            }
+          },
+          "required": ["filtered", "cutOffSeperators", "removeQuotes"],
+          "additionalProperties": false
+        }
+      },
+      "required": ["filterOutWords", "filterOutQuotes", "cutOffSeparators", "processing"],
+      "additionalProperties": false
+    },
+
+    "platformSearchConfig": {
+      "type": "object",
+      "properties": {
+        "plex": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/searchApproachConfig"
+          }
+        },
+        "tidal": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/searchApproachConfig"
+          }
+        }
+      },
+      "required": ["plex", "tidal"],
+      "additionalProperties": false
+    },
+
+    "searchApproachConfig": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for this search approach"
+        },
+        "filtered": {
+          "type": "boolean",
+          "description": "Enable text filtering"
+        },
+        "trim": {
+          "type": "boolean",
+          "description": "Enable text trimming"
+        },
+        "ignoreQuotes": {
+          "type": "boolean",
+          "description": "Ignore quote characters"
+        },
+        "removeQuotes": {
+          "type": "boolean",
+          "description": "Remove quote characters (Plex-specific)"
+        },
+        "force": {
+          "type": "boolean",
+          "description": "Force search execution (Plex-specific)"
+        }
+      },
+      "required": ["id"],
+      "additionalProperties": false
+    },
+
+    "runtimeOptions": {
+      "type": "object",
+      "properties": {
+        "enableCaching": {
+          "type": "boolean",
+          "description": "Enable result caching"
+        },
+        "maxCacheSize": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Maximum number of cached results"
+        },
+        "debugMode": {
+          "type": "boolean",
+          "description": "Enable debug logging"
+        }
+      },
+      "required": ["enableCaching", "maxCacheSize", "debugMode"],
+      "additionalProperties": false
+    }
+  }
+}
