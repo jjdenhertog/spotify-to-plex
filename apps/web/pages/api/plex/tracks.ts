@@ -4,6 +4,7 @@ import { getCachedTrackLinks } from '@spotify-to-plex/shared-utils/server';
 import { plex } from '@/library/plex';
 import { settingsDir } from '@spotify-to-plex/shared-utils/server';
 import { PlexMusicSearch, PlexMusicSearchTrack } from '@spotify-to-plex/plex-music-search';
+import { ExtendedPlexConfigManager } from "@spotify-to-plex/plex-config";
 
 type SearchResponse = any;
 import type { NextApiRequest, NextApiResponse } from 'next';
@@ -27,9 +28,26 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 //////////////////////////////////////
                 // Initiate the plexMusicSearch
                 //////////////////////////////////////
+                // Load music search configuration
+                const plexConfigManager = ExtendedPlexConfigManager.create({ 
+                    storageDir: settingsDir, 
+                    preloadCache: true 
+                });
+                let musicSearchConfig;
+                try {
+                    if (plexConfigManager.hasMusicSearchConfig()) {
+                        const musicSearchConfigManager = plexConfigManager.getMusicSearchConfig();
+                        musicSearchConfig = await musicSearchConfigManager.getConfig();
+                    }
+                } catch (error) {
+                    // Fallback to default config if error loading
+                    console.warn('Failed to load music search config, using defaults:', error);
+                }
+
                 const plexMusicSearch = new PlexMusicSearch({
                     uri: settings.uri,
                     token: settings.token,
+                    musicSearchConfig,
                     searchApproaches: fast ? [
                         { id: 'fast', filtered: true }
                     ] : undefined

@@ -5,6 +5,7 @@ import { getTidalCredentials, settingsDir } from '@spotify-to-plex/shared-utils/
 import { Album, Track } from '@spotify-to-plex/shared-types';
 // MIGRATED: Updated to use shared types package
 import { SearchResponse, TidalMusicSearch } from '@spotify-to-plex/tidal-music-search';
+import { MusicSearchConfigManager } from "@spotify-to-plex/music-search";
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createRouter } from 'next-connect';
 
@@ -37,9 +38,24 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
             // Tidal authentication
             ///////////////////////////////////////
             const tidalUser = await getTidalCredentials()
+            
+            // Load music search configuration
+            const musicSearchConfigManager = MusicSearchConfigManager.create({
+                storageDir: settingsDir,
+                preloadCache: true
+            });
+            let musicSearchConfig;
+            try {
+                musicSearchConfig = await musicSearchConfigManager.getConfig();
+            } catch (error) {
+                // Fallback to default config if error loading
+                console.warn('Failed to load music search config, using defaults:', error);
+            }
+
             const tidalMusicSearch = new TidalMusicSearch({
                 clientId: process.env.TIDAL_API_CLIENT_ID,
-                clientSecret: process.env.TIDAL_API_CLIENT_SECRET
+                clientSecret: process.env.TIDAL_API_CLIENT_SECRET,
+                musicSearchConfig,
             })
             tidalMusicSearch.user = tidalUser;
 

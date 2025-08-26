@@ -4,10 +4,15 @@ import { Track } from "./types/Track";
 import { TrackWithMatching } from "./types/TrackWithMatching";
 import { compareTitles } from "./utils/compareTitles";
 import { removeFeaturing } from "./utils/removeFeaturing";
+import { MusicSearchConfig, RuntimeMatchFilter } from "./types/config";
+import { ConfigCompiler } from "./config/config-compiler";
+import { DEFAULT_MUSIC_SEARCH_CONFIG } from "./config/default-config";
 
 export default class MusicSearch {
 
     private _config?: SearchConfig
+    private _musicSearchConfig?: MusicSearchConfig
+    private _runtimeFilters?: RuntimeMatchFilter[]
 
     private constructor() { }
 
@@ -29,30 +34,38 @@ export default class MusicSearch {
         return this._config ?? {}
     }
 
+    /**
+     * Set music search configuration - provides compiled runtime filters
+     * This replaces the hardcoded match filters with configurable ones
+     */
+    public setMusicSearchConfig(config: MusicSearchConfig): void {
+        this._musicSearchConfig = config;
+        this._runtimeFilters = ConfigCompiler.compileMatchFilters(config.matchFilters);
+    }
+
+    /**
+     * Get current music search configuration, using defaults if not set
+     */
+    public getMusicSearchConfig(): MusicSearchConfig {
+        return this._musicSearchConfig ?? DEFAULT_MUSIC_SEARCH_CONFIG;
+    }
+
+    /**
+     * Get compiled runtime filters, compiling from default config if not set
+     */
+    private getRuntimeFilters(): RuntimeMatchFilter[] {
+        if (!this._runtimeFilters) {
+            const config = this.getMusicSearchConfig();
+            this._runtimeFilters = ConfigCompiler.compileMatchFilters(config.matchFilters);
+        }
+
+        return this._runtimeFilters;
+    }
+
     public search(find: Track, options: Track[], includeMatching: boolean = false): Track[] {
 
-        const {
-            matchFilters = [
-                // Full artist matches
-                { reason: 'Full match on Artist & Title', filter: (item: TrackWithMatching) => item.matching.artist.match && item.matching.title.match },
-                { reason: 'Artsit matches and Title contains', filter: (item: TrackWithMatching) => item.matching.artist.match && item.matching.title.contains },
-                { reason: 'Artist matches and Title has 80% similarity', filter: (item: TrackWithMatching) => item.matching.artist.match && item.matching.title.similarity >= .8 },
-                // Artist contains (so no full match)
-                { reason: 'Artsit contains and Title matches', filter: (item: TrackWithMatching) => item.matching.artist.contains && item.matching.title.match },
-                { reason: 'Artist contains and Title has 85% similarity', filter: (item: TrackWithMatching) => item.matching.artist.contains && item.matching.title.similarity >= .85 },
-                { reason: 'Artist contains and Title contains and Album contains', filter: (item: TrackWithMatching) => item.matching.artist.contains && item.matching.title.contains && item.matching.album.contains },
-                // Artist & track similarit scores
-                { reason: 'Artist and Title has 85% similarity', filter: (item: TrackWithMatching) => item.matching.artist.similarity >= 0.85 && item.matching.title.similarity >= 0.85 },
-                { reason: 'Artist with Title and Title has 85% similarity', filter: (item: TrackWithMatching) => item.matching.artistWithTitle.similarity >= 0.8 && item.matching.title.similarity >= 0.9 },
-                { reason: 'Artist with Title has 85% similarity', filter: (item: TrackWithMatching) => item.matching.artistWithTitle.similarity >= 0.95 },
-                // Artist & track contains
-                { reason: 'Artist and Title contains', filter: (item: TrackWithMatching) => item.matching.artist.contains && item.matching.title.contains },
-                // Album matches & track is a bit similar
-                { reason: 'Artist has 70% similarity, Album and Title matches', filter: (item: TrackWithMatching) => item.matching.artist.similarity >= 0.7 && item.matching.album.match && item.matching.title.match },
-                { reason: 'Artist has 70% similarity, Album matchs and Title has 85% similarity', filter: (item: TrackWithMatching) => item.matching.artist.similarity >= 0.7 && item.matching.album.match && item.matching.title.similarity >= 0.85 },
-                { reason: 'Album matches, Artist contains and Title has 80% similiarity', filter: (item: TrackWithMatching) => item.matching.album.match && item.matching.artist.contains && item.matching.title.similarity >= 0.8 }
-            ]
-        } = this.config
+        // Use compiled runtime filters from configuration (preserves all hardcoded logic)
+        const matchFilters = this.getRuntimeFilters();
 
 
         const results: TrackWithMatching[] = options
@@ -105,4 +118,7 @@ export default class MusicSearch {
 
 export * from './types';
 export * from './utils';
+export * from './config/default-config';
+export * from './config/music-search-config-manager';
+export * from './config/config-compiler';
 

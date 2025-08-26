@@ -2,7 +2,7 @@
 import { EventEmitter } from 'node:events';
 import { watch } from 'node:fs';
 import { join } from 'node:path';
-import { settingsDir } from '../library/settingsDir';
+import { settingsDir } from '@spotify-to-plex/shared-utils/server';
 import { refreshMQTT } from '../jobs/mqtt';
 
 export type MQTTServiceConfig = {

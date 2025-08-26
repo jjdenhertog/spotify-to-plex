@@ -1,6 +1,8 @@
 import { generateError } from '@/helpers/errors/generateError';
 import { plex } from '@/library/plex';
 import { PlexMusicSearch, PlexMusicSearchTrack } from '@spotify-to-plex/plex-music-search';
+import { ExtendedPlexConfigManager } from '@spotify-to-plex/plex-config';
+import { settingsDir } from '@spotify-to-plex/shared-utils/server';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createRouter } from 'next-connect';
 
@@ -23,10 +25,18 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 //////////////////////////////////////
                 // Initiate the plexMusicSearch
                 //////////////////////////////////////
+                const plexConfigManager = ExtendedPlexConfigManager.create({ 
+                    storageDir: settingsDir, 
+                    preloadCache: true 
+                });
+                const musicSearchConfigManager = await plexConfigManager.getMusicSearchConfig();
+                const musicSearchConfig = await musicSearchConfigManager.getConfig();
+
                 // Faster searching
                 const plexMusicSearch = new PlexMusicSearch({
                     uri: settings.uri,
                     token: settings.token,
+                    musicSearchConfig,
                     searchApproaches: fast ? [
                         { id: 'fast', filtered: true }
                     ] : undefined

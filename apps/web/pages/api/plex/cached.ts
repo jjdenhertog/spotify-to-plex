@@ -3,6 +3,7 @@ import { getCachedTrackLinks } from '@spotify-to-plex/shared-utils/server';
 import { plex } from '@/library/plex';
 import { settingsDir } from '@spotify-to-plex/shared-utils/server';
 import { PlexMusicSearch, PlexMusicSearchTrack, PlexTrack } from '@spotify-to-plex/plex-music-search';
+import { ExtendedPlexConfigManager } from '@spotify-to-plex/plex-config';
 
 type SearchResponse = any;
 import type { NextApiRequest, NextApiResponse } from 'next';
@@ -40,9 +41,17 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 //////////////////////////////////////
                 // Initiate the plexMusicSearch
                 //////////////////////////////////////
+                const plexConfigManager = ExtendedPlexConfigManager.create({ 
+                    storageDir: settingsDir, 
+                    preloadCache: true 
+                });
+                const musicSearchConfigManager = await plexConfigManager.getMusicSearchConfig();
+                const musicSearchConfig = await musicSearchConfigManager.getConfig();
+
                 const plexMusicSearch = new PlexMusicSearch({
                     uri: settings.uri,
-                    token: settings.token
+                    token: settings.token,
+                    musicSearchConfig
                 })
 
                 //////////////////////////////////////

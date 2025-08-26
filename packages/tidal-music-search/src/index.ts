@@ -57,6 +57,11 @@ export class TidalMusicSearch {
         // Initialize music search with config
         const musicSearch = MusicSearch.getInstance()
         musicSearch.config = this._config;
+        
+        // Set music search configuration if available
+        if (this._config.musicSearchConfig) {
+            musicSearch.setMusicSearchConfig(this._config.musicSearchConfig);
+        }
 
         // Initialzie tidal search
         const tidalAPI = TidalAPI.getInstance()
