@@ -1,236 +1,158 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     Box,
-    FormControlLabel,
-    Paper,
-    Switch,
     TextField,
     Typography,
-    Chip,
-    Tooltip
+    Alert,
+    Button
 } from '@mui/material';
-import { DragIndicator } from '@mui/icons-material';
+import { Code, Refresh } from '@mui/icons-material';
+import axios from 'axios';
+import { enqueueSnackbar } from 'notistack';
 
-interface MatchFilter {
-    id: string;
-    name: string;
-    enabled: boolean;
-    artistSimilarity?: number;
-    titleSimilarity?: number;
-    artistWithTitleSimilarity?: number;
-    useContains?: boolean;
-    useArtistMatch?: boolean;
+type MatchFilterConfig = {
     reason: string;
+    filter: string;
 }
 
-interface MatchFilterEditorProps {
-    filters: MatchFilter[];
-    onUpdateFilter: (index: number, field: string, value: any) => void;
-    onReorderFilters?: (newOrder: MatchFilter[]) => void;
+type MatchFilterEditorProps = {
+    readonly onSave?: (filters: MatchFilterConfig[]) => void;
 }
 
-const MatchFilterEditor: React.FC<MatchFilterEditorProps> = ({
-    filters,
-    onUpdateFilter
-}) => {
-    const getPriorityColor = (index: number, total: number) => {
-        if (index < total * 0.3) return 'error'; // High priority
-        if (index < total * 0.6) return 'warning'; // Medium priority
-        return 'default'; // Low priority
+const MatchFilterEditor: React.FC<MatchFilterEditorProps> = ({ onSave }) => {
+    const [jsonContent, setJsonContent] = useState('');
+    const [jsonError, setJsonError] = useState('');
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        loadFilters();
+    }, []);
+
+    const loadFilters = async () => {
+        try {
+            setLoading(true);
+            const response = await axios.get('/api/plex/music-search-config/match-filters');
+            setJsonContent(JSON.stringify(response.data, null, 2));
+            setJsonError('');
+        } catch (error) {
+            console.error('Failed to load match filters:', error);
+            enqueueSnackbar('Failed to load match filters', { variant: 'error' });
+        } finally {
+            setLoading(false);
+        }
     };
 
-    const getSimilarityLabel = (value: number) => {
-        if (value >= 0.9) return 'Very High';
-        if (value >= 0.8) return 'High';
-        if (value >= 0.7) return 'Medium';
-        if (value >= 0.6) return 'Low';
-        return 'Very Low';
+    const handleSave = async () => {
+        try {
+            const filters = JSON.parse(jsonContent);
+            
+            // Basic validation
+            if (!Array.isArray(filters)) {
+                throw new Error('Configuration must be an array');
+            }
+            
+            for (const filter of filters) {
+                if (!filter.reason || !filter.filter) {
+                    throw new Error('Each filter must have a reason and filter property');
+                }
+
+                if (typeof filter.reason !== 'string' || typeof filter.filter !== 'string') {
+                    throw new Error('Reason and filter must be strings');
+                }
+            }
+            
+            await axios.post('/api/plex/music-search-config/match-filters', filters);
+            enqueueSnackbar('Match filters saved successfully', { variant: 'success' });
+            setJsonError('');
+            
+            if (onSave) {
+                onSave(filters);
+            }
+        } catch (error) {
+            const message = error instanceof Error ? error.message : 'Invalid JSON format';
+            setJsonError(message);
+            enqueueSnackbar(`Failed to save: ${message}`, { variant: 'error' });
+        }
     };
+
+    const handleReset = async () => {
+        if (confirm('Reset to default match filters? This will overwrite your current configuration.')) {
+            await loadFilters();
+        }
+    };
+
+    if (loading) {
+        return (
+            <Box sx={{ textAlign: 'center', py: 4 }}>
+                <Typography>Loading match filters...</Typography>
+            </Box>
+        );
+    }
 
     return (
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            <Box sx={{ mb: 2 }}>
-                <Typography variant="body2" color="text.secondary">
-                    Match filters are evaluated in order. The first filter that returns results wins.
-                    Drag and drop to reorder filters or adjust individual settings below.
-                </Typography>
-            </Box>
-
-            {filters.map((filter, index) => (
-                <Paper 
-                    key={filter.id} 
-                    elevation={filter.enabled ? 2 : 1} 
-                    sx={{ 
-                        p: 2, 
-                        opacity: filter.enabled ? 1 : 0.6,
-                        border: filter.enabled ? '1px solid' : '1px dashed',
-                        borderColor: filter.enabled ? 'divider' : 'action.disabled'
-                    }}
-                >
-                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                        <DragIndicator sx={{ mr: 1, color: 'action.disabled', cursor: 'grab' }} />
-                        
-                        <FormControlLabel
-                            control={
-                                <Switch
-                                    checked={filter.enabled}
-                                    onChange={(e) => onUpdateFilter(index, 'enabled', e.target.checked)}
-                                    size="small"
-                                />
-                            }
-                            label={
-                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                    <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
-                                        {filter.name}
-                                    </Typography>
-                                    <Chip 
-                                        label={`Priority ${index + 1}`}
-                                        size="small"
-                                        color={getPriorityColor(index, filters.length)}
-                                        variant="outlined"
-                                    />
-                                </Box>
-                            }
-                            sx={{ flexGrow: 1, m: 0 }}
-                        />
-                    </Box>
-
-                    {/* Similarity Thresholds */}
-                    <Box sx={{ 
-                        display: 'grid', 
-                        gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', 
-                        gap: 2, 
-                        mb: 2 
-                    }}>
-                        {filter.artistSimilarity !== undefined && (
-                            <Box>
-                                <TextField
-                                    label="Artist Similarity"
-                                    type="number"
-                                    size="small"
-                                    fullWidth
-                                    inputProps={{ min: 0, max: 1, step: 0.05 }}
-                                    value={filter.artistSimilarity}
-                                    onChange={(e) => onUpdateFilter(index, 'artistSimilarity', parseFloat(e.target.value))}
-                                    disabled={!filter.enabled}
-                                    helperText={`${getSimilarityLabel(filter.artistSimilarity)} (${(filter.artistSimilarity * 100).toFixed(0)}%)`}
-                                />
-                            </Box>
-                        )}
-                        
-                        {filter.titleSimilarity !== undefined && (
-                            <Box>
-                                <TextField
-                                    label="Title Similarity"
-                                    type="number"
-                                    size="small"
-                                    fullWidth
-                                    inputProps={{ min: 0, max: 1, step: 0.05 }}
-                                    value={filter.titleSimilarity}
-                                    onChange={(e) => onUpdateFilter(index, 'titleSimilarity', parseFloat(e.target.value))}
-                                    disabled={!filter.enabled}
-                                    helperText={`${getSimilarityLabel(filter.titleSimilarity)} (${(filter.titleSimilarity * 100).toFixed(0)}%)`}
-                                />
-                            </Box>
-                        )}
-                        
-                        {filter.artistWithTitleSimilarity !== undefined && (
-                            <Box>
-                                <TextField
-                                    label="Artist+Title Similarity"
-                                    type="number"
-                                    size="small"
-                                    fullWidth
-                                    inputProps={{ min: 0, max: 1, step: 0.05 }}
-                                    value={filter.artistWithTitleSimilarity}
-                                    onChange={(e) => onUpdateFilter(index, 'artistWithTitleSimilarity', parseFloat(e.target.value))}
-                                    disabled={!filter.enabled}
-                                    helperText={`${getSimilarityLabel(filter.artistWithTitleSimilarity)} (${(filter.artistWithTitleSimilarity * 100).toFixed(0)}%)`}
-                                />
-                            </Box>
-                        )}
-                    </Box>
-
-                    {/* Additional Options */}
-                    {(filter.useContains !== undefined || filter.useArtistMatch !== undefined) && (
-                        <Box sx={{ display: 'flex', gap: 2, mb: 2, flexWrap: 'wrap' }}>
-                            {filter.useContains !== undefined && (
-                                <FormControlLabel
-                                    control={
-                                        <Switch
-                                            checked={filter.useContains}
-                                            onChange={(e) => onUpdateFilter(index, 'useContains', e.target.checked)}
-                                            size="small"
-                                            disabled={!filter.enabled}
-                                        />
-                                    }
-                                    label={
-                                        <Tooltip title="Use 'contains' logic instead of exact similarity matching">
-                                            <span>Use Contains Logic</span>
-                                        </Tooltip>
-                                    }
-                                />
-                            )}
-                            
-                            {filter.useArtistMatch !== undefined && (
-                                <FormControlLabel
-                                    control={
-                                        <Switch
-                                            checked={filter.useArtistMatch}
-                                            onChange={(e) => onUpdateFilter(index, 'useArtistMatch', e.target.checked)}
-                                            size="small"
-                                            disabled={!filter.enabled}
-                                        />
-                                    }
-                                    label={
-                                        <Tooltip title="Use artist-specific matching logic">
-                                            <span>Use Artist Match</span>
-                                        </Tooltip>
-                                    }
-                                />
-                            )}
-                        </Box>
-                    )}
-
-                    {/* Match Reason */}
-                    <TextField
-                        label="Match Reason"
-                        fullWidth
+        <Box>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <Code />
+                    <Typography variant="h6">Match Filters Configuration</Typography>
+                </Box>
+                <Box sx={{ display: 'flex', gap: 1 }}>
+                    <Button
+                        onClick={handleReset}
+                        variant="outlined"
                         size="small"
-                        value={filter.reason}
-                        onChange={(e) => onUpdateFilter(index, 'reason', e.target.value)}
-                        disabled={!filter.enabled}
-                        helperText="This message will be shown when this filter successfully matches a track"
-                        sx={{ 
-                            '& .MuiInputBase-input': { 
-                                fontSize: '0.875rem',
-                                fontFamily: 'monospace' 
-                            }
-                        }}
-                    />
-
-                    {/* Filter Status Summary */}
-                    <Box sx={{ mt: 2, p: 1, bgcolor: 'action.hover', borderRadius: 1 }}>
-                        <Typography variant="caption" color="text.secondary">
-                            <strong>Filter Summary:</strong>{' '}
-                            {filter.enabled ? 'Active' : 'Inactive'} • Priority: {index + 1} • {
-                                [
-                                    filter.artistSimilarity && `Artist: ${(filter.artistSimilarity * 100).toFixed(0)}%`,
-                                    filter.titleSimilarity && `Title: ${(filter.titleSimilarity * 100).toFixed(0)}%`,
-                                    filter.artistWithTitleSimilarity && `Combined: ${(filter.artistWithTitleSimilarity * 100).toFixed(0)}%`
-                                ].filter(Boolean).join(' • ')
-                            }
-                        </Typography>
-                    </Box>
-                </Paper>
-            ))}
-
-            <Box sx={{ p: 2, bgcolor: 'info.light', borderRadius: 1, mt: 2 }}>
-                <Typography variant="body2" color="info.dark">
-                    <strong>💡 Pro Tip:</strong> Keep high-confidence filters at the top for better performance. 
-                    The system stops at the first filter that finds matches, so order matters!
-                </Typography>
+                        startIcon={<Refresh />}
+                    >
+                        Reset
+                    </Button>
+                    <Button
+                        onClick={handleSave}
+                        variant="contained"
+                        size="small"
+                    >
+                        Save
+                    </Button>
+                </Box>
             </Box>
+            
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+                Configure match filters as function strings. Each filter should have a <code>reason</code> and <code>filter</code> property.
+                Filters are evaluated in order - the first matching filter wins.
+            </Typography>
+
+            <TextField
+                fullWidth
+                multiline
+                rows={20}
+                value={jsonContent}
+                onChange={(e) => setJsonContent(e.target.value)}
+                variant="outlined"
+                sx={{
+                    mb: 2,
+                    '& .MuiInputBase-input': {
+                        fontFamily: 'Monaco, Consolas, "Courier New", monospace',
+                        fontSize: '0.875rem',
+                        lineHeight: 1.5
+                    }
+                }}
+                placeholder="Loading..."
+            />
+
+            {jsonError ? <Alert severity="error" sx={{ mb: 2 }}>
+                <Typography variant="body2">
+                    <strong>JSON Error:</strong> {jsonError}
+                </Typography>
+            </Alert> : null}
+
+            <Alert severity="info">
+                <Typography variant="body2">
+                    <strong>Filter Structure:</strong><br />
+                    • Each filter is an object with <code>reason</code> (string) and <code>filter</code> (function string)<br />
+                    • Function strings should start with <code>(item) =&gt;</code><br />
+                    • Available properties: <code>item.matching.artist</code>, <code>item.matching.title</code>, <code>item.matching.album</code><br />
+                    • Each has <code>.match</code>, <code>.contains</code>, and <code>.similarity</code> properties
+                </Typography>
+            </Alert>
         </Box>
     );
 };

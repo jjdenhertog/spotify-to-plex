@@ -1,60 +1,29 @@
 /**
- * Configuration schema for music search functionality
- * Captures all current hardcoded logic without any loss
+ * Simplified music search configuration types
+ * Uses function strings for runtime evaluation instead of complex compilation
  */
 
 import { TrackWithMatching } from './TrackWithMatching';
 
-// Match filter configuration - preserves exact current logic
+// Simple match filter configuration with function strings
 export type MatchFilterConfig = {
   readonly reason: string;
-  readonly condition: MatchCondition;
-};
+  readonly filter: string; // Function string like "(item) => item.matching.artist.match && item.matching.title.match"
+}
 
-// Represents the boolean logic conditions from current hardcoded filters
-export type MatchCondition = 
-  // Full artist matches
-  | { type: 'and'; left: ArtistMatchCondition; right: TitleMatchCondition }
-  // Complex multi-field conditions
-  | { type: 'and'; left: MatchCondition; right: MatchCondition }
-  | { type: 'or'; left: MatchCondition; right: MatchCondition }
-  // Single field conditions
-  | ArtistMatchCondition 
-  | TitleMatchCondition 
-  | AlbumMatchCondition
-  | ArtistWithTitleMatchCondition;
-
-export type ArtistMatchCondition = 
-  | { field: 'artist'; type: 'match' }
-  | { field: 'artist'; type: 'contains' }
-  | { field: 'artist'; type: 'similarity'; threshold: number };
-
-export type TitleMatchCondition = 
-  | { field: 'title'; type: 'match' }
-  | { field: 'title'; type: 'contains' }
-  | { field: 'title'; type: 'similarity'; threshold: number };
-
-export type AlbumMatchCondition = 
-  | { field: 'album'; type: 'match' }
-  | { field: 'album'; type: 'contains' }
-  | { field: 'album'; type: 'similarity'; threshold: number };
-
-export type ArtistWithTitleMatchCondition = 
-  | { field: 'artistWithTitle'; type: 'similarity'; threshold: number };
-
-// Text processing configuration - captures current hardcoded arrays and logic
+// Text processing configuration - simple structure
 export type TextProcessingConfig = {
   readonly filterOutWords: readonly string[];
   readonly filterOutQuotes: readonly string[];
   readonly cutOffSeparators: readonly string[];
   readonly processing: {
     readonly filtered: boolean;
-    readonly cutOffSeperators: boolean; // Preserves typo from current code
+    readonly cutOffSeperators: boolean; // Preserves typo from original code
     readonly removeQuotes: boolean;
   };
-};
+}
 
-// Search approach configuration - supports Plex vs Tidal differences
+// Search approach configuration - simple flags
 export type SearchApproachConfig = {
   readonly id: string;
   readonly filtered?: boolean;
@@ -62,15 +31,15 @@ export type SearchApproachConfig = {
   readonly ignoreQuotes?: boolean;
   readonly removeQuotes?: boolean; // Plex-specific flag
   readonly force?: boolean; // Plex-specific flag
-};
+}
 
 // Platform-specific search approaches
 export type PlatformSearchConfig = {
   readonly plex: readonly SearchApproachConfig[];
   readonly tidal: readonly SearchApproachConfig[];
-};
+}
 
-// Complete music search configuration
+// Complete music search configuration - simplified
 export type MusicSearchConfig = {
   readonly matchFilters: readonly MatchFilterConfig[];
   readonly textProcessing: TextProcessingConfig;
@@ -80,24 +49,10 @@ export type MusicSearchConfig = {
     readonly maxCacheSize: number;
     readonly debugMode: boolean;
   };
-};
+}
 
-// Configuration loading options for integration with PlexConfigManager
-export type MusicSearchConfigOptions = {
-  readonly configFile?: string;
-  readonly useDefaults: boolean;
-  readonly validateSchema: boolean;
-};
-
-// Runtime filter function type - for converting config to executable logic
+// Runtime filter function type - for converted function strings
 export type RuntimeMatchFilter = {
   readonly reason: string;
   readonly filter: (item: TrackWithMatching) => boolean;
-};
-
-// Configuration validation result
-export type ConfigValidationResult = {
-  readonly isValid: boolean;
-  readonly errors: readonly string[];
-  readonly warnings: readonly string[];
-};
+}

@@ -5,7 +5,6 @@ import { TrackWithMatching } from "./types/TrackWithMatching";
 import { compareTitles } from "./utils/compareTitles";
 import { removeFeaturing } from "./utils/removeFeaturing";
 import { MusicSearchConfig, RuntimeMatchFilter } from "./types/config";
-import { ConfigCompiler } from "./config/config-compiler";
 import { DEFAULT_MUSIC_SEARCH_CONFIG } from "./config/default-config";
 
 export default class MusicSearch {
@@ -35,12 +34,12 @@ export default class MusicSearch {
     }
 
     /**
-     * Set music search configuration - provides compiled runtime filters
-     * This replaces the hardcoded match filters with configurable ones
+     * Set music search configuration with runtime filters
+     * Converts function strings to executable functions
      */
     public setMusicSearchConfig(config: MusicSearchConfig): void {
         this._musicSearchConfig = config;
-        this._runtimeFilters = ConfigCompiler.compileMatchFilters(config.matchFilters);
+        this._runtimeFilters = this.compileFunctionStrings(config.matchFilters);
     }
 
     /**
@@ -51,12 +50,38 @@ export default class MusicSearch {
     }
 
     /**
+     * Convert function strings to runtime functions
+     * Simple approach using Function constructor for trusted configuration
+     */
+    private compileFunctionStrings(filters: readonly MusicSearchConfig['matchFilters'][0][]): RuntimeMatchFilter[] {
+        return filters.map(filter => ({
+            reason: filter.reason,
+            filter: this.createFilterFunction(filter.filter)
+        }));
+    }
+
+    /**
+     * Create filter function from string
+     */
+    private createFilterFunction(filterString: string): (item: TrackWithMatching) => boolean {
+        try {
+            // Create function from string - safer than eval for trusted configuration
+            return new Function('item', `return ${filterString.replace(/^\(item\)\s*=>\s*/, '')};`) as (item: TrackWithMatching) => boolean;
+        } catch (error) {
+            console.warn(`Failed to create filter function from: ${filterString}`, error);
+
+            // Return a filter that never matches on error
+            return () => false;
+        }
+    }
+
+    /**
      * Get compiled runtime filters, compiling from default config if not set
      */
     private getRuntimeFilters(): RuntimeMatchFilter[] {
         if (!this._runtimeFilters) {
             const config = this.getMusicSearchConfig();
-            this._runtimeFilters = ConfigCompiler.compileMatchFilters(config.matchFilters);
+            this._runtimeFilters = this.compileFunctionStrings(config.matchFilters);
         }
 
         return this._runtimeFilters;
@@ -66,7 +91,6 @@ export default class MusicSearch {
 
         // Use compiled runtime filters from configuration (preserves all hardcoded logic)
         const matchFilters = this.getRuntimeFilters();
-
 
         const results: TrackWithMatching[] = options
             .map(item => {
@@ -89,7 +113,6 @@ export default class MusicSearch {
                 return bMatches - aMatches;
             })
 
-
         for (let i = 0; i < matchFilters.length; i++) {
             const matchFilter = matchFilters[i];
             if (!matchFilter) continue;
@@ -111,7 +134,6 @@ export default class MusicSearch {
             }
         }
 
-
         return []
     }
 }
@@ -120,5 +142,3 @@ export * from './types';
 export * from './utils';
 export * from './config/default-config';
 export * from './config/music-search-config-manager';
-export * from './config/config-compiler';
-

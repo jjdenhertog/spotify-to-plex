@@ -5,6 +5,7 @@ import { SelectChangeEvent } from '@mui/material/Select';
 import axios from "axios";
 import { enqueueSnackbar } from "notistack";
 import { Dispatch, SetStateAction, useCallback, useEffect, useState } from "react";
+import { GetAuthUrlResponse } from "../../pages/api/auth/url";
 import { GetPlexResourcesResponse } from "../../pages/api/plex/resources";
 import { GetSettingsResponse } from "../../pages/api/settings";
 
@@ -25,9 +26,23 @@ const PlexConnection = (props: Props) => {
     const [loading, setLoading] = useState<boolean>(true);
     const [newPlexUri, setNewPlexUri] = useState<string | null>(settings?.uri || null);
     const [saving, setSaving] = useState<boolean>(false);
+    const [creatingUrl, setCreatingUrl] = useState<boolean>(false);
 
     const onPlexUriChange = useCallback((e: SelectChangeEvent) => {
         setNewPlexUri(e.target.value)
+    }, []);
+
+    const onPlexLoginClick = useCallback(() => {
+        setCreatingUrl(true);
+        errorBoundary(async () => {
+            const result = await axios.post<GetAuthUrlResponse>('/api/auth/url', {
+                callback: window.location.href
+            });
+            if (top)
+                top.location.href = result.data.authUrl;
+        }, () => {
+            setCreatingUrl(false);
+        });
     }, []);
 
     const onSaveClick = useCallback(() => {
@@ -65,18 +80,23 @@ const PlexConnection = (props: Props) => {
     }, [newPlexUri, resources, setSettings]);
 
     useEffect(() => {
-        if (!settings) {
-            setLoading(false)
+        if (!connected) {
+            setLoading(false);
 
             return;
         }
 
-        setLoading(true)
+        if (!settings) {
+            setLoading(false);
+
+            return;
+        }
+
+        setLoading(true);
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 5000);
 
         errorBoundary(async () => {
-
             const resources = await axios.get<GetPlexResourcesResponse[]>("/api/plex/resources");
             setResources(resources.data);
             setConnected(true);
@@ -86,14 +106,14 @@ const PlexConnection = (props: Props) => {
                 setValidated(true);
             }
 
-            setLoading(false)
+            setLoading(false);
             clearTimeout(timeoutId);
         }, () => {
-            setLoading(false)
+            setLoading(false);
             clearTimeout(timeoutId);
         }, true);
 
-    }, [setConnected, settings]);
+    }, [connected, setConnected, settings]);
 
     const saveDisabled = !(newPlexUri && settings?.uri != newPlexUri);
 
@@ -103,6 +123,28 @@ const PlexConnection = (props: Props) => {
                 Checking your connection with Plex
             </Alert>
         </Box>
+    }
+
+    // Show login prompt if not connected to Plex
+    if (!connected) {
+        return (
+            <Box textAlign="center">
+                <Typography variant="h5" sx={{ mb: 2 }}>
+                    Connect to Plex
+                </Typography>
+                <Typography variant="body1" sx={{ mb: 2 }}>
+                    You need to login to Plex to continue.
+                </Typography>
+                <LoadingButton 
+                    loading={creatingUrl} 
+                    onClick={onPlexLoginClick} 
+                    variant="contained" 
+                    color="primary"
+                >
+                    Login to Plex
+                </LoadingButton>
+            </Box>
+        );
     }
 
     return (

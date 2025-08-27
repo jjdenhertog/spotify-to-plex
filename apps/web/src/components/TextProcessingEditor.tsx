@@ -1,23 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     Box,
-    Chip,
-    FormControlLabel,
-    IconButton,
-    Switch,
     TextField,
     Typography,
     Alert,
-    Collapse,
-    Button,
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    DialogActions
+    Button
 } from '@mui/material';
-import { Add, Delete, ExpandMore, ExpandLess, Preview } from '@mui/icons-material';
+import { Code, Refresh } from '@mui/icons-material';
+import axios from 'axios';
+import { enqueueSnackbar } from 'notistack';
 
-interface TextProcessingConfig {
+type TextProcessingConfig = {
     filterOutWords: string[];
     filterOutQuotes: string[];
     cutOffSeparators: string[];
@@ -28,307 +21,145 @@ interface TextProcessingConfig {
     };
 }
 
-interface TextProcessingEditorProps {
-    config: TextProcessingConfig;
-    onUpdate: (field: string, value: any) => void;
+type TextProcessingEditorProps = {
+    readonly onSave?: (config: TextProcessingConfig) => void;
 }
 
-const TextProcessingEditor: React.FC<TextProcessingEditorProps> = ({
-    config,
-    onUpdate
-}) => {
-    const [expandedSections, setExpandedSections] = useState<{ [key: string]: boolean }>({
-        filterOutWords: false,
-        filterOutQuotes: false,
-        cutOffSeparators: false
-    });
-    
-    const [newItemInputs, setNewItemInputs] = useState<{ [key: string]: string }>({
-        filterOutWords: '',
-        filterOutQuotes: '',
-        cutOffSeparators: ''
-    });
-    
-    const [previewDialog, setPreviewDialog] = useState(false);
-    const [previewText, setPreviewText] = useState('Artist Name feat. Another Artist - Song Title (Radio Edit) "Remastered Version"');
+const TextProcessingEditor: React.FC<TextProcessingEditorProps> = ({ onSave }) => {
+    const [jsonContent, setJsonContent] = useState('');
+    const [jsonError, setJsonError] = useState('');
+    const [loading, setLoading] = useState(true);
 
-    const toggleSection = (section: string) => {
-        setExpandedSections(prev => ({
-            ...prev,
-            [section]: !prev[section]
-        }));
-    };
+    useEffect(() => {
+        loadConfig();
+    }, []);
 
-    const addItem = (field: string) => {
-        const newItem = newItemInputs[field]?.trim();
-        if (!newItem) return;
-        const fieldValue = config[field as keyof TextProcessingConfig];
-        if (Array.isArray(fieldValue) && !fieldValue.includes(newItem)) {
-            const updatedArray = [...fieldValue, newItem];
-            onUpdate(field, updatedArray);
-            setNewItemInputs(prev => ({ ...prev, [field]: '' }));
+    const loadConfig = async () => {
+        try {
+            setLoading(true);
+            const response = await axios.get('/api/plex/music-search-config/text-processing');
+            setJsonContent(JSON.stringify(response.data, null, 2));
+            setJsonError('');
+        } catch (error) {
+            console.error('Failed to load text processing config:', error);
+            enqueueSnackbar('Failed to load text processing config', { variant: 'error' });
+        } finally {
+            setLoading(false);
         }
     };
 
-    const removeItem = (field: string, item: string) => {
-        const updatedArray = (config[field as keyof TextProcessingConfig] as string[]).filter(i => i !== item);
-        onUpdate(field, updatedArray);
-    };
-
-    const handleInputKeyPress = (field: string, event: React.KeyboardEvent) => {
-        if (event.key === 'Enter') {
-            addItem(field);
-        }
-    };
-
-    // Preview processing function (simplified version)
-    const processTextPreview = (text: string): string => {
-        let processed = text.toLowerCase();
-        
-        // Filter out words
-        if (config.filterOutWords) {
-            config.filterOutWords.forEach(word => {
-                const regex = new RegExp(`\\b${word}\\b`, 'gi');
-                processed = processed.replace(regex, '');
-            });
-        }
-        
-        // Remove quotes
-        if (config.processing?.removeQuotes && config.filterOutQuotes) {
-            config.filterOutQuotes.forEach(quote => {
-                processed = processed.split(quote).join('');
-            });
-        }
-        
-        // Cut off at separators
-        if (config.processing?.cutOffSeperators && config.cutOffSeparators) {
-            for (const separator of config.cutOffSeparators) {
-                const index = processed.lastIndexOf(separator.toLowerCase());
-                if (index !== -1) {
-                    processed = processed.substring(0, index);
-                    break;
-                }
+    const handleSave = async () => {
+        try {
+            const config = JSON.parse(jsonContent);
+            
+            // Basic validation
+            if (!config || typeof config !== 'object') {
+                throw new Error('Configuration must be an object');
             }
+            
+            if (!Array.isArray(config.filterOutWords) || 
+                !Array.isArray(config.filterOutQuotes) || 
+                !Array.isArray(config.cutOffSeparators)) {
+                throw new Error('filterOutWords, filterOutQuotes, and cutOffSeparators must be arrays');
+            }
+            
+            if (!config.processing || 
+                typeof config.processing.filtered !== 'boolean' ||
+                typeof config.processing.cutOffSeperators !== 'boolean' ||
+                typeof config.processing.removeQuotes !== 'boolean') {
+                throw new Error('processing must be an object with boolean properties');
+            }
+            
+            await axios.post('/api/plex/music-search-config/text-processing', config);
+            enqueueSnackbar('Text processing configuration saved successfully', { variant: 'success' });
+            setJsonError('');
+            
+            if (onSave) {
+                onSave(config);
+            }
+        } catch (error) {
+            const message = error instanceof Error ? error.message : 'Invalid JSON format';
+            setJsonError(message);
+            enqueueSnackbar(`Failed to save: ${message}`, { variant: 'error' });
         }
-        
-        // Clean up extra spaces and trim
-        processed = processed.replace(/\s+/g, ' ').trim();
-        
-        return processed;
     };
 
-    const renderArrayEditor = (
-        field: keyof TextProcessingConfig,
-        label: string,
-        description: string,
-        placeholder: string,
-        examples: string[]
-    ) => {
-        const items = config[field] as string[];
-        const expanded = expandedSections[field];
+    const handleReset = async () => {
+        if (confirm('Reset to default text processing configuration? This will overwrite your current settings.')) {
+            await loadConfig();
+        }
+    };
 
+    if (loading) {
         return (
-            <Box key={field} sx={{ mb: 3, border: '1px solid', borderColor: 'divider', borderRadius: 1, p: 2 }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1 }}>
-                    <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
-                        {label}
-                    </Typography>
-                    <IconButton size="small" onClick={() => toggleSection(field)}>
-                        {expanded ? <ExpandLess /> : <ExpandMore />}
-                    </IconButton>
-                </Box>
-                
-                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                    {description}
-                </Typography>
-
-                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, mb: 2, minHeight: 32 }}>
-                    {items.length === 0 ? (
-                        <Typography variant="body2" color="text.disabled" sx={{ fontStyle: 'italic', p: 1 }}>
-                            No items configured
-                        </Typography>
-                    ) : (
-                        items.map((item, index) => (
-                            <Chip
-                                key={index}
-                                label={item}
-                                size="small"
-                                onDelete={() => removeItem(field, item)}
-                                deleteIcon={<Delete />}
-                                variant="outlined"
-                            />
-                        ))
-                    )}
-                </Box>
-
-                <Collapse in={expanded}>
-                    <Box sx={{ mt: 2 }}>
-                        <Box sx={{ display: 'flex', gap: 1, mb: 2 }}>
-                            <TextField
-                                size="small"
-                                placeholder={placeholder}
-                                value={newItemInputs[field]}
-                                onChange={(e) => setNewItemInputs(prev => ({ ...prev, [field]: e.target.value }))}
-                                onKeyPress={(e) => handleInputKeyPress(field, e)}
-                                fullWidth
-                            />
-                            <IconButton 
-                                onClick={() => addItem(field)}
-                                disabled={!newItemInputs[field]?.trim()}
-                                color="primary"
-                            >
-                                <Add />
-                            </IconButton>
-                        </Box>
-                        
-                        <Box>
-                            <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 1 }}>
-                                Common examples:
-                            </Typography>
-                            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                                {examples.map((example, index) => (
-                                    <Chip
-                                        key={index}
-                                        label={example}
-                                        size="small"
-                                        variant="outlined"
-                                        onClick={() => {
-                                            if (!items.includes(example)) {
-                                                const updatedArray = [...items, example];
-                                                onUpdate(field, updatedArray);
-                                            }
-                                        }}
-                                        sx={{ cursor: 'pointer' }}
-                                    />
-                                ))}
-                            </Box>
-                        </Box>
-                    </Box>
-                </Collapse>
+            <Box sx={{ textAlign: 'center', py: 4 }}>
+                <Typography>Loading text processing configuration...</Typography>
             </Box>
         );
-    };
+    }
 
     return (
         <Box>
-            <Box sx={{ display: 'flex', justify: 'space-between', alignItems: 'center', mb: 3 }}>
-                <Typography variant="h6">Text Processing Configuration</Typography>
-                <Button
-                    startIcon={<Preview />}
-                    onClick={() => setPreviewDialog(true)}
-                    variant="outlined"
-                    size="small"
-                >
-                    Preview Processing
-                </Button>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <Code />
+                    <Typography variant="h6">Text Processing Configuration</Typography>
+                </Box>
+                <Box sx={{ display: 'flex', gap: 1 }}>
+                    <Button
+                        onClick={handleReset}
+                        variant="outlined"
+                        size="small"
+                        startIcon={<Refresh />}
+                    >
+                        Reset
+                    </Button>
+                    <Button
+                        onClick={handleSave}
+                        variant="contained"
+                        size="small"
+                    >
+                        Save
+                    </Button>
+                </Box>
             </Box>
             
             <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-                Configure how track and artist names are cleaned and processed before matching.
-                Processing happens in sequence: filter words → remove quotes → cut at separators → clean up.
+                Configure how text is processed before matching. This includes word filtering, quote removal, and separator handling.
             </Typography>
 
-            {/* Boolean Settings */}
-            <Box sx={{ mb: 4, p: 2, bgcolor: 'action.hover', borderRadius: 1 }}>
-                <Typography variant="subtitle2" sx={{ mb: 2 }}>Processing Options</Typography>
-                <Box sx={{ display: 'flex', gap: 3, flexWrap: 'wrap' }}>
-                    <FormControlLabel
-                        control={
-                            <Switch
-                                checked={config.processing?.removeQuotes || false}
-                                onChange={(e) => onUpdate('processing', { ...config.processing, removeQuotes: e.target.checked })}
-                            />
-                        }
-                        label="Remove Quote Characters"
-                    />
-                    <FormControlLabel
-                        control={
-                            <Switch
-                                checked={config.processing?.cutOffSeperators || false}
-                                onChange={(e) => onUpdate('processing', { ...config.processing, cutOffSeperators: e.target.checked })}
-                            />
-                        }
-                        label="Cut Off at Separators"
-                    />
-                </Box>
-            </Box>
+            <TextField
+                fullWidth
+                multiline
+                rows={15}
+                value={jsonContent}
+                onChange={(e) => setJsonContent(e.target.value)}
+                variant="outlined"
+                sx={{
+                    mb: 2,
+                    '& .MuiInputBase-input': {
+                        fontFamily: 'Monaco, Consolas, "Courier New", monospace',
+                        fontSize: '0.875rem',
+                        lineHeight: 1.5
+                    }
+                }}
+                placeholder="Loading..."
+            />
 
-            {/* Array Editors */}
-            {renderArrayEditor(
-                'filterOutWords',
-                'Filter Out Words',
-                'Words that will be completely removed from track titles before matching',
-                'Enter word to filter out...',
-                ['remaster', 'remix', 'feat', 'featuring', 'radio', 'edit', 'explicit', 'live', 'acoustic']
-            )}
-
-            {renderArrayEditor(
-                'filterOutQuotes',
-                'Quote Characters to Remove',
-                'Quote and bracket characters that will be removed from track titles',
-                'Enter quote character...',
-                ['"', "'", '"', '"', '«', '»', '(', ')', '[', ']']
-            )}
-
-            {renderArrayEditor(
-                'cutOffSeparators',
-                'Cut-off Separators',
-                'When found, everything after these separators will be removed from track titles',
-                'Enter separator...',
-                [' - ', ' – ', ' (', ' [', ' feat', ' ft', ' featuring', ' remix', ' edit']
-            )}
-
-            {/* Processing Preview Dialog */}
-            <Dialog open={previewDialog} onClose={() => setPreviewDialog(false)} maxWidth="md" fullWidth>
-                <DialogTitle>Text Processing Preview</DialogTitle>
-                <DialogContent>
-                    <Box sx={{ mb: 3 }}>
-                        <Typography variant="subtitle2" sx={{ mb: 1 }}>Test Input:</Typography>
-                        <TextField
-                            fullWidth
-                            value={previewText}
-                            onChange={(e) => setPreviewText(e.target.value)}
-                            placeholder="Enter text to preview processing..."
-                            size="small"
-                        />
-                    </Box>
-                    
-                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                        <Box>
-                            <Typography variant="subtitle2" color="primary">Original:</Typography>
-                            <Typography sx={{ p: 1, bgcolor: 'grey.100', borderRadius: 1, fontFamily: 'monospace' }}>
-                                {previewText}
-                            </Typography>
-                        </Box>
-                        
-                        <Box>
-                            <Typography variant="subtitle2" color="success.main">Processed:</Typography>
-                            <Typography sx={{ p: 1, bgcolor: 'success.light', borderRadius: 1, fontFamily: 'monospace' }}>
-                                {processTextPreview(previewText)}
-                            </Typography>
-                        </Box>
-                    </Box>
-                    
-                    <Alert severity="info" sx={{ mt: 2 }}>
-                        <Typography variant="caption">
-                            This preview shows a simplified version of the actual processing.
-                            The real implementation may include additional logic and optimizations.
-                        </Typography>
-                    </Alert>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={() => setPreviewDialog(false)}>Close</Button>
-                </DialogActions>
-            </Dialog>
-
-            {/* Usage Tips */}
-            <Alert severity="info" sx={{ mt: 3 }}>
+            {jsonError ? <Alert severity="error" sx={{ mb: 2 }}>
                 <Typography variant="body2">
-                    <strong>💡 Tips:</strong><br />
-                    • Order matters for separators - the first match wins<br />
-                    • Be careful with short words that might match unintentionally<br />
-                    • Test your changes with the preview tool above<br />
-                    • Common words like "the", "and" are usually not filtered to avoid over-processing
+                    <strong>JSON Error:</strong> {jsonError}
+                </Typography>
+            </Alert> : null}
+
+            <Alert severity="info">
+                <Typography variant="body2">
+                    <strong>Configuration Structure:</strong><br />
+                    • <code>filterOutWords</code>: Array of words to remove from titles<br />
+                    • <code>filterOutQuotes</code>: Array of quote characters to remove<br />
+                    • <code>cutOffSeparators</code>: Array of separators that cut off text<br />
+                    • <code>processing</code>: Boolean flags for enabling each processing step<br />
+                    • Note: <code>cutOffSeperators</code> typo is preserved for backward compatibility
                 </Typography>
             </Alert>
         </Box>

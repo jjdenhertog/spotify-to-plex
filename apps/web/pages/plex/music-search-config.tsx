@@ -4,215 +4,148 @@ import { errorBoundary } from "@/helpers/errors/errorBoundary";
 import MatchFilterEditor from "@/components/MatchFilterEditor";
 import TextProcessingEditor from "@/components/TextProcessingEditor";
 import SearchApproachesEditor from "@/components/SearchApproachesEditor";
-import { ChevronLeft, Restore, Save, Code, Tune, Search } from "@mui/icons-material";
+import { ChevronLeft, Restore, Download, Upload } from "@mui/icons-material";
 import { 
     Alert, 
     Box, 
     Button, 
     Card, 
     CardContent, 
-    CircularProgress, 
     Container, 
- 
-    FormControlLabel, 
     Paper, 
-    Switch, 
-    TextField, 
     Typography,
     Tab,
     Tabs,
     Breadcrumbs,
-    Link
+    Link,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
+    TextField
 } from "@mui/material";
 import { LoadingButton } from '@mui/lab';
 import { NextPage } from "next";
 import Head from "next/head";
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useCallback, useRef } from "react";
 import axios from "axios";
 import { enqueueSnackbar } from "notistack";
 
-// Types for the configuration
-interface MatchFilter {
-    id: string;
-    name: string;
-    enabled: boolean;
-    artistSimilarity?: number;
-    titleSimilarity?: number;
-    artistWithTitleSimilarity?: number;
-    useContains?: boolean;
-    useArtistMatch?: boolean;
-    reason: string;
-}
-
-interface TextProcessingConfig {
-    filterOutWords: string[];
-    filterOutQuotes: string[];
-    cutOffSeparators: string[];
-    processing: {
-        filtered: boolean;
-        cutOffSeperators: boolean;
-        removeQuotes: boolean;
-    };
-}
-
-interface SearchApproachConfig {
-    name: string;
-    filtered: boolean;
-    cutOffSeperators: boolean; // Note: preserving typo from original
-    removeQuotes: boolean;
-}
-
-interface MusicSearchConfig {
-    matchFilters: MatchFilter[];
-    textProcessing: TextProcessingConfig;
-    searchApproaches: {
-        plex: SearchApproachConfig[];
-        tidal: SearchApproachConfig[];
-    };
-}
-
 const Page: NextPage = () => {
-    const [loading, setLoading] = useState(true);
-    const [saving, setSaving] = useState(false);
-    const [resetting, setResetting] = useState(false);
-    const [config, setConfig] = useState<MusicSearchConfig | null>(null);
     const [tabValue, setTabValue] = useState(0);
-    const [jsonMode, setJsonMode] = useState(false);
-    const [jsonError, setJsonError] = useState("");
-    const jsonRef = useRef<HTMLTextAreaElement>(null);
-
-    // Load configuration on mount
-    useEffect(() => {
-        loadConfiguration();
-    }, []);
-
-    const loadConfiguration = useCallback(() => {
-        setLoading(true);
-        errorBoundary(async () => {
-            const response = await axios.get<MusicSearchConfig>('/api/plex/music-search-config');
-            setConfig(response.data);
-            setLoading(false);
-        }, () => {
-            setLoading(false);
-        });
-    }, []);
-
-    const saveConfiguration = useCallback(() => {
-        if (!config) return;
-
-        setSaving(true);
-        errorBoundary(async () => {
-            let configToSave = config;
-            
-            if (jsonMode && jsonRef.current) {
-                try {
-                    configToSave = JSON.parse(jsonRef.current.value);
-                    setJsonError("");
-                } catch (error) {
-                    setJsonError("Invalid JSON format");
-                    setSaving(false);
-                    return;
-                }
-            }
-
-            await axios.post('/api/plex/music-search-config', configToSave);
-            setConfig(configToSave);
-            enqueueSnackbar("Configuration saved successfully", { variant: "success" });
-            setSaving(false);
-        }, () => {
-            setSaving(false);
-        });
-    }, [config, jsonMode]);
+    const [resetting, setResetting] = useState(false);
+    const [importDialog, setImportDialog] = useState(false);
+    const [importJson, setImportJson] = useState('');
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     const resetConfiguration = useCallback(() => {
         setResetting(true);
         errorBoundary(async () => {
             await axios.post('/api/plex/music-search-config/reset');
-            await loadConfiguration();
             enqueueSnackbar("Configuration reset to defaults", { variant: "info" });
             setResetting(false);
+            // Refresh the page to reload all components
+            window.location.reload();
         }, () => {
             setResetting(false);
         });
-    }, [loadConfiguration]);
+    }, []);
+
+    const exportConfiguration = useCallback(() => {
+        errorBoundary(async () => {
+            const [matchFilters, textProcessing, searchApproaches] = await Promise.all([
+                axios.get('/api/plex/music-search-config/match-filters'),
+                axios.get('/api/plex/music-search-config/text-processing'),
+                axios.get('/api/plex/music-search-config/search-approaches')
+            ]);
+
+            const config = {
+                matchFilters: matchFilters.data,
+                textProcessing: textProcessing.data,
+                searchApproaches: searchApproaches.data,
+                exportedAt: new Date().toISOString(),
+                version: '2.0.0'
+            };
+
+            const dataStr = JSON.stringify(config, null, 2);
+            const dataUri = `data:application/json;charset=utf-8,${ encodeURIComponent(dataStr)}`;
+            
+            const exportFileDefaultName = `music-search-config-${new Date().toISOString()
+                .split('T')[0]}.json`;
+            
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportFileDefaultName);
+            linkElement.click();
+            
+            enqueueSnackbar("Configuration exported successfully", { variant: "success" });
+        });
+    }, []);
+
+    const importConfiguration = useCallback(() => {
+        if (fileInputRef.current) {
+            fileInputRef.current.click();
+        }
+    }, []);
+
+    const handleFileImport = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const content = e.target?.result as string;
+                setImportJson(content);
+                setImportDialog(true);
+            };
+            reader.readAsText(file);
+        }
+
+        // Reset the input value so the same file can be imported again
+        if (fileInputRef.current) {
+            fileInputRef.current.value = '';
+        }
+    }, []);
+
+    const handleImportConfirm = useCallback(() => {
+        errorBoundary(async () => {
+            try {
+                const config = JSON.parse(importJson);
+                
+                // Import each configuration section
+                if (config.matchFilters) {
+                    await axios.post('/api/plex/music-search-config/match-filters', config.matchFilters);
+                }
+
+                if (config.textProcessing) {
+                    await axios.post('/api/plex/music-search-config/text-processing', config.textProcessing);
+                }
+
+                if (config.searchApproaches) {
+                    await axios.post('/api/plex/music-search-config/search-approaches', config.searchApproaches);
+                }
+                
+                enqueueSnackbar("Configuration imported successfully", { variant: "success" });
+                setImportDialog(false);
+                
+                // Refresh the page to reload all components
+                setTimeout(() => window.location.reload(), 500);
+                
+            } catch (error) {
+                enqueueSnackbar(`Failed to import configuration: ${  error instanceof Error ? error.message : 'Invalid JSON'}`, { variant: "error" });
+            }
+        });
+    }, [importJson]);
 
     const handleTabChange = useCallback((_event: React.SyntheticEvent, newValue: number) => {
         setTabValue(newValue);
     }, []);
-
-
-    const updateMatchFilter = useCallback((index: number, field: string, value: any) => {
-        if (!config) return;
-        
-        setConfig(prev => {
-            if (!prev) return prev;
-            const newConfig = { ...prev };
-            newConfig.matchFilters = [...prev.matchFilters];
-            newConfig.matchFilters[index] = {
-                ...newConfig.matchFilters[index],
-                [field]: value
-            };
-            return newConfig;
-        });
-    }, [config]);
-
-    const updateTextProcessing = useCallback((field: string, value: any) => {
-        if (!config) return;
-        
-        setConfig(prev => {
-            if (!prev) return prev;
-            return {
-                ...prev,
-                textProcessing: {
-                    ...prev.textProcessing,
-                    [field]: value
-                }
-            };
-        });
-    }, [config]);
-
-    const updateSearchApproach = useCallback((platform: 'plex' | 'tidal', index: number, field: string, value: any) => {
-        if (!config) return;
-        
-        setConfig(prev => {
-            if (!prev) return prev;
-            const newConfig = { ...prev };
-            newConfig.searchApproaches = {
-                ...prev.searchApproaches,
-                [platform]: [...prev.searchApproaches[platform]]
-            };
-            newConfig.searchApproaches[platform][index] = {
-                ...newConfig.searchApproaches[platform][index],
-                [field]: value
-            };
-            return newConfig;
-        });
-    }, [config]);
-
-    if (loading) {
-        return (
-            <>
-                <Head>
-                    <title>Music Search Configuration - Spotify to Plex</title>
-                </Head>
-                <MainLayout loading={true} maxWidth="900px">
-                    <Container>
-                        <Logo />
-                        <Box display="flex" justifyContent="center" pt={4}>
-                            <CircularProgress />
-                        </Box>
-                    </Container>
-                </MainLayout>
-            </>
-        );
-    }
 
     return (
         <>
             <Head>
                 <title>Music Search Configuration - Spotify to Plex</title>
             </Head>
-            <MainLayout maxWidth="900px">
+            <MainLayout maxWidth="1200px">
                 <Container>
                     <Logo />
                     <Paper elevation={0} sx={{ p: 2, bgcolor: 'action.hover', mb: 3 }}>
@@ -234,20 +167,10 @@ const Page: NextPage = () => {
                             Music Search Configuration
                         </Typography>
                         <Typography variant="body1" sx={{ mb: 2, maxWidth: 600 }}>
-                            Configure how the system matches songs between Spotify and Plex. Adjust matching thresholds, text processing, and search approaches.
+                            Configure how the system matches songs between Spotify and Plex. The configuration is now split into focused JSON files for easier management.
                         </Typography>
 
                         <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', flexWrap: 'wrap' }}>
-                            <LoadingButton
-                                loading={saving}
-                                onClick={saveConfiguration}
-                                variant="contained"
-                                startIcon={<Save />}
-                                disabled={!config}
-                            >
-                                Save Configuration
-                            </LoadingButton>
-                            
                             <LoadingButton
                                 loading={resetting}
                                 onClick={resetConfiguration}
@@ -255,104 +178,127 @@ const Page: NextPage = () => {
                                 color="warning"
                                 startIcon={<Restore />}
                             >
-                                Reset to Defaults
+                                Reset All to Defaults
                             </LoadingButton>
 
-                            <FormControlLabel
-                                control={
-                                    <Switch
-                                        checked={jsonMode}
-                                        onChange={(e) => setJsonMode(e.target.checked)}
-                                        size="small"
-                                    />
-                                }
-                                label="Advanced JSON Editor"
+                            <Button
+                                onClick={exportConfiguration}
+                                variant="outlined"
+                                startIcon={<Download />}
+                            >
+                                Export Configuration
+                            </Button>
+
+                            <Button
+                                onClick={importConfiguration}
+                                variant="outlined"
+                                startIcon={<Upload />}
+                            >
+                                Import Configuration
+                            </Button>
+
+                            <input
+                                ref={fileInputRef}
+                                type="file"
+                                accept=".json"
+                                style={{ display: 'none' }}
+                                onChange={handleFileImport}
                             />
                         </Box>
                     </Paper>
 
-                    {!config ? (
-                        <Alert severity="error">Failed to load configuration</Alert>
-                    ) : (
-                        <>
-                            {jsonMode ? (
-                                <Card>
-                                    <CardContent>
-                                        <Typography variant="h6" sx={{ mb: 2 }}>JSON Configuration Editor</Typography>
-                                        <TextField
-                                            ref={jsonRef}
-                                            fullWidth
-                                            multiline
-                                            rows={25}
-                                            variant="outlined"
-                                            defaultValue={JSON.stringify(config, null, 2)}
-                                            sx={{
-                                                '& .MuiInputBase-input': {
-                                                    fontFamily: 'monospace',
-                                                    fontSize: '0.875rem'
-                                                }
-                                            }}
-                                        />
-                                        {jsonError && (
-                                            <Alert severity="error" sx={{ mt: 2 }}>{jsonError}</Alert>
-                                        )}
-                                    </CardContent>
-                                </Card>
-                            ) : (
-                                <Box>
-                                    <Tabs 
-                                        value={tabValue} 
-                                        onChange={handleTabChange} 
-                                        sx={{ mb: 3 }}
-                                        variant="scrollable"
-                                        scrollButtons="auto"
-                                    >
-                                        <Tab label="Match Filters" icon={<Tune />} iconPosition="start" />
-                                        <Tab label="Text Processing" icon={<Code />} iconPosition="start" />
-                                        <Tab label="Search Approaches" icon={<Search />} iconPosition="start" />
-                                    </Tabs>
+                    <Alert severity="info" sx={{ mb: 3 }}>
+                        <Typography variant="body2">
+                            <strong>New Simplified Configuration:</strong> The configuration has been split into 3 focused JSON files:
+                            match filters, text processing, and search approaches. Each tab below provides a clean JSON editor 
+                            for direct configuration management.
+                        </Typography>
+                    </Alert>
 
-                                    {/* Match Filters Tab */}
-                                    {tabValue === 0 && (
-                                        <Card>
-                                            <CardContent>
-                                                <MatchFilterEditor
-                                                    filters={config.matchFilters}
-                                                    onUpdateFilter={updateMatchFilter}
-                                                />
-                                            </CardContent>
-                                        </Card>
-                                    )}
+                    <Box>
+                        <Tabs 
+                            value={tabValue} 
+                            onChange={handleTabChange} 
+                            sx={{ mb: 3 }}
+                            variant="scrollable"
+                            scrollButtons="auto"
+                        >
+                            <Tab label="Match Filters" />
+                            <Tab label="Text Processing" />
+                            <Tab label="Search Approaches" />
+                        </Tabs>
 
-                                    {/* Text Processing Tab */}
-                                    {tabValue === 1 && (
-                                        <Card>
-                                            <CardContent>
-                                                <TextProcessingEditor
-                                                    config={config.textProcessing}
-                                                    onUpdate={updateTextProcessing}
-                                                />
-                                            </CardContent>
-                                        </Card>
-                                    )}
+                        {/* Match Filters Tab */}
+                        {tabValue === 0 && (
+                            <Card>
+                                <CardContent>
+                                    <MatchFilterEditor />
+                                </CardContent>
+                            </Card>
+                        )}
 
-                                    {/* Search Approaches Tab */}
-                                    {tabValue === 2 && (
-                                        <Card>
-                                            <CardContent>
-                                                <SearchApproachesEditor
-                                                    plexApproaches={config.searchApproaches.plex}
-                                                    tidalApproaches={config.searchApproaches.tidal}
-                                                    onUpdatePlex={(index, field, value) => updateSearchApproach('plex', index, field, value)}
-                                                    onUpdateTidal={(index, field, value) => updateSearchApproach('tidal', index, field, value)}
-                                                />
-                                            </CardContent>
-                                        </Card>
-                                    )}
-                                </Box>
-                            )}
-                        </>
-                    )}
+                        {/* Text Processing Tab */}
+                        {tabValue === 1 && (
+                            <Card>
+                                <CardContent>
+                                    <TextProcessingEditor />
+                                </CardContent>
+                            </Card>
+                        )}
+
+                        {/* Search Approaches Tab */}
+                        {tabValue === 2 && (
+                            <Card>
+                                <CardContent>
+                                    <SearchApproachesEditor />
+                                </CardContent>
+                            </Card>
+                        )}
+                    </Box>
+
+                    {/* Import Configuration Dialog */}
+                    <Dialog open={importDialog} onClose={() => setImportDialog(false)} maxWidth="md" fullWidth>
+                        <DialogTitle>Import Configuration</DialogTitle>
+                        <DialogContent>
+                            <Typography variant="body2" sx={{ mb: 2 }}>
+                                Review the configuration below before importing. This will overwrite your current settings.
+                            </Typography>
+                            <TextField
+                                fullWidth
+                                multiline
+                                rows={15}
+                                value={importJson}
+                                onChange={(e) => setImportJson(e.target.value)}
+                                variant="outlined"
+                                sx={{
+                                    '& .MuiInputBase-input': {
+                                        fontFamily: 'Monaco, Consolas, "Courier New", monospace',
+                                        fontSize: '0.875rem'
+                                    }
+                                }}
+                            />
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={() => setImportDialog(false)}>
+                                Cancel
+                            </Button>
+                            <Button onClick={handleImportConfirm} variant="contained" color="primary">
+                                Import Configuration
+                            </Button>
+                        </DialogActions>
+                    </Dialog>
+
+                    {/* Key Changes Alert */}
+                    <Alert severity="warning" sx={{ mt: 4 }}>
+                        <Typography variant="body2">
+                            <strong>Breaking Changes in v2.0:</strong><br />
+                            • Configuration split into 3 separate JSON files for better organization<br />
+                            • Platform-specific Plex/Tidal approaches unified into single list<br />
+                            • All complex UI removed in favor of direct JSON editing<br />
+                            • Performance indicators and unnecessary complexity eliminated<br />
+                            • Cleaner, more maintainable configuration structure
+                        </Typography>
+                    </Alert>
                 </Container>
             </MainLayout>
         </>

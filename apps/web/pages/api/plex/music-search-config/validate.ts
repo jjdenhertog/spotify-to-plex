@@ -1,47 +1,9 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 
-// Types for validation
-interface MatchFilter {
-    id: string;
-    name: string;
-    enabled: boolean;
-    artistSimilarity?: number;
-    titleSimilarity?: number;
-    artistWithTitleSimilarity?: number;
-    useContains?: boolean;
-    useArtistMatch?: boolean;
-    reason: string;
-}
+// Dynamic validation - no type interfaces needed
 
-interface TextProcessingConfig {
-    filterOutWords: string[];
-    filterOutQuotes: string[];
-    cutOffSeparators: string[];
-    processing: {
-        filtered: boolean;
-        cutOffSeperators: boolean;
-        removeQuotes: boolean;
-    };
-}
 
-interface SearchApproachConfig {
-    name: string;
-    filtered: boolean;
-    cutOffSeperators: boolean; // Note: preserving typo from original
-    removeQuotes: boolean;
-}
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-interface MusicSearchConfig {
-    matchFilters: MatchFilter[];
-    textProcessing: TextProcessingConfig;
-    searchApproaches: {
-        plex: SearchApproachConfig[];
-        tidal: SearchApproachConfig[];
-    };
-}
-
-interface ValidationError {
+type ValidationError = {
     field: string;
     message: string;
     value?: any;
@@ -57,16 +19,12 @@ const validateConfiguration = (config: any): ValidationError[] => {
             field: 'root',
             message: 'Configuration must be an object'
         });
+
         return errors;
     }
 
     // Validate matchFilters array
-    if (!Array.isArray(config.matchFilters)) {
-        errors.push({
-            field: 'matchFilters',
-            message: 'matchFilters must be an array'
-        });
-    } else {
+    if (Array.isArray(config.matchFilters)) {
         config.matchFilters.forEach((filter: any, index: number) => {
             const prefix = `matchFilters[${index}]`;
 
@@ -127,6 +85,11 @@ const validateConfiguration = (config: any): ValidationError[] => {
                 }
             });
         });
+    } else {
+        errors.push({
+            field: 'matchFilters',
+            message: 'matchFilters must be an array'
+        });
     }
 
     // Validate textProcessing object
@@ -136,17 +99,11 @@ const validateConfiguration = (config: any): ValidationError[] => {
             message: 'textProcessing must be an object'
         });
     } else {
-        const textProcessing = config.textProcessing;
+        const {textProcessing} = config;
 
         // Validate arrays
         ['filterOutWords', 'filterOutQuotes', 'cutOffSeparators'].forEach(field => {
-            if (!Array.isArray(textProcessing[field])) {
-                errors.push({
-                    field: `textProcessing.${field}`,
-                    message: `${field} must be an array`,
-                    value: textProcessing[field]
-                });
-            } else {
+            if (Array.isArray(textProcessing[field])) {
                 // Validate array elements are strings
                 textProcessing[field].forEach((item: any, index: number) => {
                     if (typeof item !== 'string') {
@@ -156,6 +113,12 @@ const validateConfiguration = (config: any): ValidationError[] => {
                             value: item
                         });
                     }
+                });
+            } else {
+                errors.push({
+                    field: `textProcessing.${field}`,
+                    message: `${field} must be an array`,
+                    value: textProcessing[field]
                 });
             }
         });
@@ -180,13 +143,7 @@ const validateConfiguration = (config: any): ValidationError[] => {
         });
     } else {
         ['plex', 'tidal'].forEach(platform => {
-            if (!Array.isArray(config.searchApproaches[platform])) {
-                errors.push({
-                    field: `searchApproaches.${platform}`,
-                    message: `searchApproaches.${platform} must be an array`,
-                    value: config.searchApproaches[platform]
-                });
-            } else {
+            if (Array.isArray(config.searchApproaches[platform])) {
                 config.searchApproaches[platform].forEach((approach: any, index: number) => {
                     const prefix = `searchApproaches.${platform}[${index}]`;
 
@@ -208,6 +165,12 @@ const validateConfiguration = (config: any): ValidationError[] => {
                             });
                         }
                     });
+                });
+            } else {
+                errors.push({
+                    field: `searchApproaches.${platform}`,
+                    message: `searchApproaches.${platform} must be an array`,
+                    value: config.searchApproaches[platform]
                 });
             }
         });
@@ -249,6 +212,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     try {
         if (req.method !== 'POST') {
             res.setHeader('Allow', ['POST']);
+
             return res.status(405).json({ error: 'Method not allowed' });
         }
 
@@ -260,16 +224,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 valid: true,
                 message: 'Configuration is valid'
             });
-        } else {
-            return res.status(400).json({
-                valid: false,
-                errors: validationErrors,
-                message: `Configuration has ${validationErrors.length} validation error(s)`
-            });
         }
+ 
+        return res.status(400).json({
+            valid: false,
+            errors: validationErrors,
+            message: `Configuration has ${validationErrors.length} validation error(s)`
+        });
+        
 
     } catch (error) {
         console.error('Error validating music search config:', error);
+
         return res.status(500).json({
             error: 'Internal server error',
             message: error instanceof Error ? error.message : 'Unknown error'
