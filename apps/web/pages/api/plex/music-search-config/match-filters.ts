@@ -23,7 +23,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     try {
         const configManager = MusicSearchConfigManager.create({ 
             storageDir: getStorageDir(),
-            preloadCache: true 
+            preloadCache: false 
         });
 
         if (req.method === 'GET') {

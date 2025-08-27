@@ -5,12 +5,22 @@ import { ChevronLeft, Settings, Tune } from "@mui/icons-material";
 import { Button, Container, Paper, Typography, Box, Card, CardContent, CardActions, Divider } from "@mui/material";
 import { NextPage } from "next";
 import Head from "next/head";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { GetSettingsResponse } from "../api/settings";
+import axios from "axios";
+import { errorBoundary } from "@/helpers/errors/errorBoundary";
 
 const Page: NextPage = () => {
     const [settings, setSettings] = useState<GetSettingsResponse | undefined>();
     const [connected, setConnected] = useState(false);
+
+    useEffect(() => {
+        errorBoundary(async () => {
+            const settings = await axios.get<GetSettingsResponse>("/api/settings");
+            setSettings(settings.data);
+            setConnected(settings.data.loggedin);
+        }, undefined, true);
+    }, []);
 
     return (
         <>

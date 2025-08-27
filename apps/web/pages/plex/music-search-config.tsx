@@ -209,7 +209,7 @@ const Page: NextPage = () => {
 
                     <Alert severity="info" sx={{ mb: 3 }}>
                         <Typography variant="body2">
-                            <strong>New Simplified Configuration:</strong> The configuration has been split into 3 focused JSON files:
+                            <strong>Configuration Management:</strong> The configuration is organized into 3 focused JSON files:
                             match filters, text processing, and search approaches. Each tab below provides a clean JSON editor 
                             for direct configuration management.
                         </Typography>
@@ -288,17 +288,6 @@ const Page: NextPage = () => {
                         </DialogActions>
                     </Dialog>
 
-                    {/* Key Changes Alert */}
-                    <Alert severity="warning" sx={{ mt: 4 }}>
-                        <Typography variant="body2">
-                            <strong>Breaking Changes in v2.0:</strong><br />
-                            • Configuration split into 3 separate JSON files for better organization<br />
-                            • Platform-specific Plex/Tidal approaches unified into single list<br />
-                            • All complex UI removed in favor of direct JSON editing<br />
-                            • Performance indicators and unnecessary complexity eliminated<br />
-                            • Cleaner, more maintainable configuration structure
-                        </Typography>
-                    </Alert>
                 </Container>
             </MainLayout>
         </>
