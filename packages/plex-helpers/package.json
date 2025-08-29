@@ -2,8 +2,6 @@
   "name": "@spotify-to-plex/plex-helpers",
   "version": "1.0.0",
   "description": "Shared Plex helper functions for Spotify to Plex sync",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
@@ -19,9 +17,9 @@
     "typescript": "^5.0.0"
   },
   "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
+    "./*": {
+      "types": "./dist/*.d.ts",
+      "default": "./dist/*.js"
     }
   }
 }

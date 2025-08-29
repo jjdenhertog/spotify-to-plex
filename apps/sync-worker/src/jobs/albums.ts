@@ -1,7 +1,8 @@
 import { settingsDir } from '@spotify-to-plex/shared-utils/server';
 import { plex } from "../library/plex";
-import { PlexMusicSearch, SearchResponse } from "@spotify-to-plex/plex-music-search";
-import { ExtendedPlexConfigManager } from "@spotify-to-plex/plex-config";
+import { searchAlbum } from "@spotify-to-plex/plex-music-search/functions/searchAlbum";
+import { SearchResponse } from "@spotify-to-plex/plex-music-search/types/SearchResponse";
+import { getMusicSearchConfig } from "@spotify-to-plex/music-search/config/config-utils";
 import { writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { findMissingTidalAlbums } from "../utils/findMissingTidalAlbums";
@@ -57,31 +58,23 @@ export async function syncAlbums() {
         }
 
         //////////////////////////////////////
-        // Initiate the plexMusicSearch
+        // Load music search configuration and search
         //////////////////////////////////////
-        // Load music search configuration
-        const plexConfigManager = ExtendedPlexConfigManager.create({ 
-            storageDir: settingsDir, 
-            preloadCache: true 
-        });
         let musicSearchConfig;
         try {
-            if (plexConfigManager.hasMusicSearchConfig()) {
-                const musicSearchConfigManager = plexConfigManager.getMusicSearchConfig();
-                musicSearchConfig = await musicSearchConfigManager.getConfig();
-            }
+            musicSearchConfig = await getMusicSearchConfig(settingsDir);
         } catch (error) {
             // Fallback to default config if error loading
             console.warn('Failed to load music search config, using defaults:', error);
         }
 
-        const plexMusicSearch = new PlexMusicSearch({
+        const plexConfig = {
             uri: settings.uri,
             token: settings.token,
             musicSearchConfig,
-        })
-        const result = await plexMusicSearch.searchAlbum(data.tracks)
-        const { add } = await getCachedPlexTracks(plexMusicSearch, data)
+        };
+        const result = await searchAlbum(plexConfig, data.tracks);
+        const { add } = await getCachedPlexTracks(plexConfig, data);
 
         const missingTracks = data.tracks.filter(item => {
             const { title: trackTitle, artists: trackArtists } = item;

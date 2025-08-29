@@ -1,10 +1,10 @@
 import { settingsDir } from '@spotify-to-plex/shared-utils/server';
 import { plex } from '../library/plex';
-import { MQTTItem } from '@spotify-to-plex/shared-types';
-import { PlaylistData } from '@spotify-to-plex/shared-types';
-import { TrackLink } from '@spotify-to-plex/shared-types';
-import { PlexMusicSearch } from '@spotify-to-plex/plex-music-search';
-import { ExtendedPlexConfigManager } from "@spotify-to-plex/plex-config";
+import { MQTTItem } from '@spotify-to-plex/shared-types/dashboard/MQTTItem';
+import { PlaylistData } from '@spotify-to-plex/shared-types/dashboard/PlaylistData';
+import { TrackLink } from '@spotify-to-plex/shared-types/common/track';
+import { getById } from '@spotify-to-plex/plex-music-search/functions/getById';
+import { getMusicSearchConfig } from "@spotify-to-plex/music-search/config/config-utils";
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { mqttHelpers } from '../helpers/mqttHelpers';
@@ -66,26 +66,13 @@ export async function refreshMQTT(options: MQTTRefreshOptions = {}) {
         const entityId = id.slice(Math.max(0, id.lastIndexOf('/') + 1));
         
         // Load music search configuration
-        const plexConfigManager = ExtendedPlexConfigManager.create({ 
-            storageDir: settingsDir, 
-            preloadCache: true 
-        });
         let musicSearchConfig;
         try {
-            if (plexConfigManager.hasMusicSearchConfig()) {
-                const musicSearchConfigManager = plexConfigManager.getMusicSearchConfig();
-                musicSearchConfig = await musicSearchConfigManager.getConfig();
-            }
+            musicSearchConfig = await getMusicSearchConfig(settingsDir);
         } catch (error) {
             // Fallback to default config if error loading
             console.warn('Failed to load music search config, using defaults:', error);
         }
-
-        const plexMusicSearch = new PlexMusicSearch({
-            uri: settings.uri || '',
-            token: settings.token || '',
-            musicSearchConfig,
-        });
 
         let item: { id: string; category: string; name: string; media_content_id: string } | null = null;
 
@@ -137,7 +124,11 @@ export async function refreshMQTT(options: MQTTRefreshOptions = {}) {
 
         try {
             const mediaContentId = item.media_content_id;
-            const data = await plexMusicSearch.getById(mediaContentId);
+            const data = await getById({
+                uri: settings.uri || '',
+                token: settings.token || '',
+                musicSearchConfig,
+            }, mediaContentId);
             if (data) {
                 const { image } = data;
 

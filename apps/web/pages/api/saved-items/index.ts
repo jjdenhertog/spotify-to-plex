@@ -3,9 +3,9 @@ import { generateError } from '@/helpers/errors/generateError';
 import { plex } from '@/library/plex';
 import { getSpotifyData, settingsDir } from '@spotify-to-plex/shared-utils/server';
 
-import type { SavedItem } from '@spotify-to-plex/shared-types';
-import { PlexMusicSearch } from '@spotify-to-plex/plex-music-search';
-import { ExtendedPlexConfigManager } from '@spotify-to-plex/plex-config';
+import type { SavedItem } from '@spotify-to-plex/shared-types/spotify/api';
+import { getById } from '@spotify-to-plex/plex-music-search/functions/getById';
+import { getMusicSearchConfig } from '@spotify-to-plex/music-search/config/config-utils';
 import { SpotifyApi } from '@spotify/web-api-ts-sdk';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createRouter } from 'next-connect';
@@ -54,20 +54,15 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                     if (!settings.token || !settings.uri)
                         return res.status(400).json({ msg: "Plex not configured" });
 
-                    const plexConfigManager = ExtendedPlexConfigManager.create({ 
-                        storageDir: settingsDir, 
-                        preloadCache: true 
-                    });
-                    const musicSearchConfigManager = await plexConfigManager.getMusicSearchConfig();
-                    const musicSearchConfig = await musicSearchConfigManager.getConfig();
+                    const musicSearchConfig = await getMusicSearchConfig(settingsDir);
 
-                    const plexMusicSearch = new PlexMusicSearch({
+                    const plexConfig = {
                         uri: settings.uri,
                         token: settings.token,
                         musicSearchConfig
-                    })
+                    };
 
-                    const metaData = await plexMusicSearch.getById(plexMediaId)
+                    const metaData = await getById(plexConfig, plexMediaId)
                     if (metaData)
                         savedItem = { type: 'plex-media', uri: metaData.id, id: metaData.guid, title: metaData.title, image: `/api/plex/image?path=${encodeURIComponent(metaData.image)}` }
                 } else {

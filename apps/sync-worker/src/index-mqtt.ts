@@ -228,7 +228,10 @@ process.on('uncaughtException', (error) => {
 });
 
 // Run main if this file is executed directly
+// Note: Using require.main instead of import.meta for CommonJS compatibility
+// eslint-disable-next-line unicorn/prefer-module
 if (require.main === module) {
+    // eslint-disable-next-line unicorn/prefer-top-level-await, no-console
     main().catch(console.error);
 }
 

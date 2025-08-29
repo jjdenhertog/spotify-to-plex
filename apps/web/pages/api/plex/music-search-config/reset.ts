@@ -1,13 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { unlinkSync, existsSync } from 'node:fs';
-import { join } from 'node:path';
-
-// Configuration file path
-const getConfigPath = (): string => {
-    const settingsDir = process.env.SETTINGS_DIR || process.cwd();
-
-    return join(settingsDir, 'music-search-config.json');
-};
+import { resetToDefaults } from '@spotify-to-plex/music-search/config/config-utils';
+import { getStorageDir } from '@spotify-to-plex/shared-utils/server';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     try {
@@ -17,16 +10,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             return res.status(405).json({ error: 'Method not allowed' });
         }
 
-        // Delete the configuration file to force fallback to defaults
-        const configPath = getConfigPath();
-        
-        if (existsSync(configPath)) {
-            unlinkSync(configPath);
-        }
+        // Reset configuration to defaults using the config utils
+        const storageDir = getStorageDir();
+        const config = await resetToDefaults(storageDir);
 
         return res.status(200).json({ 
             success: true, 
-            message: 'Configuration reset to defaults successfully' 
+            message: 'Configuration reset to defaults successfully',
+            config
         });
         
     } catch (error) {

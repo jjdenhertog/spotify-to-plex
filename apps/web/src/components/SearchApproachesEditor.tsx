@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
     Box,
-    TextField,
     Typography,
     Alert,
     Button
 } from '@mui/material';
-import { Code, Refresh } from '@mui/icons-material';
+import { Save, Refresh } from '@mui/icons-material';
 import axios from 'axios';
 import { enqueueSnackbar } from 'notistack';
+import MonacoJsonEditor, { MonacoJsonEditorHandle } from './MonacoJsonEditor';
 
 type SearchApproachConfig = {
     id: string;
@@ -24,9 +24,10 @@ type SearchApproachesEditorProps = {
 }
 
 const SearchApproachesEditor: React.FC<SearchApproachesEditorProps> = ({ onSave }) => {
-    const [jsonContent, setJsonContent] = useState('');
-    const [jsonError, setJsonError] = useState('');
+    const [jsonData, setJsonData] = useState<any>(null);
     const [loading, setLoading] = useState(true);
+    const [validationError, setValidationError] = useState<string>('');
+    const editorRef = useRef<MonacoJsonEditorHandle>(null);
 
     useEffect(() => {
         loadApproaches();
@@ -36,8 +37,7 @@ const SearchApproachesEditor: React.FC<SearchApproachesEditorProps> = ({ onSave 
         try {
             setLoading(true);
             const response = await axios.get('/api/plex/music-search-config/search-approaches');
-            setJsonContent(JSON.stringify(response.data, null, 2));
-            setJsonError('');
+            setJsonData(response.data);
         } catch (error) {
             console.error('Failed to load search approaches:', error);
             enqueueSnackbar('Failed to load search approaches', { variant: 'error' });
@@ -46,49 +46,99 @@ const SearchApproachesEditor: React.FC<SearchApproachesEditorProps> = ({ onSave 
         }
     };
 
-    const handleSave = async () => {
+    const validateApproaches = (data: any): string | null => {
+        if (!Array.isArray(data)) {
+            return 'Configuration must be an array';
+        }
+        
+        for (let i = 0; i < data.length; i++) {
+            const approach = data[i];
+            if (!approach) {
+                return `Approach at index ${i} is null or undefined`;
+            }
+            
+            if (typeof approach !== 'object') {
+                return `Approach at index ${i} must be an object`;
+            }
+            
+            if (!approach.id || typeof approach.id !== 'string') {
+                return `Approach at index ${i} must have an 'id' string property`;
+            }
+
+            // All other properties are optional booleans
+            const optionalBoolProps = ['filtered', 'trim', 'ignoreQuotes', 'removeQuotes', 'force'];
+
+            for (const prop of optionalBoolProps) {
+                if (approach[prop] !== undefined && typeof approach[prop] !== 'boolean') {
+                    return `Approach at index ${i}: property '${prop}' must be a boolean if present`;
+                }
+            }
+            
+            // Check for unknown properties
+            const validProps = new Set(['id', ...optionalBoolProps]);
+            const unknownProps = Object.keys(approach).filter(prop => !validProps.has(prop));
+            if (unknownProps.length > 0) {
+                return `Approach at index ${i} has unknown properties: ${unknownProps.join(', ')}`;
+            }
+        }
+        
+        return null; // Valid
+    };
+
+    const handleSave = useCallback(async () => {
+        // Get current content directly from Monaco editor
+        const currentData = editorRef.current?.getCurrentValue();
+        
+        if (!currentData) {
+            enqueueSnackbar('No valid JSON data to save', { variant: 'error' });
+
+            return;
+        }
+
+        // Do validation only on save
+        const validationErrorMsg = validateApproaches(currentData);
+        if (validationErrorMsg) {
+            setValidationError(validationErrorMsg);
+            enqueueSnackbar(`Validation Error: ${validationErrorMsg}`, { variant: 'error' });
+
+            return;
+        }
+
+        setValidationError('');
+
         try {
-            const approaches = JSON.parse(jsonContent);
-            
-            // Basic validation
-            if (!Array.isArray(approaches)) {
-                throw new Error('Configuration must be an array');
-            }
-            
-            for (const approach of approaches) {
-                if (!approach.id || typeof approach.id !== 'string') {
-                    throw new Error('Each approach must have an id string');
-                }
-
-                // All other properties are optional booleans
-                const optionalBoolProps = ['filtered', 'trim', 'ignoreQuotes', 'removeQuotes', 'force'];
-
-                for (const prop of optionalBoolProps) {
-                    if (approach[prop] !== undefined && typeof approach[prop] !== 'boolean') {
-                        throw new Error(`Property ${prop} must be a boolean if present`);
-                    }
-                }
-            }
-            
-            await axios.post('/api/plex/music-search-config/search-approaches', approaches);
+            await axios.post('/api/plex/music-search-config/search-approaches', currentData);
             enqueueSnackbar('Search approaches saved successfully', { variant: 'success' });
-            setJsonError('');
             
             if (onSave) {
-                onSave(approaches);
+                onSave(currentData);
             }
         } catch (error) {
-            const message = error instanceof Error ? error.message : 'Invalid JSON format';
-            setJsonError(message);
+            const message = error instanceof Error ? error.message : 'Failed to save';
             enqueueSnackbar(`Failed to save: ${message}`, { variant: 'error' });
         }
-    };
+    }, [onSave]);
 
-    const handleReset = async () => {
+    const handleReset = useCallback(async () => {
         if (confirm('Reset to default search approaches? This will overwrite your current configuration.')) {
             await loadApproaches();
+            setValidationError('');
         }
-    };
+    }, []);
+
+    const handleChange = useCallback((newValue: any) => {
+        setJsonData(newValue);
+        setValidationError(''); // Clear validation error when user types
+    }, []);
+
+    // Wrapper functions to handle promises properly for onClick
+    const handleSaveClick = useCallback(() => {
+        handleSave().catch(console.error);
+    }, [handleSave]);
+
+    const handleResetClick = useCallback(() => {
+        handleReset().catch(console.error);
+    }, [handleReset]);
 
     if (loading) {
         return (
@@ -98,62 +148,83 @@ const SearchApproachesEditor: React.FC<SearchApproachesEditorProps> = ({ onSave 
         );
     }
 
+    // JSON Schema for search approaches
+    const searchApproachesSchema = {
+        type: 'array',
+        items: {
+            type: 'object',
+            properties: {
+                id: {
+                    type: 'string',
+                    description: 'Unique identifier for this search approach'
+                },
+                filtered: {
+                    type: 'boolean',
+                    description: 'Whether to apply text filtering'
+                },
+                trim: {
+                    type: 'boolean',
+                    description: 'Whether to trim whitespace'
+                },
+                ignoreQuotes: {
+                    type: 'boolean',
+                    description: 'Whether to ignore quotes during matching'
+                },
+                removeQuotes: {
+                    type: 'boolean',
+                    description: 'Whether to remove quotes from text'
+                },
+                force: {
+                    type: 'boolean',
+                    description: 'Whether to force this approach'
+                }
+            },
+            required: ['id'],
+            additionalProperties: false
+        }
+    };
+
     return (
         <Box>
+            {/* Header */}
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <Code />
-                    <Typography variant="h6">Search Approaches Configuration</Typography>
-                </Box>
+                <Typography variant="h6">Search Approaches Configuration</Typography>
                 <Box sx={{ display: 'flex', gap: 1 }}>
                     <Button
-                        onClick={handleReset}
+                        onClick={handleResetClick}
                         variant="outlined"
                         size="small"
                         startIcon={<Refresh />}
                     >
-                        Reset
+                        Reset to Defaults
                     </Button>
                     <Button
-                        onClick={handleSave}
+                        onClick={handleSaveClick}
                         variant="contained"
                         size="small"
+                        startIcon={<Save />}
                     >
-                        Save
+                        Save Approaches
                     </Button>
                 </Box>
             </Box>
             
             <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-                Configure search approaches as a unified list. Each approach represents a different strategy for searching and matching music.
+                Configure search approaches as a unified list. Each approach represents a different strategy for searching and matching music. 
                 Approaches are tried in order until matches are found.
             </Typography>
 
-            <TextField
-                fullWidth
-                multiline
-                rows={15}
-                value={jsonContent}
-                onChange={(e) => setJsonContent(e.target.value)}
-                variant="outlined"
-                sx={{
-                    mb: 2,
-                    '& .MuiInputBase-input': {
-                        fontFamily: 'Monaco, Consolas, "Courier New", monospace',
-                        fontSize: '0.875rem',
-                        lineHeight: 1.5
-                    }
-                }}
-                placeholder="Loading..."
+            {/* Monaco JSON Editor */}
+            <MonacoJsonEditor
+                ref={editorRef}
+                value={jsonData}
+                onChange={handleChange}
+                schema={searchApproachesSchema}
+                height={400}
+                error={validationError}
             />
 
-            {jsonError ? <Alert severity="error" sx={{ mb: 2 }}>
-                <Typography variant="body2">
-                    <strong>JSON Error:</strong> {jsonError}
-                </Typography>
-            </Alert> : null}
-
-            <Alert severity="info" sx={{ mb: 2 }}>
+            <Alert severity="info" sx={{ mb: 2, mt: 2 }}>
                 <Typography variant="body2">
                     <strong>Configuration Structure:</strong><br />
                     • Each approach is an object with required <code>id</code> (string)<br />

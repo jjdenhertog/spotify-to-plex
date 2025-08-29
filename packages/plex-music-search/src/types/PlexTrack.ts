@@ -1,4 +1,4 @@
-import { Track } from "@spotify-to-plex/music-search";
+import { Track } from "@spotify-to-plex/music-search/types/Track";
 
 export type PlexTrack = {
     guid: string;

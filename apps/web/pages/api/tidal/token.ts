@@ -2,7 +2,7 @@ import { encrypt } from '@spotify-to-plex/shared-utils/server';
 // MIGRATED: Updated to use shared utils package
 import { generateError } from '@/helpers/errors/generateError';
 import { settingsDir } from "@spotify-to-plex/shared-utils/server";
-import { TidalCredentials } from '@spotify-to-plex/shared-types';
+import { TidalCredentials } from '@spotify-to-plex/shared-types/tidal/api';
 // MIGRATED: Updated to use shared types package
 import axios from 'axios';
 import type { NextApiRequest, NextApiResponse } from 'next';

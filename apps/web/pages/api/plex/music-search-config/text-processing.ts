@@ -1,35 +1,16 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { MusicSearchConfigManager, TextProcessingConfig } from '@spotify-to-plex/music-search';
-
-// Get storage directory from environment or default
-const getStorageDir = (): string => {
-    return process.env.SETTINGS_DIR || process.cwd();
-};
-
-// Validate text processing structure
-const validateTextProcessing = (config: any): config is TextProcessingConfig => {
-    return config && 
-           typeof config === 'object' && 
-           Array.isArray(config.filterOutWords) &&
-           Array.isArray(config.filterOutQuotes) &&
-           Array.isArray(config.cutOffSeparators) &&
-           config.processing &&
-           typeof config.processing === 'object' &&
-           typeof config.processing.filtered === 'boolean' &&
-           typeof config.processing.cutOffSeperators === 'boolean' &&
-           typeof config.processing.removeQuotes === 'boolean';
-};
+import { getTextProcessing } from '@spotify-to-plex/music-search/config/config-utils';
+import { updateTextProcessing } from '@spotify-to-plex/music-search/config/config-utils';
+import { getStorageDir } from '@spotify-to-plex/shared-utils/server';
+import { validateTextProcessing } from '@spotify-to-plex/shared-utils/validation/validateTextProcessing';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     try {
-        const configManager = MusicSearchConfigManager.create({ 
-            storageDir: getStorageDir(),
-            preloadCache: true 
-        });
+        const storageDir = getStorageDir();
 
         if (req.method === 'GET') {
             // Get current text processing config
-            const config = await configManager.getTextProcessing();
+            const config = await getTextProcessing(storageDir);
 
             return res.status(200).json(config);
             
@@ -44,7 +25,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 });
             }
             
-            const updatedConfig = await configManager.updateTextProcessing(newConfig);
+            const updatedConfig = await updateTextProcessing(storageDir, newConfig);
 
             return res.status(200).json({ 
                 success: true, 
@@ -53,11 +34,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             });
             
         }
- 
+
         res.setHeader('Allow', ['GET', 'POST']);
 
         return res.status(405).json({ error: 'Method not allowed' });
-        
         
     } catch (error) {
         console.error('Error in text processing API:', error);

@@ -1,4 +1,5 @@
-import { SearchConfig, MusicSearchConfig } from "@spotify-to-plex/music-search";
+import { SearchConfig } from "@spotify-to-plex/music-search/types/SearchConfig";
+import { MusicSearchConfig } from "@spotify-to-plex/music-search/types/config";
 import { TidalMusicSearchApproach } from "./TidalMusicSearchApproach";
 
 export type TidalMusicSearchConfig = SearchConfig & {

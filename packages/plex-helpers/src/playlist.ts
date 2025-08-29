@@ -1,5 +1,5 @@
-import { AxiosRequest } from '@spotify-to-plex/http-client';
-import { GetPlaylistResponse } from '@spotify-to-plex/shared-types';
+import { AxiosRequest } from '@spotify-to-plex/http-client/AxiosRequest';
+import { GetPlaylistResponse } from '@spotify-to-plex/shared-types/plex/api';
 import { 
   PlexSettings, 
   PlaylistItem, 
@@ -8,7 +8,8 @@ import {
   PlexPlaylistError,
   GetAPIUrlFn 
 } from './types';
-import { validatePlexSettings, getPlexUri } from './utils';
+import { validatePlexSettings } from './utils/validatePlexSettings';
+import { getPlexUri } from './utils/getPlexUri';
 import { handleOneRetryAttempt } from './retry';
 
 /**

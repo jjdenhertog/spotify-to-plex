@@ -1,11 +1,11 @@
-import { TidalTrack } from "../types";
-import { TidalAPI } from "./TidalAPI";
+import { TidalTrack } from "../types/TidalTrack";
+import { getAlbumTracksIds } from "./tidal/getAlbumTracksIds";
+import { getTrackByIds } from "./tidal/getTrackByIds";
 
 
 export async function getAlbumTracks(id: string, countryCode = "NL"): Promise<TidalTrack[]> {
 
-    const tidalAPI = TidalAPI.getInstance();
-    const searchResults = await tidalAPI.getAlbumTracksIds(id)
+    const searchResults = await getAlbumTracksIds(id);
 
     let results: TidalTrack[] = []
     /////////////////////////////////////
@@ -20,12 +20,12 @@ export async function getAlbumTracks(id: string, countryCode = "NL"): Promise<Ti
         const endIndex = startIndex + pageSize;
         const tracksToLoad = searchResults.slice(startIndex, endIndex);
         try {
-            const result = await tidalAPI.getTrackByIds(tracksToLoad, countryCode)
-            results = results.concat(result)
+            const result = await getTrackByIds(tracksToLoad, countryCode);
+            results = results.concat(result);
         } catch (_e) { }
         curPage++;
     }
 
-    return results
+    return results;
 
 }

@@ -1,35 +1,17 @@
 import Logo from "@/components/Logo";
-import MainLayout from "@/layouts/MainLayout";
-import { errorBoundary } from "@/helpers/errors/errorBoundary";
 import MatchFilterEditor from "@/components/MatchFilterEditor";
-import TextProcessingEditor from "@/components/TextProcessingEditor";
 import SearchApproachesEditor from "@/components/SearchApproachesEditor";
-import { ChevronLeft, Restore, Download, Upload } from "@mui/icons-material";
-import { 
-    Alert, 
-    Box, 
-    Button, 
-    Card, 
-    CardContent, 
-    Container, 
-    Paper, 
-    Typography,
-    Tab,
-    Tabs,
-    Breadcrumbs,
-    Link,
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    DialogActions,
-    TextField
-} from "@mui/material";
+import TextProcessingEditor from "@/components/TextProcessingEditor";
+import { errorBoundary } from "@/helpers/errors/errorBoundary";
+import MainLayout from "@/layouts/MainLayout";
+import { ChevronLeft, Download, Restore, Upload } from "@mui/icons-material";
 import { LoadingButton } from '@mui/lab';
+import { Alert, Box, Breadcrumbs, Button, Card, CardContent, Container, Dialog, DialogActions, DialogContent, DialogTitle, Link, Paper, Tab, Tabs, TextField, Typography } from "@mui/material";
+import axios from "axios";
 import { NextPage } from "next";
 import Head from "next/head";
-import { useState, useCallback, useRef } from "react";
-import axios from "axios";
 import { enqueueSnackbar } from "notistack";
+import { useCallback, useRef, useState } from "react";
 
 const Page: NextPage = () => {
     const [tabValue, setTabValue] = useState(0);
@@ -140,6 +122,9 @@ const Page: NextPage = () => {
         setTabValue(newValue);
     }, []);
 
+    const handleCloseImportDialog = useCallback(() => setImportDialog(false), []);
+    const handleImportJsonChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => setImportJson(e.target.value), []);
+
     return (
         <>
             <Head>
@@ -153,14 +138,11 @@ const Page: NextPage = () => {
                             <Link href="/" underline="hover" color="inherit">
                                 Home
                             </Link>
-                            <Link href="/plex/connection" underline="hover" color="inherit">
-                                Plex Settings
-                            </Link>
                             <Typography color="text.primary">Music Search Configuration</Typography>
                         </Breadcrumbs>
 
-                        <Button component="a" href="/plex/connection" variant="outlined" color="inherit" size="small" startIcon={<ChevronLeft />}>
-                            Back to Plex Settings
+                        <Button component="a" href="/" variant="outlined" color="inherit" size="small" startIcon={<ChevronLeft />}>
+                            Back to Home
                         </Button>
 
                         <Typography variant="h4" sx={{ mt: 2, mb: 0.5 }}>
@@ -209,7 +191,7 @@ const Page: NextPage = () => {
 
                     <Alert severity="info" sx={{ mb: 3 }}>
                         <Typography variant="body2">
-                            <strong>New Simplified Configuration:</strong> The configuration has been split into 3 focused JSON files:
+                            <strong>Configuration Management:</strong> The configuration is organized into 3 focused JSON files:
                             match filters, text processing, and search approaches. Each tab below provides a clean JSON editor 
                             for direct configuration management.
                         </Typography>
@@ -257,7 +239,7 @@ const Page: NextPage = () => {
                     </Box>
 
                     {/* Import Configuration Dialog */}
-                    <Dialog open={importDialog} onClose={() => setImportDialog(false)} maxWidth="md" fullWidth>
+                    <Dialog open={importDialog} onClose={handleCloseImportDialog} maxWidth="md" fullWidth>
                         <DialogTitle>Import Configuration</DialogTitle>
                         <DialogContent>
                             <Typography variant="body2" sx={{ mb: 2 }}>
@@ -268,7 +250,7 @@ const Page: NextPage = () => {
                                 multiline
                                 rows={15}
                                 value={importJson}
-                                onChange={(e) => setImportJson(e.target.value)}
+                                onChange={handleImportJsonChange}
                                 variant="outlined"
                                 sx={{
                                     '& .MuiInputBase-input': {
@@ -279,7 +261,7 @@ const Page: NextPage = () => {
                             />
                         </DialogContent>
                         <DialogActions>
-                            <Button onClick={() => setImportDialog(false)}>
+                            <Button onClick={handleCloseImportDialog}>
                                 Cancel
                             </Button>
                             <Button onClick={handleImportConfirm} variant="contained" color="primary">
@@ -288,17 +270,6 @@ const Page: NextPage = () => {
                         </DialogActions>
                     </Dialog>
 
-                    {/* Key Changes Alert */}
-                    <Alert severity="warning" sx={{ mt: 4 }}>
-                        <Typography variant="body2">
-                            <strong>Breaking Changes in v2.0:</strong><br />
-                            • Configuration split into 3 separate JSON files for better organization<br />
-                            • Platform-specific Plex/Tidal approaches unified into single list<br />
-                            • All complex UI removed in favor of direct JSON editing<br />
-                            • Performance indicators and unnecessary complexity eliminated<br />
-                            • Cleaner, more maintainable configuration structure
-                        </Typography>
-                    </Alert>
                 </Container>
             </MainLayout>
         </>

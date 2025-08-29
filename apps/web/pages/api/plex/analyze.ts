@@ -1,7 +1,8 @@
 import { generateError } from '@/helpers/errors/generateError';
 import { plex } from '@/library/plex';
-import { PlexMusicSearch, PlexMusicSearchTrack } from '@spotify-to-plex/plex-music-search';
-import { ExtendedPlexConfigManager } from '@spotify-to-plex/plex-config';
+import { analyze } from '@spotify-to-plex/plex-music-search/functions/analyze';
+import { PlexMusicSearchTrack } from '@spotify-to-plex/plex-music-search/types/PlexMusicSearchTrack';
+import { getMusicSearchConfig } from '@spotify-to-plex/music-search/config/config-utils';
 import { settingsDir } from '@spotify-to-plex/shared-utils/server';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createRouter } from 'next-connect';
@@ -23,26 +24,20 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                     return res.status(400).json({ msg: "Plex not configured" });
 
                 //////////////////////////////////////
-                // Initiate the plexMusicSearch
+                // Load music search configuration and analyze
                 //////////////////////////////////////
-                const plexConfigManager = ExtendedPlexConfigManager.create({ 
-                    storageDir: settingsDir, 
-                    preloadCache: true 
-                });
-                const musicSearchConfigManager = await plexConfigManager.getMusicSearchConfig();
-                const musicSearchConfig = await musicSearchConfigManager.getConfig();
+                const musicSearchConfig = await getMusicSearchConfig(settingsDir);
 
-                // Faster searching
-                const plexMusicSearch = new PlexMusicSearch({
+                const plexConfig = {
                     uri: settings.uri,
                     token: settings.token,
                     musicSearchConfig,
                     searchApproaches: fast ? [
                         { id: 'fast', filtered: true }
                     ] : undefined
-                })
+                };
 
-                const searchResponse = await plexMusicSearch.analyze(searchItem)
+                const searchResponse = await analyze(plexConfig, searchItem)
 
                 res.status(200).json(searchResponse);
             } catch (error) {

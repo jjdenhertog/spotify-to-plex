@@ -1,5 +1,5 @@
-import { Track } from "@spotify-to-plex/music-search";
-import { TidalTrack } from "../types";
+import { Track } from "@spotify-to-plex/music-search/types/Track";
+import { TidalTrack } from "../types/TidalTrack";
 
 export default function searchResultToTracks(items: TidalTrack[]): Track[] {
 

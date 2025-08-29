@@ -1,4 +1,4 @@
-import { compareTitles } from "@spotify-to-plex/music-search";
+import { compareTitles } from "@spotify-to-plex/music-search/utils/compareTitles";
 import hubSearch from "../../actions/hubSearch";
 
 

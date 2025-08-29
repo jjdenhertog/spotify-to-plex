@@ -1,0 +1,30 @@
+{
+  "filterOutWords": [
+    "original mix",
+    "radio edit",
+    "single edit",
+    "alternate mix",
+    "remastered",
+    "remaster",
+    "single version",
+    "retail mix",
+    "quartet"
+  ],
+  "filterOutQuotes": [
+    "'",
+    "\"",
+    "´",
+    "`"
+  ],
+  "cutOffSeparators": [
+    "(",
+    "[",
+    "{",
+    "-"
+  ],
+  "processing": {
+    "filtered": false,
+    "cutOffSeperators": false,
+    "removeQuotes": false
+  }
+}

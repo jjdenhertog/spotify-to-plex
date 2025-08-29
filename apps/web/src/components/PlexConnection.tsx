@@ -5,6 +5,7 @@ import { SelectChangeEvent } from '@mui/material/Select';
 import axios from "axios";
 import { enqueueSnackbar } from "notistack";
 import { Dispatch, SetStateAction, useCallback, useEffect, useState } from "react";
+
 import { GetAuthUrlResponse } from "../../pages/api/auth/url";
 import { GetPlexResourcesResponse } from "../../pages/api/plex/resources";
 import { GetSettingsResponse } from "../../pages/api/settings";
@@ -32,6 +33,17 @@ const PlexConnection = (props: Props) => {
         setNewPlexUri(e.target.value)
     }, []);
 
+    useEffect(() => {
+        if (settings?.uri) {
+            setNewPlexUri((prev) => {
+                if (prev == settings.uri || !prev)
+                    return prev;
+
+                return settings.uri || "";
+            });
+        }
+    }, [settings?.uri]);
+
     const onPlexLoginClick = useCallback(() => {
         setCreatingUrl(true);
         errorBoundary(async () => {
@@ -53,7 +65,7 @@ const PlexConnection = (props: Props) => {
             setSaving(true);
             setValidated(false);
 
-             
+
             const [resource] = resources.filter(item => item.connections.some(connection => connection.uri == newPlexUri));
             if (!resource)
                 throw new Error("Something went wrong selecting the resource");
@@ -64,12 +76,12 @@ const PlexConnection = (props: Props) => {
             });
 
             try {
-                await axios.post("api/plex/search", { query: "x", limit: 3 }, { signal: controller.signal });
+                await axios.post("/api/plex/search", { query: "x", limit: 3 }, { signal: controller.signal });
                 clearTimeout(timeoutId);
                 setValidated(true);
                 setSettings(settings.data);
 
-                enqueueSnackbar("Plex server selected and verified verified", { variant: "success" });
+                enqueueSnackbar("Plex server selected and verified", { variant: "success" });
             } catch (_e) {
             }
             setSaving(false);
@@ -102,8 +114,13 @@ const PlexConnection = (props: Props) => {
             setConnected(true);
 
             if (settings.uri) {
-                await axios.post("api/plex/search", { query: "x", limit: 3 }, { signal: controller.signal });
-                setValidated(true);
+                try {
+                    await axios.post("/api/plex/search", { query: "x", limit: 3 }, { signal: controller.signal });
+                    setValidated(true);
+                } catch (error) {
+                    setValidated(false);
+                    console.warn("Plex server connection validation failed:", error);
+                }
             }
 
             setLoading(false);
@@ -135,10 +152,10 @@ const PlexConnection = (props: Props) => {
                 <Typography variant="body1" sx={{ mb: 2 }}>
                     You need to login to Plex to continue.
                 </Typography>
-                <LoadingButton 
-                    loading={creatingUrl} 
-                    onClick={onPlexLoginClick} 
-                    variant="contained" 
+                <LoadingButton
+                    loading={creatingUrl}
+                    onClick={onPlexLoginClick}
+                    variant="contained"
                     color="primary"
                 >
                     Login to Plex

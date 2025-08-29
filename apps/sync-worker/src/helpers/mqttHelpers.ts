@@ -1,5 +1,5 @@
 import { settingsDir } from '@spotify-to-plex/shared-utils/server';
-import { MQTTItem } from '@spotify-to-plex/shared-types';
+import { MQTTItem } from '@spotify-to-plex/shared-types/dashboard/MQTTItem';
 import mqtt, { MqttClient } from 'mqtt';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';

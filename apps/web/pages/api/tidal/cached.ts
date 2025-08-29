@@ -1,7 +1,7 @@
 import { generateError } from '@/helpers/errors/generateError';
 import { getCachedTrackLinks } from '@spotify-to-plex/shared-utils/server';
 // MIGRATED: Updated to use shared utils package
-import { Track } from '@spotify-to-plex/shared-types';
+import { Track } from '@spotify-to-plex/shared-types/spotify/api';
 // MIGRATED: Updated to use shared types package
 import { settingsDir } from '@spotify-to-plex/shared-utils/server';
 import type { NextApiRequest, NextApiResponse } from 'next';

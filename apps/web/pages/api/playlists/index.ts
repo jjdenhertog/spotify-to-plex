@@ -1,16 +1,16 @@
-import { AxiosRequest } from '@spotify-to-plex/http-client';
+import { AxiosRequest } from '@spotify-to-plex/http-client/AxiosRequest';
 // MIGRATED: Updated to use http-client package
 import { generateError } from '@/helpers/errors/generateError';
 import { getAPIUrl } from '@spotify-to-plex/shared-utils/server';
-import { putPlaylistPoster } from '@/helpers/plex/putPlaylistPoster';
+import { putPlaylistPoster } from '@spotify-to-plex/plex-helpers/playlist';
+import { addItemsToPlaylist } from '@spotify-to-plex/plex-helpers/playlist';
+import { storePlaylist } from '@spotify-to-plex/plex-helpers/playlist';
+import { getPlexUri } from '@spotify-to-plex/plex-helpers/utils/getPlexUri';
 import { plex } from '@/library/plex';
-import { GetPlaylistResponse, Playlist } from '@spotify-to-plex/shared-types';
+import { GetPlaylistResponse, Playlist } from '@spotify-to-plex/shared-types/plex/api';
 // MIGRATED: Updated to use shared types package
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createRouter } from 'next-connect';
-import { addItemsToPlaylist } from '../../../src/helpers/plex/addItemsToPlaylist';
-import { getUri } from '../../../src/helpers/plex/getUri';
-import { storePlaylist } from '../../../src/helpers/plex/storePlaylist';
 
 export type GetPlexPlaylistResponse = {
     key: Playlist["key"],
@@ -60,24 +60,28 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 if (!settings.uri || !settings.token || !settings.id)
                     return res.status(400).json({ msg: "No plex connection found" });
 
+                // Cast settings to required type since we've validated the fields
+                const validatedSettings = settings as Required<typeof settings>;
+
                 const firstItem = items.shift();
                 if (!firstItem)
                     return res.status(400).json({ msg: "No items given" });
 
-                const playlistId = await storePlaylist(name, await getUri(firstItem.key, firstItem.source))
-                await addItemsToPlaylist(playlistId, items)
+                const uri = getPlexUri(validatedSettings, firstItem.key, firstItem.source);
+                const playlistId = await storePlaylist(validatedSettings, getAPIUrl, name, uri)
+                await addItemsToPlaylist(validatedSettings, getAPIUrl, playlistId, items)
 
                 // Update thumbnail of playlist
                 if (typeof thumb == 'string') {
                     try {
-                        await putPlaylistPoster(playlistId, thumb)
+                        await putPlaylistPoster(validatedSettings, getAPIUrl, playlistId, thumb)
                     } catch (_e) {
                     }
                 }
 
                 await plex.addPlaylist(type, id, playlistId)
 
-                const link = getAPIUrl(settings.uri, `/web/index.html#!/server/${settings.id}/playlist?key=${encodeURIComponent(`/playlists/${playlistId}`)}`)
+                const link = getAPIUrl(validatedSettings.uri, `/web/index.html#!/server/${validatedSettings.id}/playlist?key=${encodeURIComponent(`/playlists/${playlistId}`)}`)
                 res.json({ id: playlistId, link })
             } catch (error) {
                 console.error('Error creating Plex playlist:', error);

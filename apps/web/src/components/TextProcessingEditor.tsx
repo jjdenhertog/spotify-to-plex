@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
     Box,
-    TextField,
     Typography,
     Alert,
     Button
 } from '@mui/material';
-import { Code, Refresh } from '@mui/icons-material';
+import { Save, Refresh } from '@mui/icons-material';
 import axios from 'axios';
 import { enqueueSnackbar } from 'notistack';
+import MonacoJsonEditor, { MonacoJsonEditorHandle } from './MonacoJsonEditor';
 
 type TextProcessingConfig = {
     filterOutWords: string[];
@@ -26,9 +26,10 @@ type TextProcessingEditorProps = {
 }
 
 const TextProcessingEditor: React.FC<TextProcessingEditorProps> = ({ onSave }) => {
-    const [jsonContent, setJsonContent] = useState('');
-    const [jsonError, setJsonError] = useState('');
+    const [jsonData, setJsonData] = useState<any>(null);
     const [loading, setLoading] = useState(true);
+    const [validationError, setValidationError] = useState<string>('');
+    const editorRef = useRef<MonacoJsonEditorHandle>(null);
 
     useEffect(() => {
         loadConfig();
@@ -38,8 +39,7 @@ const TextProcessingEditor: React.FC<TextProcessingEditorProps> = ({ onSave }) =
         try {
             setLoading(true);
             const response = await axios.get('/api/plex/music-search-config/text-processing');
-            setJsonContent(JSON.stringify(response.data, null, 2));
-            setJsonError('');
+            setJsonData(response.data);
         } catch (error) {
             console.error('Failed to load text processing config:', error);
             enqueueSnackbar('Failed to load text processing config', { variant: 'error' });
@@ -48,47 +48,105 @@ const TextProcessingEditor: React.FC<TextProcessingEditorProps> = ({ onSave }) =
         }
     };
 
-    const handleSave = async () => {
-        try {
-            const config = JSON.parse(jsonContent);
-            
-            // Basic validation
-            if (!config || typeof config !== 'object') {
-                throw new Error('Configuration must be an object');
-            }
-            
-            if (!Array.isArray(config.filterOutWords) || 
-                !Array.isArray(config.filterOutQuotes) || 
-                !Array.isArray(config.cutOffSeparators)) {
-                throw new Error('filterOutWords, filterOutQuotes, and cutOffSeparators must be arrays');
-            }
-            
-            if (!config.processing || 
-                typeof config.processing.filtered !== 'boolean' ||
-                typeof config.processing.cutOffSeperators !== 'boolean' ||
-                typeof config.processing.removeQuotes !== 'boolean') {
-                throw new Error('processing must be an object with boolean properties');
-            }
-            
-            await axios.post('/api/plex/music-search-config/text-processing', config);
-            enqueueSnackbar('Text processing configuration saved successfully', { variant: 'success' });
-            setJsonError('');
-            
-            if (onSave) {
-                onSave(config);
-            }
-        } catch (error) {
-            const message = error instanceof Error ? error.message : 'Invalid JSON format';
-            setJsonError(message);
-            enqueueSnackbar(`Failed to save: ${message}`, { variant: 'error' });
+    const validateConfig = (data: any): string | null => {
+        if (!data || typeof data !== 'object') {
+            return 'Configuration must be an object';
         }
+        
+        if (!Array.isArray(data.filterOutWords)) {
+            return 'filterOutWords must be an array of strings';
+        }
+        
+        if (!Array.isArray(data.filterOutQuotes)) {
+            return 'filterOutQuotes must be an array of strings';
+        }
+        
+        if (!Array.isArray(data.cutOffSeparators)) {
+            return 'cutOffSeparators must be an array of strings';
+        }
+        
+        if (!data.processing || typeof data.processing !== 'object') {
+            return 'processing must be an object';
+        }
+        
+        const { processing } = data;
+        if (typeof processing.filtered !== 'boolean' ||
+            typeof processing.cutOffSeperators !== 'boolean' ||
+            typeof processing.removeQuotes !== 'boolean') {
+            return 'processing properties (filtered, cutOffSeperators, removeQuotes) must be booleans';
+        }
+        
+        // Validate array contents
+        const { filterOutWords, filterOutQuotes, cutOffSeparators } = data;
+        if (!filterOutWords.every((word: any) => typeof word === 'string')) {
+            return 'All items in filterOutWords must be strings';
+        }
+        
+        if (!filterOutQuotes.every((quote: any) => typeof quote === 'string')) {
+            return 'All items in filterOutQuotes must be strings';
+        }
+        
+        if (!cutOffSeparators.every((sep: any) => typeof sep === 'string')) {
+            return 'All items in cutOffSeparators must be strings';
+        }
+        
+        return null; // Valid
     };
 
-    const handleReset = async () => {
+    const handleSave = useCallback(async () => {
+        // Get current content directly from Monaco editor
+        const currentData = editorRef.current?.getCurrentValue();
+        
+        if (!currentData) {
+            enqueueSnackbar('No valid JSON data to save', { variant: 'error' });
+
+            return;
+        }
+
+        // Do validation only on save
+        const validationErrorMsg = validateConfig(currentData);
+        if (validationErrorMsg) {
+            setValidationError(validationErrorMsg);
+            enqueueSnackbar(`Validation Error: ${validationErrorMsg}`, { variant: 'error' });
+
+            return;
+        }
+
+        setValidationError('');
+
+        try {
+            await axios.post('/api/plex/music-search-config/text-processing', currentData);
+            enqueueSnackbar('Text processing configuration saved successfully', { variant: 'success' });
+            
+            if (onSave) {
+                onSave(currentData);
+            }
+        } catch (error) {
+            const message = error instanceof Error ? error.message : 'Failed to save';
+            enqueueSnackbar(`Failed to save: ${message}`, { variant: 'error' });
+        }
+    }, [onSave]);
+
+    const handleReset = useCallback(async () => {
         if (confirm('Reset to default text processing configuration? This will overwrite your current settings.')) {
             await loadConfig();
+            setValidationError('');
         }
-    };
+    }, []);
+
+    const handleChange = useCallback((newValue: any) => {
+        setJsonData(newValue);
+        setValidationError(''); // Clear validation error when user types
+    }, []);
+
+    // Wrapper functions to handle promises properly for onClick
+    const handleSaveClick = useCallback(() => {
+        handleSave().catch(console.error);
+    }, [handleSave]);
+
+    const handleResetClick = useCallback(() => {
+        handleReset().catch(console.error);
+    }, [handleReset]);
 
     if (loading) {
         return (
@@ -98,28 +156,70 @@ const TextProcessingEditor: React.FC<TextProcessingEditorProps> = ({ onSave }) =
         );
     }
 
+    // JSON Schema for text processing
+    const textProcessingSchema = {
+        type: 'object',
+        properties: {
+            filterOutWords: {
+                type: 'array',
+                items: { type: 'string' },
+                description: 'Words to remove from track titles'
+            },
+            filterOutQuotes: {
+                type: 'array',
+                items: { type: 'string' },
+                description: 'Quote characters to remove from track titles'
+            },
+            cutOffSeparators: {
+                type: 'array',
+                items: { type: 'string' },
+                description: 'Separators that indicate where to cut off text'
+            },
+            processing: {
+                type: 'object',
+                properties: {
+                    filtered: {
+                        type: 'boolean',
+                        description: 'Enable filtering out words'
+                    },
+                    cutOffSeperators: {
+                        type: 'boolean',
+                        description: 'Enable cutting off at separators (note: typo preserved for compatibility)'
+                    },
+                    removeQuotes: {
+                        type: 'boolean',
+                        description: 'Enable removing quote characters'
+                    }
+                },
+                required: ['filtered', 'cutOffSeperators', 'removeQuotes'],
+                additionalProperties: false
+            }
+        },
+        required: ['filterOutWords', 'filterOutQuotes', 'cutOffSeparators', 'processing'],
+        additionalProperties: false
+    };
+
     return (
         <Box>
+            {/* Header */}
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <Code />
-                    <Typography variant="h6">Text Processing Configuration</Typography>
-                </Box>
+                <Typography variant="h6">Text Processing Configuration</Typography>
                 <Box sx={{ display: 'flex', gap: 1 }}>
                     <Button
-                        onClick={handleReset}
+                        onClick={handleResetClick}
                         variant="outlined"
                         size="small"
                         startIcon={<Refresh />}
                     >
-                        Reset
+                        Reset to Defaults
                     </Button>
                     <Button
-                        onClick={handleSave}
+                        onClick={handleSaveClick}
                         variant="contained"
                         size="small"
+                        startIcon={<Save />}
                     >
-                        Save
+                        Save Configuration
                     </Button>
                 </Box>
             </Box>
@@ -128,31 +228,17 @@ const TextProcessingEditor: React.FC<TextProcessingEditorProps> = ({ onSave }) =
                 Configure how text is processed before matching. This includes word filtering, quote removal, and separator handling.
             </Typography>
 
-            <TextField
-                fullWidth
-                multiline
-                rows={15}
-                value={jsonContent}
-                onChange={(e) => setJsonContent(e.target.value)}
-                variant="outlined"
-                sx={{
-                    mb: 2,
-                    '& .MuiInputBase-input': {
-                        fontFamily: 'Monaco, Consolas, "Courier New", monospace',
-                        fontSize: '0.875rem',
-                        lineHeight: 1.5
-                    }
-                }}
-                placeholder="Loading..."
+            {/* Monaco JSON Editor */}
+            <MonacoJsonEditor
+                ref={editorRef}
+                value={jsonData}
+                onChange={handleChange}
+                schema={textProcessingSchema}
+                height={400}
+                error={validationError}
             />
 
-            {jsonError ? <Alert severity="error" sx={{ mb: 2 }}>
-                <Typography variant="body2">
-                    <strong>JSON Error:</strong> {jsonError}
-                </Typography>
-            </Alert> : null}
-
-            <Alert severity="info">
+            <Alert severity="info" sx={{ mt: 2 }}>
                 <Typography variant="body2">
                     <strong>Configuration Structure:</strong><br />
                     • <code>filterOutWords</code>: Array of words to remove from titles<br />

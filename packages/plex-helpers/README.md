@@ -57,7 +57,6 @@ export async function addItemsToPlaylist(
 - `getPlexUri()` - Generate Plex URIs for tracks
 - `validatePlexSettings()` - Validate Plex connection settings
 - `handleOneRetryAttempt()` - Single retry with delay
-- `handleMultipleRetries()` - Multiple retries with exponential backoff
 
 ## TypeScript Interfaces
 

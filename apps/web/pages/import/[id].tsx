@@ -2,7 +2,7 @@ import Logo from "@/components/Logo";
 import PlexPlaylist from "@/components/PlexPlaylist";
 import { errorBoundary } from "@/helpers/errors/errorBoundary";
 import MainLayout from "@/layouts/MainLayout";
-import { GetSpotifyAlbum, GetSpotifyPlaylist, SavedItem } from "@spotify-to-plex/shared-types";
+import { GetSpotifyAlbum, GetSpotifyPlaylist, SavedItem } from "@spotify-to-plex/shared-types/spotify/api";
 // MIGRATED: Updated to use shared types package
 import { ChevronLeft } from "@mui/icons-material";
 import { Box, Button, CircularProgress, Container, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from "@mui/material";
