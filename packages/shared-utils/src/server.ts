@@ -5,11 +5,13 @@
 export { default as getCachedTrackLinks } from './cache/getCachedTrackLink';
 
 // Security utilities that use Node.js crypto
-export { encrypt, decrypt } from './security/encryption';
+export { encrypt } from './security/encrypt';
+export { decrypt } from './security/decrypt';
 
 // Utility functions
 export { default as getAPIUrl } from './utils/getAPIUrl';
 export { settingsDir } from './utils/settingsDir';
+export { getStorageDir } from './utils/getStorageDir';
 
 // Spotify helpers
 export { default as getAccessToken } from './spotify/getAccessToken';

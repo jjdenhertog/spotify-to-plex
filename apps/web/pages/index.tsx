@@ -1,8 +1,9 @@
 import Logo from "@/components/Logo";
 import PlexConnection from "@/components/PlexConnection";
+import PlexConnectionDialog from "@/components/PlexConnectionDialog";
 import { errorBoundary } from "@/helpers/errors/errorBoundary";
 import MainLayout from "@/layouts/MainLayout";
-import { Assignment, People, PlaylistPlay, Search } from "@mui/icons-material";
+import { Assignment, People, PlaylistPlay, Search, Tune } from "@mui/icons-material";
 import { Alert, Box, Button, Card, CardActionArea, CardContent, Container, Divider, Paper, Typography } from "@mui/material";
 import Grid2 from '@mui/material/Grid2';
 import axios from "axios";
@@ -19,6 +20,7 @@ const Page: NextPage = () => {
     const [settings, setSettings] = useState<GetSettingsResponse>();
     const [connected, setConnected] = useState(false);
     const [loading, setLoading] = useState(true);
+    const [plexDialogOpen, setPlexDialogOpen] = useState(false);
     const router = useRouter()
 
     useEffect(() => {
@@ -30,9 +32,13 @@ const Page: NextPage = () => {
         }, undefined, true);
     }, []);
 
-    const onEditPlexConnectionClick = useCallback(() => {
-        router.push('/plex/connection');
-    }, [router]);
+    const onPlexSettingsClick = useCallback(() => {
+        setPlexDialogOpen(true);
+    }, []);
+
+    const onPlexDialogClose = useCallback(() => {
+        setPlexDialogOpen(false);
+    }, []);
 
     useEffect(() => {
         if (!router.isReady) return;
@@ -76,6 +82,12 @@ const Page: NextPage = () => {
             description: 'Debug Spotify to Plex search results',
             icon: <Search sx={{ fontSize: 40 }} />,
             path: '/spotify/search-analyzer'
+        },
+        {
+            title: 'Plex Search Settings',
+            description: 'Configure matching settings for Spotify to Plex search',
+            icon: <Tune sx={{ fontSize: 40 }} />,
+            path: '/plex/music-search-config'
         },
         {
             title: 'Logs',
@@ -138,14 +150,23 @@ const Page: NextPage = () => {
                                 ))}
                             </Grid2>
                             <Divider sx={{ mb: 3, mt: 3 }} />
-                            <Button variant="outlined" color="primary" onClick={onEditPlexConnectionClick}>
-                                Edit Plex Connection
+                            <Button variant="outlined" color="primary" onClick={onPlexSettingsClick}>
+                                Plex Settings
                             </Button>
                         </>
                     }
                 </Paper>
             </Container>
         </MainLayout>
+        
+        <PlexConnectionDialog
+            open={plexDialogOpen}
+            onClose={onPlexDialogClose}
+            settings={settings}
+            setSettings={setSettings}
+            connected={connected}
+            setConnected={setConnected}
+        />
     </>);
 };
 

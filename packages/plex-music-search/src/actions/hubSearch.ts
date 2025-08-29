@@ -1,10 +1,10 @@
 /* eslint-disable unicorn/prefer-code-point */
 /* eslint-disable prefer-template */
  
-import { removeFeaturing } from "@spotify-to-plex/music-search";
+import { removeFeaturing } from "@spotify-to-plex/music-search/utils/removeFeaturing";
 import { HubSearchResult } from "../types/actions/HubSearchResult";
 import { HubSearchResponse } from "../types/plex/HubSearchResponse";
-import { AxiosRequest } from "../utils/AxiosRequest";
+import { AxiosRequest } from "@spotify-to-plex/http-client/AxiosRequest";
 import getAPIUrl from "../utils/getAPIUrl";
 
 export default function hubSearch(uri: string, token: string, query: string, limit: number = 5) {
@@ -48,6 +48,7 @@ export default function hubSearch(uri: string, token: string, query: string, lim
 
             })
             .catch((_error: unknown) => {
+                // eslint-disable-next-line no-console
                 console.error(`Plex API Request failed:\n${url}`)
                 reject("Could not connect to server");
             })

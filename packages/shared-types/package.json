@@ -2,8 +2,12 @@
   "name": "@spotify-to-plex/shared-types",
   "version": "1.0.0",
   "description": "Shared TypeScript type definitions for Spotify-to-Plex applications",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "exports": {
+    "./*": {
+      "types": "./dist/*.d.ts",
+      "default": "./dist/*.js"
+    }
+  },
   "scripts": {
     "build": "tsc",
     "build:watch": "tsc --watch",

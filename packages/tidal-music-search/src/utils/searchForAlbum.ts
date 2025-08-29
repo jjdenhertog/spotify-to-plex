@@ -1,5 +1,5 @@
-import { compareTitles } from "@spotify-to-plex/music-search";
-import { TidalAPI } from "./TidalAPI";
+import { compareTitles } from "@spotify-to-plex/music-search/utils/compareTitles";
+import { searchAlbum } from "./tidal/searchAlbum";
 
 type FoundAlbumWithMatching = {
     id: string,
@@ -24,8 +24,7 @@ export async function searchForAlbum(artist: string, album: string, artistMatch:
 
     const search = `${artist} ${album}`;
 
-    const tidalAPI = TidalAPI.getInstance();
-    const searchResults = await tidalAPI.searchAlbum(search)
+    const searchResults = await searchAlbum(search);
 
     const foundAlbums: FoundAlbumWithMatching[] = []
     searchResults.forEach(searchResult => {

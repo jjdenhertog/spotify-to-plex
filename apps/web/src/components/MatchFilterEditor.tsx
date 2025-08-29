@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
     Box,
-    TextField,
     Typography,
     Alert,
     Button
 } from '@mui/material';
-import { Code, Refresh } from '@mui/icons-material';
+import { Save, Refresh } from '@mui/icons-material';
 import axios from 'axios';
 import { enqueueSnackbar } from 'notistack';
+import MonacoJsonEditor, { MonacoJsonEditorHandle } from './MonacoJsonEditor';
 
 type MatchFilterConfig = {
     reason: string;
@@ -20,9 +20,10 @@ type MatchFilterEditorProps = {
 }
 
 const MatchFilterEditor: React.FC<MatchFilterEditorProps> = ({ onSave }) => {
-    const [jsonContent, setJsonContent] = useState('');
-    const [jsonError, setJsonError] = useState('');
+    const [jsonData, setJsonData] = useState<any>(null);
     const [loading, setLoading] = useState(true);
+    const [validationError, setValidationError] = useState<string>('');
+    const editorRef = useRef<MonacoJsonEditorHandle>(null);
 
     useEffect(() => {
         loadFilters();
@@ -32,8 +33,7 @@ const MatchFilterEditor: React.FC<MatchFilterEditorProps> = ({ onSave }) => {
         try {
             setLoading(true);
             const response = await axios.get('/api/plex/music-search-config/match-filters');
-            setJsonContent(JSON.stringify(response.data, null, 2));
-            setJsonError('');
+            setJsonData(response.data);
         } catch (error) {
             console.error('Failed to load match filters:', error);
             enqueueSnackbar('Failed to load match filters', { variant: 'error' });
@@ -42,44 +42,92 @@ const MatchFilterEditor: React.FC<MatchFilterEditorProps> = ({ onSave }) => {
         }
     };
 
-    const handleSave = async () => {
-        try {
-            const filters = JSON.parse(jsonContent);
-            
-            // Basic validation
-            if (!Array.isArray(filters)) {
-                throw new Error('Configuration must be an array');
+    const validateFilters = (data: any): string | null => {
+        if (!Array.isArray(data)) {
+            return 'Configuration must be an array';
+        }
+        
+        for (let i = 0; i < data.length; i++) {
+            const filter = data[i];
+            if (!filter) {
+                return `Filter at index ${i} is null or undefined`;
             }
             
-            for (const filter of filters) {
-                if (!filter.reason || !filter.filter) {
-                    throw new Error('Each filter must have a reason and filter property');
-                }
+            if (typeof filter !== 'object') {
+                return `Filter at index ${i} must be an object`;
+            }
+            
+            if (!filter.reason || !filter.filter) {
+                return `Filter at index ${i} must have both 'reason' and 'filter' properties`;
+            }
 
-                if (typeof filter.reason !== 'string' || typeof filter.filter !== 'string') {
-                    throw new Error('Reason and filter must be strings');
-                }
+            if (typeof filter.reason !== 'string' || typeof filter.filter !== 'string') {
+                return `Filter at index ${i}: both 'reason' and 'filter' must be strings`;
             }
-            
-            await axios.post('/api/plex/music-search-config/match-filters', filters);
+
+            // Basic function string validation
+            if (!filter.filter.includes('=>') && !filter.filter.startsWith('function')) {
+                return `Filter at index ${i}: 'filter' should be a function string (e.g., "(item) => ...")`;
+            }
+        }
+        
+        return null; // Valid
+    };
+
+    const handleSave = useCallback(async () => {
+        // Get current content directly from Monaco editor
+        const currentData = editorRef.current?.getCurrentValue?.();
+        
+        if (!currentData) {
+            enqueueSnackbar('No valid JSON data to save', { variant: 'error' });
+
+            return;
+        }
+
+        // Do validation only on save
+        const validationErrorMsg = validateFilters(currentData);
+        if (validationErrorMsg) {
+            setValidationError(validationErrorMsg);
+            enqueueSnackbar(`Validation Error: ${validationErrorMsg}`, { variant: 'error' });
+
+            return;
+        }
+
+        setValidationError('');
+
+        try {
+            await axios.post('/api/plex/music-search-config/match-filters', currentData);
             enqueueSnackbar('Match filters saved successfully', { variant: 'success' });
-            setJsonError('');
             
             if (onSave) {
-                onSave(filters);
+                onSave(currentData);
             }
         } catch (error) {
-            const message = error instanceof Error ? error.message : 'Invalid JSON format';
-            setJsonError(message);
+            const message = error instanceof Error ? error.message : 'Failed to save';
             enqueueSnackbar(`Failed to save: ${message}`, { variant: 'error' });
         }
-    };
+    }, [onSave]);
 
-    const handleReset = async () => {
+    const handleReset = useCallback(async () => {
         if (confirm('Reset to default match filters? This will overwrite your current configuration.')) {
             await loadFilters();
+            setValidationError('');
         }
-    };
+    }, []);
+
+    const handleChange = useCallback((newValue: any) => {
+        setJsonData(newValue);
+        setValidationError(''); // Clear validation error when user types
+    }, []);
+
+    // Wrapper functions to handle promises properly for onClick
+    const handleSaveClick = useCallback(() => {
+        handleSave().catch(console.error);
+    }, [handleSave]);
+
+    const handleResetClick = useCallback(() => {
+        handleReset().catch(console.error);
+    }, [handleReset]);
 
     if (loading) {
         return (
@@ -89,62 +137,67 @@ const MatchFilterEditor: React.FC<MatchFilterEditorProps> = ({ onSave }) => {
         );
     }
 
+    // JSON Schema for match filters
+    const matchFilterSchema = {
+        type: 'array',
+        items: {
+            type: 'object',
+            properties: {
+                reason: {
+                    type: 'string',
+                    description: 'Description of why this filter should match'
+                },
+                filter: {
+                    type: 'string',
+                    description: 'Function string that returns true/false for matching items'
+                }
+            },
+            required: ['reason', 'filter'],
+            additionalProperties: false
+        }
+    };
+
     return (
         <Box>
+            {/* Header */}
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <Code />
-                    <Typography variant="h6">Match Filters Configuration</Typography>
-                </Box>
+                <Typography variant="h6">Match Filters Configuration</Typography>
                 <Box sx={{ display: 'flex', gap: 1 }}>
                     <Button
-                        onClick={handleReset}
+                        onClick={handleResetClick}
                         variant="outlined"
                         size="small"
                         startIcon={<Refresh />}
                     >
-                        Reset
+                        Reset to Defaults
                     </Button>
                     <Button
-                        onClick={handleSave}
+                        onClick={handleSaveClick}
                         variant="contained"
                         size="small"
+                        startIcon={<Save />}
                     >
-                        Save
+                        Save Filters
                     </Button>
                 </Box>
             </Box>
             
             <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-                Configure match filters as function strings. Each filter should have a <code>reason</code> and <code>filter</code> property.
+                Configure match filters as function strings. Each filter should have a 'reason' and 'filter' property. 
                 Filters are evaluated in order - the first matching filter wins.
             </Typography>
 
-            <TextField
-                fullWidth
-                multiline
-                rows={20}
-                value={jsonContent}
-                onChange={(e) => setJsonContent(e.target.value)}
-                variant="outlined"
-                sx={{
-                    mb: 2,
-                    '& .MuiInputBase-input': {
-                        fontFamily: 'Monaco, Consolas, "Courier New", monospace',
-                        fontSize: '0.875rem',
-                        lineHeight: 1.5
-                    }
-                }}
-                placeholder="Loading..."
+            {/* Monaco JSON Editor */}
+            <MonacoJsonEditor
+                ref={editorRef}
+                value={jsonData}
+                onChange={handleChange}
+                schema={matchFilterSchema}
+                height={500}
+                error={validationError}
             />
 
-            {jsonError ? <Alert severity="error" sx={{ mb: 2 }}>
-                <Typography variant="body2">
-                    <strong>JSON Error:</strong> {jsonError}
-                </Typography>
-            </Alert> : null}
-
-            <Alert severity="info">
+            <Alert severity="info" sx={{ mt: 2 }}>
                 <Typography variant="body2">
                     <strong>Filter Structure:</strong><br />
                     • Each filter is an object with <code>reason</code> (string) and <code>filter</code> (function string)<br />

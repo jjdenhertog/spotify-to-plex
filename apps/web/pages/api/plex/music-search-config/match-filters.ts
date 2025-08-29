@@ -1,34 +1,15 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { MusicSearchConfigManager, MatchFilterConfig } from '@spotify-to-plex/music-search';
-
-// Get storage directory from environment or default
-const getStorageDir = (): string => {
-    return process.env.SETTINGS_DIR || process.cwd();
-};
-
-// Validate match filter structure
-const validateMatchFilter = (filter: any): filter is MatchFilterConfig => {
-    return filter && 
-           typeof filter === 'object' && 
-           typeof filter.reason === 'string' && 
-           typeof filter.filter === 'string';
-};
-
-// Validate array of match filters
-const validateMatchFilters = (filters: any): filters is MatchFilterConfig[] => {
-    return Array.isArray(filters) && filters.every(validateMatchFilter);
-};
+import { getMatchFilters, updateMatchFilters } from '@spotify-to-plex/music-search/config/config-utils';
+import { getStorageDir } from '@spotify-to-plex/shared-utils/server';
+import { validateMatchFilters } from '@spotify-to-plex/shared-utils/validation/validateMatchFilters';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     try {
-        const configManager = MusicSearchConfigManager.create({ 
-            storageDir: getStorageDir(),
-            preloadCache: false 
-        });
+        const storageDir = getStorageDir();
 
         if (req.method === 'GET') {
             // Get current match filters
-            const filters = await configManager.getMatchFilters();
+            const filters = await getMatchFilters(storageDir);
 
             return res.status(200).json(filters);
             
@@ -43,7 +24,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 });
             }
             
-            const updatedFilters = await configManager.updateMatchFilters(newFilters);
+            const updatedFilters = await updateMatchFilters(storageDir, newFilters);
 
             return res.status(200).json({ 
                 success: true, 
@@ -52,11 +33,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             });
             
         }
- 
+
         res.setHeader('Allow', ['GET', 'POST']);
 
         return res.status(405).json({ error: 'Method not allowed' });
-        
         
     } catch (error) {
         console.error('Error in match filters API:', error);

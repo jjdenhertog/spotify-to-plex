@@ -1,4 +1,4 @@
-import { GetSpotifyAlbum, GetSpotifyPlaylist } from "@spotify-to-plex/shared-types";
+import { GetSpotifyAlbum, GetSpotifyPlaylist } from "@spotify-to-plex/shared-types/spotify/api";
 import { SpotifyApi } from "@spotify/web-api-ts-sdk";
 import axios from "axios";
 import crypto from "node:crypto";

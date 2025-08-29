@@ -1,6 +1,7 @@
 import { errorBoundary } from "@/helpers/errors/errorBoundary";
 import { GetSpotifyTrackResponse } from "@/pages/api/spotify/track";
-import type { SearchResponse, SearchQuery, PlexTrack } from "@spotify-to-plex/plex-music-search";
+import type { SearchResponse, SearchQuery } from "@spotify-to-plex/plex-music-search/types/SearchResponse";
+import type { PlexTrack } from "@spotify-to-plex/plex-music-search/types/PlexTrack";
 import { Box, Button, CircularProgress, Divider, Link, TextField, Typography } from "@mui/material";
 import axios from "axios";
 import { ChangeEvent, Fragment, useCallback, useState } from "react";

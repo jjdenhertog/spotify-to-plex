@@ -2,8 +2,12 @@
   "name": "@spotify-to-plex/plex-config",
   "version": "1.0.0",
   "description": "Shared Plex configuration management",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "exports": {
+    "./*": {
+      "types": "./dist/*.d.ts",
+      "default": "./dist/*.js"
+    }
+  },
   "files": ["dist"],
   "scripts": {
     "build": "tsc",

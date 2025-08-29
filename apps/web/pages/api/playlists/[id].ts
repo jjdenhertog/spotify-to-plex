@@ -1,13 +1,13 @@
-import { AxiosRequest } from '@spotify-to-plex/http-client';
+import { AxiosRequest } from '@spotify-to-plex/http-client/AxiosRequest';
 // MIGRATED: Updated to use http-client package
 import { generateError } from '@/helpers/errors/generateError';
 import { getAPIUrl } from '@spotify-to-plex/shared-utils/server';
-import { addItemsToPlaylist } from '@/helpers/plex/addItemsToPlaylist';
-import { putPlaylistPoster } from '@/helpers/plex/putPlaylistPoster';
-import { removeItemsFromPlaylist } from '@/helpers/plex/removeItemsFromPlaylist';
-import { updatePlaylist } from '@/helpers/plex/updatePlaylist';
+import { addItemsToPlaylist } from '@spotify-to-plex/plex-helpers/playlist';
+import { putPlaylistPoster } from '@spotify-to-plex/plex-helpers/playlist';
+import { removeItemsFromPlaylist } from '@spotify-to-plex/plex-helpers/playlist';
+import { updatePlaylist } from '@spotify-to-plex/plex-helpers/playlist';
 import { plex, PlexPlaylists } from '@/library/plex';
-import { GetPlaylistResponse } from '@spotify-to-plex/shared-types';
+import { GetPlaylistResponse } from '@spotify-to-plex/shared-types/plex/api';
 // MIGRATED: Updated to use shared types package
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createRouter } from 'next-connect';
@@ -65,6 +65,9 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 if (!settings.uri || !settings.token || !settings.id)
                     return res.status(400).json({ msg: "No plex connection found" });
 
+                // Cast settings to required type since we've validated the fields
+                const validatedSettings = settings as Required<typeof settings>;
+
                 const playlistsData = await plex.getPlaylists();
                 const playlists: PlexPlaylists["data"] = playlistsData.data || [];
                 if (!playlists)
@@ -75,30 +78,30 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                     return res.status(404).json({ error: `Playlist not found connected to ${id}` })
 
                 // Check the existence
-                const url = getAPIUrl(settings.uri, `/playlists`);
-                const result = await AxiosRequest.get<GetPlaylistResponse>(url, settings.token);
+                const url = getAPIUrl(validatedSettings.uri, `/playlists`);
+                const result = await AxiosRequest.get<GetPlaylistResponse>(url, validatedSettings.token);
                 const playlist = result.data.MediaContainer.Metadata.find(item => item.ratingKey == playlistIds.plex);
                 if (!playlist)
                     return res.status(404).json({ error: `Playlist not found with id ${playlistIds.plex}` })
 
                 // Clear items from playlist
-                await removeItemsFromPlaylist(playlist.ratingKey);
+                await removeItemsFromPlaylist(validatedSettings, getAPIUrl, playlist.ratingKey, []);
 
                 // Add all items
-                await addItemsToPlaylist(playlist.ratingKey, items)
+                await addItemsToPlaylist(validatedSettings, getAPIUrl, playlist.ratingKey, items)
 
                 if (playlist.title != name && name)
-                    await updatePlaylist(playlist.ratingKey, { title: name })
+                    await updatePlaylist(validatedSettings, getAPIUrl, playlist.ratingKey, { title: name })
 
                 // Update thumbnail of playlist
                 if (typeof thumb == 'string') {
                     try {
-                        await putPlaylistPoster(playlist.ratingKey, thumb)
+                        await putPlaylistPoster(validatedSettings, getAPIUrl, playlist.ratingKey, thumb)
                     } catch (_e) {
                     }
                 }
 
-                const link = getAPIUrl(settings.uri, `/web/index.html#!/server/${settings.id}/playlist?key=${encodeURIComponent(`/playlists/${playlist.ratingKey}`)}`)
+                const link = getAPIUrl(validatedSettings.uri, `/web/index.html#!/server/${validatedSettings.id}/playlist?key=${encodeURIComponent(`/playlists/${playlist.ratingKey}`)}`)
                 res.json({ id: playlist.ratingKey, link })
             } catch (error) {
                 console.error('Error updating Plex playlist:', error);

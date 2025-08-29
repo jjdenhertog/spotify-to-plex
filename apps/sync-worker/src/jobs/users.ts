@@ -1,5 +1,5 @@
 import { getAccessToken, refreshAccessTokens, settingsDir } from "@spotify-to-plex/shared-utils/server";
-import { RecentPlayedContext, SavedItem, SpotifyCredentials } from "@spotify-to-plex/shared-types";
+import { RecentPlayedContext, SavedItem, SpotifyCredentials } from "@spotify-to-plex/shared-types/spotify/api";
 import { SpotifyApi } from "@spotify/web-api-ts-sdk";
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";

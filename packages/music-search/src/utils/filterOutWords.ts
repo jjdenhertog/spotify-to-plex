@@ -1,10 +1,9 @@
-import MusicSearch from "..";
+import { getCurrentMusicSearchConfig } from "../functions/getMusicSearchConfig";
 
 export function filterOutWords(input: string, filtered: boolean = false, cutOffSeperators: boolean = false, removeQuotes = false) {
 
     // Get the config for word filtering - now uses the new configuration system
-    const musicSearch = MusicSearch.getInstance();
-    const musicSearchConfig = musicSearch.getMusicSearchConfig();
+    const musicSearchConfig = getCurrentMusicSearchConfig();
     const {textProcessing} = musicSearchConfig;
 
     let result = input.toLowerCase();

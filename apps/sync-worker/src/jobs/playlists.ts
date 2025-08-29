@@ -1,10 +1,13 @@
-import { AxiosRequest } from "@spotify-to-plex/http-client";
+import { AxiosRequest } from "@spotify-to-plex/http-client/AxiosRequest";
 import { getAPIUrl, settingsDir } from "@spotify-to-plex/shared-utils/server";
-import { handleOneRetryAttempt } from "../helpers/plex/handleOneRetryAttempt";
+import { handleOneRetryAttempt } from "@spotify-to-plex/plex-helpers/retry";
 import { plex } from "../library/plex";
-import { Playlist } from "@spotify-to-plex/shared-types";
-import { GetPlaylistResponse, PlexMusicSearch, SearchResponse } from "@spotify-to-plex/plex-music-search";
-import { ExtendedPlexConfigManager } from "@spotify-to-plex/plex-config";
+import { Playlist } from "@spotify-to-plex/shared-types/plex/api";
+import { GetPlaylistResponse } from "@spotify-to-plex/plex-music-search/types/plex/GetPlaylistResponse";
+import { SearchResponse } from "@spotify-to-plex/plex-music-search/types/SearchResponse";
+import { search as plexMusicSearch } from "@spotify-to-plex/plex-music-search/functions/search";
+import { createPlexConfig } from "@spotify-to-plex/plex-config/functions/createPlexConfig";
+import { getMusicSearchConfig } from "@spotify-to-plex/music-search/config/config-utils";
 import { writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { findMissingTidalTracks } from "../utils/findMissingTidalTracks";
@@ -84,38 +87,37 @@ export async function syncPlaylists() {
             }
 
             //////////////////////////////////////
-            // Initiate the plexMusicSearch
+            // Initiate the plexMusicSearch config
             //////////////////////////////////////
-            // Load music search configuration
-            const plexConfigManager = ExtendedPlexConfigManager.create({ 
+            // Initialize plex config
+            await createPlexConfig({ 
                 storageDir: settingsDir, 
                 preloadCache: true 
             });
+            
+            // Load music search configuration
             let musicSearchConfig;
             try {
-                if (plexConfigManager.hasMusicSearchConfig()) {
-                    const musicSearchConfigManager = plexConfigManager.getMusicSearchConfig();
-                    musicSearchConfig = await musicSearchConfigManager.getConfig();
-                }
+                musicSearchConfig = await getMusicSearchConfig(settingsDir);
             } catch (error) {
                 // Fallback to default config if error loading
                 console.warn('Failed to load music search config, using defaults:', error);
             }
 
-            const plexMusicSearch = new PlexMusicSearch({
+            const plexSearchConfig = {
                 uri: settings.uri,
                 token: settings.token,
                 musicSearchConfig,
-            })
+            };
 
             // eslint-disable-next-line prefer-const
-            let { result, add } = await getCachedPlexTracks(plexMusicSearch, data)
+            let { result, add } = await getCachedPlexTracks(plexSearchConfig, data)
 
             // eslint-disable-next-line unicorn/consistent-destructuring
             const toSearchItems = data.tracks.filter(track => !result.some((item: SearchResponse) => item.id == track.id))
             if (toSearchItems.length > 0) {
                 console.log(`Searching for ${toSearchItems.length} tracks`)
-                const searchResult = await plexMusicSearch.search(toSearchItems)
+                const searchResult = await plexMusicSearch(plexSearchConfig, toSearchItems)
                 result = result.concat(searchResult)
 
                 add(searchResult, 'plex')

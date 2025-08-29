@@ -1,12 +1,11 @@
 /* eslint-disable max-lines */
-/* eslint-disable @typescript-eslint/consistent-type-definitions */
 export type AuthenticateResponse = {
     scope: string
     token_type: string
     access_token: string,
     expires_in: number
 }
-export interface TidalComponents {
+export type TidalComponents = {
     schemas: {
         Error_Document: {
             /** @description array of error objects */
@@ -802,7 +801,7 @@ export interface TidalComponents {
     pathItems: never;
 }
 export type $defs = Record<string, never>;
-export interface operations {
+export type operations = {
     getSearchResultsByQuery: TidalComponents["schemas"]["Search_Results_Single_Data_Document"];
     getSearchResultsVideosRelationship: TidalComponents["schemas"]["Videos_Relationships_Document"];
     getSearchResultsTracksRelationship: TidalComponents["schemas"]["Tracks_Relationships_Document"];

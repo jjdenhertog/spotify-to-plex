@@ -3,10 +3,12 @@ import { getCachedTrackLinks } from '@spotify-to-plex/shared-utils/server';
 // MIGRATED: Updated to use shared utils package
 import { plex } from '@/library/plex';
 import { settingsDir } from '@spotify-to-plex/shared-utils/server';
-import { PlexMusicSearch, PlexMusicSearchTrack } from '@spotify-to-plex/plex-music-search';
-import { ExtendedPlexConfigManager } from "@spotify-to-plex/plex-config";
+import { search } from '@spotify-to-plex/plex-music-search/functions/search';
+import { searchAlbum } from '@spotify-to-plex/plex-music-search/functions/searchAlbum';
+import { PlexMusicSearchTrack } from '@spotify-to-plex/plex-music-search/types/PlexMusicSearchTrack';
+import { getMusicSearchConfig } from "@spotify-to-plex/music-search/config/config-utils";
 
-type SearchResponse = any;
+import { SearchResponse } from '@spotify-to-plex/plex-music-search/types/SearchResponse';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createRouter } from 'next-connect';
 
@@ -26,41 +28,33 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                     return res.status(400).json({ msg: "Plex not configured" });
 
                 //////////////////////////////////////
-                // Initiate the plexMusicSearch
+                // Load music search configuration and search
                 //////////////////////////////////////
-                // Load music search configuration
-                const plexConfigManager = ExtendedPlexConfigManager.create({ 
-                    storageDir: settingsDir, 
-                    preloadCache: true 
-                });
                 let musicSearchConfig;
                 try {
-                    if (plexConfigManager.hasMusicSearchConfig()) {
-                        const musicSearchConfigManager = plexConfigManager.getMusicSearchConfig();
-                        musicSearchConfig = await musicSearchConfigManager.getConfig();
-                    }
+                    musicSearchConfig = await getMusicSearchConfig(settingsDir);
                 } catch (error) {
                     // Fallback to default config if error loading
                     console.warn('Failed to load music search config, using defaults:', error);
                 }
 
-                const plexMusicSearch = new PlexMusicSearch({
+                const plexConfig = {
                     uri: settings.uri,
                     token: settings.token,
                     musicSearchConfig,
                     searchApproaches: fast ? [
                         { id: 'fast', filtered: true }
                     ] : undefined
-                })
+                };
 
                 let searchResult: SearchResponse[] = []
                 switch (type) {
                     case "spotify-album":
-                        searchResult = await plexMusicSearch.searchAlbum(searchItems)
+                        searchResult = await searchAlbum(plexConfig, searchItems)
                         break;
 
                     default:
-                        searchResult = await plexMusicSearch.search(searchItems)
+                        searchResult = await search(plexConfig, searchItems)
                         break;
                 }
 

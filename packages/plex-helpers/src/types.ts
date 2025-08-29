@@ -1,7 +1,7 @@
 /**
  * Plex server settings interface
  */
-export interface PlexSettings {
+export type PlexSettings = {
   uri: string;
   token: string;
   id: string;
@@ -10,7 +10,7 @@ export interface PlexSettings {
 /**
  * Playlist item for Plex operations
  */
-export interface PlaylistItem {
+export type PlaylistItem = {
   key: string;
   source?: string;
 }
@@ -18,14 +18,14 @@ export interface PlaylistItem {
 /**
  * Plex playlist data for updates
  */
-export interface PlaylistUpdateData {
+export type PlaylistUpdateData = {
   title: string;
 }
 
 /**
  * Configuration for retry attempts
  */
-export interface RetryConfig {
+export type RetryConfig = {
   maxRetries?: number;
   retryDelay?: number;
 }

@@ -1,38 +1,16 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { MusicSearchConfigManager, SearchApproachConfig } from '@spotify-to-plex/music-search';
-
-// Get storage directory from environment or default
-const getStorageDir = (): string => {
-    return process.env.SETTINGS_DIR || process.cwd();
-};
-
-// Validate search approach structure
-const validateSearchApproach = (approach: any): approach is SearchApproachConfig => {
-    return approach && 
-           typeof approach === 'object' && 
-           typeof approach.id === 'string' &&
-           (approach.filtered === undefined || typeof approach.filtered === 'boolean') &&
-           (approach.trim === undefined || typeof approach.trim === 'boolean') &&
-           (approach.ignoreQuotes === undefined || typeof approach.ignoreQuotes === 'boolean') &&
-           (approach.removeQuotes === undefined || typeof approach.removeQuotes === 'boolean') &&
-           (approach.force === undefined || typeof approach.force === 'boolean');
-};
-
-// Validate array of search approaches
-const validateSearchApproaches = (approaches: any): approaches is SearchApproachConfig[] => {
-    return Array.isArray(approaches) && approaches.every(validateSearchApproach);
-};
+import { getSearchApproaches } from '@spotify-to-plex/music-search/config/config-utils';
+import { updateSearchApproaches } from '@spotify-to-plex/music-search/config/config-utils';
+import { getStorageDir } from '@spotify-to-plex/shared-utils/server';
+import { validateSearchApproaches } from '@spotify-to-plex/shared-utils/validation/validateSearchApproaches';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     try {
-        const configManager = MusicSearchConfigManager.create({ 
-            storageDir: getStorageDir(),
-            preloadCache: true 
-        });
+        const storageDir = getStorageDir();
 
         if (req.method === 'GET') {
             // Get current search approaches
-            const approaches = await configManager.getSearchApproaches();
+            const approaches = await getSearchApproaches(storageDir);
 
             return res.status(200).json(approaches);
             
@@ -47,7 +25,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 });
             }
             
-            const updatedApproaches = await configManager.updateSearchApproaches(newApproaches);
+            const updatedApproaches = await updateSearchApproaches(storageDir, newApproaches);
 
             return res.status(200).json({ 
                 success: true, 
@@ -56,11 +34,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             });
             
         }
- 
+
         res.setHeader('Allow', ['GET', 'POST']);
 
         return res.status(405).json({ error: 'Method not allowed' });
-        
         
     } catch (error) {
         console.error('Error in search approaches API:', error);

@@ -1,7 +1,7 @@
 import { errorBoundary } from "@/helpers/errors/errorBoundary";
-import { filterUnique } from "@spotify-to-plex/shared-utils";
+import { filterUnique } from "@spotify-to-plex/shared-utils/array/filterUnique";
 // MIGRATED: Updated to use shared utils package
-import { SavedItem } from "@spotify-to-plex/shared-types";
+import { SavedItem } from "@spotify-to-plex/shared-types/spotify/api";
 // MIGRATED: Updated to use shared types package
 import CloseIcon from '@mui/icons-material/Close';
 import { Box, Button, Checkbox, Chip, CircularProgress, Divider, FormControlLabel, FormGroup, IconButton, Modal, TextField, Typography } from "@mui/material";

@@ -2,10 +2,13 @@ import { generateError } from '@/helpers/errors/generateError';
 import { getCachedTrackLinks } from '@spotify-to-plex/shared-utils/server';
 // MIGRATED: Updated to use shared utils package
 import { getTidalCredentials, settingsDir } from '@spotify-to-plex/shared-utils/server';
-import { Album, Track } from '@spotify-to-plex/shared-types';
+import { Album, Track } from '@spotify-to-plex/shared-types/spotify/api';
 // MIGRATED: Updated to use shared types package
-import { SearchResponse, TidalMusicSearch } from '@spotify-to-plex/tidal-music-search';
-import { MusicSearchConfigManager } from "@spotify-to-plex/music-search";
+import { search as tidalMusicSearch } from '@spotify-to-plex/tidal-music-search/functions/search';
+import { searchAlbum } from '@spotify-to-plex/tidal-music-search/functions/searchAlbum';
+import { setUser } from '@spotify-to-plex/tidal-music-search/functions/setUser';
+import type { SearchResponse } from '@spotify-to-plex/tidal-music-search/functions/search';
+import { getMusicSearchConfig } from "@spotify-to-plex/music-search/config/config-utils";
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createRouter } from 'next-connect';
 
@@ -35,41 +38,37 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 throw new Error(`Environment variable TIDAL_API_CLIENT_SECRET is missing`)
 
             ///////////////////////////////////////
-            // Tidal authentication
+            // Tidal authentication and configuration
             ///////////////////////////////////////
-            const tidalUser = await getTidalCredentials()
+            const tidalUser = await getTidalCredentials();
+            setUser(tidalUser);
             
             // Load music search configuration
-            const musicSearchConfigManager = MusicSearchConfigManager.create({
-                storageDir: settingsDir,
-                preloadCache: true
-            });
             let musicSearchConfig;
             try {
-                musicSearchConfig = await musicSearchConfigManager.getConfig();
+                musicSearchConfig = await getMusicSearchConfig(settingsDir);
             } catch (error) {
                 // Fallback to default config if error loading
                 console.warn('Failed to load music search config, using defaults:', error);
             }
 
-            const tidalMusicSearch = new TidalMusicSearch({
+            const tidalConfig = {
                 clientId: process.env.TIDAL_API_CLIENT_ID,
                 clientSecret: process.env.TIDAL_API_CLIENT_SECRET,
                 musicSearchConfig,
-            })
-            tidalMusicSearch.user = tidalUser;
+            };
 
             //////////////////////////////////////
-            // Handeling cached links
+            // Search Tidal tracks
             //////////////////////////////////////
             let searchResult: SearchResponse[] = []
             switch (type) {
                 case "spotify-album":
-                    searchResult = await tidalMusicSearch.searchAlbum(searchItems)
+                    searchResult = await searchAlbum(tidalConfig, searchItems)
                     break;
 
                 default:
-                    searchResult = await tidalMusicSearch.search(searchItems)
+                    searchResult = await tidalMusicSearch(tidalConfig, searchItems)
                     break;
             }
 

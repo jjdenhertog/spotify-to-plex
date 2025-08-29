@@ -7,7 +7,12 @@
         "music"
     ],
     "license": "MIT",
-    "main": "src/index.ts",
+    "exports": {
+        "./*": {
+            "types": "./dist/*.d.ts",
+            "default": "./dist/*.js"
+        }
+    },
     "scripts": {
         "build": "tsc",
         "type-check": "tsc --noEmit",

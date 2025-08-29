@@ -1,8 +1,8 @@
 import { errorBoundary } from "@/helpers/errors/errorBoundary";
 import { GetPlexPlaylistIdResponse } from "@/pages/api/playlists/[id]";
-import { GetSpotifyAlbum, GetSpotifyPlaylist, Track } from "@spotify-to-plex/shared-types";
+import { GetSpotifyAlbum, GetSpotifyPlaylist, Track } from "@spotify-to-plex/shared-types/spotify/api";
 // MIGRATED: Updated to use shared types package
-import type { SearchResponse } from "@spotify-to-plex/plex-music-search";
+import type { SearchResponse } from "@spotify-to-plex/plex-music-search/types/SearchResponse";
 import { Edit, Refresh } from "@mui/icons-material";
 import CloseIcon from '@mui/icons-material/Close';
 import { Alert, Box, Button, CircularProgress, Divider, IconButton, Input, Modal, Paper, Stack, Tooltip, Typography } from "@mui/material";

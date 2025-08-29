@@ -2,19 +2,21 @@ import { generateError } from '@/helpers/errors/generateError';
 import { getCachedTrackLinks } from '@spotify-to-plex/shared-utils/server';
 import { plex } from '@/library/plex';
 import { settingsDir } from '@spotify-to-plex/shared-utils/server';
-import { PlexMusicSearch, PlexMusicSearchTrack, PlexTrack } from '@spotify-to-plex/plex-music-search';
-import { ExtendedPlexConfigManager } from '@spotify-to-plex/plex-config';
+import { getById } from '@spotify-to-plex/plex-music-search/functions/getById';
+import { PlexMusicSearchTrack } from '@spotify-to-plex/plex-music-search/types/PlexMusicSearchTrack';
+import { PlexTrack } from '@spotify-to-plex/plex-music-search/types/PlexTrack';
+import { getMusicSearchConfig } from '@spotify-to-plex/music-search/config/config-utils';
 
-type SearchResponse = any;
+import { SearchResponse } from '@spotify-to-plex/plex-music-search/types/SearchResponse';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createRouter } from 'next-connect';
 
-async function getPlexTracks(plexIds: string[], plexMusicSearch: PlexMusicSearch): Promise<PlexTrack[]> {
+async function getPlexTracks(plexIds: string[], plexConfig: any): Promise<PlexTrack[]> {
     const foundTracks: PlexTrack[] = []
     
     for (const plexId of plexIds.filter(Boolean)) {
         try {
-            const metaData = await plexMusicSearch.getById(plexId)
+            const metaData = await getById(plexConfig, plexId)
             if (metaData) foundTracks.push(metaData)
         } catch (_e) {
         }
@@ -39,20 +41,15 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                     return res.status(400).json({ msg: "Plex not configured" });
 
                 //////////////////////////////////////
-                // Initiate the plexMusicSearch
+                // Load music search configuration
                 //////////////////////////////////////
-                const plexConfigManager = ExtendedPlexConfigManager.create({ 
-                    storageDir: settingsDir, 
-                    preloadCache: true 
-                });
-                const musicSearchConfigManager = await plexConfigManager.getMusicSearchConfig();
-                const musicSearchConfig = await musicSearchConfigManager.getConfig();
+                const musicSearchConfig = await getMusicSearchConfig(settingsDir);
 
-                const plexMusicSearch = new PlexMusicSearch({
+                const plexConfig = {
                     uri: settings.uri,
                     token: settings.token,
                     musicSearchConfig
-                })
+                };
 
                 //////////////////////////////////////
                 // Handeling cached links
@@ -71,7 +68,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                         continue;
 
                     // Load the plex tracks data
-                    const foundTracks = await getPlexTracks(trackLink.plex_id, plexMusicSearch)
+                    const foundTracks = await getPlexTracks(trackLink.plex_id, plexConfig)
 
                     // Try searching again if no tracks are found
                     if (foundTracks.length == 0)
