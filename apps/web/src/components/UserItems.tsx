@@ -143,7 +143,7 @@ export default function UserItems(props: Props) {
                 <CloseIcon fontSize="small" />
             </IconButton>
             {!!loading && <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', p: 5 }}>
-                <CircularProgress />
+                <CircularProgress  />
             </Box>}
 
             {!loading &&
@@ -154,13 +154,7 @@ export default function UserItems(props: Props) {
                     <Paper elevation={0} sx={{ p: 2, bgcolor: 'action.hover' }}>
                         <Typography variant="h6" sx={{ mb: 0.5 }}>Label name</Typography>
                         <Typography variant="body2" sx={{ mb: 1 }}>This label will be connected to any items added.</Typography>
-                        <TextField
-                            value={label}
-                            size="small"
-                            sx={{ maxWidth: 200 }}
-                            placeholder="Change label"
-                            onChange={onEditLabelChange}
-                        />
+                        <TextField value={label} size="small" sx={{ maxWidth: 200 }} placeholder="Change label" onChange={onEditLabelChange} />
                     </Paper>
                     <Divider sx={{ mt: 2, mb: 2 }} />
                     <Box>
@@ -194,7 +188,7 @@ export default function UserItems(props: Props) {
                         {totalPages > 1 &&
                             <Box mt={1} display="flex" justifyContent="space-between">
                                 <Button size="small" variant="outlined" disabled={page <= 0} onClick={prevPageClick}>Previous</Button>
-                                <Button size="small" variant="outlined" disabled={page >= totalPages - 1} onClick={nextPageClick}>Next</Button>
+                                <Button size="small" variant="outlined" disabled={page>= totalPages - 1} onClick={nextPageClick}>Next</Button>
                             </Box>
                         }
 

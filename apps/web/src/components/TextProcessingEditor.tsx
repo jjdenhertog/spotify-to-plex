@@ -226,15 +226,7 @@ const TextProcessingEditor: React.FC<TextProcessingEditorProps> = ({ onSave }) =
             </Typography>
 
             {/* Monaco JSON Editor */}
-            <MonacoJsonEditor
-                ref={editorRef}
-                value={jsonData}
-                onChange={handleChange}
-                schema={textProcessingSchema}
-                height={400}
-                error={validationError}
-            />
-
+            <MonacoJsonEditor ref={editorRef} value={jsonData} onChange={handleChange} schema={textProcessingSchema} height={400} error={validationError} />
             <Alert severity="info" sx={{ mt: 2 }}>
                 <Typography variant="body2">
                     <strong>Configuration Structure:</strong><br />

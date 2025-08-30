@@ -104,7 +104,7 @@ export default function App({
                 <style>{`:root { color-scheme: dark; }`}</style>
             </Head>
             <ThemeProvider theme={theme}>
-                <CssBaseline />
+                <CssBaseline  />
                 <Component {...pageProps} />
             </ThemeProvider>
         </CacheProvider>

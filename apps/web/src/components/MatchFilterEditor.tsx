@@ -183,15 +183,7 @@ const MatchFilterEditor: React.FC<MatchFilterEditorProps> = ({ onSave }) => {
             </Typography>
 
             {/* Monaco JSON Editor */}
-            <MonacoJsonEditor
-                ref={editorRef}
-                value={jsonData}
-                onChange={handleChange}
-                schema={matchFilterSchema}
-                height={500}
-                error={validationError}
-            />
-
+            <MonacoJsonEditor ref={editorRef} value={jsonData} onChange={handleChange} schema={matchFilterSchema} height={500} error={validationError} />
         </Box>
     );
 };

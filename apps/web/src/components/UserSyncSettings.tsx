@@ -97,7 +97,7 @@ export default function UserSyncSettings(props: Props) {
                 <CloseIcon fontSize="small" />
             </IconButton>
             {!!loading && <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', p: 5 }}>
-                <CircularProgress />
+                <CircularProgress  />
             </Box>}
 
             {!loading && <>
@@ -109,22 +109,14 @@ export default function UserSyncSettings(props: Props) {
                 <FormControl sx={{ mb: 2 }}>
                     <FormLabel component="legend">Automatic sync</FormLabel>
                     <FormHelperText>When enabled, this item will be synced automatically.</FormHelperText>
-                    <Switch
-                        checked={autoSync}
-                        onChange={onSwitchChange}
-                        color="success"
-                    />
+                    <Switch checked={autoSync} onChange={onSwitchChange} color="success" />
                 </FormControl>
 
                 {!!autoSync &&
                     <FormControl sx={{ mb: 2 }}>
                         <FormLabel component="legend">Label</FormLabel>
                         <FormHelperText>Created playlists will get this label</FormHelperText>
-                        <TextField
-                            size="small"
-                            value={label}
-                            onChange={onLabelChange}
-                        />
+                        <TextField size="small" value={label} onChange={onLabelChange} />
                     </FormControl>
                 }
 

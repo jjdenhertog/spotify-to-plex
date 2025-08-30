@@ -120,13 +120,7 @@ export default function ConfirmProvider() {
         <>
             <ConfirmContext.Provider value={context} />
             {!!(resolveReject.length === 2) &&
-                <ConfirmationDialog
-                    open={resolveReject.length === 2}
-                    options={buildOptions(options)}
-                    onClose={handleClose}
-                    onCancel={handleCancel}
-                    onConfirm={handleConfirm}
-                />
+                <ConfirmationDialog open={resolveReject.length === 2} options={buildOptions(options)} onClose={handleClose} onCancel={handleCancel} onConfirm={handleConfirm} />
             }
         </>
 

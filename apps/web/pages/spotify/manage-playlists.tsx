@@ -14,18 +14,14 @@ const Page: NextPage = () => {
             </Head>
             <MainLayout maxWidth="700px">
                 <Container>
-                    <Logo />
-                    <SpotifyNavigation />
+                    <Logo  />
+                    <SpotifyNavigation  />
                     <Paper elevation={0} sx={{ p: 2, mb: 2, bgcolor: 'action.hover' }}>
-                        <Typography variant="h4" sx={{ mt: 2, mb: 0.5 }}>
-                            Manage Playlists & Albums
-                        </Typography>
-                        <Typography variant="body1" sx={{ mb: 1, maxWidth: 500 }}>
-                            Manage your Spotify playlists and albums synchronization with Plex.
-                        </Typography>
+                        <Typography variant="h4" sx={{ mt: 2, mb: 0.5 }}>Manage Playlists & Albums</Typography>
+                        <Typography variant="body1" sx={{ mb: 1, maxWidth: 500 }}>Manage your Spotify playlists and albums synchronization with Plex.</Typography>
                     </Paper>
 
-                    <ManagePlaylists />
+                    <ManagePlaylists  />
                 </Container>
             </MainLayout>
         </>

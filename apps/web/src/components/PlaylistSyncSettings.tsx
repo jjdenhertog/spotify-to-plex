@@ -109,20 +109,14 @@ export default function PlaylistItemSettings(props: Props) {
                 <CloseIcon fontSize="small" />
             </IconButton>
             {!!loading && <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', p: 5 }}>
-                <CircularProgress />
+                <CircularProgress  />
             </Box>}
 
             {!loading && <>
 
                 <Typography variant="h6">Category name</Typography>
                 <Typography variant="body2" mb={1}>This name can be used to group playlists and album and use it for sorting and other purposes.</Typography>
-                <TextField
-                    autoFocus
-                    value={label}
-                    onChange={onEditLabelChange}
-                    size="small"
-                    fullWidth
-                />
+                <TextField autoFocus value={label} onChange={onEditLabelChange} size="small" fullWidth />
                 <Box sx={{ mt: 1 }}>
                     {labels.map(label => (
                         <Chip

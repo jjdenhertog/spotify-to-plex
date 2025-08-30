@@ -51,7 +51,7 @@ export default function TrackAnalyzer(props: Props) {
                 <CloseIcon fontSize="small" />
             </IconButton>
             {!!loading && <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', p: 5 }}>
-                <CircularProgress />
+                <CircularProgress  />
             </Box>}
 
             {!loading && !!searchResponse &&

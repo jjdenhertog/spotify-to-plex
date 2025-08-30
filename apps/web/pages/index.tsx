@@ -103,14 +103,12 @@ const Page: NextPage = () => {
         </Head>
         <MainLayout maxWidth="700px">
             <Container>
-                <Logo />
+                <Logo  />
                 <Paper elevation={0} sx={{ p: 2, bgcolor: 'action.hover' }}>
 
                     {!!loading &&
                         <Box display="flex" justifyContent="center">
-                            <Alert severity="info" sx={{ ml: 2 }}>
-                                Checking your connection with Plex
-                            </Alert>
+                            <Alert severity="info" sx={{ ml: 2 }}>Checking your connection with Plex</Alert>
                         </Box>
                     }
 
@@ -124,12 +122,8 @@ const Page: NextPage = () => {
 
                     {!!connected && !!settings?.uri &&
                         <>
-                            <Typography variant="h4" sx={{ mb: 3 }}>
-                                Spotify to Plex
-                            </Typography>
-                            <Typography variant="body1" sx={{ mb: 3, maxWidth: 500 }}>
-                                Manage your Spotify connections, synchronization settings, and view system logs.
-                            </Typography>
+                            <Typography variant="h4" sx={{ mb: 3 }}>Spotify to Plex</Typography>
+                            <Typography variant="body1" sx={{ mb: 3, maxWidth: 500 }}>Manage your Spotify connections, synchronization settings, and view system logs.</Typography>
                             <Grid2 container spacing={2}>
                                 {menuItems.map((item) => (
                                     <Grid2 size={{ xs: 12, sm: 6 }} key={item.path}>
@@ -137,12 +131,8 @@ const Page: NextPage = () => {
                                             <CardActionArea component="a" href={item.path} sx={{ height: '100%' }}>
                                                 <CardContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', p: 3 }}>
                                                     {item.icon}
-                                                    <Typography variant="h6" sx={{ mt: 2 }}>
-                                                        {item.title}
-                                                    </Typography>
-                                                    <Typography variant="body2" color="text.secondary">
-                                                        {item.description}
-                                                    </Typography>
+                                                    <Typography variant="h6" sx={{ mt: 2 }}>{item.title}</Typography>
+                                                    <Typography variant="body2" color="text.secondary">{item.description}</Typography>
                                                 </CardContent>
                                             </CardActionArea>
                                         </Card>
@@ -150,23 +140,14 @@ const Page: NextPage = () => {
                                 ))}
                             </Grid2>
                             <Divider sx={{ mb: 3, mt: 3 }} />
-                            <Button variant="outlined" color="primary" onClick={onPlexSettingsClick}>
-                                Plex Settings
-                            </Button>
+                            <Button variant="outlined" color="primary" onClick={onPlexSettingsClick}>Plex Settings</Button>
                         </>
                     }
                 </Paper>
             </Container>
         </MainLayout>
         
-        <PlexConnectionDialog
-            open={plexDialogOpen}
-            onClose={onPlexDialogClose}
-            settings={settings}
-            setSettings={setSettings}
-            connected={connected}
-            setConnected={setConnected}
-        />
+        <PlexConnectionDialog open={plexDialogOpen} onClose={onPlexDialogClose} settings={settings} setSettings={setSettings} connected={connected} setConnected={setConnected} />
     </>);
 };
 
