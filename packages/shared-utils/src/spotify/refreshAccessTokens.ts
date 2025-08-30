@@ -6,7 +6,7 @@ import { join } from "node:path"
 import { decrypt } from "../security/decrypt";
 import { encrypt } from "../security/encrypt"
 
-export default async function refreshAccessTokens() {
+export async function refreshAccessTokens() {
     const credentialsPath = join(settingsDir, 'spotify.json')
     if (!existsSync(credentialsPath))
         throw new Error("No users are currently connected.");

@@ -24,8 +24,8 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
             const savedItems: SavedItem[] = JSON.parse(readFileSync(savedItemsPath, 'utf8'))
 
             const { id } = req.query;
-            if (typeof id == 'string') {
-                const savedItem = savedItems.find(item => item.id == id)
+            if (typeof id === 'string') {
+                const savedItem = savedItems.find(item => item.id === id)
                 if (!savedItem)
                     throw new Error(`Saved item not found ${id}`)
 
@@ -39,14 +39,14 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
         async (req, res) => {
             try {
                 const { search, id: searchId, user_id, label } = req.body;
-                if (typeof search != 'string' && typeof searchId != 'string')
+                if (typeof search !== 'string' && typeof searchId !== 'string')
                     return res.status(400).json({ error: "Search query missing" })
 
                 if (!process.env.SPOTIFY_API_CLIENT_ID || !process.env.SPOTIFY_API_CLIENT_SECRET)
                     return res.status(400).json({ error: "Spotify Credentials missing. Please add the environment variables to use this feature." })
 
                 let savedItem: SavedItem | null = null;
-                if (typeof search == 'string' && search.trim().startsWith('/library')) {
+                if (typeof search === 'string' && search.trim().startsWith('/library')) {
                     const plexMediaId = search.trim();
 
                     const settings = await plex.getSettings();
@@ -77,7 +77,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
 
                         id = path.split("/").join(":");
                         id = `spotify${id}`;
-                    } else if (search.split(":").length == 3) {
+                    } else if (search.split(":").length === 3) {
                         id = search;
                     } else {
                         return res.status(400).json({ error: "Invalid Spotify URI, expecting spotify:playlist:id" });
@@ -91,10 +91,10 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
 
                     const { type, id: resultId, title: name, image } = data;
                     savedItem = { type, uri: id, id: resultId, title: name, image }
-                    if (typeof user_id == 'string')
+                    if (typeof user_id === 'string')
                         savedItem.user = user_id;
 
-                    if (typeof label == 'string')
+                    if (typeof label === 'string')
                         savedItem.label = label;
 
                 }
@@ -106,7 +106,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 if (existsSync(savedItemsPath)) {
 
                     const savedItems: SavedItem[] = JSON.parse(readFileSync(savedItemsPath, 'utf8'))
-                    if (savedItems.some(item => item.id == savedItem.id))
+                    if (savedItems.some(item => item.id === savedItem.id))
                         return res.status(400).json({ error: `${savedItem.title} (spotify id: ${savedItem.id}) is already added.` })
 
                     savedItems.push(savedItem)
@@ -130,16 +130,16 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 return res.status(400).json({ error: `No items found` })
 
             const { id } = req.query
-            if (typeof id != 'string')
+            if (typeof id !== 'string')
                 return res.status(400).json({ error: `ID expected but none found` })
 
             let savedItems: SavedItem[] = JSON.parse(readFileSync(savedItemsPath, 'utf8'))
-            if (!savedItems.some(item => item.id == id))
+            if (!savedItems.some(item => item.id === id))
                 return res.status(400).json({ error: `Item not found` })
 
 
             // Change the imtes
-            savedItems = savedItems.filter(item => item.id != id)
+            savedItems = savedItems.filter(item => item.id !== id)
             writeFileSync(savedItemsPath, JSON.stringify(savedItems, undefined, 4))
 
             return res.status(200).json(savedItems.reverse())
@@ -159,19 +159,19 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
             const savedItems: SavedItem[] = JSON.parse(readFileSync(savedItemsPath, 'utf8'))
 
             for (let i = 0; i < ids.length; i++) {
-                const saveItem = savedItems.find(item => item.id == ids[i])
+                const saveItem = savedItems.find(item => item.id === ids[i])
                 if (!saveItem)
                     return res.status(400).json({ error: `Item not found` })
 
-                if (typeof sync == 'boolean' && typeof sync_interval == 'string') {
+                if (typeof sync === 'boolean' && typeof sync_interval === 'string') {
                     saveItem.sync = sync
                     saveItem.sync_interval = sync_interval
                 }
 
-                if (typeof label == 'string')
+                if (typeof label === 'string')
                     saveItem.label = label;
 
-                if (typeof title == 'string')
+                if (typeof title === 'string')
                     saveItem.title = title;
             }
 

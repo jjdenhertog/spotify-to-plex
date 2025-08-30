@@ -11,7 +11,7 @@ export default function BMoment(props: Props) {
     const { format, variant } = props;
 
     let { date } = props;
-    if (typeof date == 'number')
+    if (typeof date === 'number')
         date = (new Date()).setTime(date);
 
     switch (variant) {

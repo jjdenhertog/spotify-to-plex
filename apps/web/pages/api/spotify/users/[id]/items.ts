@@ -21,10 +21,10 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 throw new Error("Spotify Credentials missing. Please add the environment variables to use this feature.")
 
             const { id, type } = _req.query
-            if (typeof id != 'string')
+            if (typeof id !== 'string')
                 throw new Error(`User ID expected.`)
 
-            if (type != 'albums' && type != 'playlists')
+            if (type !== 'albums' && type !== 'playlists')
                 throw new Error(`Type should be albums or playlists.`)
 
             // Refresh any access tokens
@@ -32,7 +32,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
 
             // Find the specific user
             const credentials: SpotifyCredentials[] = JSON.parse(readFileSync(credentialsPath, 'utf8'))
-            const userCredentials = credentials.find(item => item.user.id == id)
+            const userCredentials = credentials.find(item => item.user.id === id)
             if (!userCredentials)
                 throw new Error(`User not found.`)
 
@@ -55,7 +55,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
             ///////////////////////////////////
             // Albums
             ///////////////////////////////////
-            if (type == 'albums') {
+            if (type === 'albums') {
                 let allAlbums: SavedAlbum[] = []
 
                 const savedAlbumResult = await api.currentUser.albums.savedAlbums(50)
@@ -81,7 +81,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                         return {
                             type: "spotify-album",
                             id: item.album.id,
-                            added: savedItems.some(savedItem => savedItem.id == item.album.id),
+                            added: savedItems.some(savedItem => savedItem.id === item.album.id),
                             title: item.album.name,
                             private: false,
                             image: item.album.images?.[0]?.url || '',
@@ -120,7 +120,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                     return {
                         type: "spotify-playlist",
                         id: item.id,
-                        added: savedItems.some(savedItem => savedItem.id == item.id),
+                        added: savedItems.some(savedItem => savedItem.id === item.id),
                         title: item.name,
                         user_id: item.public ? undefined : id,
                         private: !item.public,

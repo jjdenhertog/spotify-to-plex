@@ -6,7 +6,7 @@ import { join } from "node:path";
 import { decrypt } from '../security/decrypt';
 import { encrypt } from '../security/encrypt';
 
-export default async function getTidalCredentials(): Promise<TidalCredentials | undefined> {
+export async function getTidalCredentials(): Promise<TidalCredentials | undefined> {
     const credentialsPath = join(settingsDir, 'tidal.json')
     if (!existsSync(credentialsPath))
         return;

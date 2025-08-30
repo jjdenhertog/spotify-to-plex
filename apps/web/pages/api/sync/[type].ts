@@ -10,8 +10,8 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
         async (req, res) => {
 
             const { type } = req.query
-            if (type != 'albums' && type != 'playlists' && type != "users")
-                throw new Error(`Expecting type albums, playlists or users. Got ${typeof type == 'string' ? type : 'none'}`)
+            if (type !== 'albums' && type !== 'playlists' && type !== "users")
+                throw new Error(`Expecting type albums, playlists or users. Got ${typeof type === 'string' ? type : 'none'}`)
 
             switch (type) {
                 case "albums":

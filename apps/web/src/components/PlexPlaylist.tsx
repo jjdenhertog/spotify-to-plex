@@ -136,7 +136,7 @@ export default function PlexPlaylist(props: PlexPlaylistProps) {
                         setTracks(prev => prev.concat(cachedTracks));
 
                     setTracksToLoad(tracks.length);
-                    const toLoadTracks = cachedTracks ? tracks.filter(item => !cachedTracks.some(cachedItem => cachedItem.id == item.id)) : tracks;
+                    const toLoadTracks = cachedTracks ? tracks.filter(item => !cachedTracks.some(cachedItem => cachedItem.id === item.id)) : tracks;
                     if (toLoadTracks.length > 0)
                         await loadPlaylistTracks(toLoadTracks)
 
@@ -210,9 +210,9 @@ export default function PlexPlaylist(props: PlexPlaylistProps) {
     // Set selected track index
     ///////////////////////////////////
     const onSetSongIndex = useCallback((artist: string, track: string, idx: number) => {
-        if (trackSelections.some(item => item.artist == artist && item.title == track)) {
+        if (trackSelections.some(item => item.artist === artist && item.title === track)) {
             setTrackSelections(items => items.map(item => {
-                if (item.artist == artist && item.title == track)
+                if (item.artist === artist && item.title === track)
                     return { ...item, idx }
 
                 return item;
@@ -271,7 +271,7 @@ export default function PlexPlaylist(props: PlexPlaylistProps) {
             const item = tracks[i];
             if (!item) continue;
 
-            const trackSelectIdx = trackSelections.find(selectionItem => selectionItem.artist == item?.artist && selectionItem.title == item?.title)
+            const trackSelectIdx = trackSelections.find(selectionItem => selectionItem.artist === item?.artist && selectionItem.title === item?.title)
             const song = item.result?.[trackSelectIdx ? trackSelectIdx.idx : 0];
             if (song)
                 data.items.push({ key: song.id, source: song.source })
@@ -313,7 +313,7 @@ export default function PlexPlaylist(props: PlexPlaylistProps) {
 
         return playlist.tracks
             .filter(item => {
-                return tracks.some(track => track.title == item.title && item.artists.indexOf(track.artist) > - 1 && track.result.length == 0)
+                return tracks.some(track => track.title === item.title && item.artists.indexOf(track.artist) > - 1 && track.result.length === 0)
             })
 
     }, [playlist, tracks])
@@ -327,7 +327,7 @@ export default function PlexPlaylist(props: PlexPlaylistProps) {
                         <CircularProgress size={20} />
                     </Box>
                     <Box sx={{ flexGrow: 1, display: 'flex', gap: 1, justifyContent: 'space-between' }}>
-                        {playlist.type == 'spotify-playlist' ?
+                        {playlist.type === 'spotify-playlist' ?
                             <Typography variant="body1" sx={{ color: 'text.secondary' }}>Processed {tracksLoaded.length} of {tracksToLoad} tracks</Typography>
                             :
                             <Typography variant="body1" sx={{ color: 'text.secondary' }}>Searching for album...</Typography>
@@ -365,7 +365,7 @@ export default function PlexPlaylist(props: PlexPlaylistProps) {
             </Box>
         </Paper>
 
-        {playlist?.type == 'spotify-album' &&
+        {playlist?.type === 'spotify-album' &&
             <Box sx={{ mt: 1, mb: 1 }}>
                 <Alert variant="outlined" color="warning">
                     <Box sx={{ p: 1 }}>
@@ -377,14 +377,14 @@ export default function PlexPlaylist(props: PlexPlaylistProps) {
             </Box>
         }
 
-        {missingTracks.length > 0 && !loadingTracks &&
+        {!!(missingTracks.length > 0) && !loadingTracks &&
             <Box sx={{ mt: 1, mb: 1 }}>
                 <Alert variant="outlined" color="warning">
                     <Box sx={{ p: 1 }}>
-                        {playlist.type == 'spotify-playlist' &&
+                        {playlist.type === 'spotify-playlist' &&
                             <Typography variant="h6" sx={{ mb: 0.5 }} color="warning">{missingTracks.length} tracks not found</Typography>
                         }
-                        {playlist.type == 'spotify-album' &&
+                        {playlist.type === 'spotify-album' &&
                             <Typography variant="h6" sx={{ mb: 0.5 }} color="warning">Album not found or incomplete</Typography>
                         }
                         <Typography variant="body2" sx={{ mb: 1 }}>Some tracks are not matching up, these are missing in your library or the naming in your library is a bit different than expected. </Typography>
@@ -394,7 +394,7 @@ export default function PlexPlaylist(props: PlexPlaylistProps) {
             </Box>
         }
 
-        {missingTracks.length == 0 && !loadingTracks &&
+        {missingTracks.length === 0 && !loadingTracks &&
             <Box sx={{ mt: 1, mb: 1 }}>
                 <Alert variant="outlined" color="success">
                     <Box sx={{ p: 1 }}>
@@ -412,7 +412,7 @@ export default function PlexPlaylist(props: PlexPlaylistProps) {
                     <IconButton onClick={onEditPlaylistNameClick} sx={{ '&:hover': { background: 'none' } }} size="small"><Edit /></IconButton>
                 </Box>
                 <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center', alignItems: 'center' }}>
-                    {playlistName != playlist.title && <Typography variant="body2" sx={{ fontStyle: 'italic' }}>{playlist.title} -</Typography>}
+                    {playlistName !== playlist.title && <Typography variant="body2" sx={{ fontStyle: 'italic' }}>{playlist.title} -</Typography>}
                     <Typography variant="body2" sx={{ fontStyle: 'italic' }}>{playlist.tracks.length} songs</Typography>
                 </Box>
             </Box>
@@ -427,10 +427,10 @@ export default function PlexPlaylist(props: PlexPlaylistProps) {
                     </Box>
                 }
                 {visibleTracks.map(track => {
-                    const data = tracks.find(item => track.artists.indexOf(item.artist) > -1 && track.title == item.title)
-                    const trackSelectIdx = trackSelections.find(item => track.artists.indexOf(item.artist) > -1 && item.title == track.title)
+                    const data = tracks.find(item => track.artists.indexOf(item.artist) > -1 && track.title === item.title)
+                    const trackSelectIdx = trackSelections.find(item => track.artists.indexOf(item.artist) > -1 && item.title === track.title)
                     const songIdx = trackSelectIdx ? trackSelectIdx.idx : 0;
-                    const loading = loadingTracks && !(tracksLoaded.some(item => item == track.id))
+                    const loading = loadingTracks && !(tracksLoaded.some(item => item === track.id))
 
                     return <PlexTrack key={`${playlist.id}-plex-${track.title}-${track.id}}`} loading={loading} track={track} setSongIdx={onSetSongIndex} songIdx={songIdx} data={data} fast={fast} />
                 })}

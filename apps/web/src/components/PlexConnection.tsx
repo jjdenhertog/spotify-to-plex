@@ -36,7 +36,7 @@ const PlexConnection = (props: Props) => {
     useEffect(() => {
         if (settings?.uri) {
             setNewPlexUri((prev) => {
-                if (prev == settings.uri || !prev)
+                if (prev === settings.uri || !prev)
                     return prev;
 
                 return settings.uri || "";
@@ -66,7 +66,7 @@ const PlexConnection = (props: Props) => {
             setValidated(false);
 
 
-            const [resource] = resources.filter(item => item.connections.some(connection => connection.uri == newPlexUri));
+            const [resource] = resources.filter(item => item.connections.some(connection => connection.uri === newPlexUri));
             if (!resource)
                 throw new Error("Something went wrong selecting the resource");
 
@@ -132,7 +132,7 @@ const PlexConnection = (props: Props) => {
 
     }, [connected, setConnected, settings]);
 
-    const saveDisabled = !(newPlexUri && settings?.uri != newPlexUri);
+    const saveDisabled = !(newPlexUri && settings?.uri !== newPlexUri);
 
     if (loading) {
         return <Box display="flex" justifyContent="center">
@@ -198,10 +198,10 @@ const PlexConnection = (props: Props) => {
                             })}
                         </Select>
 
-                        {connected && !saving && !validated && settings?.uri ? <Alert variant="outlined" severity="error" sx={{ mt: 2 }}>
+                        {!!connected && !saving && !validated && settings?.uri ? <Alert variant="outlined" severity="error" sx={{ mt: 2 }}>
                             We can&apos;t connect to the selected Plex Media Server
                         </Alert> : null}
-                        {connected && !saving && validated && settings?.uri ? <Alert variant="outlined" severity="success" sx={{ mt: 2 }}>
+                        {!!connected && !saving && validated && settings?.uri ? <Alert variant="outlined" severity="success" sx={{ mt: 2 }}>
                             We&apos;re connected to the selected Plex Media Server
                         </Alert> : null}
 

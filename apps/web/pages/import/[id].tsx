@@ -25,7 +25,7 @@ const Page: NextPage = () => {
         errorBoundary(async () => {
 
             setLoading(true)
-            if (typeof router.query.id != 'string')
+            if (typeof router.query.id !== 'string')
                 throw new Error(`ID expected.`)
 
             const result = await axios.get<GetSpotifyAlbum | GetSpotifyPlaylist>(`/api/spotify/items/${router.query.id}`)

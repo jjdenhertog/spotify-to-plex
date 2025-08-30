@@ -27,8 +27,8 @@ export default function PlexTrack(props: Props) {
             return []
 
         return data.result.map((item: PlexTrack) => {
-            const thumbUrl = item.image && item.image.indexOf('rovicorp') == -1 ? `/api/plex/image?path=${item.image}` : '';
-            const albumThumbUrl = item.album?.image && item.image.indexOf('rovicorp') == -1 ? `/api/plex/image?path=${item.album.image}` : '';
+            const thumbUrl = item.image && item.image.indexOf('rovicorp') === -1 ? `/api/plex/image?path=${item.image}` : '';
+            const albumThumbUrl = item.album?.image && item.image.indexOf('rovicorp') === -1 ? `/api/plex/image?path=${item.album.image}` : '';
 
             return {
                 trackTitle: item.title,
@@ -103,7 +103,7 @@ export default function PlexTrack(props: Props) {
                             </Tooltip>
                         </>
                     }
-                    {!!data && data.result.length == 0 &&
+                    {!!data && data.result.length === 0 &&
                         <Tooltip title="Song not found">
                             <IconButton size="small" color="warning" onClick={onNotPerfectMatchClick}><Warning sx={{ fontSize: '1em' }} /></IconButton>
                         </Tooltip>

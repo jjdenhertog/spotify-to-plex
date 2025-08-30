@@ -152,10 +152,10 @@ export default function ManagePlaylists() {
                 </Paper>
                 <Divider sx={{ mt: 2, mb: 2 }} />
                 <Box sx={{ display: 'flex', justifyContent: "flex-end", mb: 1 }}>
-                    <Button disabled={selectedItems.size == 0} onClick={onEditSettingsClick} size="small" sx={{ height: 30 }} variant="outlined">Edit selected items</Button>
+                    <Button disabled={selectedItems.size === 0} onClick={onEditSettingsClick} size="small" sx={{ height: 30 }} variant="outlined">Edit selected items</Button>
                 </Box>
                 <Paper elevation={0} sx={{ p: 2, mb: 2, bgcolor: 'action.hover' }}>
-                    {Object.keys(groupedItems).length > 0 &&
+                    {!!(Object.keys(groupedItems).length > 0) &&
                         <>
                             {Object.entries(groupedItems).map(([label, groupItems]) => (
                                 <Box key={label} sx={{ mb: 4 }}>
@@ -180,7 +180,7 @@ export default function ManagePlaylists() {
             </>
         }
 
-        {editMultipleItems.length > 0 && <PlaylistItemSettings items={editMultipleItems} labels={labels} onClose={onCloseMultipleEditItem} />}
+        {!!(editMultipleItems.length > 0) && <PlaylistItemSettings items={editMultipleItems} labels={labels} onClose={onCloseMultipleEditItem} />}
     </>
     )
 }

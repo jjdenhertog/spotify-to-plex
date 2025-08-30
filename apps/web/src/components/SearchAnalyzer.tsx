@@ -102,7 +102,7 @@ export default function SearchAnalyzer() {
                         }
                     </>
                 }
-                {searchResponse.result.length > 0 &&
+                {!!(searchResponse.result.length > 0) &&
                     <Typography variant="h6" sx={{ mb: 1 }}>Search Results</Typography>
                 }
                 {searchResponse.result.map((item: PlexTrack) => {

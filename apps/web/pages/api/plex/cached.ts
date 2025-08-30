@@ -63,15 +63,15 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                     if (!searchItem) continue;
 
                     // Process if no cached link has been found
-                    const trackLink = cachedTrackLinks.find(item => item.spotify_id == searchItem.id)
-                    if (!trackLink?.plex_id || trackLink.plex_id?.length == 0)
+                    const trackLink = cachedTrackLinks.find(item => item.spotify_id === searchItem.id)
+                    if (!trackLink?.plex_id || trackLink.plex_id?.length === 0)
                         continue;
 
                     // Load the plex tracks data
                     const foundTracks = await getPlexTracks(trackLink.plex_id, plexConfig)
 
                     // Try searching again if no tracks are found
-                    if (foundTracks.length == 0)
+                    if (foundTracks.length === 0)
                         continue;
 
                     // Add the result

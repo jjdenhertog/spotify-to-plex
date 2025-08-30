@@ -27,7 +27,7 @@ const navigationItems = [
 ];
 
 
-const SpotifyNavigation = () => {
+export default function SpotifyNavigation() {
     const router = useRouter();
     const currentPath = router.pathname;
 
@@ -69,6 +69,4 @@ const SpotifyNavigation = () => {
             </Tabs>
         </Box>
     );
-};
-
-export default SpotifyNavigation; 
+}

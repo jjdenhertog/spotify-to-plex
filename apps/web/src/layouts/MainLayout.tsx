@@ -1,5 +1,5 @@
-import { BSnackbarProvider } from "@/components/BSnackbarProvider";
-import { ConfirmProvider } from "@/components/ConfirmProvider/ConfirmProvider";
+import BSnackbarProvider from "@/components/BSnackbarProvider";
+import ConfirmProvider from "@/components/ConfirmProvider/ConfirmProvider";
 import { Box, CircularProgress, Container } from "@mui/material";
 
 import ErrorProvider from "../components/ErrorProvider/ErrorProvider";
@@ -19,7 +19,7 @@ export default function MainLayout(props: MainLayoutProps) {
             <BSnackbarProvider />
             <ConfirmProvider />
             <Container sx={{ maxWidth, padding: 0 }}>
-                {loading ? <Box display="flex" justifyContent="center" pt={12}>
+                {!!loading ? <Box display="flex" justifyContent="center" pt={12}>
                     <CircularProgress size={40} />
                 </Box> : null}
                 {!loading &&

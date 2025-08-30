@@ -8,6 +8,7 @@ import {
 import { Save, Refresh } from '@mui/icons-material';
 import axios from 'axios';
 import { enqueueSnackbar } from 'notistack';
+import { errorBoundary } from '@/helpers/errors/errorBoundary';
 import MonacoJsonEditor, { MonacoJsonEditorHandle } from './MonacoJsonEditor';
 
 type TextProcessingConfig = {
@@ -31,22 +32,20 @@ const TextProcessingEditor: React.FC<TextProcessingEditorProps> = ({ onSave }) =
     const [validationError, setValidationError] = useState<string>('');
     const editorRef = useRef<MonacoJsonEditorHandle>(null);
 
-    useEffect(() => {
-        loadConfig();
-    }, []);
-
-    const loadConfig = async () => {
-        try {
+    const loadConfig = useCallback(async () => {
+        errorBoundary(async () => {
             setLoading(true);
             const response = await axios.get('/api/plex/music-search-config/text-processing');
             setJsonData(response.data);
-        } catch (error) {
-            console.error('Failed to load text processing config:', error);
-            enqueueSnackbar('Failed to load text processing config', { variant: 'error' });
-        } finally {
             setLoading(false);
-        }
-    };
+        }, () => {
+            setLoading(false);
+        });
+    }, []);
+
+    useEffect(() => {
+        loadConfig();
+    }, [loadConfig]);
 
     const validateConfig = (data: any): string | null => {
         if (!data || typeof data !== 'object') {

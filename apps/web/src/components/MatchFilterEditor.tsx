@@ -8,6 +8,7 @@ import {
 import { Save, Refresh } from '@mui/icons-material';
 import axios from 'axios';
 import { enqueueSnackbar } from 'notistack';
+import { errorBoundary } from '@/helpers/errors/errorBoundary';
 import MonacoJsonEditor, { MonacoJsonEditorHandle } from './MonacoJsonEditor';
 
 type MatchFilterConfig = {
@@ -25,22 +26,20 @@ const MatchFilterEditor: React.FC<MatchFilterEditorProps> = ({ onSave }) => {
     const [validationError, setValidationError] = useState<string>('');
     const editorRef = useRef<MonacoJsonEditorHandle>(null);
 
-    useEffect(() => {
-        loadFilters();
-    }, []);
-
-    const loadFilters = async () => {
-        try {
+    const loadFilters = useCallback(async () => {
+        errorBoundary(async () => {
             setLoading(true);
             const response = await axios.get('/api/plex/music-search-config/match-filters');
             setJsonData(response.data);
-        } catch (error) {
-            console.error('Failed to load match filters:', error);
-            enqueueSnackbar('Failed to load match filters', { variant: 'error' });
-        } finally {
             setLoading(false);
-        }
-    };
+        }, () => {
+            setLoading(false);
+        });
+    }, []);
+
+    useEffect(() => {
+        loadFilters();
+    }, [loadFilters]);
 
     const validateFilters = (data: any): string | null => {
         if (!Array.isArray(data)) {
@@ -75,45 +74,41 @@ const MatchFilterEditor: React.FC<MatchFilterEditorProps> = ({ onSave }) => {
     };
 
     const handleSave = useCallback(async () => {
-        // Get current content directly from Monaco editor
-        const currentData = editorRef.current?.getCurrentValue?.();
-        
-        if (!currentData) {
-            enqueueSnackbar('No valid JSON data to save', { variant: 'error' });
+        errorBoundary(async () => {
+            // Get current content directly from Monaco editor
+            const currentData = editorRef.current?.getCurrentValue?.();
+            
+            if (!currentData) {
+                enqueueSnackbar('No valid JSON data to save', { variant: 'error' });
+                return;
+            }
 
-            return;
-        }
+            // Do validation only on save
+            const validationErrorMsg = validateFilters(currentData);
+            if (validationErrorMsg) {
+                setValidationError(validationErrorMsg);
+                enqueueSnackbar(`Validation Error: ${validationErrorMsg}`, { variant: 'error' });
+                return;
+            }
 
-        // Do validation only on save
-        const validationErrorMsg = validateFilters(currentData);
-        if (validationErrorMsg) {
-            setValidationError(validationErrorMsg);
-            enqueueSnackbar(`Validation Error: ${validationErrorMsg}`, { variant: 'error' });
-
-            return;
-        }
-
-        setValidationError('');
-
-        try {
+            setValidationError('');
             await axios.post('/api/plex/music-search-config/match-filters', currentData);
             enqueueSnackbar('Match filters saved successfully', { variant: 'success' });
             
             if (onSave) {
                 onSave(currentData);
             }
-        } catch (error) {
-            const message = error instanceof Error ? error.message : 'Failed to save';
-            enqueueSnackbar(`Failed to save: ${message}`, { variant: 'error' });
-        }
+        });
     }, [onSave]);
 
     const handleReset = useCallback(async () => {
         if (confirm('Reset to default match filters? This will overwrite your current configuration.')) {
-            await loadFilters();
-            setValidationError('');
+            errorBoundary(async () => {
+                await loadFilters();
+                setValidationError('');
+            });
         }
-    }, []);
+    }, [loadFilters]);
 
     const handleChange = useCallback((newValue: any) => {
         setJsonData(newValue);

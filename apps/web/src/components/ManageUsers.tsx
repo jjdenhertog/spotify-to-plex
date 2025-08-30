@@ -42,7 +42,7 @@ export default function ManageUsers() {
     const onSettingsUserClick = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
         const { id } = e.currentTarget.dataset;
         if (id) {
-            const user = users.find(item => item.id == id)
+            const user = users.find(item => item.id === id)
             if (user)
                 setEditUser(user)
         }
@@ -64,8 +64,8 @@ export default function ManageUsers() {
     const [userItems, setUserItems] = useState<{ user: GetSpotifyUserResponse, type: "albums" | "playlists" } | null>(null)
     const onItemsUserClick = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
         const { id, type } = e.currentTarget.dataset;
-        if (id && (type == "albums" || type == "playlists")) {
-            const user = users.find(item => item.id == id)
+        if (id && (type === "albums" || type === "playlists")) {
+            const user = users.find(item => item.id === id)
             if (user)
                 setUserItems({ user, type })
         }

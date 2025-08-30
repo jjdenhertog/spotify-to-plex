@@ -53,7 +53,7 @@ const ErrorProviderComponent = ({ children }: ErrorProviderProps) => {
                         <Typography>
                             {error}
                         </Typography>
-                        {stack && stack != error ? <Box mt={2}>
+                        {!!stack && stack !== error ? <Box mt={2}>
                             <Accordion>
                                 <AccordionSummary expandIcon={<ExpandMore />}>
                                     <Typography>Stack Trace</Typography>

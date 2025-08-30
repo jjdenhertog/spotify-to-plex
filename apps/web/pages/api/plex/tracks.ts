@@ -19,7 +19,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 const searchItems: PlexMusicSearchTrack[] = req.body.items;
                 const { type = 'spotify-playlist', fast = false, album } = req.body;
 
-                if (!searchItems || searchItems.length == 0)
+                if (!searchItems || searchItems.length === 0)
                     return res.status(400).json({ msg: "No items given" });
 
                 const settings = await plex.getSettings();

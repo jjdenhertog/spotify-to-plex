@@ -59,8 +59,8 @@ export default function ExportMissingTracks(props: Props) {
             const track = tracks[i];
             if (!track) continue;
 
-            const tidalTrack = tidalTracks.find(item => item.id == track.id)
-            if (!tidalTrack || tidalTrack.tidal_ids?.length == 0)
+            const tidalTrack = tidalTracks.find(item => item.id === track.id)
+            if (!tidalTrack || tidalTrack.tidal_ids?.length === 0)
                 result.push(track);
         }
 
@@ -186,18 +186,18 @@ export default function ExportMissingTracks(props: Props) {
                     <Typography variant="h6">Missing tracks</Typography>
                     <Typography variant="body2">Below you find an overview of all missing tracks of the current selection.</Typography>
                     <Box sx={{ display: 'flex', gap: 1 }}>
-                        {tracks.length > 0 &&
+                        {!!(tracks.length > 0) &&
                             <>
                                 <form method="POST" action="/api/download" target="_blank" >
                                     <input type="hidden" name="type" value="spotify" />
                                     <input type="hidden" name="tracks" value={tracks.map(item => item.id)} />
                                     <Button variant="outlined" type="submit">Download Spotify links</Button>
                                 </form>
-                                {(missingTidalTracks.length > 0 && !hasLoadedTidalTracks) &&
+                                {!!((missingTidalTracks.length > 0) && !hasLoadedTidalTracks) &&
                                     <Button disabled={loadingTracks || !canUseTidal} onClick={onLoadTidalLinksClick} variant="outlined">Load Tidal links</Button>
                                 }
 
-                                {((!!hasTidalTracks && !!hasLoadedTidalTracks) || missingTidalTracks.length == 0) &&
+                                {((!!hasTidalTracks && !!hasLoadedTidalTracks) || missingTidalTracks.length === 0) &&
                                     <form method="POST" action="/api/download" target="_blank" >
                                         <input type="hidden" name="type" value="tidal" />
                                         <input type="hidden" name="tracks" value={tracks.map(item => item.id)} />
@@ -241,7 +241,7 @@ export default function ExportMissingTracks(props: Props) {
 
                         {visibleTracks.map(item => {
 
-                            const tidalTrack = tidalTracks.find(tidalTrack => tidalTrack.id == item.id)
+                            const tidalTrack = tidalTracks.find(tidalTrack => tidalTrack.id === item.id)
 
                             return <>
                                 <Box key={item.id}
@@ -255,7 +255,7 @@ export default function ExportMissingTracks(props: Props) {
                                     }}>
 
                                     <Box>
-                                        <Typography variant="body2" color={!!tidalTrack && !!tidalTrack.tidal_ids && tidalTrack.tidal_ids.length == 0 ? 'warning' : undefined}>
+                                        <Typography variant="body2" color={!!tidalTrack && !!tidalTrack.tidal_ids && tidalTrack.tidal_ids.length === 0 ? 'warning' : undefined}>
                                             {item.title}
                                         </Typography>
                                         <Typography variant="caption">

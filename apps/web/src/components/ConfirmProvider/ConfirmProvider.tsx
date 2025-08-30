@@ -65,7 +65,7 @@ const buildOptions = (options: ConfirmOptions) => {
 
 
 export let confirm: ProviderContext['confirm'];
-export const ConfirmProvider = () => {
+export default function ConfirmProvider() {
 
     const [options, setOptions] = useState<ConfirmOptions>({})
     const [resolveReject, setResolveReject] = useState<Function[]>([]);
@@ -103,7 +103,7 @@ export const ConfirmProvider = () => {
     }, [handleClose, resolveReject])
 
     const onPressEnter = useCallback((e: KeyboardEvent) => {
-        if (e.key == "Enter" && resolveReject.length == 2)
+        if (e.key === "Enter" && resolveReject.length === 2)
             handleConfirm();
     }, [handleConfirm, resolveReject.length])
 
@@ -119,7 +119,7 @@ export const ConfirmProvider = () => {
     return (
         <>
             <ConfirmContext.Provider value={context} />
-            {resolveReject.length == 2 &&
+            {!!(resolveReject.length === 2) &&
                 <ConfirmationDialog
                     open={resolveReject.length === 2}
                     options={buildOptions(options)}

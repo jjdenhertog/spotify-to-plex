@@ -3,7 +3,7 @@ import { SpotifyApi } from "@spotify/web-api-ts-sdk";
 import axios from "axios";
 import crypto from "node:crypto";
 
-import getSpotifyPlaylist from "./getSpotifyPlaylist";
+import { getSpotifyPlaylist } from "./getSpotifyPlaylist";
 
 function generateTrackId(artists: string[], trackName: string): string {
     const artistsStr = artists.join(',');
@@ -11,7 +11,7 @@ function generateTrackId(artists: string[], trackName: string): string {
     return crypto.createHash('md5').update(combined).digest('hex').slice(0, 16);
 }
 
-export default async function getSpotifyData(api: SpotifyApi, id: string, simplified: boolean = false): Promise<GetSpotifyAlbum | GetSpotifyPlaylist | undefined> {
+export async function getSpotifyData(api: SpotifyApi, id: string, simplified: boolean = false): Promise<GetSpotifyAlbum | GetSpotifyPlaylist | undefined> {
     if (id.indexOf('spotify:album:') > -1) {
         const albumId = id.slice(Math.max(0, id.indexOf('spotify:album:') + 'spotify:album:'.length)).trim();
         try {
