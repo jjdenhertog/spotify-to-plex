@@ -1,130 +1,139 @@
 /* eslint-disable unicorn/prefer-blob-reading-methods */
-import Logo from "@/components/Logo";
-import MatchFilterEditor from "@/components/MatchFilterEditor";
-import SearchApproachesEditor from "@/components/SearchApproachesEditor";
-import TextProcessingEditor from "@/components/TextProcessingEditor";
-import { errorBoundary } from "@/helpers/errors/errorBoundary";
-import MainLayout from "@/layouts/MainLayout";
-import { ChevronLeft, Download, Restore, Upload } from "@mui/icons-material";
-import { LoadingButton } from '@mui/lab';
-import { Alert, Box, Breadcrumbs, Button, Card, CardContent, Container, Dialog, DialogActions, DialogContent, DialogTitle, Link, Paper, Tab, Tabs, TextField, Typography } from "@mui/material";
-import axios from "axios";
-import { NextPage } from "next";
-import Head from "next/head";
-import { enqueueSnackbar } from "notistack";
-import { useCallback, useRef, useState } from "react";
+import Logo from "@/components/Logo"
+import MatchFilterEditor from "@/components/MatchFilterEditor"
+import SearchApproachesEditor from "@/components/SearchApproachesEditor"
+import TextProcessingEditor from "@/components/TextProcessingEditor"
+import { errorBoundary } from "@/helpers/errors/errorBoundary"
+import MainLayout from "@/layouts/MainLayout"
+import { ChevronLeft, Download, Restore, Upload } from "@mui/icons-material"
+import { LoadingButton } from "@mui/lab"
+// prettier-ignore
+import { Box, Breadcrumbs, Button, Card, CardContent, Container, Dialog, DialogActions, DialogContent, DialogTitle, Link, Paper, Tab, Tabs, TextField, Typography } from "@mui/material"
+import axios from "axios"
+import { NextPage } from "next"
+import Head from "next/head"
+import { enqueueSnackbar } from "notistack"
+import { useCallback, useRef, useState } from "react"
 
 const Page: NextPage = () => {
-    const [tabValue, setTabValue] = useState(0);
-    const [resetting, setResetting] = useState(false);
-    const [importDialog, setImportDialog] = useState(false);
-    const [importJson, setImportJson] = useState('');
-    const fileInputRef = useRef<HTMLInputElement>(null);
+    const [tabValue, setTabValue] = useState(0)
+    const [resetting, setResetting] = useState(false)
+    const [importDialog, setImportDialog] = useState(false)
+    const [importJson, setImportJson] = useState("")
+    const fileInputRef = useRef<HTMLInputElement>(null)
 
     const resetConfiguration = useCallback(() => {
-        setResetting(true);
-        errorBoundary(async () => {
-            await axios.post('/api/plex/music-search-config/reset');
-            enqueueSnackbar("Configuration reset to defaults", { variant: "info" });
-            setResetting(false);
-            // Refresh the page to reload all components
-            window.location.reload();
-        }, () => {
-            setResetting(false);
-        });
-    }, []);
+        setResetting(true)
+        errorBoundary(
+            async () => {
+                await axios.post("/api/plex/music-search-config/reset")
+                enqueueSnackbar("Configuration reset to defaults", { variant: "info" })
+                setResetting(false)
+                // Refresh the page to reload all components
+                window.location.reload()
+            },
+            () => {
+                setResetting(false)
+            }
+        )
+    }, [])
 
     const exportConfiguration = useCallback(() => {
         errorBoundary(async () => {
             const [matchFilters, textProcessing, searchApproaches] = await Promise.all([
-                axios.get('/api/plex/music-search-config/match-filters'),
-                axios.get('/api/plex/music-search-config/text-processing'),
-                axios.get('/api/plex/music-search-config/search-approaches')
-            ]);
+                axios.get("/api/plex/music-search-config/match-filters"),
+                axios.get("/api/plex/music-search-config/text-processing"),
+                axios.get("/api/plex/music-search-config/search-approaches")
+            ])
 
             const config = {
                 matchFilters: matchFilters.data,
                 textProcessing: textProcessing.data,
                 searchApproaches: searchApproaches.data,
                 exportedAt: new Date().toISOString(),
-                version: '2.0.0'
-            };
+                version: "2.0.0"
+            }
 
-            const dataStr = JSON.stringify(config, null, 2);
-            const dataUri = `data:application/json;charset=utf-8,${ encodeURIComponent(dataStr)}`;
-            
+            const dataStr = JSON.stringify(config, null, 2)
+            const dataUri = `data:application/json;charset=utf-8,${encodeURIComponent(dataStr)}`
+
             const exportFileDefaultName = `music-search-config-${new Date().toISOString()
-                .split('T')[0]}.json`;
-            
-            const linkElement = document.createElement('a');
-            linkElement.setAttribute('href', dataUri);
-            linkElement.setAttribute('download', exportFileDefaultName);
-            linkElement.click();
-            
-            enqueueSnackbar("Configuration exported successfully", { variant: "success" });
-        });
-    }, []);
+                .split("T")[0]}.json`
+
+            const linkElement = document.createElement("a")
+            linkElement.setAttribute("href", dataUri)
+            linkElement.setAttribute("download", exportFileDefaultName)
+            linkElement.click()
+
+            enqueueSnackbar("Configuration exported successfully", { variant: "success" })
+        })
+    }, [])
 
     const importConfiguration = useCallback(() => {
         if (fileInputRef.current) {
-            fileInputRef.current.click();
+            fileInputRef.current.click()
         }
-    }, []);
+    }, [])
 
     const handleFileImport = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-        const file = event.target.files?.[0];
+        const file = event.target.files?.[0]
         if (file) {
-            const reader = new FileReader();
+            const reader = new FileReader()
             reader.onload = (e) => {
-                const content = e.target?.result as string;
-                setImportJson(content);
-                setImportDialog(true);
-            };
-            reader.readAsText(file);
+                const content = e.target?.result as string
+                setImportJson(content)
+                setImportDialog(true)
+            }
+            reader.readAsText(file)
         }
 
         // Reset the input value so the same file can be imported again
         if (fileInputRef.current) {
-            fileInputRef.current.value = '';
+            fileInputRef.current.value = ""
         }
-    }, []);
+    }, [])
 
     const handleImportConfirm = useCallback(() => {
         errorBoundary(async () => {
             try {
-                const config = JSON.parse(importJson);
-                
+                const config = JSON.parse(importJson)
+
                 // Import each configuration section
                 if (config.matchFilters) {
-                    await axios.post('/api/plex/music-search-config/match-filters', config.matchFilters);
+                    await axios.post("/api/plex/music-search-config/match-filters", config.matchFilters)
                 }
 
                 if (config.textProcessing) {
-                    await axios.post('/api/plex/music-search-config/text-processing', config.textProcessing);
+                    await axios.post("/api/plex/music-search-config/text-processing", config.textProcessing)
                 }
 
                 if (config.searchApproaches) {
-                    await axios.post('/api/plex/music-search-config/search-approaches', config.searchApproaches);
+                    await axios.post("/api/plex/music-search-config/search-approaches", config.searchApproaches)
                 }
-                
-                enqueueSnackbar("Configuration imported successfully", { variant: "success" });
-                setImportDialog(false);
-                
+
+                enqueueSnackbar("Configuration imported successfully", { variant: "success" })
+                setImportDialog(false)
+
                 // Refresh the page to reload all components
-                setTimeout(() => window.location.reload(), 500);
-                
+                setTimeout(() => window.location.reload(), 500)
             } catch (error) {
-                enqueueSnackbar(`Failed to import configuration: ${  error instanceof Error ? error.message : 'Invalid JSON'}`, { variant: "error" });
+                enqueueSnackbar(
+                    `Failed to import configuration: ${error instanceof Error ? error.message : "Invalid JSON"}`,
+                    { variant: "error" }
+                )
             }
-        });
-    }, [importJson]);
+        })
+    }, [importJson])
 
     const handleTabChange = useCallback((_event: React.SyntheticEvent, newValue: number) => {
-        setTabValue(newValue);
-    }, []);
+        setTabValue(newValue)
+    }, [])
 
-    const handleCloseImportDialog = useCallback(() => setImportDialog(false), []);
-    const handleImportJsonChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => setImportJson(e.target.value), []);
+    const handleCloseImportDialog = useCallback(() => setImportDialog(false), [])
+    const handleImportJsonChange = useCallback(
+        (e: React.ChangeEvent<HTMLInputElement>) => setImportJson(e.target.value),
+        []
+    )
 
     return (
         <>
@@ -134,7 +143,7 @@ const Page: NextPage = () => {
             <MainLayout maxWidth="1200px">
                 <Container>
                     <Logo />
-                    <Paper elevation={0} sx={{ p: 2, bgcolor: 'action.hover', mb: 3 }}>
+                    <Paper elevation={0} sx={{ p: 2, bgcolor: "action.hover", mb: 3 }}>
                         <Breadcrumbs sx={{ mb: 2 }}>
                             <Link href="/" underline="hover" color="inherit">
                                 Home
@@ -150,10 +159,11 @@ const Page: NextPage = () => {
                             Music Search Configuration
                         </Typography>
                         <Typography variant="body1" sx={{ mb: 2, maxWidth: 600 }}>
-                            Configure how the system matches songs between Spotify and Plex. The configuration is now split into focused JSON files for easier management.
+                            Configure how the system matches songs between Spotify and Plex. The configuration is now
+                            split into focused JSON files for easier management.
                         </Typography>
 
-                        <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', flexWrap: 'wrap' }}>
+                        <Box sx={{ display: "flex", gap: 2, alignItems: "center", flexWrap: "wrap" }}>
                             <LoadingButton
                                 loading={resetting}
                                 onClick={resetConfiguration}
@@ -164,19 +174,11 @@ const Page: NextPage = () => {
                                 Reset All to Defaults
                             </LoadingButton>
 
-                            <Button
-                                onClick={exportConfiguration}
-                                variant="outlined"
-                                startIcon={<Download />}
-                            >
+                            <Button onClick={exportConfiguration} variant="outlined" startIcon={<Download />}>
                                 Export Configuration
                             </Button>
 
-                            <Button
-                                onClick={importConfiguration}
-                                variant="outlined"
-                                startIcon={<Upload />}
-                            >
+                            <Button onClick={importConfiguration} variant="outlined" startIcon={<Upload />}>
                                 Import Configuration
                             </Button>
 
@@ -184,24 +186,16 @@ const Page: NextPage = () => {
                                 ref={fileInputRef}
                                 type="file"
                                 accept=".json"
-                                style={{ display: 'none' }}
+                                style={{ display: "none" }}
                                 onChange={handleFileImport}
                             />
                         </Box>
                     </Paper>
 
-                    <Alert severity="info" sx={{ mb: 3 }}>
-                        <Typography variant="body2">
-                            <strong>Configuration Management:</strong> The configuration is organized into 3 focused JSON files:
-                            match filters, text processing, and search approaches. Each tab below provides a clean JSON editor 
-                            for direct configuration management.
-                        </Typography>
-                    </Alert>
-
                     <Box>
-                        <Tabs 
-                            value={tabValue} 
-                            onChange={handleTabChange} 
+                        <Tabs
+                            value={tabValue}
+                            onChange={handleTabChange}
                             sx={{ mb: 3 }}
                             variant="scrollable"
                             scrollButtons="auto"
@@ -244,7 +238,8 @@ const Page: NextPage = () => {
                         <DialogTitle>Import Configuration</DialogTitle>
                         <DialogContent>
                             <Typography variant="body2" sx={{ mb: 2 }}>
-                                Review the configuration below before importing. This will overwrite your current settings.
+                                Review the configuration below before importing. This will overwrite your current
+                                settings.
                             </Typography>
                             <TextField
                                 fullWidth
@@ -254,27 +249,24 @@ const Page: NextPage = () => {
                                 onChange={handleImportJsonChange}
                                 variant="outlined"
                                 sx={{
-                                    '& .MuiInputBase-input': {
+                                    "& .MuiInputBase-input": {
                                         fontFamily: 'Monaco, Consolas, "Courier New", monospace',
-                                        fontSize: '0.875rem'
+                                        fontSize: "0.875rem"
                                     }
                                 }}
                             />
                         </DialogContent>
                         <DialogActions>
-                            <Button onClick={handleCloseImportDialog}>
-                                Cancel
-                            </Button>
+                            <Button onClick={handleCloseImportDialog}>Cancel</Button>
                             <Button onClick={handleImportConfirm} variant="contained" color="primary">
                                 Import Configuration
                             </Button>
                         </DialogActions>
                     </Dialog>
-
                 </Container>
             </MainLayout>
         </>
-    );
-};
+    )
+}
 
-export default Page;
+export default Page

@@ -658,7 +658,13 @@ const config = [
             "unicorn/require-post-message-target-origin": "error",
             "unicorn/string-content": "error",
             "unicorn/text-encoding-identifier-case": "error",
-            "unicorn/throw-new-error": "error"
+            "unicorn/throw-new-error": "error",
+            
+            // JSX Props formatting: 6 or fewer props = single line, more = multi-line
+            "react/jsx-max-props-per-line": ["error", { 
+                "maximum": { "single": 6, "multi": 1 } 
+            }],
+            "react/jsx-first-prop-new-line": ["error", "multiline"]
         }
     }
 ]
