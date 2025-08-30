@@ -22,7 +22,7 @@ export default function Logs() {
 
     return (<Paper sx={{ p: 2 }}>
         {!!loading && <Box textAlign="center">
-            <CircularProgress />
+            <CircularProgress  />
         </Box>}
 
         {!loading &&

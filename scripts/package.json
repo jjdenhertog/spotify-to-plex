@@ -1,0 +1,16 @@
+{
+  "name": "jsx-restyler",
+  "version": "1.0.0",
+  "description": "JSX/TSX component restyling tool",
+  "main": "jsx-restyler.js",
+  "scripts": {
+    "test": "node jsx-restyler-test.js",
+    "format": "node jsx-restyler.js",
+    "format:components": "node jsx-restyler.js ../apps/web/src/components",
+    "format:pages": "node jsx-restyler.js ../apps/web/pages",
+    "format:all": "node jsx-restyler.js ../apps/web/src"
+  },
+  "keywords": ["jsx", "tsx", "formatter", "react", "mui"],
+  "author": "Claude Code Agent",
+  "license": "MIT"
+}

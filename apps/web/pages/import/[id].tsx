@@ -63,9 +63,7 @@ const Page: NextPage = () => {
         </Head>
         <MainLayout maxWidth="700px">
             <Container>
-                <Logo />
-
-
+                <Logo  />
                 {!!loading && <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, maxWidth: 300, border: '2px solid rgba(255,255,255,0.5)', borderRadius: '4px', p: 2, textAlign: 'center' }}>
                         <CircularProgress size={20} />

@@ -69,9 +69,7 @@ const ErrorProviderComponent = ({ children }: ErrorProviderProps) => {
                                                 fontSize="12px"
                                                 position="relative"
                                             >
-                                                <pre style={{ whiteSpace: "pre-wrap", wordWrap: "break-word" }}>
-                                                    {stack}
-                                                </pre>
+                                                <pre style={{ whiteSpace: "pre-wrap", wordWrap: "break-word" }}>{stack}</pre>
                                             </Typography>
                                         </Box>
                                     </Paper>

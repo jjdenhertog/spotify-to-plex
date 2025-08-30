@@ -39,14 +39,15 @@ export default function SpotifyNavigation() {
     }, [router]);
 
     return (
-        <Box sx={{
-            borderBottom: 1,
-            borderColor: 'divider',
-            mt: 3,
-            mb: 1,
-            display: 'flex',
-            justifyContent: 'center'
-        }}>
+        <Box
+            sx={{
+                borderBottom: 1,
+                borderColor: 'divider',
+                mt: 3,
+                mb: 1,
+                display: 'flex',
+                justifyContent: 'center'
+            }}>
             <Tabs
                 value={navigationItems.findIndex(item => item.path === currentPath)}
                 onChange={onChange}
@@ -55,16 +56,7 @@ export default function SpotifyNavigation() {
                 allowScrollButtonsMobile
             >
                 {navigationItems.map((item) => (
-                    <Tab
-                        key={item.path}
-                        label={item.label}
-                        icon={item.icon}
-                        iconPosition="start"
-                        sx={{
-                            minHeight: 48,
-                            maxHeight: 48,
-                        }}
-                    />
+                    <Tab key={item.path} label={item.label} icon={item.icon} iconPosition="start" sx={{ minHeight: 48, maxHeight: 48 }} />
                 ))}
             </Tabs>
         </Box>

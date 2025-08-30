@@ -14,8 +14,8 @@ export default class MyDocument extends Document<MyDocumentProps> {
                     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@100;200;300;400;500&display=swap" rel="stylesheet" />
                 </Head>
                 <body>
-                    <Main />
-                    <NextScript />
+                    <Main  />
+                    <NextScript  />
                 </body>
             </Html>
         );

@@ -178,7 +178,7 @@ export default function ExportMissingTracks(props: Props) {
                 <CloseIcon fontSize="small" />
             </IconButton>
             {!!loading && <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', p: 5 }}>
-                <CircularProgress />
+                <CircularProgress  />
             </Box>}
 
             {!loading &&
@@ -211,7 +211,6 @@ export default function ExportMissingTracks(props: Props) {
                         <Alert severity="warning" sx={{ fontWeight: 'normal' }}>You have not added Tidal credentials. Visit Github for more info.</Alert>
                     }
                     <Divider sx={{ mt: 1, mb: 2 }} />
-
                     {!!loadingTracks &&
                         <Box >
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, border: '2px solid rgba(255,255,255,0.5)', borderRadius: '4px', p: 2, textAlign: 'center' }}>
@@ -244,7 +243,8 @@ export default function ExportMissingTracks(props: Props) {
                             const tidalTrack = tidalTracks.find(tidalTrack => tidalTrack.id === item.id)
 
                             return <>
-                                <Box key={item.id}
+                                <Box
+                                    key={item.id}
                                     sx={{
                                         display: 'flex',
                                         justifyContent: 'space-between',
@@ -258,18 +258,32 @@ export default function ExportMissingTracks(props: Props) {
                                         <Typography variant="body2" color={!!tidalTrack && !!tidalTrack.tidal_ids && tidalTrack.tidal_ids.length === 0 ? 'warning' : undefined}>
                                             {item.title}
                                         </Typography>
-                                        <Typography variant="caption">
-                                            {item.artists.join(', ')}
-                                        </Typography>
+                                        <Typography variant="caption">{item.artists.join(', ')}</Typography>
                                     </Box>
                                     <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end' }}>
                                         <Box>
                                             {!!tidalTrack && !!tidalTrack.tidal_ids && tidalTrack.tidal_ids.length > 0 &&
-                                                <Button component="a" href={`https://tidal.com/browse/track/${tidalTrack.tidal_ids[0]}`} target="_blank" className="btn" color="inherit" variant="outlined" size="small" sx={{ fontSize: '.8em' }}>Tidal</Button>
+                                                <Button
+                                                    component="a"
+                                                    href={`https://tidal.com/browse/track/${tidalTrack.tidal_ids[0]}`}
+                                                    target="_blank"
+                                                    className="btn"
+                                                    color="inherit"
+                                                    variant="outlined"
+                                                    size="small"
+                                                    sx={{ fontSize: '.8em' }}>Tidal</Button>
                                             }
                                         </Box>
                                         <Box>
-                                            <Button component="a" href={`https://open.spotify.com/track/${item.id}`} target="_blank" className="btn" color="inherit" variant="outlined" size="small" sx={{ fontSize: '.8em' }}>Spotify</Button>
+                                            <Button
+                                                component="a"
+                                                href={`https://open.spotify.com/track/${item.id}`}
+                                                target="_blank"
+                                                className="btn"
+                                                color="inherit"
+                                                variant="outlined"
+                                                size="small"
+                                                sx={{ fontSize: '.8em' }}>Spotify</Button>
                                         </Box>
                                     </Box>
                                 </Box>
@@ -281,7 +295,7 @@ export default function ExportMissingTracks(props: Props) {
                         {totalPages > 1 &&
                             <Box mt={1} display="flex" justifyContent="space-between">
                                 <Button size="small" variant="outlined" color="inherit" disabled={page <= 0} onClick={prevPageClick}>Previous</Button>
-                                <Button size="small" variant="outlined" color="inherit" disabled={page >= totalPages} onClick={nextPageClick}>Next</Button>
+                                <Button size="small" variant="outlined" color="inherit" disabled={page>= totalPages} onClick={nextPageClick}>Next</Button>
                             </Box>
                         }
 

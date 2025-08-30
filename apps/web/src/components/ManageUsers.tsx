@@ -81,7 +81,6 @@ export default function ManageUsers() {
             :
             <>
                 <Typography sx={{ mb: 0.5 }} variant="body1">When connecting users you can sync recent songs, saved playlists and albums.</Typography>
-
                 {users.length > 0 ?
                     <>
                         <Typography variant="h6" sx={{ mt: 2, mb: 0.5 }}>Connected Spotify users</Typography>
@@ -106,7 +105,6 @@ export default function ManageUsers() {
                     </>
                     :
                     <Button component="a" href="/api/spotify/login" size="small" variant="contained" sx={{ bgcolor: "#1db954", mt: 1, '&:hover': { bgcolor: "#1aa34a" } }}>Connect Spotify Account</Button>
-
                 }
 
 

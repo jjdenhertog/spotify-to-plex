@@ -144,7 +144,14 @@ export default function ManagePlaylists() {
                             <Box component="li" sx={{ mb: 0.5 }}>Spotify URI &#40;e.g. spotify:playlist:37i9dQZF1EQqA6klNdJvwx &#41;</Box>
                             <Box component="li">Plex Content id, for <Link href="https://github.com/jjdenhertog/spotify-to-plex/blob/main/README.md#dashboarding" target="_blank">dashboarding</Link> &#40;e.g. /library/metadata/12345 &#41;</Box>
                         </Box>
-                        <TextField fullWidth placeholder="Enter your Spotify URL/URI or Plex ID here.." disabled={generating} value={searchInput} onChange={onChangeSpotifyInput} variant="outlined" size="small" />
+                        <TextField
+                            fullWidth
+                            placeholder="Enter your Spotify URL/URI or Plex ID here.."
+                            disabled={generating}
+                            value={searchInput}
+                            onChange={onChangeSpotifyInput}
+                            variant="outlined"
+                            size="small" />
                         <Box mt={1}>
                             <Button size="small" disabled={generating} onClick={onAddPlaylistClick}>Add item</Button>
                         </Box>
@@ -163,12 +170,7 @@ export default function ManagePlaylists() {
                                     <Grid container spacing={2}>
                                         {groupItems.map(item => (
                                             <Grid size={{ xs: 6, sm: 4, md: 4, lg: 3 }} key={item.id}>
-                                                <ManagePlaylistItem
-                                                    item={item}
-                                                    orderedIds={orderedIds}
-                                                    labels={labels}
-                                                    reloadSavedItems={reloadSavedItems}
-                                                />
+                                                <ManagePlaylistItem item={item} orderedIds={orderedIds} labels={labels} reloadSavedItems={reloadSavedItems} />
                                             </Grid>
                                         ))}
                                     </Grid>

@@ -136,9 +136,7 @@ const PlexConnection = (props: Props) => {
 
     if (loading) {
         return <Box display="flex" justifyContent="center">
-            <Alert severity="info" sx={{ ml: 2 }}>
-                Checking your connection with Plex
-            </Alert>
+            <Alert severity="info" sx={{ ml: 2 }}>Checking your connection with Plex</Alert>
         </Box>
     }
 
@@ -146,38 +144,21 @@ const PlexConnection = (props: Props) => {
     if (!connected) {
         return (
             <Box textAlign="center">
-                <Typography variant="h5" sx={{ mb: 2 }}>
-                    Connect to Plex
-                </Typography>
-                <Typography variant="body1" sx={{ mb: 2 }}>
-                    You need to login to Plex to continue.
-                </Typography>
-                <LoadingButton
-                    loading={creatingUrl}
-                    onClick={onPlexLoginClick}
-                    variant="contained"
-                    color="primary"
-                >
-                    Login to Plex
-                </LoadingButton>
+                <Typography variant="h5" sx={{ mb: 2 }}>Connect to Plex</Typography>
+                <Typography variant="body1" sx={{ mb: 2 }}>You need to login to Plex to continue.</Typography>
+                <LoadingButton loading={creatingUrl} onClick={onPlexLoginClick} variant="contained" color="primary">Login to Plex</LoadingButton>
             </Box>
         );
     }
 
     return (
         <Box textAlign="center">
-            <Typography variant="h5" sx={{ mb: 2 }}>
-                Select Plex Server
-            </Typography>
+            <Typography variant="h5" sx={{ mb: 2 }}>Select Plex Server</Typography>
             {resources.length === 0 ? (
-                <Alert variant="outlined" severity="error">
-                    We didn&apos;t find Plex Media Servers on your account.
-                </Alert>
+                <Alert variant="outlined" severity="error">We didn&apos;t find Plex Media Servers on your account.</Alert>
             ) : (
                 <>
-                    <Typography sx={{ mb: 2 }} variant="body1">
-                        Select and test the connection that you would like to use.
-                    </Typography>
+                    <Typography sx={{ mb: 2 }} variant="body1">Select and test the connection that you would like to use.</Typography>
                     <Box maxWidth={400} margin="0 auto" textAlign="left">
                         <Select fullWidth value={newPlexUri || ''} onChange={onPlexUriChange}>
                             {resources.map(item => {
@@ -185,14 +166,10 @@ const PlexConnection = (props: Props) => {
 
                                 return [
                                     <ListItem key={`header-${item.name}`}>
-                                        <Typography variant="caption" sx={{ textTransform: 'uppercase' }}>
-                                            {item.name}
-                                        </Typography>
+                                        <Typography variant="caption" sx={{ textTransform: 'uppercase' }}>{item.name}</Typography>
                                     </ListItem>,
                                     ...item.connections.map(connection => (
-                                        <MenuItem key={connection.uri} value={connection.uri}>
-                                            {connection.uri}
-                                        </MenuItem>
+                                        <MenuItem key={connection.uri} value={connection.uri}>{connection.uri}</MenuItem>
                                     ))
                                 ];
                             })}
@@ -210,15 +187,7 @@ const PlexConnection = (props: Props) => {
 
 
                     <Box mt={2}>
-                        <LoadingButton
-                            disabled={saveDisabled}
-                            loading={saving}
-                            color="primary"
-                            onClick={onSaveClick}
-                            variant="contained"
-                        >
-                            Save connection
-                        </LoadingButton>
+                        <LoadingButton disabled={saveDisabled} loading={saving} color="primary" onClick={onSaveClick} variant="contained">Save connection</LoadingButton>
                     </Box>
                 </>
             )}

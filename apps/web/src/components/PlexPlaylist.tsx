@@ -423,7 +423,7 @@ export default function PlexPlaylist(props: PlexPlaylistProps) {
                     <Box display="flex" mb={1} justifyContent="space-between">
                         <Button variant="contained" disabled={page <= 0} onClick={prevPageClick}>Previous</Button>
                         <Box>Showing {page * pageSize} - {curEnd}</Box>
-                        <Button variant="contained" disabled={page >= totalPages - 1} onClick={nextPageClick}>Next</Button>
+                        <Button variant="contained" disabled={page>= totalPages - 1} onClick={nextPageClick}>Next</Button>
                     </Box>
                 }
                 {visibleTracks.map(track => {
@@ -432,7 +432,14 @@ export default function PlexPlaylist(props: PlexPlaylistProps) {
                     const songIdx = trackSelectIdx ? trackSelectIdx.idx : 0;
                     const loading = loadingTracks && !(tracksLoaded.some(item => item === track.id))
 
-                    return <PlexTrack key={`${playlist.id}-plex-${track.title}-${track.id}}`} loading={loading} track={track} setSongIdx={onSetSongIndex} songIdx={songIdx} data={data} fast={fast} />
+                    return <PlexTrack
+                    key={`${playlist.id}-plex-${track.title}-${track.id}}`}
+                    loading={loading}
+                    track={track}
+                    setSongIdx={onSetSongIndex}
+                    songIdx={songIdx}
+                    data={data}
+                    fast={fast} />
                 })}
             </Stack>
         </Paper>

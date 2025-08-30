@@ -150,7 +150,6 @@ export default function PlexTrack(props: Props) {
             </RadioGroup>
         </Box>}
         <Divider sx={{ mt: 1, mb: 1 }} />
-
         {!!showMatchAnalyser &&
             <TrackAnalyzer track={track} onClose={onNotPerfectMatchClick} fast={fast} />
         }

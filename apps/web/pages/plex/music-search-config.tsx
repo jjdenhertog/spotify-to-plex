@@ -142,12 +142,10 @@ const Page: NextPage = () => {
             </Head>
             <MainLayout maxWidth="1200px">
                 <Container>
-                    <Logo />
+                    <Logo  />
                     <Paper elevation={0} sx={{ p: 2, bgcolor: "action.hover", mb: 3 }}>
                         <Breadcrumbs sx={{ mb: 2 }}>
-                            <Link href="/" underline="hover" color="inherit">
-                                Home
-                            </Link>
+                            <Link href="/" underline="hover" color="inherit">Home</Link>
                             <Typography color="text.primary">Music Search Configuration</Typography>
                         </Breadcrumbs>
 
@@ -155,9 +153,7 @@ const Page: NextPage = () => {
                             Back to Home
                         </Button>
 
-                        <Typography variant="h4" sx={{ mt: 2, mb: 0.5 }}>
-                            Music Search Configuration
-                        </Typography>
+                        <Typography variant="h4" sx={{ mt: 2, mb: 0.5 }}>Music Search Configuration</Typography>
                         <Typography variant="body1" sx={{ mb: 2, maxWidth: 600 }}>
                             Configure how the system matches songs between Spotify and Plex. The configuration is now
                             split into focused JSON files for easier management.
@@ -182,13 +178,7 @@ const Page: NextPage = () => {
                                 Import Configuration
                             </Button>
 
-                            <input
-                                ref={fileInputRef}
-                                type="file"
-                                accept=".json"
-                                style={{ display: "none" }}
-                                onChange={handleFileImport}
-                            />
+                            <input ref={fileInputRef} type="file" accept=".json" style={{ display: "none" }} onChange={handleFileImport} />
                         </Box>
                     </Paper>
 
@@ -209,7 +199,7 @@ const Page: NextPage = () => {
                         {tabValue === 0 && (
                             <Card>
                                 <CardContent>
-                                    <MatchFilterEditor />
+                                    <MatchFilterEditor  />
                                 </CardContent>
                             </Card>
                         )}
@@ -218,7 +208,7 @@ const Page: NextPage = () => {
                         {tabValue === 1 && (
                             <Card>
                                 <CardContent>
-                                    <TextProcessingEditor />
+                                    <TextProcessingEditor  />
                                 </CardContent>
                             </Card>
                         )}
@@ -227,7 +217,7 @@ const Page: NextPage = () => {
                         {tabValue === 2 && (
                             <Card>
                                 <CardContent>
-                                    <SearchApproachesEditor />
+                                    <SearchApproachesEditor  />
                                 </CardContent>
                             </Card>
                         )}
@@ -258,9 +248,7 @@ const Page: NextPage = () => {
                         </DialogContent>
                         <DialogActions>
                             <Button onClick={handleCloseImportDialog}>Cancel</Button>
-                            <Button onClick={handleImportConfirm} variant="contained" color="primary">
-                                Import Configuration
-                            </Button>
+                            <Button onClick={handleImportConfirm} variant="contained" color="primary">Import Configuration</Button>
                         </DialogActions>
                     </Dialog>
                 </Container>
