@@ -32,7 +32,8 @@ export async function searchAlbum(query: string, countryCode: string = 'NL'): Pr
         if (albums && albums.length > 0) {
             for (let i = 0; i < albums.length; i++) {
                 const album = albums[i];
-                if (!album) continue;
+                if (!album)
+                    continue;
 
                 const { id } = album;
                 const albumData = result.data.included?.find(item => item.id == id);

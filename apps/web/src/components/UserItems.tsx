@@ -135,11 +135,7 @@ export default function UserItems(props: Props) {
 
     return (<Modal open onClose={handleClose}>
         <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', maxWidth: 600, bgcolor: 'background.paper', p: 3, borderRadius: 1 }}>
-            <IconButton
-                size="small"
-                onClick={handleCloseClick}
-                sx={{ position: 'absolute', right: 8, top: 8 }}
-            >
+            <IconButton size="small" onClick={handleCloseClick} sx={{ position: 'absolute', right: 8, top: 8 }}>
                 <CloseIcon fontSize="small" />
             </IconButton>
             {!!loading && <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', p: 5 }}>
@@ -153,7 +149,9 @@ export default function UserItems(props: Props) {
                     <Divider sx={{ mt: 2, mb: 2 }} />
                     <Paper elevation={0} sx={{ p: 2, bgcolor: 'action.hover' }}>
                         <Typography variant="h6" sx={{ mb: 0.5 }}>Label name</Typography>
-                        <Typography variant="body2" sx={{ mb: 1 }}>This label will be connected to any items added.</Typography>
+                        <Typography variant="body2" sx={{ mb: 1 }}>
+                            This label will be connected to any items added.
+                        </Typography>
                         <TextField value={label} size="small" sx={{ maxWidth: 200 }} placeholder="Change label" onChange={onEditLabelChange} />
                     </Paper>
                     <Divider sx={{ mt: 2, mb: 2 }} />

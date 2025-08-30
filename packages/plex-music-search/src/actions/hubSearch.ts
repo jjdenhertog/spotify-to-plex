@@ -33,7 +33,8 @@ export default function hubSearch(uri: string, token: string, query: string, lim
                 }
 
                 for (const hub of Hub) {
-                    if (!hub?.Metadata) continue;
+                    if (!hub?.Metadata)
+                        continue;
                     
                     if (hub.type === "album") {
                         processAlbumMetadata(hub.Metadata, response);
@@ -57,7 +58,8 @@ export default function hubSearch(uri: string, token: string, query: string, lim
 
 function processAlbumMetadata(metadata: any[], response: HubSearchResult[]) {
     for (const item of metadata) {
-        if (!item) continue;
+        if (!item)
+            continue;
         
         response.push({
             type: "album",
@@ -81,7 +83,8 @@ function processAlbumMetadata(metadata: any[], response: HubSearchResult[]) {
 
 function processTrackMetadata(metadata: any[], response: HubSearchResult[]) {
     for (const item of metadata) {
-        if (!item) continue;
+        if (!item)
+            continue;
         
         response.push({
             type: "track",

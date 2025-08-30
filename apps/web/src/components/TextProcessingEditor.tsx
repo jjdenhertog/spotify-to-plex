@@ -148,7 +148,9 @@ const TextProcessingEditor: React.FC<TextProcessingEditorProps> = ({ onSave }) =
     if (loading) {
         return (
             <Box sx={{ textAlign: 'center', py: 4 }}>
-                <Typography>Loading text processing configuration...</Typography>
+                <Typography>
+                    Loading text processing configuration...
+                </Typography>
             </Box>
         );
     }
@@ -200,22 +202,14 @@ const TextProcessingEditor: React.FC<TextProcessingEditorProps> = ({ onSave }) =
         <Box>
             {/* Header */}
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
-                <Typography variant="h6">Text Processing Configuration</Typography>
+                <Typography variant="h6">
+                    Text Processing Configuration
+                </Typography>
                 <Box sx={{ display: 'flex', gap: 1 }}>
-                    <Button
-                        onClick={handleResetClick}
-                        variant="outlined"
-                        size="small"
-                        startIcon={<Refresh />}
-                    >
+                    <Button onClick={handleResetClick} variant="outlined" size="small" startIcon={<Refresh />}>
                         Reset to Defaults
                     </Button>
-                    <Button
-                        onClick={handleSaveClick}
-                        variant="contained"
-                        size="small"
-                        startIcon={<Save />}
-                    >
+                    <Button onClick={handleSaveClick} variant="contained" size="small" startIcon={<Save />}>
                         Save Configuration
                     </Button>
                 </Box>
@@ -229,7 +223,9 @@ const TextProcessingEditor: React.FC<TextProcessingEditorProps> = ({ onSave }) =
             <MonacoJsonEditor ref={editorRef} value={jsonData} onChange={handleChange} schema={textProcessingSchema} height={400} error={validationError} />
             <Alert severity="info" sx={{ mt: 2 }}>
                 <Typography variant="body2">
-                    <strong>Configuration Structure:</strong><br />
+                    <strong>
+                        Configuration Structure:
+                    </strong><br />
                     • <code>filterOutWords</code>: Array of words to remove from titles<br />
                     • <code>filterOutQuotes</code>: Array of quote characters to remove<br />
                     • <code>cutOffSeparators</code>: Array of separators that cut off text<br />

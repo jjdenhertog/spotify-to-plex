@@ -127,7 +127,9 @@ const MatchFilterEditor: React.FC<MatchFilterEditorProps> = ({ onSave }) => {
     if (loading) {
         return (
             <Box sx={{ textAlign: 'center', py: 4 }}>
-                <Typography>Loading match filters...</Typography>
+                <Typography>
+                    Loading match filters...
+                </Typography>
             </Box>
         );
     }
@@ -156,22 +158,14 @@ const MatchFilterEditor: React.FC<MatchFilterEditorProps> = ({ onSave }) => {
         <Box>
             {/* Header */}
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
-                <Typography variant="h6">Match Filters Configuration</Typography>
+                <Typography variant="h6">
+                    Match Filters Configuration
+                </Typography>
                 <Box sx={{ display: 'flex', gap: 1 }}>
-                    <Button
-                        onClick={handleResetClick}
-                        variant="outlined"
-                        size="small"
-                        startIcon={<Refresh />}
-                    >
+                    <Button onClick={handleResetClick} variant="outlined" size="small" startIcon={<Refresh />}>
                         Reset to Defaults
                     </Button>
-                    <Button
-                        onClick={handleSaveClick}
-                        variant="contained"
-                        size="small"
-                        startIcon={<Save />}
-                    >
+                    <Button onClick={handleSaveClick} variant="contained" size="small" startIcon={<Save />}>
                         Save Filters
                     </Button>
                 </Box>

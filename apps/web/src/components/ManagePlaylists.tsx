@@ -135,13 +135,23 @@ export default function ManagePlaylists() {
             <>
                 <Paper elevation={0} sx={{ p: 2, mb: 2, bgcolor: 'action.hover' }}>
                     <Box maxWidth={560} >
-                        <Typography mb={.5} variant="body2">Add any existing Spotify Playlist or Album. Once added you can sync it with Plex or change settings for the automated synchronisation. </Typography>
+                        <Typography mb={.5} variant="body2">
+                            Add any existing Spotify Playlist or Album. Once added you can sync it with Plex or change settings for the automated synchronisation.
+                        </Typography>
                         <Divider sx={{ mt: 2, mb: 2 }} />
-                        <Typography mb={1} variant="h6">Add Playlist or Album</Typography>
-                        <Typography mb={1} variant="body2">The following inputs are supported:</Typography>
+                        <Typography mb={1} variant="h6">
+                            Add Playlist or Album
+                        </Typography>
+                        <Typography mb={1} variant="body2">
+                            The following inputs are supported:
+                        </Typography>
                         <Box component="ul" sx={{ mt: 1, mb: 2, pl: 2, fontSize: ".9em" }}>
-                            <Box component="li" sx={{ mb: 0.5 }}>Spotify URL &#40;e.g. https://open.spotify.com/playlist/37i9dQZF1EQqA6klNdJvwx &#41;</Box>
-                            <Box component="li" sx={{ mb: 0.5 }}>Spotify URI &#40;e.g. spotify:playlist:37i9dQZF1EQqA6klNdJvwx &#41;</Box>
+                            <Box component="li" sx={{ mb: 0.5 }}>
+                                Spotify URL (e.g. https://open.spotify.com/playlist/37i9dQZF1EQqA6klNdJvwx )
+                            </Box>
+                            <Box component="li" sx={{ mb: 0.5 }}>
+                                Spotify URI (e.g. spotify:playlist:37i9dQZF1EQqA6klNdJvwx )
+                            </Box>
                             <Box component="li">Plex Content id, for <Link href="https://github.com/jjdenhertog/spotify-to-plex/blob/main/README.md#dashboarding" target="_blank">dashboarding</Link> &#40;e.g. /library/metadata/12345 &#41;</Box>
                         </Box>
                         <TextField

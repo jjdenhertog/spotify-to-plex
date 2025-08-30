@@ -141,7 +141,9 @@ const SearchApproachesEditor: React.FC<SearchApproachesEditorProps> = ({ onSave 
     if (loading) {
         return (
             <Box sx={{ textAlign: 'center', py: 4 }}>
-                <Typography>Loading search approaches...</Typography>
+                <Typography>
+                    Loading search approaches...
+                </Typography>
             </Box>
         );
     }
@@ -186,22 +188,14 @@ const SearchApproachesEditor: React.FC<SearchApproachesEditorProps> = ({ onSave 
         <Box>
             {/* Header */}
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
-                <Typography variant="h6">Search Approaches Configuration</Typography>
+                <Typography variant="h6">
+                    Search Approaches Configuration
+                </Typography>
                 <Box sx={{ display: 'flex', gap: 1 }}>
-                    <Button
-                        onClick={handleResetClick}
-                        variant="outlined"
-                        size="small"
-                        startIcon={<Refresh />}
-                    >
+                    <Button onClick={handleResetClick} variant="outlined" size="small" startIcon={<Refresh />}>
                         Reset to Defaults
                     </Button>
-                    <Button
-                        onClick={handleSaveClick}
-                        variant="contained"
-                        size="small"
-                        startIcon={<Save />}
-                    >
+                    <Button onClick={handleSaveClick} variant="contained" size="small" startIcon={<Save />}>
                         Save Approaches
                     </Button>
                 </Box>
@@ -216,7 +210,9 @@ const SearchApproachesEditor: React.FC<SearchApproachesEditorProps> = ({ onSave 
             <MonacoJsonEditor ref={editorRef} value={jsonData} onChange={handleChange} schema={searchApproachesSchema} height={400} error={validationError} />
             <Alert severity="info" sx={{ mb: 2, mt: 2 }}>
                 <Typography variant="body2">
-                    <strong>Configuration Structure:</strong><br />
+                    <strong>
+                        Configuration Structure:
+                    </strong><br />
                     • Each approach is an object with required <code>id</code> (string)<br />
                     • Optional boolean flags: <code>filtered</code>, <code>trim</code>, <code>ignoreQuotes</code>, <code>removeQuotes</code>, <code>force</code><br />
                     • Approaches are executed in the order they appear in the array<br />

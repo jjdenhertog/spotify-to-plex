@@ -18,7 +18,8 @@ export async function findMissingTidalTracks(missingTracks: Track[]) {
 
     for (let i = 0; i < missingTracks.length; i++) {
         const searchItem = missingTracks[i];
-        if (!searchItem?.id) continue;
+        if (!searchItem?.id)
+            continue;
 
         // Process if no cached link has been found
         const trackLink = cachedTidalLinks.find(item => item.spotify_id == searchItem.id);
@@ -60,7 +61,8 @@ export async function findMissingTidalTracks(missingTracks: Track[]) {
 
         for (let i = 0; i < toSearchTidalTracks.length; i++) {
             const track = toSearchTidalTracks[i];
-            if (!track?.id) continue;
+            if (!track?.id)
+                continue;
 
             const tidalData = tidalSearchResponse.find((item: SearchResponse) => item.id == track.id);
             if (tidalData?.result?.[0]?.id) {

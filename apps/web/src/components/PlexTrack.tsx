@@ -113,11 +113,7 @@ export default function PlexTrack(props: Props) {
         </Paper>
 
         {!!showSongs && <Box>
-            <RadioGroup
-                value={songIdx.toString()}
-                onChange={onChangeSongIdx}
-                sx={{ gap: 2 }}
-            >
+            <RadioGroup value={songIdx.toString()} onChange={onChangeSongIdx} sx={{ gap: 2 }}>
                 {songs.map((song: { trackTitle: string; artistName: string; thumb: string; album?: { title: string; thumb: string } }, index: number) => {
                     return <ListItem
                         key={`${id}-${song.trackTitle}`}
@@ -129,22 +125,7 @@ export default function PlexTrack(props: Props) {
                             py: 1
                         }}
                     >
-                        <FormControlLabel
-                            value={`${index}`}
-                            control={<Radio />}
-                            label={
-                                <Box display="flex" gap={1}>
-                                    <Box width={thumbSize} height={thumbSize} position="relative">
-                                        {!!song.thumb && <img src={song.thumb} alt={song.trackTitle} width={thumbSize} height={thumbSize} />}
-                                    </Box>
-                                    <Box>
-                                        <Typography display="block" variant="body1">{song.trackTitle}</Typography>
-                                        <Typography display="block" variant="body2">{song.artistName}</Typography>
-                                        {!!song.album && <Typography display="block" variant="body2">{song.album.title}</Typography>}
-                                    </Box>
-                                </Box>
-                            }
-                        />
+                        <FormControlLabel value={`${index}`} control={<Radio />} label={ <Box display="flex" gap={1}> <Box width={thumbSize} height={thumbSize} position="relative"> {!!song.thumb && <img src={song.thumb} alt={song.trackTitle} width={thumbSize} height={thumbSize} />} </Box> <Box> <Typography display="block" variant="body1">{song.trackTitle}</Typography> <Typography display="block" variant="body2">{song.artistName}</Typography> {!!song.album && <Typography display="block" variant="body2">{song.album.title}</Typography>} </Box> </Box> } />
                     </ListItem>
                 })}
             </RadioGroup>

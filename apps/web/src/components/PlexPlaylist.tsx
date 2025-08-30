@@ -269,7 +269,8 @@ export default function PlexPlaylist(props: PlexPlaylistProps) {
 
         for (let i = 0; i < tracks.length; i++) {
             const item = tracks[i];
-            if (!item) continue;
+            if (!item)
+                continue;
 
             const trackSelectIdx = trackSelections.find(selectionItem => selectionItem.artist === item?.artist && selectionItem.title === item?.title)
             const song = item.result?.[trackSelectIdx ? trackSelectIdx.idx : 0];
@@ -330,7 +331,9 @@ export default function PlexPlaylist(props: PlexPlaylistProps) {
                         {playlist.type === 'spotify-playlist' ?
                             <Typography variant="body1" sx={{ color: 'text.secondary' }}>Processed {tracksLoaded.length} of {tracksToLoad} tracks</Typography>
                             :
-                            <Typography variant="body1" sx={{ color: 'text.secondary' }}>Searching for album...</Typography>
+                            <Typography variant="body1" sx={{ color: 'text.secondary' }}>
+                                Searching for album...
+                            </Typography>
                         }
                         <Typography onClick={onCancelClick} variant="body1" sx={{ textDecoration: 'underline', textUnderlineOffset: '2px', textDecorationThickness: '1px', cursor: 'pointer', color: 'primary.main' }}>cancel</Typography>
                     </Box>
@@ -343,13 +346,17 @@ export default function PlexPlaylist(props: PlexPlaylistProps) {
             {!!loadingTracks &&
                 <>
                     <Typography variant="h6" sx={{ mb: 0.5 }}>Playlist loading...</Typography>
-                    <Typography variant="body2" sx={{ mb: 1 }}>We are trying to match all the songs from the playlist with your library.</Typography>
+                    <Typography variant="body2" sx={{ mb: 1 }}>
+                        We are trying to match all the songs from the playlist with your library.
+                    </Typography>
                 </>
             }
             {!loadingTracks &&
                 <>
                     <Typography variant="h6" sx={{ mb: 0.5 }}>Playlist loaded</Typography>
-                    <Typography variant="body2" sx={{ mb: 1 }}>We finished matching all songs from the playlist with your library. Any succesfull matches are cached to improve performance the next time this playlist is opened.</Typography>
+                    <Typography variant="body2" sx={{ mb: 1 }}>
+                        We finished matching all songs from the playlist with your library. Any succesfull matches are cached to improve performance the next time this playlist is opened.
+                    </Typography>
                 </>
             }
 
@@ -370,8 +377,12 @@ export default function PlexPlaylist(props: PlexPlaylistProps) {
                 <Alert variant="outlined" color="warning">
                     <Box sx={{ p: 1 }}>
                         <Typography variant="h6" sx={{ m: 0, mb: 0.5 }} color="warning">Album detected</Typography>
-                        <Typography variant="body2" sx={{ mb: 1 }}>You have added an album to your list. While you can use this album to create a playlist, you don&apos;t neccesarily need to. In most cases the album is already present in your library as an album.</Typography>
-                        <Typography variant="body2">If you setup syncing for an album you will get the reports, even if you don&apos;t create a playlist for it.</Typography>
+                        <Typography variant="body2" sx={{ mb: 1 }}>
+                            You have added an album to your list. While you can use this album to create a playlist, you don&apos;t neccesarily need to. In most cases the album is already present in your library as an album.
+                        </Typography>
+                        <Typography variant="body2">
+                            If you setup syncing for an album you will get the reports, even if you don&apos;t create a playlist for it.
+                        </Typography>
                     </Box>
                 </Alert>
             </Box>
@@ -385,9 +396,13 @@ export default function PlexPlaylist(props: PlexPlaylistProps) {
                             <Typography variant="h6" sx={{ mb: 0.5 }} color="warning">{missingTracks.length} tracks not found</Typography>
                         }
                         {playlist.type === 'spotify-album' &&
-                            <Typography variant="h6" sx={{ mb: 0.5 }} color="warning">Album not found or incomplete</Typography>
+                            <Typography variant="h6" sx={{ mb: 0.5 }} color="warning">
+                                Album not found or incomplete
+                            </Typography>
                         }
-                        <Typography variant="body2" sx={{ mb: 1 }}>Some tracks are not matching up, these are missing in your library or the naming in your library is a bit different than expected. </Typography>
+                        <Typography variant="body2" sx={{ mb: 1 }}>
+                            Some tracks are not matching up, these are missing in your library or the naming in your library is a bit different than expected.
+                        </Typography>
                         <Button variant="outlined" color="warning" size="small" onClick={onExportMissingClick}>View missing Files</Button>
                     </Box>
                 </Alert>
@@ -399,7 +414,9 @@ export default function PlexPlaylist(props: PlexPlaylistProps) {
                 <Alert variant="outlined" color="success">
                     <Box sx={{ p: 1 }}>
                         <Typography variant="h6" sx={{ mb: 0.5 }} color="success">All tracks matched</Typography>
-                        <Typography variant="body2">Each track is present in your Plex library.</Typography>
+                        <Typography variant="body2">
+                            Each track is present in your Plex library.
+                        </Typography>
                     </Box>
                 </Alert>
             </Box>
@@ -423,7 +440,7 @@ export default function PlexPlaylist(props: PlexPlaylistProps) {
                     <Box display="flex" mb={1} justifyContent="space-between">
                         <Button variant="contained" disabled={page <= 0} onClick={prevPageClick}>Previous</Button>
                         <Box>Showing {page * pageSize} - {curEnd}</Box>
-                        <Button variant="contained" disabled={page>= totalPages - 1} onClick={nextPageClick}>Next</Button>
+                        <Button variant="contained" disabled={page >= totalPages - 1} onClick={nextPageClick}>Next</Button>
                     </Box>
                 }
                 {visibleTracks.map(track => {
@@ -433,13 +450,14 @@ export default function PlexPlaylist(props: PlexPlaylistProps) {
                     const loading = loadingTracks && !(tracksLoaded.some(item => item === track.id))
 
                     return <PlexTrack
-                    key={`${playlist.id}-plex-${track.title}-${track.id}}`}
-                    loading={loading}
-                    track={track}
-                    setSongIdx={onSetSongIndex}
-                    songIdx={songIdx}
-                    data={data}
-                    fast={fast} />
+                        key={`${playlist.id}-plex-${track.title}-${track.id}}`}
+                        loading={loading}
+                        track={track}
+                        setSongIdx={onSetSongIndex}
+                        songIdx={songIdx}
+                        data={data}
+                        fast={fast}
+                    />
                 })}
             </Stack>
         </Paper>
@@ -447,15 +465,15 @@ export default function PlexPlaylist(props: PlexPlaylistProps) {
         {!!showEditPlaylistName &&
             <Modal open onClose={onEditPlaylistNameClick}>
                 <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', maxWidth: 400, bgcolor: 'background.paper', p: 3, borderRadius: 1 }}>
-                    <IconButton
-                        size="small"
-                        onClick={onEditPlaylistNameClick}
-                        sx={{ position: 'absolute', right: 8, top: 8 }}
-                    >
+                    <IconButton size="small" onClick={onEditPlaylistNameClick} sx={{ position: 'absolute', right: 8, top: 8 }}>
                         <CloseIcon fontSize="small" />
                     </IconButton>
-                    <Typography variant="h6">Playlist name</Typography>
-                    <Typography variant="body1">This will be the name in your Plex library.</Typography>
+                    <Typography variant="h6">
+                        Playlist name
+                    </Typography>
+                    <Typography variant="body1">
+                        This will be the name in your Plex library.
+                    </Typography>
                     <Input value={newPlaylistName} onChange={onPlaylistNameChange} />
                     <Button variant="contained" onClick={onSavePlaylistNameClick} sx={{ mt: 2 }}>Save</Button>
                 </Box>

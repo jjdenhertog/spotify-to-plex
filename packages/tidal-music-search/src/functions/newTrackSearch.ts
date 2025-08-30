@@ -15,7 +15,8 @@ export async function newTrackSearch(approaches: TidalMusicSearchApproach[], sea
 
     for (let i = 0; i < artists.length; i++) {
         const artist = artists[i];
-        if (!artist) continue;
+        if (!artist)
+            continue;
 
         try {
             const result = await findTrack(approaches, { id, artist, title, album: album || "" });

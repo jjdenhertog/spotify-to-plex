@@ -17,7 +17,8 @@ async function getPlexTracks(plexIds: string[], plexConfig: any): Promise<PlexTr
     for (const plexId of plexIds.filter(Boolean)) {
         try {
             const metaData = await getById(plexConfig, plexId)
-            if (metaData) foundTracks.push(metaData)
+            if (metaData)
+                foundTracks.push(metaData)
         } catch (_e) {
         }
     }
@@ -60,7 +61,8 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
 
                 for (let i = 0; i < searchItems.length; i++) {
                     const searchItem = searchItems[i];
-                    if (!searchItem) continue;
+                    if (!searchItem)
+                        continue;
 
                     // Process if no cached link has been found
                     const trackLink = cachedTrackLinks.find(item => item.spotify_id === searchItem.id)

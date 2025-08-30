@@ -115,7 +115,9 @@ export default function PlaylistItemSettings(props: Props) {
             {!loading && <>
 
                 <Typography variant="h6">Category name</Typography>
-                <Typography variant="body2" mb={1}>This name can be used to group playlists and album and use it for sorting and other purposes.</Typography>
+                <Typography variant="body2" mb={1}>
+                    This name can be used to group playlists and album and use it for sorting and other purposes.
+                </Typography>
                 <TextField autoFocus value={label} onChange={onEditLabelChange} size="small" fullWidth />
                 <Box sx={{ mt: 1 }}>
                     {labels.map(label => (
@@ -134,7 +136,9 @@ export default function PlaylistItemSettings(props: Props) {
                 <Divider sx={{ mt: 2, mb: 2 }} />
                 <Typography variant="h6">Sync settings</Typography>
                 <Box sx={{ mb: 2 }}>
-                    <Typography variant="body1">Below you find the settings for the selected items.</Typography>
+                    <Typography variant="body1">
+                        Below you find the settings for the selected items.
+                    </Typography>
                 </Box>
 
                 <Box display="flex" gap={2}>
@@ -148,7 +152,9 @@ export default function PlaylistItemSettings(props: Props) {
                                 <Divider orientation="vertical" />
                             </Box>
                             <Box>
-                                <Typography variant="body1" mt={1.5} mb={1}>Sync interval (in days)</Typography>
+                                <Typography variant="body1" mt={1.5} mb={1}>
+                                    Sync interval (in days)
+                                </Typography>
                                 <TextField type="number" value={days} size="small" onChange={onDaysChange} />
                             </Box>
                         </>

@@ -30,7 +30,8 @@ export function search(find: Track, options: Track[], includeMatching: boolean =
 
     for (let i = 0; i < matchFilters.length; i++) {
         const matchFilter = matchFilters[i];
-        if (!matchFilter) continue;
+        if (!matchFilter)
+            continue;
 
         const { reason, filter } = matchFilter;
         const result = results.filter(filter)

@@ -40,11 +40,7 @@ const ErrorProviderComponent = ({ children }: ErrorProviderProps) => {
             {!!error &&
                 <Dialog open maxWidth="sm" fullWidth>
                     <DialogTitle sx={{ paddingTop: 3, paddingBottom: .5 }}>
-                        <IconButton
-                            size="small"
-                            onClick={handleClose}
-                            sx={{ position: 'absolute', right: 8, top: 8 }}
-                        >
+                        <IconButton size="small" onClick={handleClose} sx={{ position: 'absolute', right: 8, top: 8 }}>
                             <CloseOutlined fontSize="small" />
                         </IconButton>
                         Error
@@ -61,14 +57,7 @@ const ErrorProviderComponent = ({ children }: ErrorProviderProps) => {
                                 <AccordionDetails>
                                     <Paper elevation={0} sx={{ bgcolor: 'action.hover' }}>
                                         <Box p={1}>
-                                            <Typography
-                                                component="div"
-                                                variant="body2"
-                                                mt={1}
-                                                fontFamily="monospace"
-                                                fontSize="12px"
-                                                position="relative"
-                                            >
+                                            <Typography component="div" variant="body2" mt={1} fontFamily="monospace" fontSize="12px" position="relative">
                                                 <pre style={{ whiteSpace: "pre-wrap", wordWrap: "break-word" }}>{stack}</pre>
                                             </Typography>
                                         </Box>

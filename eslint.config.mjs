@@ -22,6 +22,8 @@ import reactPlugin from 'eslint-plugin-react';
 import reactHooksPlugin from 'eslint-plugin-react-hooks';
 import unicorn from "eslint-plugin-unicorn";
 
+import customPlugin from './eslint_custom_plugins/index.js';
+
 const config = [
     {
         files: ["**/*.{ts,tsx}"],
@@ -90,7 +92,8 @@ const config = [
             react: reactPlugin,
             'react-hooks': reactHooksPlugin,
             '@typescript-eslint': typescriptPlugin,
-            unicorn
+            unicorn,
+            custom: customPlugin
         },
         settings: {
             react: {
@@ -98,6 +101,10 @@ const config = [
             }
         },
         rules: {
+            'custom/one-line-if': 'error',
+            'custom/simple-ternary-max-length': ['error', { maxLineLength: 150 }],
+            'custom/jsx-single-line-props': ['error', { maxPropsForSingleLine: 6 }],
+            'custom/jsx-multiline-children': ['error', { minTextLength: 20 }],
             indent: ['error', 4, { 
                 SwitchCase: 1,
                 ignoredNodes: [

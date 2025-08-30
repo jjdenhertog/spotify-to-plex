@@ -67,18 +67,24 @@ const Page: NextPage = () => {
                 {!!loading && <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, maxWidth: 300, border: '2px solid rgba(255,255,255,0.5)', borderRadius: '4px', p: 2, textAlign: 'center' }}>
                         <CircularProgress size={20} />
-                        <Typography variant="body1">Loading Spotify data...</Typography>
+                        <Typography variant="body1">
+                            Loading Spotify data...
+                        </Typography>
                     </Box>
                 </Box>}
 
                 {!loading && !!playlist && !!showOptimizer &&
                     <Dialog open onClose={onUseNormalClick}>
-                        <DialogTitle>Large playlist detected</DialogTitle>
+                        <DialogTitle>
+                            Large playlist detected
+                        </DialogTitle>
                         <DialogContent>
                             <Typography variant="body2">
                                 You are trying to match a large playlist with Plex. With the normal (more thorough) approach this will take a very long time. Using the fast approach it will do a more inaccurate search but it will be a lot faster.
                             </Typography>
-                            <Typography variant="body2">Which option do you want to use?</Typography>
+                            <Typography variant="body2">
+                                Which option do you want to use?
+                            </Typography>
                         </DialogContent>
                         <DialogActions>
                             <Button variant="contained" onClick={onUseFastClick}>Fast</Button>
@@ -89,14 +95,7 @@ const Page: NextPage = () => {
 
                 {!loading && !!playlist && !showOptimizer &&
                     <>
-                        <Button
-                            component="a"
-                            href="/spotify"
-                            variant="outlined"
-                            color="inherit"
-                            size="small"
-                            startIcon={<ChevronLeft />}
-                        >
+                        <Button component="a" href="/spotify" variant="outlined" color="inherit" size="small" startIcon={<ChevronLeft />}>
                             Back
                         </Button>
                         <PlexPlaylist playlist={playlist} fast={fast} />

@@ -52,7 +52,8 @@ export async function refreshMQTT(options: MQTTRefreshOptions = {}) {
 
     for (let i = 0; i < savedItems.length; i++) {
         const savedItem = savedItems[i];
-        if (!savedItem) continue;
+        if (!savedItem)
+            continue;
 
         const { type, id, title, label, uri } = savedItem;
         if (!label || !title || !uri) {

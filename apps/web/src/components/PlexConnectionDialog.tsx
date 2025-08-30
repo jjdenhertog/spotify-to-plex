@@ -23,12 +23,7 @@ const PlexConnectionDialog = ({
     setConnected
 }: PlexConnectionDialogProps) => {
     return (
-        <Dialog 
-            open={open} 
-            onClose={onClose} 
-            maxWidth="sm" 
-            fullWidth
-        >
+        <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
             <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 Plex Server Connection
                 <IconButton onClick={onClose} size="small">
@@ -36,7 +31,9 @@ const PlexConnectionDialog = ({
                 </IconButton>
             </DialogTitle>
             <DialogContent>
-                <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>Select your Plex Media Server to enable music synchronization.</Typography>
+                <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+                    Select your Plex Media Server to enable music synchronization.
+                </Typography>
                 <PlexConnection settings={settings} setSettings={setSettings} connected={connected} setConnected={setConnected} />
             </DialogContent>
         </Dialog>

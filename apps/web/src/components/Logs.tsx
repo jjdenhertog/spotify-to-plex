@@ -29,11 +29,15 @@ export default function Logs() {
             <>
                 {logs.length === 0 && <>
                     <Typography variant="h6">No logs found</Typography>
-                    <Typography variant="body2">There are no logs found yet, probably because you haven&apos;t automatically synced anything yet.</Typography>
+                    <Typography variant="body2">
+                        There are no logs found yet, probably because you haven&apos;t automatically synced anything yet.
+                    </Typography>
                 </>}
 
                 {!!(logs.length > 0) && <>
-                    <Typography variant="h6" sx={{ mb: 1 }}>Synchronisation logs</Typography>
+                    <Typography variant="h6" sx={{ mb: 1 }}>
+                        Synchronisation logs
+                    </Typography>
                     {logs.map(item => {
                         const { start, end, error, id, title } = item;
                         const duration = Math.ceil((end ? end - start : 0) / 1000 / 60);

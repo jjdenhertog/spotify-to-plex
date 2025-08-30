@@ -55,7 +55,8 @@ export async function searchAlbum(_config: TidalMusicSearchConfig, tracks: Tidal
 
     for (let j = 0; j < artists.length; j++) {
         const artist = artists[j];
-        if (!artist) continue;
+        if (!artist)
+            continue;
 
         try {
             const foundAlbums = await searchForAlbum(artist, album);

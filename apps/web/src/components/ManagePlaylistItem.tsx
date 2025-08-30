@@ -126,10 +126,7 @@ export default function ManagePlaylistItem(props: Props) {
                         <Box sx={{ display: 'flex', gap: .5, alignItems: 'center' }}>
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
                                 {item.type !== 'plex-media' && (
-                                    <Tooltip
-                                        title={item.sync ?
-                                            `Automatically synced every ${item.sync_interval ?? "1"} days` :
-                                            "Not automatically synced"}>
+                                    <Tooltip title={item.sync ? `Automatically synced every ${item.sync_interval ?? "1"} days` : "Not automatically synced"}>
                                         {item.sync ?
                                             <Sync sx={{ fontSize: '1.2em', color: 'text.secondary' }} /> :
                                             <SyncDisabled sx={{ fontSize: '1.2em', color: 'text.secondary' }} />

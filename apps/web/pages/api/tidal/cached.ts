@@ -32,7 +32,8 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
 
             for (let i = 0; i < searchItems.length; i++) {
                 const searchItem = searchItems[i];
-                if (!searchItem) continue;
+                if (!searchItem)
+                    continue;
 
                 // Process if no cached link has been found
                 const trackLink = cachedTrackLinks.find(item => item.spotify_id === searchItem.id)

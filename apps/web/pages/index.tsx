@@ -108,7 +108,9 @@ const Page: NextPage = () => {
 
                     {!!loading &&
                         <Box display="flex" justifyContent="center">
-                            <Alert severity="info" sx={{ ml: 2 }}>Checking your connection with Plex</Alert>
+                            <Alert severity="info" sx={{ ml: 2 }}>
+                                Checking your connection with Plex
+                            </Alert>
                         </Box>
                     }
 
@@ -123,7 +125,9 @@ const Page: NextPage = () => {
                     {!!connected && !!settings?.uri &&
                         <>
                             <Typography variant="h4" sx={{ mb: 3 }}>Spotify to Plex</Typography>
-                            <Typography variant="body1" sx={{ mb: 3, maxWidth: 500 }}>Manage your Spotify connections, synchronization settings, and view system logs.</Typography>
+                            <Typography variant="body1" sx={{ mb: 3, maxWidth: 500 }}>
+                                Manage your Spotify connections, synchronization settings, and view system logs.
+                            </Typography>
                             <Grid2 container spacing={2}>
                                 {menuItems.map((item) => (
                                     <Grid2 size={{ xs: 12, sm: 6 }} key={item.path}>

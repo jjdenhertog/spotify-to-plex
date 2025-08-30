@@ -89,11 +89,7 @@ export default function UserSyncSettings(props: Props) {
 
     return (<Modal open onClose={handleClose}>
         <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', maxWidth: 500, bgcolor: 'background.paper', p: 3, borderRadius: 1 }}>
-            <IconButton
-                size="small"
-                onClick={handleCloseClick}
-                sx={{ position: 'absolute', right: 8, top: 8 }}
-            >
+            <IconButton size="small" onClick={handleCloseClick} sx={{ position: 'absolute', right: 8, top: 8 }}>
                 <CloseIcon fontSize="small" />
             </IconButton>
             {!!loading && <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', p: 5 }}>
@@ -103,19 +99,25 @@ export default function UserSyncSettings(props: Props) {
             {!loading && <>
                 <Typography variant="h6">Sync settings</Typography>
                 <Box sx={{ mb: 2 }}>
-                    <Typography variant="body1">Below you find the settings for the selected items.</Typography>
+                    <Typography variant="body1">
+                        Below you find the settings for the selected items.
+                    </Typography>
                 </Box>
 
                 <FormControl sx={{ mb: 2 }}>
                     <FormLabel component="legend">Automatic sync</FormLabel>
-                    <FormHelperText>When enabled, this item will be synced automatically.</FormHelperText>
+                    <FormHelperText>
+                        When enabled, this item will be synced automatically.
+                    </FormHelperText>
                     <Switch checked={autoSync} onChange={onSwitchChange} color="success" />
                 </FormControl>
 
                 {!!autoSync &&
                     <FormControl sx={{ mb: 2 }}>
                         <FormLabel component="legend">Label</FormLabel>
-                        <FormHelperText>Created playlists will get this label</FormHelperText>
+                        <FormHelperText>
+                            Created playlists will get this label
+                        </FormHelperText>
                         <TextField size="small" value={label} onChange={onLabelChange} />
                     </FormControl>
                 }

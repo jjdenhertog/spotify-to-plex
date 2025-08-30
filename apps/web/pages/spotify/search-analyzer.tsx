@@ -10,7 +10,9 @@ const Page: NextPage = () => {
     return (
         <>
             <Head>
-                <title>Search Analyzer - Spotify to Plex</title>
+                <title>
+                    Search Analyzer - Spotify to Plex
+                </title>
             </Head>
             <MainLayout maxWidth="700px">
                 <Container>
@@ -18,7 +20,9 @@ const Page: NextPage = () => {
                     <SpotifyNavigation  />
                     <Paper elevation={0} sx={{ p: 2, bgcolor: 'action.hover' }}>
                         <Typography variant="h4" sx={{ mt: 2, mb: 0.5 }}>Search Analyzer</Typography>
-                        <Typography variant="body1" sx={{ mb: 1, maxWidth: 500 }}>Analyze and debug Spotify to Plex search results.</Typography>
+                        <Typography variant="body1" sx={{ mb: 1, maxWidth: 500 }}>
+                            Analyze and debug Spotify to Plex search results.
+                        </Typography>
                         <SearchAnalyzer  />
                     </Paper>
                 </Container>

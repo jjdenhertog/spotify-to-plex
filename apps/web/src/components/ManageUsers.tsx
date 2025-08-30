@@ -80,10 +80,14 @@ export default function ManageUsers() {
             <Box sx={{ textAlign: 'center', p: 2 }}><CircularProgress /></Box>
             :
             <>
-                <Typography sx={{ mb: 0.5 }} variant="body1">When connecting users you can sync recent songs, saved playlists and albums.</Typography>
+                <Typography sx={{ mb: 0.5 }} variant="body1">
+                    When connecting users you can sync recent songs, saved playlists and albums.
+                </Typography>
                 {users.length > 0 ?
                     <>
-                        <Typography variant="h6" sx={{ mt: 2, mb: 0.5 }}>Connected Spotify users</Typography>
+                        <Typography variant="h6" sx={{ mt: 2, mb: 0.5 }}>
+                            Connected Spotify users
+                        </Typography>
                         {users.map(item => {
 
                             return <Paper variant="outlined" key={item.id} sx={{ p: 1, mb: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 1 }}>
@@ -99,12 +103,16 @@ export default function ManageUsers() {
                             </Paper>
                         })}
                         <Box pt={1}>
-                            <Typography variant="body2" sx={{ mb: 1 }}>You can add more users if you want. But make sure to first log out of spotify.com or open this window in an incognito window. Otherwise it will simply reconnect the last user.</Typography>
+                            <Typography variant="body2" sx={{ mb: 1 }}>
+                                You can add more users if you want. But make sure to first log out of spotify.com or open this window in an incognito window. Otherwise it will simply reconnect the last user.
+                            </Typography>
                             <Button size="small" variant="outlined" component="a" href="/api/spotify/login" sx={{ borderColor: "#1db954" }}>Add another user</Button>
                         </Box>
                     </>
                     :
-                    <Button component="a" href="/api/spotify/login" size="small" variant="contained" sx={{ bgcolor: "#1db954", mt: 1, '&:hover': { bgcolor: "#1aa34a" } }}>Connect Spotify Account</Button>
+                    <Button component="a" href="/api/spotify/login" size="small" variant="contained" sx={{ bgcolor: "#1db954", mt: 1, '&:hover': { bgcolor: "#1aa34a" } }}>
+                        Connect Spotify Account
+                    </Button>
                 }
 
 

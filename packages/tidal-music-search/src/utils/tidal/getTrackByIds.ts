@@ -26,7 +26,8 @@ export async function getTrackByIds(ids: string[], countryCode: string): Promise
     if (data && included && data.length > 0 && included.length > 0) {
         for (let i = 0; i < data.length; i++) {
             const track = data[i];
-            if (!track) continue;
+            if (!track)
+                continue;
 
             const { id, attributes, relationships } = track;
             const title = attributes?.title;

@@ -138,7 +138,9 @@ const Page: NextPage = () => {
     return (
         <>
             <Head>
-                <title>Music Search Configuration - Spotify to Plex</title>
+                <title>
+                    Music Search Configuration - Spotify to Plex
+                </title>
             </Head>
             <MainLayout maxWidth="1200px">
                 <Container>
@@ -146,27 +148,25 @@ const Page: NextPage = () => {
                     <Paper elevation={0} sx={{ p: 2, bgcolor: "action.hover", mb: 3 }}>
                         <Breadcrumbs sx={{ mb: 2 }}>
                             <Link href="/" underline="hover" color="inherit">Home</Link>
-                            <Typography color="text.primary">Music Search Configuration</Typography>
+                            <Typography color="text.primary">
+                                Music Search Configuration
+                            </Typography>
                         </Breadcrumbs>
 
                         <Button component="a" href="/" variant="outlined" color="inherit" size="small" startIcon={<ChevronLeft />}>
                             Back to Home
                         </Button>
 
-                        <Typography variant="h4" sx={{ mt: 2, mb: 0.5 }}>Music Search Configuration</Typography>
+                        <Typography variant="h4" sx={{ mt: 2, mb: 0.5 }}>
+                            Music Search Configuration
+                        </Typography>
                         <Typography variant="body1" sx={{ mb: 2, maxWidth: 600 }}>
                             Configure how the system matches songs between Spotify and Plex. The configuration is now
                             split into focused JSON files for easier management.
                         </Typography>
 
                         <Box sx={{ display: "flex", gap: 2, alignItems: "center", flexWrap: "wrap" }}>
-                            <LoadingButton
-                                loading={resetting}
-                                onClick={resetConfiguration}
-                                variant="outlined"
-                                color="warning"
-                                startIcon={<Restore />}
-                            >
+                            <LoadingButton loading={resetting} onClick={resetConfiguration} variant="outlined" color="warning" startIcon={<Restore />}>
                                 Reset All to Defaults
                             </LoadingButton>
 
@@ -183,13 +183,7 @@ const Page: NextPage = () => {
                     </Paper>
 
                     <Box>
-                        <Tabs
-                            value={tabValue}
-                            onChange={handleTabChange}
-                            sx={{ mb: 3 }}
-                            variant="scrollable"
-                            scrollButtons="auto"
-                        >
+                        <Tabs value={tabValue} onChange={handleTabChange} sx={{ mb: 3 }} variant="scrollable" scrollButtons="auto">
                             <Tab label="Match Filters" />
                             <Tab label="Text Processing" />
                             <Tab label="Search Approaches" />
@@ -225,7 +219,9 @@ const Page: NextPage = () => {
 
                     {/* Import Configuration Dialog */}
                     <Dialog open={importDialog} onClose={handleCloseImportDialog} maxWidth="md" fullWidth>
-                        <DialogTitle>Import Configuration</DialogTitle>
+                        <DialogTitle>
+                            Import Configuration
+                        </DialogTitle>
                         <DialogContent>
                             <Typography variant="body2" sx={{ mb: 2 }}>
                                 Review the configuration below before importing. This will overwrite your current
@@ -248,7 +244,9 @@ const Page: NextPage = () => {
                         </DialogContent>
                         <DialogActions>
                             <Button onClick={handleCloseImportDialog}>Cancel</Button>
-                            <Button onClick={handleImportConfirm} variant="contained" color="primary">Import Configuration</Button>
+                            <Button onClick={handleImportConfirm} variant="contained" color="primary">
+                                Import Configuration
+                            </Button>
                         </DialogActions>
                     </Dialog>
                 </Container>

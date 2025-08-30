@@ -48,13 +48,7 @@ export default function SpotifyNavigation() {
                 display: 'flex',
                 justifyContent: 'center'
             }}>
-            <Tabs
-                value={navigationItems.findIndex(item => item.path === currentPath)}
-                onChange={onChange}
-                variant="scrollable"
-                scrollButtons="auto"
-                allowScrollButtonsMobile
-            >
+            <Tabs value={navigationItems.findIndex(item=> item.path===currentPath)} onChange={onChange} variant="scrollable" scrollButtons="auto" allowScrollButtonsMobile>
                 {navigationItems.map((item) => (
                     <Tab key={item.path} label={item.label} icon={item.icon} iconPosition="start" sx={{ minHeight: 48, maxHeight: 48 }} />
                 ))}

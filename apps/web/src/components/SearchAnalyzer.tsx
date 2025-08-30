@@ -44,14 +44,20 @@ export default function SearchAnalyzer() {
             <Typography sx={{ mb: 0.5 }} variant="body1">
                 It can happen that songs are not matching (correctly). To find out if and why songs are matching you can
                 use this page. Please share a screenshot of this page when{" "}
-                <Link href="https://github.com/jjdenhertog/spotify-to-plex/issues" target="_blank" sx={{ m: 0, p: 0 }} color="warning">submitting a issue at GitHub</Link>
+                <Link href="https://github.com/jjdenhertog/spotify-to-plex/issues" target="_blank" sx={{ m: 0, p: 0 }} color="warning">
+                    submitting a issue at GitHub
+                </Link>
                 .
             </Typography>
 
             <Divider sx={{ mt: 2, mb: 2 }} />
             <Typography sx={{ mb: 1 }} variant="h6">Spotify Track Link</Typography>
-            <Typography variant="body1" sx={{ mt: 1, mb: 0.5, fontSize: ".9em" }}>Spotify URL &#40;e.g. https://open.spotify.com/track/7KwZNVEaqikRSBSpyhXK2j &#41;</Typography>
-            <Typography variant="body1" sx={{ mb: 1, fontSize: ".9em" }}>Spotify URI &#40;e.g. spotify:track:7KwZNVEaqikRSBSpyhXK2j &#41;</Typography>
+            <Typography variant="body1" sx={{ mt: 1, mb: 0.5, fontSize: ".9em" }}>
+                Spotify URL (e.g. https://open.spotify.com/track/7KwZNVEaqikRSBSpyhXK2j )
+            </Typography>
+            <Typography variant="body1" sx={{ mb: 1, fontSize: ".9em" }}>
+                Spotify URI (e.g. spotify:track:7KwZNVEaqikRSBSpyhXK2j )
+            </Typography>
             <TextField fullWidth placeholder="Enter your Spotify URL/URI" disabled={loading} value={spotifyURI} onChange={onChangeSpotifyInput} />
             <Box mt={1}>
                 <Button variant="contained" disabled={loading} onClick={onAnalyseSongMatchClick}>Analyse song match</Button>

@@ -20,7 +20,8 @@ export async function syncUsers() {
     for (let i = 0; i < credentials.length; i++) {
         try {
             const credential = credentials[i];
-            if (!credential?.user) continue;
+            if (!credential?.user)
+                continue;
 
             const { user } = credential;
             if (!user.sync)
