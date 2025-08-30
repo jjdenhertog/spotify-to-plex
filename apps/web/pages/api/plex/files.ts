@@ -12,7 +12,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
         async (req, res) => {
             try {
                 const { media_content_id: mediaContentId } = req.query
-                if (typeof mediaContentId != "string")
+                if (typeof mediaContentId !== "string")
                     return res.status(200).json([])
 
                 const settings = await plex.getSettings();
@@ -42,7 +42,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                     }
                 })
 
-                const files = tracks.filter((item: string | null): item is string => item != null);
+                const files = tracks.filter((item: string | null): item is string => item !== null);
                 res.json(files)
             } catch (error) {
                 console.error('Error getting Plex files:', error);

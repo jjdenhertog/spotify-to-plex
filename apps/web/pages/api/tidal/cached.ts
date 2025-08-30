@@ -35,9 +35,9 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 if (!searchItem) continue;
 
                 // Process if no cached link has been found
-                const trackLink = cachedTrackLinks.find(item => item.spotify_id == searchItem.id)
+                const trackLink = cachedTrackLinks.find(item => item.spotify_id === searchItem.id)
                 const tidalIds = trackLink?.tidal_id
-                if (!tidalIds || tidalIds.length == 0)
+                if (!tidalIds || tidalIds.length === 0)
                     continue;
 
                 result.push({

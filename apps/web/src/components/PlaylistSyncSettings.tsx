@@ -79,7 +79,7 @@ export default function PlaylistItemSettings(props: Props) {
     // Load item data
     /////////////////////////////////////
     useEffect(() => {
-        if (!items || items.length == 0)
+        if (!items || items.length === 0)
             return;
 
         const [firstItem] = items
@@ -92,7 +92,7 @@ export default function PlaylistItemSettings(props: Props) {
             .map(item => item.label || "")
             .filter(filterUnique)
 
-        if (labels.length == 1 && labels[0])
+        if (labels.length === 1 && labels[0])
             setLabel(labels[0])
 
     }, [items])

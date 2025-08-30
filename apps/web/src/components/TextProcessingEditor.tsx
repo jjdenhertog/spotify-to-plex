@@ -1,13 +1,12 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import {
-    Box,
-    Typography,
-    Alert,
-    Button
-} from '@mui/material';
-import { Save, Refresh } from '@mui/icons-material';
+/* eslint-disable @typescript-eslint/use-unknown-in-catch-callback-variable */
+import { errorBoundary } from '@/helpers/errors/errorBoundary';
+import { Refresh, Save } from '@mui/icons-material';
+import { Alert, Box, Button, Typography } from '@mui/material';
 import axios from 'axios';
 import { enqueueSnackbar } from 'notistack';
+/* eslint-disable no-alert */
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+
 import MonacoJsonEditor, { MonacoJsonEditorHandle } from './MonacoJsonEditor';
 
 type TextProcessingConfig = {
@@ -31,22 +30,20 @@ const TextProcessingEditor: React.FC<TextProcessingEditorProps> = ({ onSave }) =
     const [validationError, setValidationError] = useState<string>('');
     const editorRef = useRef<MonacoJsonEditorHandle>(null);
 
-    useEffect(() => {
-        loadConfig();
-    }, []);
-
-    const loadConfig = async () => {
-        try {
+    const loadConfig = useCallback(async () => {
+        errorBoundary(async () => {
             setLoading(true);
             const response = await axios.get('/api/plex/music-search-config/text-processing');
             setJsonData(response.data);
-        } catch (error) {
-            console.error('Failed to load text processing config:', error);
-            enqueueSnackbar('Failed to load text processing config', { variant: 'error' });
-        } finally {
             setLoading(false);
-        }
-    };
+        }, () => {
+            setLoading(false);
+        });
+    }, []);
+
+    useEffect(() => {
+        loadConfig();
+    }, [loadConfig]);
 
     const validateConfig = (data: any): string | null => {
         if (!data || typeof data !== 'object') {
@@ -132,7 +129,7 @@ const TextProcessingEditor: React.FC<TextProcessingEditorProps> = ({ onSave }) =
             await loadConfig();
             setValidationError('');
         }
-    }, []);
+    }, [loadConfig]);
 
     const handleChange = useCallback((newValue: any) => {
         setJsonData(newValue);

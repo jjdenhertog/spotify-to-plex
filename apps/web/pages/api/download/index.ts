@@ -11,14 +11,14 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
         async (req, res) => {
 
             const { type, tracks } = req.body;
-            if (type != 'spotify' && type != 'tidal')
+            if (type !== 'spotify' && type !== 'tidal')
                 throw new Error(`Invalid type: tidal or spotify expected`)
 
-            if (typeof tracks != 'string')
+            if (typeof tracks !== 'string')
                 throw new Error(`Tracks expected`)
 
             const trackIds = tracks.split(',')
-            if (!trackIds || trackIds.length == 0)
+            if (!trackIds || trackIds.length === 0)
                 throw new Error(`Tracks were submitted, but had a length of zero.`)
 
             const getPrettyNumber = (value: number) => {

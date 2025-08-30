@@ -21,7 +21,7 @@ export type TidalMusicSearchTrack = {
     artists: string[];
 }
 
-export default function getCachedTrackLinks(
+export function getCachedTrackLinks(
     searchItems: (PlexMusicSearchTrack | TidalMusicSearchTrack)[], 
     type: 'plex' | 'tidal',
     settingsDir: string

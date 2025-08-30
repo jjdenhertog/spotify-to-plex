@@ -1,7 +1,7 @@
 import { useTheme } from "@mui/material/styles";
 import { SnackbarProvider, SnackbarProviderProps } from "notistack";
 
-export const BSnackbarProvider = (props: SnackbarProviderProps) => {
+export default function BSnackbarProvider(props: SnackbarProviderProps) {
     const theme = useTheme();
 
     return <SnackbarProvider

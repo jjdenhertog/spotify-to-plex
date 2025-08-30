@@ -36,7 +36,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
 
                 const servers: GetPlexResourcesResponse[] = [];
                 result.data.forEach((item: { product: string; name: string; clientIdentifier: string; connections: { local: boolean; uri: string }[]; httpsRequired?: boolean }) => {
-                    if (item.product == "Plex Media Server") {
+                    if (item.product === "Plex Media Server") {
 
                         const connections = item.connections.map((connection: { local: boolean; uri: string }) => {
                             const { local } = connection;

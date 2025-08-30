@@ -36,7 +36,7 @@ export default function UserItems(props: Props) {
     }, [type, user.id])
 
     const handleClose = useCallback((event: React.MouseEvent | React.KeyboardEvent | Record<string, never>, reason?: string) => {
-        if (reason == 'closeClick')
+        if (reason === 'closeClick')
             propsOnClose(event, reason)
 
     }, [propsOnClose])
@@ -61,13 +61,13 @@ export default function UserItems(props: Props) {
         const { id } = e.currentTarget.dataset;
         const { id: user_id } = user;
 
-        const item = items.find(item => item.id == id)
+        const item = items.find(item => item.id === id)
         if (item) {
             let searchId = 'spotify:'
-            if (type == 'albums')
+            if (type === 'albums')
                 searchId += 'album:'
 
-            if (type == 'playlists')
+            if (type === 'playlists')
                 searchId += 'playlist:'
 
             searchId += id;
@@ -83,7 +83,7 @@ export default function UserItems(props: Props) {
                 // Set added item to added
                 setItems(prev => prev.map(item => {
 
-                    if (item.id != id)
+                    if (item.id !== id)
                         return item;
 
                     return {
@@ -95,7 +95,7 @@ export default function UserItems(props: Props) {
                 // Remove loading
                 setAddingItems(prev => {
                     const idx = prev.indexOf(itemId);
-                    if (idx != -1)
+                    if (idx !== -1)
                         prev.splice(idx, 1)
 
                     return prev;
@@ -103,7 +103,7 @@ export default function UserItems(props: Props) {
             }, () => {
                 setAddingItems(prev => {
                     const idx = prev.indexOf(itemId);
-                    if (idx != -1)
+                    if (idx !== -1)
                         prev.splice(idx, 1)
 
                     return prev;

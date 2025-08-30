@@ -1,13 +1,12 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import {
-    Box,
-    Typography,
-    Alert,
-    Button
-} from '@mui/material';
-import { Save, Refresh } from '@mui/icons-material';
+/* eslint-disable no-alert */
+import { errorBoundary } from '@/helpers/errors/errorBoundary';
+import { Refresh, Save } from '@mui/icons-material';
+import { Box, Button, Typography } from '@mui/material';
 import axios from 'axios';
 import { enqueueSnackbar } from 'notistack';
+/* eslint-disable no-console */
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+
 import MonacoJsonEditor, { MonacoJsonEditorHandle } from './MonacoJsonEditor';
 
 type MatchFilterConfig = {
@@ -25,22 +24,20 @@ const MatchFilterEditor: React.FC<MatchFilterEditorProps> = ({ onSave }) => {
     const [validationError, setValidationError] = useState<string>('');
     const editorRef = useRef<MonacoJsonEditorHandle>(null);
 
-    useEffect(() => {
-        loadFilters();
-    }, []);
-
-    const loadFilters = async () => {
-        try {
+    const loadFilters = useCallback(async () => {
+        errorBoundary(async () => {
             setLoading(true);
             const response = await axios.get('/api/plex/music-search-config/match-filters');
             setJsonData(response.data);
-        } catch (error) {
-            console.error('Failed to load match filters:', error);
-            enqueueSnackbar('Failed to load match filters', { variant: 'error' });
-        } finally {
             setLoading(false);
-        }
-    };
+        }, () => {
+            setLoading(false);
+        });
+    }, []);
+
+    useEffect(() => {
+        loadFilters();
+    }, [loadFilters]);
 
     const validateFilters = (data: any): string | null => {
         if (!Array.isArray(data)) {
@@ -75,45 +72,43 @@ const MatchFilterEditor: React.FC<MatchFilterEditorProps> = ({ onSave }) => {
     };
 
     const handleSave = useCallback(async () => {
-        // Get current content directly from Monaco editor
-        const currentData = editorRef.current?.getCurrentValue?.();
-        
-        if (!currentData) {
-            enqueueSnackbar('No valid JSON data to save', { variant: 'error' });
+        errorBoundary(async () => {
+            // Get current content directly from Monaco editor
+            const currentData = editorRef.current?.getCurrentValue?.();
+            
+            if (!currentData) {
+                enqueueSnackbar('No valid JSON data to save', { variant: 'error' });
 
-            return;
-        }
+                return;
+            }
 
-        // Do validation only on save
-        const validationErrorMsg = validateFilters(currentData);
-        if (validationErrorMsg) {
-            setValidationError(validationErrorMsg);
-            enqueueSnackbar(`Validation Error: ${validationErrorMsg}`, { variant: 'error' });
+            // Do validation only on save
+            const validationErrorMsg = validateFilters(currentData);
+            if (validationErrorMsg) {
+                setValidationError(validationErrorMsg);
+                enqueueSnackbar(`Validation Error: ${validationErrorMsg}`, { variant: 'error' });
+                
+                return;
+            }
 
-            return;
-        }
-
-        setValidationError('');
-
-        try {
+            setValidationError('');
             await axios.post('/api/plex/music-search-config/match-filters', currentData);
             enqueueSnackbar('Match filters saved successfully', { variant: 'success' });
             
             if (onSave) {
                 onSave(currentData);
             }
-        } catch (error) {
-            const message = error instanceof Error ? error.message : 'Failed to save';
-            enqueueSnackbar(`Failed to save: ${message}`, { variant: 'error' });
-        }
+        });
     }, [onSave]);
 
     const handleReset = useCallback(async () => {
         if (confirm('Reset to default match filters? This will overwrite your current configuration.')) {
-            await loadFilters();
-            setValidationError('');
+            errorBoundary(async () => {
+                await loadFilters();
+                setValidationError('');
+            });
         }
-    }, []);
+    }, [loadFilters]);
 
     const handleChange = useCallback((newValue: any) => {
         setJsonData(newValue);
@@ -122,11 +117,11 @@ const MatchFilterEditor: React.FC<MatchFilterEditorProps> = ({ onSave }) => {
 
     // Wrapper functions to handle promises properly for onClick
     const handleSaveClick = useCallback(() => {
-        handleSave().catch(console.error);
+        handleSave().catch((error: unknown) => console.error(error));
     }, [handleSave]);
 
     const handleResetClick = useCallback(() => {
-        handleReset().catch(console.error);
+        handleReset().catch((error: unknown) => console.error(error));
     }, [handleReset]);
 
     if (loading) {
@@ -183,7 +178,7 @@ const MatchFilterEditor: React.FC<MatchFilterEditorProps> = ({ onSave }) => {
             </Box>
             
             <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-                Configure match filters as function strings. Each filter should have a 'reason' and 'filter' property. 
+                Configure match filters as function strings. Each filter should have a &apos;reason&apos; and &apos;filter&apos; property. 
                 Filters are evaluated in order - the first matching filter wins.
             </Typography>
 
@@ -197,15 +192,6 @@ const MatchFilterEditor: React.FC<MatchFilterEditorProps> = ({ onSave }) => {
                 error={validationError}
             />
 
-            <Alert severity="info" sx={{ mt: 2 }}>
-                <Typography variant="body2">
-                    <strong>Filter Structure:</strong><br />
-                    • Each filter is an object with <code>reason</code> (string) and <code>filter</code> (function string)<br />
-                    • Function strings should start with <code>(item) =&gt;</code><br />
-                    • Available properties: <code>item.matching.artist</code>, <code>item.matching.title</code>, <code>item.matching.album</code><br />
-                    • Each has <code>.match</code>, <code>.contains</code>, and <code>.similarity</code> properties
-                </Typography>
-            </Alert>
         </Box>
     );
 };

@@ -6,7 +6,7 @@ export async function errorBoundary(toRun: Function, onError?: Function, blockEr
     try {
         await toRun();
     } catch (err) {
-        if (typeof onError == 'function') {
+        if (typeof onError === 'function') {
             try {
                 onError(err);
             } catch (_e) { }

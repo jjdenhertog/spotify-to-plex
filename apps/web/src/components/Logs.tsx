@@ -27,12 +27,12 @@ export default function Logs() {
 
         {!loading &&
             <>
-                {logs.length == 0 && <>
+                {logs.length === 0 && <>
                     <Typography variant="h6">No logs found</Typography>
                     <Typography variant="body2">There are no logs found yet, probably because you haven&apos;t automatically synced anything yet.</Typography>
                 </>}
 
-                {logs.length > 0 && <>
+                {!!(logs.length > 0) && <>
                     <Typography variant="h6" sx={{ mb: 1 }}>Synchronisation logs</Typography>
                     {logs.map(item => {
                         const { start, end, error, id, title } = item;
@@ -44,7 +44,7 @@ export default function Logs() {
                             <Typography variant="body2">Last sync: <BMoment date={start} variant="from-now" />  </Typography>
                             {!!dnf && <Typography color="error" variant="body2">Did not complete</Typography>}
                             {!!error && <Typography color="error" variant="body2">{error}</Typography>}
-                            {!!duration && <Typography variant="body2">Duration: {duration} minute{duration > 1 && 's'}</Typography>}
+                            {!!duration && <Typography variant="body2">Duration: {duration} minute{duration > 1 ? 's' : ''}</Typography>}
                         </Paper>
                     })}
                 </>}

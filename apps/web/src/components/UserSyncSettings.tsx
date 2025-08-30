@@ -62,7 +62,7 @@ export default function UserSyncSettings(props: Props) {
     // Close dialog
     //////////////////////////////
     const handleClose = useCallback((_e: unknown, reason: string) => {
-        if (reason == 'closeClick')
+        if (reason === 'closeClick')
              
             onClose()
     }, [onClose])
@@ -82,9 +82,9 @@ export default function UserSyncSettings(props: Props) {
     }, [user])
 
     const hasChanges = (
-        (user.label || "") != label ||
-        !!(Boolean(user?.sync) != autoSync) ||
-        !!(Boolean(user?.recentContext) != recentContext)
+        (user.label || "") !== label ||
+        !!(Boolean(user?.sync) !== autoSync) ||
+        !!(Boolean(user?.recentContext) !== recentContext)
     )
 
     return (<Modal open onClose={handleClose}>

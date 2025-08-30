@@ -1,4 +1,4 @@
-export default function getAPIUrl(_url: string, path: string) {
+export function getAPIUrl(_url: string, path: string) {
     const url = new URL(_url);
 
     if (!url?.port)

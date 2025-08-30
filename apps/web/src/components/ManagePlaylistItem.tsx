@@ -140,7 +140,7 @@ export default function ManagePlaylistItem(props: Props) {
                     </Box>
                 </Box>
                 <Box sx={hoverBoxStyles}>
-                    {item.type != 'plex-media' &&
+                    {item.type !== 'plex-media' &&
                         <>
                             <Tooltip title="Open Plex importer"><IconButton component='a' color="primary" size="small" href={`/import/${item.id}`}><QueueMusic sx={{ fontSize: '1em' }} /></IconButton></Tooltip>
                             <Tooltip title="Settings"><IconButton data-id={item.id} onClick={onEditItemClick} size="small" ><Settings sx={{ fontSize: '1em' }} /></IconButton></Tooltip>

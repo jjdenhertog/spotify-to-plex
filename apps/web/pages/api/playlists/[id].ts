@@ -26,7 +26,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                     return res.status(400).json({ msg: "No plex connection found" });
 
                 const { id } = req.query
-                if (typeof id != 'string')
+                if (typeof id !== 'string')
                     return res.status(400).json({ msg: "Invalid ID given" });
 
                 const playlistsData = await plex.getPlaylists();
@@ -34,14 +34,14 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 if (!playlists)
                     return res.status(400).json({ msg: "Invalid playlists" });
 
-                const playlistIds = playlists.find(item => item.id == id)
+                const playlistIds = playlists.find(item => item.id === id)
                 if (!playlistIds)
                     return res.status(404).json({ error: `Playlist not found connected to ${id}` })
 
                 // Check the existence
                 const url = getAPIUrl(settings.uri, `/playlists`);
                 const result = await AxiosRequest.get<GetPlaylistResponse>(url, settings.token);
-                const playlist = result.data.MediaContainer.Metadata.find(item => item.ratingKey == playlistIds.plex)
+                const playlist = result.data.MediaContainer.Metadata.find(item => item.ratingKey === playlistIds.plex)
                 if (!playlist)
                     return res.status(404).json({ error: `Playlist not found with id ${playlistIds.plex}` })
 
@@ -57,7 +57,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
             try {
                 const { id, name, label: _label, thumb } = req.body;
                 const items: { key: string, source?: string }[] = req.body.items;
-                if (!items || items.length == 0 || typeof name != 'string' || typeof id != 'string')
+                if (!items || items.length === 0 || typeof name !== 'string' || typeof id !== 'string')
                     return res.status(400).json({ msg: "Invalid data given" });
 
                 const settings = await plex.getSettings();
@@ -73,14 +73,14 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 if (!playlists)
                     return res.status(400).json({ msg: "Invalid playlists" });
 
-                const playlistIds = playlists.find(item => item.id == id)
+                const playlistIds = playlists.find(item => item.id === id)
                 if (!playlistIds)
                     return res.status(404).json({ error: `Playlist not found connected to ${id}` })
 
                 // Check the existence
                 const url = getAPIUrl(validatedSettings.uri, `/playlists`);
                 const result = await AxiosRequest.get<GetPlaylistResponse>(url, validatedSettings.token);
-                const playlist = result.data.MediaContainer.Metadata.find(item => item.ratingKey == playlistIds.plex);
+                const playlist = result.data.MediaContainer.Metadata.find(item => item.ratingKey === playlistIds.plex);
                 if (!playlist)
                     return res.status(404).json({ error: `Playlist not found with id ${playlistIds.plex}` })
 
@@ -90,11 +90,11 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 // Add all items
                 await addItemsToPlaylist(validatedSettings, getAPIUrl, playlist.ratingKey, items)
 
-                if (playlist.title != name && name)
+                if (playlist.title !== name && name)
                     await updatePlaylist(validatedSettings, getAPIUrl, playlist.ratingKey, { title: name })
 
                 // Update thumbnail of playlist
-                if (typeof thumb == 'string') {
+                if (typeof thumb === 'string') {
                     try {
                         await putPlaylistPoster(validatedSettings, getAPIUrl, playlist.ratingKey, thumb)
                     } catch (_e) {

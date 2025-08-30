@@ -31,10 +31,10 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
             if (!Array.isArray(searchItems))
                 throw new Error(`Array of items expected, none found`)
 
-            if (typeof process.env.TIDAL_API_CLIENT_ID != 'string')
+            if (typeof process.env.TIDAL_API_CLIENT_ID !== 'string')
                 throw new Error(`Environment variable TIDAL_API_CLIENT_ID is missing`)
 
-            if (typeof process.env.TIDAL_API_CLIENT_SECRET != 'string')
+            if (typeof process.env.TIDAL_API_CLIENT_SECRET !== 'string')
                 throw new Error(`Environment variable TIDAL_API_CLIENT_SECRET is missing`)
 
             ///////////////////////////////////////

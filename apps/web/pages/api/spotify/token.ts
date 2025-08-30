@@ -77,7 +77,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 if (existsSync(credentialsPath)) {
                     // Update
                     const existingCredentials: SpotifyCredentials[] = JSON.parse(readFileSync(credentialsPath, 'utf8'))
-                    const newCredentials = existingCredentials.filter(item => item.user.id != spotifyCredentials.user.id)
+                    const newCredentials = existingCredentials.filter(item => item.user.id !== spotifyCredentials.user.id)
                     newCredentials.push(spotifyCredentials)
 
                     writeFileSync(credentialsPath, JSON.stringify(newCredentials, undefined, 4))

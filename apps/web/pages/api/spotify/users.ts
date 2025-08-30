@@ -31,19 +31,19 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
             const credentials: SpotifyCredentials[] = JSON.parse(readFileSync(credentialsPath, 'utf8'))
 
             const { id, sync, label, recent_context } = req.body;
-            const credential = credentials.find(item => item.user.id == id)
+            const credential = credentials.find(item => item.user.id === id)
             if (!credential)
                 return res.status(404).json({ error: "User is not found." })
 
             const { user } = credential;
 
-            if (typeof sync == 'boolean')
+            if (typeof sync === 'boolean')
                 user.sync = sync;
 
-            if (typeof recent_context == 'boolean')
+            if (typeof recent_context === 'boolean')
                 user.recentContext = recent_context;
 
-            if (typeof label == 'string')
+            if (typeof label === 'string')
                 user.label = label;
 
             // Change the imtes
@@ -60,16 +60,16 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 return res.status(400).json({ error: `No users are currently connected.` })
 
             const { id } = req.query
-            if (typeof id != 'string')
+            if (typeof id !== 'string')
                 return res.status(400).json({ error: `ID expected but none found` })
 
             let users: SpotifyCredentials[] = JSON.parse(readFileSync(credentialsPath, 'utf8'))
-            if (!users.some(item => item.user.id == id))
+            if (!users.some(item => item.user.id === id))
                 return res.status(400).json({ error: `User not found` })
 
 
             // Change the imtes
-            users = users.filter(item => item.user.id != id)
+            users = users.filter(item => item.user.id !== id)
             writeFileSync(credentialsPath, JSON.stringify(users, undefined, 4))
 
             return res.status(200).json(users)

@@ -23,14 +23,14 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                         id = path.split("/").join(":");
                         id = `spotify${id}`;
                     }
-                } else if (search.split(":").length == 3) {
+                } else if (search.split(":").length === 3) {
                     id = search;
                 } else {
                     return res.status(400).json({ error: "Invalid Spotify URI, expecting spotify:playlist:id" })
                 }
             }
 
-            if (id.indexOf(':track:') == -1)
+            if (id.indexOf(':track:') === -1)
                 return res.status(400).json({ error: "Invalid Spotify URI, expecting spotify:track:id" })
 
             const api = SpotifyApi.withClientCredentials(process.env.SPOTIFY_API_CLIENT_ID, process.env.SPOTIFY_API_CLIENT_SECRET);

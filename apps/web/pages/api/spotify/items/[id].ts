@@ -12,7 +12,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
         async (req, res) => {
 
             const { id } = req.query
-            if (typeof id != 'string')
+            if (typeof id !== 'string')
                 return res.status(400).json({ error: "ID missing" })
 
             if (!process.env.SPOTIFY_API_CLIENT_ID || !process.env.SPOTIFY_API_CLIENT_SECRET)
@@ -23,7 +23,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 return res.status(200).json([])
 
             const savedItems: SavedItem[] = JSON.parse(readFileSync(savedItemsPath, 'utf8'))
-            const savedItem = savedItems.find(item => item.id == id)
+            const savedItem = savedItems.find(item => item.id === id)
             if (!savedItem)
                 return res.status(400).json({ error: `Item not found` })
 

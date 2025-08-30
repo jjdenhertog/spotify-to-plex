@@ -33,7 +33,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
 
                 const result: GetPlexPlaylistResponse[] = []
                 plexData.MediaContainer.Metadata.forEach((item) => {
-                    if (!item.smart && item.playlistType == 'audio') {
+                    if (!item.smart && item.playlistType === 'audio') {
                         result.push({
                             key: item.key,
                             guid: item.guid,
@@ -52,7 +52,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
             try {
                 const { id, name, type, thumb } = req.body
                 const items: { key: string, source?: string }[] = req.body.items;
-                if (!items || items.length == 0 || typeof name != 'string' || typeof id != 'string' || typeof type != 'string')
+                if (!items || items.length === 0 || typeof name !== 'string' || typeof id !== 'string' || typeof type !== 'string')
                     return res.status(400).json({ msg: "Invalid data given" });
 
                 const settings = await plex.getSettings();
@@ -72,7 +72,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 await addItemsToPlaylist(validatedSettings, getAPIUrl, playlistId, items)
 
                 // Update thumbnail of playlist
-                if (typeof thumb == 'string') {
+                if (typeof thumb === 'string') {
                     try {
                         await putPlaylistPoster(validatedSettings, getAPIUrl, playlistId, thumb)
                     } catch (_e) {

@@ -1,13 +1,14 @@
-import { createPlexConfig } from "@spotify-to-plex/plex-config/functions/createPlexConfig";
-import { getSettings } from "@spotify-to-plex/plex-config/functions/getSettings";
-import { updateSettings } from "@spotify-to-plex/plex-config/functions/updateSettings";
-import { hasValidConnection } from "@spotify-to-plex/plex-config/functions/hasValidConnection";
-import { clearSettings } from "@spotify-to-plex/plex-config/functions/clearSettings";
-import { getPlaylists } from "@spotify-to-plex/plex-config/functions/getPlaylists";
 import { addPlaylist } from "@spotify-to-plex/plex-config/functions/addPlaylist";
+import { clearPlaylists } from "@spotify-to-plex/plex-config/functions/clearPlaylists";
+import { clearSettings } from "@spotify-to-plex/plex-config/functions/clearSettings";
+/* eslint-disable unicorn/prefer-top-level-await */
+import { createPlexConfig } from "@spotify-to-plex/plex-config/functions/createPlexConfig";
+import { getPlaylists } from "@spotify-to-plex/plex-config/functions/getPlaylists";
+import { getSettings } from "@spotify-to-plex/plex-config/functions/getSettings";
+import { hasValidConnection } from "@spotify-to-plex/plex-config/functions/hasValidConnection";
 import { removePlaylist } from "@spotify-to-plex/plex-config/functions/removePlaylist";
 import { updatePlaylist } from "@spotify-to-plex/plex-config/functions/updatePlaylist";
-import { clearPlaylists } from "@spotify-to-plex/plex-config/functions/clearPlaylists";
+import { updateSettings } from "@spotify-to-plex/plex-config/functions/updateSettings";
 import { settingsDir } from "@spotify-to-plex/shared-utils/server";
 
 // Re-export types that might be needed
@@ -18,7 +19,7 @@ export type { PlexPlaylists, PlexSettings, PlexConfigOptions } from "@spotify-to
 createPlexConfig({
     storageDir: settingsDir,
     preloadCache: true
-}).catch(console.error);
+}).catch((error: unknown) => console.error(error));
 
 // Export functions as plex object for easier migration
 export const plex = {

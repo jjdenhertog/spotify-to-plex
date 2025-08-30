@@ -1,3 +1,4 @@
+/* eslint-disable unicorn/prefer-blob-reading-methods */
 import Logo from "@/components/Logo";
 import MatchFilterEditor from "@/components/MatchFilterEditor";
 import SearchApproachesEditor from "@/components/SearchApproachesEditor";

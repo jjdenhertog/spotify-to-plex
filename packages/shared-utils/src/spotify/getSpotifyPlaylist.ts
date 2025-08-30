@@ -2,7 +2,7 @@ import { GetSpotifyPlaylist } from "@spotify-to-plex/shared-types/spotify/api";
 import { SpotifyApi } from "@spotify/web-api-ts-sdk";
 
 
-export default async function getSpotifyPlaylist(api: SpotifyApi, id: string, simplified: boolean): Promise<GetSpotifyPlaylist | null> {
+export async function getSpotifyPlaylist(api: SpotifyApi, id: string, simplified: boolean): Promise<GetSpotifyPlaylist | null> {
 
     // const result: GetSpotifyPlaylist = {}
     // let allTracks: GetSpotifyPlaylist["tracks"] = []

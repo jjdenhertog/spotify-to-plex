@@ -17,9 +17,9 @@ export function generateError(req: NextApiRequest, res: NextApiResponse, subject
             action = 'load';
             break;
     }
-    if (typeof error == 'string') {
+    if (typeof error === 'string') {
         res.status(400).json({ error });
-    } else if (error instanceof Error && typeof error.message == 'string') {
+    } else if (error instanceof Error && typeof error.message === 'string') {
         res.status(400).json({ error: error.message });
     } else {
         res.status(400).json({ error: `Could not ${action} ${subject}` });
