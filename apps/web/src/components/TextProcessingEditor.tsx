@@ -1,14 +1,12 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import {
-    Box,
-    Typography,
-    Alert,
-    Button
-} from '@mui/material';
-import { Save, Refresh } from '@mui/icons-material';
+/* eslint-disable @typescript-eslint/use-unknown-in-catch-callback-variable */
+import { errorBoundary } from '@/helpers/errors/errorBoundary';
+import { Refresh, Save } from '@mui/icons-material';
+import { Alert, Box, Button, Typography } from '@mui/material';
 import axios from 'axios';
 import { enqueueSnackbar } from 'notistack';
-import { errorBoundary } from '@/helpers/errors/errorBoundary';
+/* eslint-disable no-alert */
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+
 import MonacoJsonEditor, { MonacoJsonEditorHandle } from './MonacoJsonEditor';
 
 type TextProcessingConfig = {
@@ -131,7 +129,7 @@ const TextProcessingEditor: React.FC<TextProcessingEditorProps> = ({ onSave }) =
             await loadConfig();
             setValidationError('');
         }
-    }, []);
+    }, [loadConfig]);
 
     const handleChange = useCallback((newValue: any) => {
         setJsonData(newValue);

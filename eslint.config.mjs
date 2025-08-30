@@ -136,7 +136,7 @@ const config = [
                 }
             ],
             'react-hooks/rules-of-hooks': 'error',
-            'react-hooks/exhaustive-deps': 'warn',
+            'react-hooks/exhaustive-deps': 'error',
             "react/jsx-pascal-case": [
                 "error",
                 {
