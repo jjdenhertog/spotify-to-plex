@@ -32,10 +32,11 @@ def scrape_playlist():
     
     Expected payload:
     {
-        "url": "spotify_playlist_url"
+        "url": "spotify_playlist_url",
+        "include_album_data": true  # Optional, defaults to true
     }
     
-    Returns raw JSON data from SpotifyScraper
+    Returns raw JSON data from SpotifyScraper with optional album enrichment
     """
     try:
         # Validate request
@@ -56,10 +57,13 @@ def scrape_playlist():
         if not scraper_service.is_valid_spotify_url(playlist_url):
             return jsonify({"error": "Invalid Spotify playlist URL format"}), 400
         
-        logger.info(f"Scraping playlist: {playlist_url}")
+        # Get optional include_album_data parameter (defaults to True for backwards compatibility)
+        include_album_data = data.get('include_album_data', True)
         
-        # Scrape playlist data
-        playlist_data = scraper_service.scrape_playlist(playlist_url)
+        logger.info(f"Scraping playlist: {playlist_url} (include_album_data={include_album_data})")
+        
+        # Scrape playlist data with optional album enrichment
+        playlist_data = scraper_service.scrape_playlist(playlist_url, include_album_data=include_album_data)
         
         logger.info(f"Successfully scraped playlist: {playlist_data.get('name', 'Unknown')}")
         
