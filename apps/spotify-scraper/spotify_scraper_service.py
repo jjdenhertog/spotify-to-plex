@@ -28,26 +28,101 @@ class SpotifyScraperService:
         except Exception:
             return False
     
-    def scrape_playlist(self, url: str) -> Dict[str, Any]:
+    def scrape_playlist(self, url: str, include_album_data: bool = True) -> Dict[str, Any]:
         """
-        Scrape Spotify playlist - returns raw data from SpotifyScraper
+        Scrape Spotify playlist with optional complete album data
         
         Args:
             url: Spotify playlist URL
+            include_album_data: If True, fetches complete album data for each track
+                              If False, returns basic playlist data (faster)
             
         Returns:
-            Raw JSON data from SpotifyScraper.get_playlist_info()
+            Dict containing playlist data with complete track and album information
         """
         try:
-            # Call SpotifyScraper directly and return raw result
+            # Get basic playlist data first (fast, 1 request)
             raw_data = self.scraper.get_playlist_info(url)
             
             if not raw_data:
                 raise ValueError("Failed to scrape playlist data")
             
-            logger.info(f"Successfully scraped playlist data")
+            logger.info(f"Successfully scraped playlist: {raw_data.get('name', 'Unknown')}")
             
-            # Return raw data without transformation
+            # If album data not needed, return basic data
+            if not include_album_data:
+                logger.info("Returning basic playlist data (no album info)")
+                return raw_data
+            
+            # Check if tracks exist in the playlist
+            tracks = raw_data.get('tracks', [])
+            if not tracks:
+                logger.warning("No tracks found in playlist")
+                return raw_data
+            
+            logger.info(f"Enriching {len(tracks)} tracks with complete album data...")
+            
+            # Counter for successfully enriched tracks
+            enriched_count = 0
+            failed_count = 0
+            
+            # Process each track individually to avoid rate limiting
+            for i, track in enumerate(tracks):
+                try:
+                    # Extract track URI from basic track data
+                    track_uri = track.get('uri')
+                    if not track_uri:
+                        logger.debug(f"Track {i} missing URI, skipping enrichment")
+                        continue
+                    
+                    # Get complete track information with album data
+                    complete_track = self.scraper.get_track_info(track_uri)
+                    
+                    if complete_track:
+                        # Merge complete track data into the existing track object
+                        # Preserve original fields and add new album information
+                        
+                        # Update basic fields if available in complete data
+                        if 'name' in complete_track:
+                            track['name'] = complete_track['name']
+                        if 'duration_ms' in complete_track:
+                            track['duration_ms'] = complete_track['duration_ms']
+                        
+                        # Add artist information if more detailed
+                        if 'artists' in complete_track:
+                            track['artists'] = complete_track['artists']
+                        
+                        # Add complete album information
+                        if 'album' in complete_track:
+                            track['album'] = complete_track['album']
+                        
+                        # Add any additional fields from complete track data
+                        if 'preview_url' in complete_track:
+                            track['preview_url'] = complete_track['preview_url']
+                        if 'id' in complete_track:
+                            track['id'] = complete_track['id']
+                        if 'popularity' in complete_track:
+                            track['popularity'] = complete_track['popularity']
+                        if 'explicit' in complete_track:
+                            track['explicit'] = complete_track['explicit']
+                        
+                        enriched_count += 1
+                        logger.debug(f"Successfully enriched track {i+1}/{len(tracks)}: {track.get('name', 'Unknown')}")
+                    else:
+                        # Keep original basic track data if enrichment fails
+                        failed_count += 1
+                        logger.warning(f"Failed to get complete data for track {i+1}, keeping basic data")
+                        
+                except Exception as track_error:
+                    # Log error but continue with basic track data
+                    failed_count += 1
+                    logger.warning(f"Error enriching track {i+1}: {str(track_error)}, keeping basic data")
+                    continue
+            
+            # Log enrichment summary
+            logger.info(f"Track enrichment complete - Success: {enriched_count}, Failed: {failed_count}, Total: {len(tracks)}")
+            
+            # Return the enhanced playlist data
             return raw_data
             
         except Exception as e:
