@@ -57,6 +57,21 @@
   ],
   "references": [
     {
+      "path": "../../packages/shared-types"
+    },
+    {
+      "path": "../../packages/shared-utils"
+    },
+    {
+      "path": "../../packages/http-client"
+    },
+    {
+      "path": "../../packages/plex-config"
+    },
+    {
+      "path": "../../packages/plex-helpers"
+    },
+    {
       "path": "../../packages/music-search"
     },
     {
@@ -64,6 +79,9 @@
     },
     {
       "path": "../../packages/tidal-music-search"
+    },
+    {
+      "path": "../sync-worker"
     }
   ]
 }

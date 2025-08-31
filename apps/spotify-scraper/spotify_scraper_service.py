@@ -79,32 +79,9 @@ class SpotifyScraperService:
                     complete_track = self.scraper.get_track_info(track_uri)
                     
                     if complete_track:
-                        # Merge complete track data into the existing track object
-                        # Preserve original fields and add new album information
-                        
-                        # Update basic fields if available in complete data
-                        if 'name' in complete_track:
-                            track['name'] = complete_track['name']
-                        if 'duration_ms' in complete_track:
-                            track['duration_ms'] = complete_track['duration_ms']
-                        
-                        # Add artist information if more detailed
-                        if 'artists' in complete_track:
-                            track['artists'] = complete_track['artists']
-                        
-                        # Add complete album information
-                        if 'album' in complete_track:
-                            track['album'] = complete_track['album']
-                        
-                        # Add any additional fields from complete track data
-                        if 'preview_url' in complete_track:
-                            track['preview_url'] = complete_track['preview_url']
-                        if 'id' in complete_track:
-                            track['id'] = complete_track['id']
-                        if 'popularity' in complete_track:
-                            track['popularity'] = complete_track['popularity']
-                        if 'explicit' in complete_track:
-                            track['explicit'] = complete_track['explicit']
+                        # Simply merge all complete track data into existing track
+                        # This preserves any new fields added by the library
+                        track.update(complete_track)
                         
                         enriched_count += 1
                         logger.debug(f"Successfully enriched track {i+1}/{len(tracks)}: {track.get('name', 'Unknown')}")

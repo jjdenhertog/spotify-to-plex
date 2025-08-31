@@ -4,8 +4,6 @@ import { SpotifyApi } from "@spotify/web-api-ts-sdk";
 
 export async function getSpotifyPlaylist(api: SpotifyApi, id: string, simplified: boolean): Promise<GetSpotifyPlaylist | null> {
 
-    // const result: GetSpotifyPlaylist = {}
-    // let allTracks: GetSpotifyPlaylist["tracks"] = []
 
     try {
         const result = await api.playlists.getPlaylist(id)
