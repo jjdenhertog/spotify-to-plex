@@ -1,10 +1,10 @@
-import { getCachedTrackLinks } from "@spotify-to-plex/shared-utils/server";
-import { getTidalCredentials } from "@spotify-to-plex/shared-utils/server";
-import { Track } from "@spotify-to-plex/shared-types/spotify/api";
+import { getCachedTrackLinks } from "@spotify-to-plex/shared-utils/cache/getCachedTrackLink";
+import { getTidalCredentials } from "@spotify-to-plex/shared-utils/tidal/getTidalCredentials";
+import { Track } from "@spotify-to-plex/shared-types/spotify/Track";
 import { search as tidalMusicSearch } from "@spotify-to-plex/tidal-music-search/functions/search";
 import { setUser } from "@spotify-to-plex/tidal-music-search/functions/setUser";
 import type { SearchResponse } from "@spotify-to-plex/tidal-music-search/functions/search";
-import { settingsDir } from "@spotify-to-plex/shared-utils/server";
+import { settingsDir } from "@spotify-to-plex/shared-utils/utils/settingsDir";
 import { getMusicSearchConfig } from "@spotify-to-plex/music-search/config/config-utils";
 
 export async function findMissingTidalTracks(missingTracks: Track[]) {

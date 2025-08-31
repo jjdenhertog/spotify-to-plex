@@ -2,4 +2,7 @@
 export { AxiosRequest } from './AxiosRequest';
 
 // Individual method exports
-export { axiosGet, axiosPost, axiosPut, axiosDelete } from './methods';
+export { axiosGet } from './methods/axiosGet';
+export { axiosPost } from './methods/axiosPost';
+export { axiosPut } from './methods/axiosPut';
+export { axiosDelete } from './methods/axiosDelete';

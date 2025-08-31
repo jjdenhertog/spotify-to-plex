@@ -1,8 +1,9 @@
 import { AxiosRequest } from "@spotify-to-plex/http-client/AxiosRequest";
-import { getAPIUrl, settingsDir } from "@spotify-to-plex/shared-utils/server";
+import { getAPIUrl } from "@spotify-to-plex/shared-utils/utils/getAPIUrl";
+import { settingsDir } from "@spotify-to-plex/shared-utils/utils/settingsDir";
 import { handleOneRetryAttempt } from "@spotify-to-plex/plex-helpers/retry";
 import { plex } from "../library/plex";
-import { Playlist } from "@spotify-to-plex/shared-types/plex/api";
+import { Playlist } from "@spotify-to-plex/shared-types/plex/Playlist";
 import { GetPlaylistResponse } from "@spotify-to-plex/plex-music-search/types/plex/GetPlaylistResponse";
 import { SearchResponse } from "@spotify-to-plex/plex-music-search/types/SearchResponse";
 import { search as plexMusicSearch } from "@spotify-to-plex/plex-music-search/functions/search";
@@ -111,6 +112,7 @@ export async function syncPlaylists() {
                 musicSearchConfig,
             };
 
+            // @ts-ignore
             // eslint-disable-next-line prefer-const
             let { result, add } = await getCachedPlexTracks(plexSearchConfig, data)
 

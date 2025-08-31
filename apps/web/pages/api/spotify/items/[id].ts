@@ -1,6 +1,6 @@
 import { generateError } from '@/helpers/errors/generateError';
 import { getAccessToken, getSpotifyData, settingsDir } from '@spotify-to-plex/shared-utils/server';
-import { SavedItem } from '@/types/SpotifyAPI';
+import { SavedItem } from '@/types/SavedItem';
 import { SpotifyApi } from '@spotify/web-api-ts-sdk';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createRouter } from 'next-connect';

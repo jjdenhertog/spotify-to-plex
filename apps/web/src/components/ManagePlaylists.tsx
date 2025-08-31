@@ -2,7 +2,7 @@
 import { errorBoundary } from "@/helpers/errors/errorBoundary";
 import { filterUnique } from "@spotify-to-plex/shared-utils/array/filterUnique";
 // MIGRATED: Updated to use shared utils package
-import { SavedItem } from "@spotify-to-plex/shared-types/spotify/api";
+import { SavedItem } from "@/types/SavedItem";
 // MIGRATED: Updated to use shared types package
 import { Box, Button, CircularProgress, Divider, Link, Paper, TextField, Typography } from "@mui/material";
 import Grid from '@mui/material/Grid2';

@@ -1,4 +1,4 @@
-import { PlexPlaylists } from '../types';
+import { PlexPlaylists } from '../types/PlexPlaylists';
 import { getState } from './state';
 import { readJSON } from './readJSON';
 

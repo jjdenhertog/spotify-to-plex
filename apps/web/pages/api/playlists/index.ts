@@ -1,13 +1,14 @@
 import { AxiosRequest } from '@spotify-to-plex/http-client/AxiosRequest';
 // MIGRATED: Updated to use http-client package
 import { generateError } from '@/helpers/errors/generateError';
-import { getAPIUrl } from '@spotify-to-plex/shared-utils/server';
+import { getAPIUrl } from '@spotify-to-plex/shared-utils/utils/getAPIUrl';
 import { putPlaylistPoster } from '@spotify-to-plex/plex-helpers/playlist';
 import { addItemsToPlaylist } from '@spotify-to-plex/plex-helpers/playlist';
 import { storePlaylist } from '@spotify-to-plex/plex-helpers/playlist';
 import { getPlexUri } from '@spotify-to-plex/plex-helpers/utils/getPlexUri';
 import { plex } from '@/library/plex';
-import { GetPlaylistResponse, Playlist } from '@spotify-to-plex/shared-types/plex/api';
+import { GetPlaylistResponse } from '@spotify-to-plex/shared-types/plex/GetPlaylistResponse';
+import { Playlist } from '@spotify-to-plex/shared-types/plex/Playlist';
 // MIGRATED: Updated to use shared types package
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createRouter } from 'next-connect';

@@ -1,5 +1,9 @@
-import { getAccessToken, refreshAccessTokens, settingsDir } from "@spotify-to-plex/shared-utils/server";
-import { RecentPlayedContext, SavedItem, SpotifyCredentials } from "@spotify-to-plex/shared-types/spotify/api";
+import { getAccessToken } from "@spotify-to-plex/shared-utils/spotify/getAccessToken";
+import { refreshAccessTokens } from "@spotify-to-plex/shared-utils/spotify/refreshAccessTokens";
+import { settingsDir } from "@spotify-to-plex/shared-utils/utils/settingsDir";
+import { RecentPlayedContext } from "@spotify-to-plex/shared-types/spotify/RecentPlayedContext";
+import { SavedItem } from "@spotify-to-plex/shared-types/spotify/SavedItem";
+import { SpotifyCredentials } from "@spotify-to-plex/shared-types/spotify/SpotifyCredentials";
 import { SpotifyApi } from "@spotify/web-api-ts-sdk";
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
@@ -58,7 +62,7 @@ export async function syncUsers() {
 
                 const { type, id: resultId, title: name, image } = data;
                 const savedItem: SavedItem = {
-                    type,
+                    type: type as SavedItem['type'],
                     uri: context.uri,
                     id: resultId,
                     title: name,

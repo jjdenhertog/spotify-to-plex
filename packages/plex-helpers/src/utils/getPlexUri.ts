@@ -1,4 +1,4 @@
-import { PlexSettings } from '../types';
+import { PlexSettings } from '../PlexSettings';
 import { validatePlexSettings } from './validatePlexSettings';
 
 export function getPlexUri(settings: PlexSettings, key: string, source?: string): string {

@@ -1,4 +1,4 @@
-import { settingsDir } from '@spotify-to-plex/shared-utils/server';
+import { settingsDir } from '@spotify-to-plex/shared-utils/utils/settingsDir';
 import { plex } from "../library/plex";
 import { searchAlbum } from "@spotify-to-plex/plex-music-search/functions/searchAlbum";
 import { SearchResponse } from "@spotify-to-plex/plex-music-search/types/SearchResponse";
@@ -75,6 +75,8 @@ export async function syncAlbums() {
             musicSearchConfig,
         };
         const result = await searchAlbum(plexConfig, data.tracks);
+
+        //@ts-ignore
         const { add } = await getCachedPlexTracks(plexConfig, data);
 
         const missingTracks = data.tracks.filter(item => {

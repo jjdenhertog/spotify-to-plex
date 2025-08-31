@@ -1,4 +1,4 @@
-import { settingsDir } from '@spotify-to-plex/shared-utils/server';
+import { settingsDir } from '@spotify-to-plex/shared-utils/utils/settingsDir';
 import { SyncLog } from "@spotify-to-plex/shared-types/common/sync";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";

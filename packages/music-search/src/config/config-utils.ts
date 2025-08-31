@@ -6,13 +6,11 @@
 import fs from 'fs-extra';
 const { ensureDir, readFile, writeFile, pathExists } = fs;
 import { join } from 'node:path';
-import { 
-    MusicSearchConfig, 
-    RuntimeMatchFilter, 
-    MatchFilterConfig, 
-    TextProcessingConfig, 
-    SearchApproachConfig 
-} from '../types/config';
+import { MusicSearchConfig } from '../types/MusicSearchConfig';
+import { RuntimeMatchFilter } from '../types/RuntimeMatchFilter';
+import { MatchFilterConfig } from '../types/MatchFilterConfig';
+import { TextProcessingConfig } from '../types/TextProcessingConfig';
+import { SearchApproachConfig } from '../types/SearchApproachConfig';
 import { 
     DEFAULT_MATCH_FILTERS, 
     DEFAULT_TEXT_PROCESSING, 

@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getSearchApproaches } from '@spotify-to-plex/music-search/config/config-utils';
 import { updateSearchApproaches } from '@spotify-to-plex/music-search/config/config-utils';
-import { getStorageDir } from '@spotify-to-plex/shared-utils/server';
+import { getStorageDir } from '@spotify-to-plex/shared-utils/utils/getStorageDir';
 import { validateSearchApproaches } from '@spotify-to-plex/shared-utils/validation/validateSearchApproaches';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {

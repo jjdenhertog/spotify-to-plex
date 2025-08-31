@@ -1,10 +1,11 @@
-import { getCachedTrackLinks } from "@spotify-to-plex/shared-utils/server";
-import { GetSpotifyAlbum, GetSpotifyPlaylist } from "@spotify-to-plex/shared-types/spotify/api";
+import { getCachedTrackLinks } from "@spotify-to-plex/shared-utils/cache/getCachedTrackLink";
+import { GetSpotifyAlbum } from "@spotify-to-plex/shared-types/spotify/GetSpotifyAlbum";
+import { GetSpotifyPlaylist } from "@spotify-to-plex/shared-types/spotify/GetSpotifyPlaylist";
 import { PlexTrack } from "@spotify-to-plex/plex-music-search/types/PlexTrack";
 import { SearchResponse } from "@spotify-to-plex/plex-music-search/types/SearchResponse";
 import { getById } from "@spotify-to-plex/plex-music-search/functions/getById";
 import { PlexMusicSearchConfig } from "@spotify-to-plex/plex-music-search/types/PlexMusicSearchConfig";
-import { settingsDir } from '@spotify-to-plex/shared-utils/server';
+import { settingsDir } from '@spotify-to-plex/shared-utils/utils/settingsDir';
 
 export async function getCachedPlexTracks(plexSearchConfig: PlexMusicSearchConfig, data: GetSpotifyPlaylist | GetSpotifyAlbum) {
     const { add, found: cachedTrackLinks } = getCachedTrackLinks(data.tracks, 'plex', settingsDir);

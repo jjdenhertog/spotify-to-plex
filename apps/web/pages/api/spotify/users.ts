@@ -1,6 +1,7 @@
 import { generateError } from '@/helpers/errors/generateError';
-import { settingsDir } from "@spotify-to-plex/shared-utils/server";
-import { SpotifyCredentials, SpotifyUser } from '@spotify-to-plex/shared-types/spotify/api';
+import { settingsDir } from "@spotify-to-plex/shared-utils/utils/settingsDir";
+import { SpotifyCredentials } from '@spotify-to-plex/shared-types/spotify/SpotifyCredentials';
+import { SpotifyUser } from '@spotify-to-plex/shared-types/spotify/SpotifyUser';
 // MIGRATED: Updated to use shared types package
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createRouter } from 'next-connect';

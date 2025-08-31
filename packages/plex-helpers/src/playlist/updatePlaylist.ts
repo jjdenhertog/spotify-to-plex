@@ -1,11 +1,9 @@
 import { AxiosRequest } from '@spotify-to-plex/http-client/AxiosRequest';
-import { GetPlaylistResponse } from '@spotify-to-plex/shared-types/plex/api';
-import { 
-  PlexSettings, 
-  PlaylistUpdateData, 
-  RetryConfig,
-  GetAPIUrlFn 
-} from '../types';
+import { GetPlaylistResponse } from '@spotify-to-plex/shared-types/plex/GetPlaylistResponse';
+import { PlexSettings } from '../PlexSettings';
+import { PlaylistUpdateData } from '../PlaylistUpdateData';
+import { RetryConfig } from '../RetryConfig';
+import { GetAPIUrlFn } from '../GetAPIUrlFn';
 import { validatePlexSettings } from '../utils/validatePlexSettings';
 import { handleOneRetryAttempt } from '../retry';
 
@@ -13,19 +11,19 @@ import { handleOneRetryAttempt } from '../retry';
  * Updates a Plex playlist
  */
 export async function updatePlaylist(
-  settings: PlexSettings,
-  getAPIUrl: GetAPIUrlFn,
-  playlistId: string,
-  data: PlaylistUpdateData,
-  config: RetryConfig = {}
+    settings: PlexSettings,
+    getAPIUrl: GetAPIUrlFn,
+    playlistId: string,
+    data: PlaylistUpdateData,
+    config: RetryConfig = {}
 ): Promise<void> {
-  validatePlexSettings(settings);
+    validatePlexSettings(settings);
 
-  const url = getAPIUrl(settings.uri, `/playlists/${playlistId}`);
-  const query = new URLSearchParams(data as any);
+    const url = getAPIUrl(settings.uri, `/playlists/${playlistId}`);
+    const query = new URLSearchParams(data as any);
 
-  await handleOneRetryAttempt(
-    () => AxiosRequest.put<GetPlaylistResponse>(`${url}?${query.toString()}`, settings.token),
-    config
-  );
+    await handleOneRetryAttempt(
+        () => AxiosRequest.put<GetPlaylistResponse>(`${url}?${query.toString()}`, settings.token),
+        config
+    );
 }

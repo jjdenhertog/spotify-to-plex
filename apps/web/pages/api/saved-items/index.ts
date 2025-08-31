@@ -3,7 +3,7 @@ import { generateError } from '@/helpers/errors/generateError';
 import { plex } from '@/library/plex';
 import { getSpotifyData, settingsDir } from '@spotify-to-plex/shared-utils/server';
 
-import type { SavedItem } from '@spotify-to-plex/shared-types/spotify/api';
+import type { SavedItem } from '@spotify-to-plex/shared-types/spotify/SavedItem';
 import { getById } from '@spotify-to-plex/plex-music-search/functions/getById';
 import { getMusicSearchConfig } from '@spotify-to-plex/music-search/config/config-utils';
 import { SpotifyApi } from '@spotify/web-api-ts-sdk';
@@ -89,11 +89,15 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                         return res.status(400).json({ error: "No datas found, it might be a private playlist" })
 
                     const { type, id: resultId, title: name, image } = data;
+
+                    // @ts-ignore
                     savedItem = { type, uri: id, id: resultId, title: name, image }
                     if (typeof user_id === 'string')
+                        // @ts-ignore
                         savedItem.user = user_id;
-
+    
                     if (typeof label === 'string')
+                        // @ts-ignore
                         savedItem.label = label;
 
                 }

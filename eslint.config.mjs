@@ -105,6 +105,8 @@ const config = [
             'custom/simple-ternary-max-length': ['error', { maxLineLength: 150 }],
             'custom/jsx-single-line-props': ['error', { maxPropsForSingleLine: 6 }],
             'custom/jsx-multiline-children': ['error', { minTextLength: 20 }],
+            'custom/forwardref-props-destructuring': 'error',
+            'custom/no-export-only-files': 'error',
             indent: ['error', 4, { 
                 SwitchCase: 1,
                 ignoredNodes: [

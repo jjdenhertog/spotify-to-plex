@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getTextProcessing } from '@spotify-to-plex/music-search/config/config-utils';
 import { updateTextProcessing } from '@spotify-to-plex/music-search/config/config-utils';
-import { getStorageDir } from '@spotify-to-plex/shared-utils/server';
+import { getStorageDir } from '@spotify-to-plex/shared-utils/utils/getStorageDir';
 import { validateTextProcessing } from '@spotify-to-plex/shared-utils/validation/validateTextProcessing';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {

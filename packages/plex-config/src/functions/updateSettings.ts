@@ -1,4 +1,5 @@
-import { PlexSettings, PlexSettingsUpdate } from '../types';
+import { PlexSettings } from '../types/PlexSettings';
+import { PlexSettingsUpdate } from '../types/PlexSettingsUpdate';
 import { setState } from './state';
 import { writeAtomicJSON } from './writeAtomicJSON';
 import { getSettings } from './getSettings';

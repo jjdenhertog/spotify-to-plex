@@ -1,5 +1,6 @@
-import { getTidalCredentials, settingsDir } from "@spotify-to-plex/shared-utils/server";
-import { Track } from "@spotify-to-plex/shared-types/spotify/api";
+import { getTidalCredentials } from "@spotify-to-plex/shared-utils/tidal/getTidalCredentials";
+import { settingsDir } from "@spotify-to-plex/shared-utils/utils/settingsDir";
+import { Track } from "@spotify-to-plex/shared-types/spotify/Track";
 import { searchAlbum } from "@spotify-to-plex/tidal-music-search/functions/searchAlbum";
 import { setUser } from "@spotify-to-plex/tidal-music-search/functions/setUser";
 import { getMusicSearchConfig } from "@spotify-to-plex/music-search/config/config-utils";

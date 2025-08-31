@@ -1,4 +1,6 @@
-import { PlexConfigOptions, PlexSettings, PlexPlaylists } from '../types';
+import { PlexConfigOptions } from '../types/PlexConfigOptions';
+import { PlexSettings } from '../types/PlexSettings';
+import { PlexPlaylists } from '../types/PlexPlaylists';
 
 type PlexConfigState = {
     baseDir?: string;

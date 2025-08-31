@@ -1,4 +1,4 @@
-import { MusicSearchConfig } from "../types/config";
+import { MusicSearchConfig } from "../types/MusicSearchConfig";
 import { setState } from "./state/setState";
 import { compileFunctionStrings } from "./compileFunctionStrings";
 

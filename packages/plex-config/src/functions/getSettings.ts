@@ -1,4 +1,4 @@
-import { PlexSettings } from '../types';
+import { PlexSettings } from '../types/PlexSettings';
 import { getState } from './state';
 import { initialize } from './initialize';
 import { loadSettingsCache } from './loadSettingsCache';

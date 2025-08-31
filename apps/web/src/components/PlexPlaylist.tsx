@@ -1,6 +1,8 @@
 import { errorBoundary } from "@/helpers/errors/errorBoundary";
 import { GetPlexPlaylistIdResponse } from "@/pages/api/playlists/[id]";
-import { GetSpotifyAlbum, GetSpotifyPlaylist, Track } from "@spotify-to-plex/shared-types/spotify/api";
+import { GetSpotifyAlbum } from "@/types/GetSpotifyAlbum";
+import { GetSpotifyPlaylist } from "@/types/GetSpotifyPlaylist";
+import { Track } from "@/types/Track";
 // MIGRATED: Updated to use shared types package
 import type { SearchResponse } from "@spotify-to-plex/plex-music-search/types/SearchResponse";
 import { Edit, Refresh } from "@mui/icons-material";

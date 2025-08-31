@@ -1,9 +1,9 @@
-import { PlaylistUpdate } from '../types';
+import { PlaylistItem } from '../types/PlaylistItem';
 import { setState } from './state';
 import { writeAtomicJSON } from './writeAtomicJSON';
 import { getPlaylists } from './getPlaylists';
 
-export async function updatePlaylist(id: string, updates: Partial<PlaylistUpdate>): Promise<void> {
+export async function updatePlaylist(id: string, updates: Partial<PlaylistItem>): Promise<void> {
     const current = await getPlaylists();
     
     const updated = {

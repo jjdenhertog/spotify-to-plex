@@ -1,8 +1,10 @@
 import { generateError } from '@/helpers/errors/generateError';
-import { getCachedTrackLinks } from '@spotify-to-plex/shared-utils/server';
+import { getCachedTrackLinks } from '@spotify-to-plex/shared-utils/cache/getCachedTrackLink';
 // MIGRATED: Updated to use shared utils package
-import { getTidalCredentials, settingsDir } from '@spotify-to-plex/shared-utils/server';
-import { Album, Track } from '@spotify-to-plex/shared-types/spotify/api';
+import { getTidalCredentials } from '@spotify-to-plex/shared-utils/tidal/getTidalCredentials';
+import { settingsDir } from '@spotify-to-plex/shared-utils/utils/settingsDir';
+import { Album } from '@spotify-to-plex/shared-types/spotify/Album';
+import { Track } from '@spotify-to-plex/shared-types/spotify/Track';
 // MIGRATED: Updated to use shared types package
 import { search as tidalMusicSearch } from '@spotify-to-plex/tidal-music-search/functions/search';
 import { searchAlbum } from '@spotify-to-plex/tidal-music-search/functions/searchAlbum';

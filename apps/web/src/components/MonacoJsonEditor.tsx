@@ -16,14 +16,16 @@ export type MonacoJsonEditorHandle = {
     getCurrentValue: () => any;
 };
 
-const MonacoJsonEditor = forwardRef<MonacoJsonEditorHandle, MonacoJsonEditorProps>(({
-    value,
-    onChange,
-    schema,
-    height = 400,
-    readOnly = false,
-    error
-}, ref) => {
+const MonacoJsonEditor = forwardRef<MonacoJsonEditorHandle, MonacoJsonEditorProps>((props, ref) => {
+    const {
+        value,
+        onChange,
+        schema,
+        height = 400,
+        readOnly = false,
+        error
+    } = props;
+
     const editorRef = useRef<monaco.editor.IStandaloneCodeEditor>();
 
     const handleEditorDidMount = useCallback((editor: monaco.editor.IStandaloneCodeEditor, monacoInstance: typeof monaco) => {
@@ -69,7 +71,7 @@ const MonacoJsonEditor = forwardRef<MonacoJsonEditorHandle, MonacoJsonEditorProp
     // Get current JSON value
     const getCurrentValue = useCallback(() => {
         if (!editorRef.current) return null;
-        
+
         const content = editorRef.current.getValue();
         try {
             return JSON.parse(content);
@@ -95,7 +97,7 @@ const MonacoJsonEditor = forwardRef<MonacoJsonEditorHandle, MonacoJsonEditorProp
                     {error}
                 </Typography>
             </Alert> : null}
-            
+
             <Paper variant="outlined">
                 <Editor
                     height={`${height}px`}

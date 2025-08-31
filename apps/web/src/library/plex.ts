@@ -9,7 +9,7 @@ import { hasValidConnection } from "@spotify-to-plex/plex-config/functions/hasVa
 import { removePlaylist } from "@spotify-to-plex/plex-config/functions/removePlaylist";
 import { updatePlaylist } from "@spotify-to-plex/plex-config/functions/updatePlaylist";
 import { updateSettings } from "@spotify-to-plex/plex-config/functions/updateSettings";
-import { settingsDir } from "@spotify-to-plex/shared-utils/server";
+import { settingsDir } from "@spotify-to-plex/shared-utils/utils/settingsDir";
 
 // Re-export types that might be needed
 export type { PlexPlaylists, PlexSettings, PlexConfigOptions } from "@spotify-to-plex/plex-config/types";

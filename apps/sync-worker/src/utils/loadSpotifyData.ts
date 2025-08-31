@@ -1,4 +1,5 @@
-import { getAccessToken, getSpotifyData } from "@spotify-to-plex/shared-utils/server";
+import { getAccessToken } from "@spotify-to-plex/shared-utils/spotify/getAccessToken";
+import { getSpotifyData } from "@spotify-to-plex/shared-utils/spotify/getSpotifyData";
 import { SpotifyApi } from "@spotify/web-api-ts-sdk";
 
 export async function loadSpotifyData(uri: string, user?: string, simplified: boolean = false, scrapeIncludeAlbumData: boolean = false) {

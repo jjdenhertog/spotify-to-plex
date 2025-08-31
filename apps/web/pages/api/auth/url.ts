@@ -1,6 +1,6 @@
 import { generateError } from '@/helpers/errors/generateError';
 import { plex } from '@/library/plex';
-import { PostPinResponse } from '@/types/PlexAPI';
+import { PostPinResponse } from '@/types/PostPinResponse';
 import axios from 'axios';
 
 import type { NextApiRequest, NextApiResponse } from 'next';

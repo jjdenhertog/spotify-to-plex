@@ -1,8 +1,8 @@
 import { generateError } from '@/helpers/errors/generateError';
-import { getCachedTrackLinks } from '@spotify-to-plex/shared-utils/server';
+import { getCachedTrackLinks } from '@spotify-to-plex/shared-utils/cache/getCachedTrackLink';
 // MIGRATED: Updated to use shared utils package
 import { plex } from '@/library/plex';
-import { settingsDir } from '@spotify-to-plex/shared-utils/server';
+import { settingsDir } from '@spotify-to-plex/shared-utils/utils/settingsDir';
 import { search } from '@spotify-to-plex/plex-music-search/functions/search';
 import { searchAlbum } from '@spotify-to-plex/plex-music-search/functions/searchAlbum';
 import { PlexMusicSearchTrack } from '@spotify-to-plex/plex-music-search/types/PlexMusicSearchTrack';

@@ -1,4 +1,5 @@
-import { MusicSearchConfig, RuntimeMatchFilter } from "../types/config";
+import { MusicSearchConfig } from "../types/MusicSearchConfig";
+import { RuntimeMatchFilter } from "../types/RuntimeMatchFilter";
 import { TrackWithMatching } from "../types/TrackWithMatching";
 
 function createFilterFunction(filterString: string): (item: TrackWithMatching) => boolean {

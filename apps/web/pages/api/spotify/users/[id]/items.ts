@@ -1,8 +1,11 @@
-import { decrypt } from '@spotify-to-plex/shared-utils/server';
+import { decrypt } from '@spotify-to-plex/shared-utils/security/decrypt';
 // MIGRATED: Updated to use shared utils package
 import { generateError } from '@/helpers/errors/generateError';
 import { refreshAccessTokens, settingsDir } from '@spotify-to-plex/shared-utils/server';
-import { GetSpotifyAlbum, GetSpotifyPlaylist, SavedItem, SpotifyCredentials } from '@spotify-to-plex/shared-types/spotify/api';
+import { GetSpotifyAlbum } from '@spotify-to-plex/shared-types/spotify/GetSpotifyAlbum';
+import { GetSpotifyPlaylist } from '@spotify-to-plex/shared-types/spotify/GetSpotifyPlaylist';
+import { SavedItem } from '@spotify-to-plex/shared-types/spotify/SavedItem';
+import { SpotifyCredentials } from '@spotify-to-plex/shared-types/spotify/SpotifyCredentials';
 // MIGRATED: Updated to use shared types package
 import { SavedAlbum, SimplifiedPlaylist, SpotifyApi } from '@spotify/web-api-ts-sdk';
 import type { NextApiRequest, NextApiResponse } from 'next';

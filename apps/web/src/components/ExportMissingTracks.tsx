@@ -1,6 +1,6 @@
 import { errorBoundary } from "@/helpers/errors/errorBoundary";
 import { GetTidalTracksResponse } from "@/pages/api/tidal";
-import { Track } from "@spotify-to-plex/shared-types/spotify/api";
+import { Track } from "@/types/Track";
 // MIGRATED: Updated to use shared types package
 import CloseIcon from '@mui/icons-material/Close';
 import { Alert, Box, Button, CircularProgress, Divider, IconButton, Modal, Typography } from "@mui/material";

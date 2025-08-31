@@ -1,3 +1,4 @@
+/* eslint-disable custom/no-export-only-files */
 /* eslint-disable max-lines */
 export type AuthenticateResponse = {
     scope: string

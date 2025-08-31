@@ -1,9 +1,12 @@
+/* eslint-disable custom/no-export-only-files */
 /**
  * Default music search configuration split into 3 focused JSON files
  * Simple JSON structure without complex compilation
  */
 
-import { MatchFilterConfig, TextProcessingConfig, SearchApproachConfig } from '../types/config';
+import { MatchFilterConfig } from '../types/MatchFilterConfig';
+import { TextProcessingConfig } from '../types/TextProcessingConfig';
+import { SearchApproachConfig } from '../types/SearchApproachConfig';
 
 // Default match filters as function strings - preserves exact logic from original
 export const DEFAULT_MATCH_FILTERS: readonly MatchFilterConfig[] = [

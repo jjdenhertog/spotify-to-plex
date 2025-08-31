@@ -4,9 +4,9 @@ import { removeItemsFromPlaylist } from "@spotify-to-plex/plex-helpers/playlist"
 import { storePlaylist } from "@spotify-to-plex/plex-helpers/playlist";
 import { updatePlaylist } from "@spotify-to-plex/plex-helpers/playlist";
 import { getPlexUri } from "@spotify-to-plex/plex-helpers/utils/getPlexUri";
-import { getAPIUrl } from "@spotify-to-plex/shared-utils/server";
+import { getAPIUrl } from "@spotify-to-plex/shared-utils/utils/getAPIUrl";
 import { plex } from "../library/plex";
-import { Playlist } from "@spotify-to-plex/shared-types/plex/api";
+import { Playlist } from "@spotify-to-plex/shared-types/plex/Playlist";
 import { SearchResponse } from "@spotify-to-plex/plex-music-search/types/SearchResponse";
 import { type } from "node:os";
 

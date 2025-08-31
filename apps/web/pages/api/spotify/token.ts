@@ -1,8 +1,8 @@
-import { encrypt } from '@spotify-to-plex/shared-utils/server';
+import { encrypt } from '@spotify-to-plex/shared-utils/security/encrypt';
 // MIGRATED: Updated to use shared utils package
 import { generateError } from '@/helpers/errors/generateError';
-import { settingsDir } from "@spotify-to-plex/shared-utils/server";
-import { SpotifyCredentials } from '@spotify-to-plex/shared-types/spotify/api';
+import { settingsDir } from "@spotify-to-plex/shared-utils/utils/settingsDir";
+import { SpotifyCredentials } from '@spotify-to-plex/shared-types/spotify/SpotifyCredentials';
 // MIGRATED: Updated to use shared types package
 import { SpotifyApi } from '@spotify/web-api-ts-sdk';
 import axios from 'axios';

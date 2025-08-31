@@ -1,4 +1,4 @@
-import { MusicSearchConfig } from "../types/config";
+import { MusicSearchConfig } from "../types/MusicSearchConfig";
 import { DEFAULT_MUSIC_SEARCH_CONFIG } from "../config/default-config";
 import { getState } from "./state/getState";
 

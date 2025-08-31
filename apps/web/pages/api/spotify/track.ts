@@ -1,5 +1,5 @@
 import { generateError } from '@/helpers/errors/generateError';
-import { Track } from '@spotify-to-plex/shared-types/spotify/api';
+import { Track } from '@spotify-to-plex/shared-types/spotify/Track';
 // MIGRATED: Updated to use shared types package
 import { SpotifyApi } from '@spotify/web-api-ts-sdk';
 import type { NextApiRequest, NextApiResponse } from 'next';

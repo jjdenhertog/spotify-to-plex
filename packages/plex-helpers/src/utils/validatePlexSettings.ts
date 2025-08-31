@@ -1,4 +1,5 @@
-import { PlexSettings, PlexConnectionError } from '../types';
+import { PlexSettings } from '../PlexSettings';
+import { PlexConnectionError } from '../PlexConnectionError';
 
 export function validatePlexSettings(settings: PlexSettings): void {
     if (!settings.uri || !settings.token) {

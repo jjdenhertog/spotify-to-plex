@@ -1,0 +1,1 @@
+export type GetAPIUrlFn = (baseUri: string, endpoint: string) => string;

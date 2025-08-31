@@ -1,4 +1,4 @@
-import { RuntimeMatchFilter } from "../types/config";
+import { RuntimeMatchFilter } from "../types/RuntimeMatchFilter";
 import { getState } from "./state/getState";
 
 export function getRuntimeFilters(): RuntimeMatchFilter[] {

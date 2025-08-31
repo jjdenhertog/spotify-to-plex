@@ -3,7 +3,7 @@ import { plex } from "@/library/plex"
 import { getMetaData } from "@spotify-to-plex/plex-music-search/functions/getMetaData";
 import { Metadata } from "@spotify-to-plex/plex-music-search/types/plex/Metadata";
 import { getMusicSearchConfig } from '@spotify-to-plex/music-search/config/config-utils';
-import { settingsDir } from '@spotify-to-plex/shared-utils/server';
+import { settingsDir } from '@spotify-to-plex/shared-utils/utils/settingsDir';
 import { NextApiRequest, NextApiResponse } from "next"
 import { createRouter } from "next-connect"
 
