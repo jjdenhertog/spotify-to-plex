@@ -2,10 +2,10 @@ import { AxiosRequest } from '@spotify-to-plex/http-client/AxiosRequest';
 // MIGRATED: Updated to use http-client package
 import { generateError } from '@/helpers/errors/generateError';
 import { getAPIUrl } from '@spotify-to-plex/shared-utils/utils/getAPIUrl';
-import { addItemsToPlaylist } from '@spotify-to-plex/plex-helpers/playlist';
-import { putPlaylistPoster } from '@spotify-to-plex/plex-helpers/playlist';
-import { removeItemsFromPlaylist } from '@spotify-to-plex/plex-helpers/playlist';
-import { updatePlaylist } from '@spotify-to-plex/plex-helpers/playlist';
+import { addItemsToPlaylist } from '@spotify-to-plex/plex-helpers/playlist/addItemsToPlaylist';
+import { putPlaylistPoster } from '@spotify-to-plex/plex-helpers/playlist/putPlaylistPoster';
+import { removeItemsFromPlaylist } from '@spotify-to-plex/plex-helpers/playlist/removeItemsFromPlaylist';
+import { updatePlaylist } from '@spotify-to-plex/plex-helpers/playlist/updatePlaylist';
 import { plex, PlexPlaylists } from '@/library/plex';
 import { GetPlaylistResponse } from '@spotify-to-plex/shared-types/plex/GetPlaylistResponse';
 // MIGRATED: Updated to use shared types package

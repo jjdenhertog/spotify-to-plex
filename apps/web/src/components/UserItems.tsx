@@ -1,8 +1,8 @@
 import { errorBoundary } from "@/helpers/errors/errorBoundary";
 import { GetSpotifyUserResponse } from "@/pages/api/spotify/users";
-import { GetSpotifyAlbum } from "@/types/GetSpotifyAlbum";
-import { GetSpotifyPlaylist } from "@/types/GetSpotifyPlaylist";
-import { SavedItem } from "@/types/SavedItem";
+import { GetSpotifyAlbum } from "@spotify-to-plex/shared-types/spotify/GetSpotifyAlbum";
+import { GetSpotifyPlaylist } from "@spotify-to-plex/shared-types/spotify/GetSpotifyPlaylist";
+import { SavedItem } from "@spotify-to-plex/shared-types/spotify/SavedItem";
 // MIGRATED: Updated to use shared types package
 import { Add, Check } from "@mui/icons-material";
 import CloseIcon from '@mui/icons-material/Close';

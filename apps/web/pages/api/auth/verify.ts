@@ -1,6 +1,6 @@
 import { generateError } from '@/helpers/errors/generateError';
 import { plex } from '@/library/plex';
-import { GetPlexPinResponse } from '@/types/GetPlexPinResponse';
+import { GetPlexPinResponse } from '@spotify-to-plex/shared-types/plex/GetPlexPinResponse';
 import axios from 'axios';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createRouter } from 'next-connect';

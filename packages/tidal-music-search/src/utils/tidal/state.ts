@@ -24,10 +24,3 @@ export function setState(newState: Partial<TidalAPIState>): void {
     Object.assign(state, newState);
 }
 
-export function resetState(): void {
-    state.accessToken = undefined;
-    state.expiresAt = undefined;
-    state.user = undefined;
-    state.clientId = undefined;
-    state.clientSecret = undefined;
-}

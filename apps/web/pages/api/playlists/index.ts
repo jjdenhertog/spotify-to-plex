@@ -2,9 +2,9 @@ import { AxiosRequest } from '@spotify-to-plex/http-client/AxiosRequest';
 // MIGRATED: Updated to use http-client package
 import { generateError } from '@/helpers/errors/generateError';
 import { getAPIUrl } from '@spotify-to-plex/shared-utils/utils/getAPIUrl';
-import { putPlaylistPoster } from '@spotify-to-plex/plex-helpers/playlist';
-import { addItemsToPlaylist } from '@spotify-to-plex/plex-helpers/playlist';
-import { storePlaylist } from '@spotify-to-plex/plex-helpers/playlist';
+import { putPlaylistPoster } from '@spotify-to-plex/plex-helpers/playlist/putPlaylistPoster';
+import { addItemsToPlaylist } from '@spotify-to-plex/plex-helpers/playlist/addItemsToPlaylist';
+import { storePlaylist } from '@spotify-to-plex/plex-helpers/playlist/storePlaylist';
 import { getPlexUri } from '@spotify-to-plex/plex-helpers/utils/getPlexUri';
 import { plex } from '@/library/plex';
 import { GetPlaylistResponse } from '@spotify-to-plex/shared-types/plex/GetPlaylistResponse';

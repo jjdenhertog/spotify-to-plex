@@ -5,7 +5,7 @@ import { removeFeaturing } from "@spotify-to-plex/music-search/utils/removeFeatu
 import { HubSearchResult } from "../types/actions/HubSearchResult";
 import { HubSearchResponse } from "../types/plex/HubSearchResponse";
 import { AxiosRequest } from "@spotify-to-plex/http-client/AxiosRequest";
-import getAPIUrl from "../utils/getAPIUrl";
+import { getAPIUrl } from "@spotify-to-plex/shared-utils/utils/getAPIUrl";
 
 export default function hubSearch(uri: string, token: string, query: string, limit: number = 5) {
     return new Promise<HubSearchResult[]>((resolve, reject) => {

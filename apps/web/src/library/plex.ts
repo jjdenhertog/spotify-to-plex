@@ -12,7 +12,9 @@ import { updateSettings } from "@spotify-to-plex/plex-config/functions/updateSet
 import { settingsDir } from "@spotify-to-plex/shared-utils/utils/settingsDir";
 
 // Re-export types that might be needed
-export type { PlexPlaylists, PlexSettings, PlexConfigOptions } from "@spotify-to-plex/plex-config/types";
+export type { PlexPlaylists } from "@spotify-to-plex/plex-config/types/PlexPlaylists";
+export type { PlexSettings } from "@spotify-to-plex/plex-config/types/PlexSettings";
+export type { PlexConfigOptions } from "@spotify-to-plex/plex-config/types/PlexConfigOptions";
 
 // Initialize the plex configuration
 // eslint-disable-next-line unicorn/prefer-top-level-await, no-console

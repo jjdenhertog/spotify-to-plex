@@ -24,12 +24,6 @@ export function setState(newState: Partial<PlexConfigState>): void {
     Object.assign(state, newState);
 }
 
-export function resetState(): void {
-    state.baseDir = undefined;
-    state.settingsCache = null;
-    state.playlistsCache = null;
-    state.initialized = false;
-}
 
 export function initializeState(options: PlexConfigOptions): void {
     state.baseDir = options.storageDir;

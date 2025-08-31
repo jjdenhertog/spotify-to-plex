@@ -1,7 +1,7 @@
 import { AxiosResponse } from "axios";
 import { Metadata } from "../types/plex/Metadata";
 import { AxiosRequest } from "@spotify-to-plex/http-client/AxiosRequest";
-import getAPIUrl from "../utils/getAPIUrl";
+import { getAPIUrl } from "@spotify-to-plex/shared-utils/utils/getAPIUrl";
 
 type GetMetaDataResponse = {
     MediaContainer: {
