@@ -1,5 +1,5 @@
 import { settingsDir } from "../utils/settingsDir"
-import { SpotifyCredentials } from "@spotify-to-plex/shared-types/spotify/api"
+import { SpotifyCredentials } from "@spotify-to-plex/shared-types/spotify/SpotifyCredentials"
 import axios from "axios"
 import { existsSync, readFileSync, writeFileSync } from "node:fs"
 import { join } from "node:path"
@@ -30,7 +30,8 @@ export async function refreshAccessTokens() {
         if (!user || now > user.expires_at) {
 
             try {
-                if (!user?.access_token?.refresh_token) continue;
+                if (!user?.access_token?.refresh_token)
+                    continue;
 
                 const refreshToken = decrypt(user.access_token.refresh_token);
 

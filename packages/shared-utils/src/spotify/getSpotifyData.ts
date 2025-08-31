@@ -1,4 +1,4 @@
-import { GetSpotifyAlbum, GetSpotifyPlaylist } from "@spotify-to-plex/shared-types/spotify/api";
+import { GetSpotifyPlaylist } from "@spotify-to-plex/shared-types/spotify/GetSpotifyPlaylist";
 import { GetSpotifyScraperData } from "@spotify-to-plex/shared-types/spotify/GetSpotifyScraperData";
 import { SpotifyApi } from "@spotify/web-api-ts-sdk";
 import axios from "axios";
@@ -6,7 +6,7 @@ import axios from "axios";
 import { getSpotifyPlaylist } from "./getSpotifyPlaylist";
 
 
-export async function getSpotifyData(api: SpotifyApi, id: string, simplified: boolean = false, scrpaeIncludeAlbumData: boolean = false): Promise<GetSpotifyAlbum | GetSpotifyPlaylist | undefined> {
+export async function getSpotifyData(api: SpotifyApi, id: string, simplified: boolean = false, scrpaeIncludeAlbumData: boolean = false) {
     if (id.indexOf('spotify:album:') > -1) {
         const albumId = id.slice(Math.max(0, id.indexOf('spotify:album:') + 'spotify:album:'.length)).trim();
         try {
@@ -30,7 +30,6 @@ export async function getSpotifyData(api: SpotifyApi, id: string, simplified: bo
     } else if (id.indexOf('spotify:playlist:') > -1) {
         const playlistId = id.slice(Math.max(0, id.indexOf('spotify:playlist:') + 'spotify:playlist:'.length)).trim();
         const playlist = await getSpotifyPlaylist(api, playlistId, simplified)
-        console.log("🚀 ~ playlist:", playlist)
         if (playlist)
             return playlist;
 
@@ -73,5 +72,6 @@ export async function getSpotifyData(api: SpotifyApi, id: string, simplified: bo
 
     }
 
-    return undefined
+    return null;
+    
 }

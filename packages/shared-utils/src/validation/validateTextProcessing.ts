@@ -1,4 +1,4 @@
-import { TextProcessingConfig } from '@spotify-to-plex/music-search/types/config';
+import { TextProcessingConfig } from '@spotify-to-plex/music-search/types/TextProcessingConfig';
 
 /**
  * Validate text processing structure

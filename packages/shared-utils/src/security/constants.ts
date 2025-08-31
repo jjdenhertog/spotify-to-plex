@@ -1,3 +1,4 @@
+/* eslint-disable custom/no-export-only-files */
 import { randomBytes } from 'node:crypto';
 
 export const algorithm = 'aes-256-cbc';

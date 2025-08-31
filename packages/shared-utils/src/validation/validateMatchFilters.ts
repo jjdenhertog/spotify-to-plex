@@ -1,4 +1,4 @@
-import { MatchFilterConfig } from '@spotify-to-plex/music-search/types/config';
+import { MatchFilterConfig } from '@spotify-to-plex/music-search/types/MatchFilterConfig';
 import { validateMatchFilter } from './validateMatchFilter';
 
 /**

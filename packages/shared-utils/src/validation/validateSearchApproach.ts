@@ -1,4 +1,4 @@
-import { SearchApproachConfig } from '@spotify-to-plex/music-search/types/config';
+import { SearchApproachConfig } from '@spotify-to-plex/music-search/types/SearchApproachConfig';
 
 /**
  * Validate search approach structure
