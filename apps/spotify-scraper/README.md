@@ -1,11 +1,11 @@
 # Spotify Scraper Service
 
-A Python Flask API service for scraping Spotify playlist data with data transformation to match the GetSpotifyPlaylist interface.
+A Python Flask API service for scraping Spotify playlist data - Spotify playlist data pass-through service.
 
 ## Features
 
 - REST API endpoint for playlist scraping
-- Data transformation to standardized format
+- Raw data pass-through (no transformation)
 - Docker support for easy deployment
 - Health check endpoint
 - CORS enabled
@@ -28,32 +28,9 @@ Scrape Spotify playlist data.
 **Response:**
 ```json
 {
-  "type": "spotify-playlist",
-  "id": "37i9dQZF1DXcBWIGoYBM5M",
-  "title": "Today's Top Hits",
-  "owner": "Spotify",
-  "image": "",
-  "tracks": [
-    {
-      "id": "track_id",
-      "name": "Song Name",
-      "artists": ["Artist 1", "Artist 2"],
-      "album": "Album Name",
-      "duration": 180,
-      "popularity": 85,
-      "preview_url": "https://...",
-      "external_urls": {...},
-      "explicit": false
-    }
-  ],
-  "total_tracks": 50,
-  "public": true,
-  "collaborative": false,
-  "description": "Playlist description",
-  "followers": 1000000,
-  "external_urls": {...},
-  "href": "...",
-  "uri": "..."
+  // Raw JSON response from SpotifyScraper.get_playlist_info()
+  // Actual structure depends on the SpotifyScraper library output
+  // No transformation or field mapping applied
 }
 ```
 
@@ -123,7 +100,7 @@ Environment variables:
 ```
 apps/spotify-scraper/
 ├── app.py                      # Flask application and API endpoints
-├── spotify_scraper_service.py  # Core scraping and transformation logic
+├── spotify_scraper_service.py  # Minimal pass-through scraping service
 ├── requirements.txt            # Python dependencies
 ├── docker-compose.yml          # Docker Compose configuration
 ├── Dockerfile                  # Docker image configuration
@@ -147,19 +124,17 @@ The service follows these principles:
 - **Error Handling**: Comprehensive validation and error responses
 - **Logging**: Structured logging for debugging and monitoring  
 - **Security**: Input validation and sanitization
-- **Performance**: Efficient data transformation
+- **Performance**: Minimal overhead with raw data pass-through
 - **Standards**: REST API best practices
 
 ## Data Transformation
 
-The service transforms raw Spotify API data to match the GetSpotifyPlaylist interface:
+This service does NOT perform data transformation. It returns the raw JSON response from the SpotifyScraper library as-is. Any required data transformation should be handled by the consuming application.
 
-- `type`: Always set to "spotify-playlist"
-- `id`: Extracted from the playlist URL
-- `title`: Mapped from `name` field
-- `owner`: Mapped from `owner.display_name`
-- `image`: Set to empty string as required
-- `tracks`: Array transformation with proper field mapping
+This approach ensures:
+- No data loss from the original SpotifyScraper output
+- Future-proof compatibility with SpotifyScraper updates
+- Simplified codebase with minimal custom logic
 
 ## Error Handling
 

@@ -40,5 +40,5 @@ ENV PYTHONPATH=/app
 ENV PORT=3020
 ENV HOST=0.0.0.0
 
-# Start the FastAPI server
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "3020", "--reload"]
+# Start the Flask server
+CMD ["python", "app.py"]

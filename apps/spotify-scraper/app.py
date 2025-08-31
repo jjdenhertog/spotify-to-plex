@@ -35,7 +35,7 @@ def scrape_playlist():
         "url": "spotify_playlist_url"
     }
     
-    Returns data matching GetSpotifyPlaylist interface
+    Returns raw JSON data from SpotifyScraper
     """
     try:
         # Validate request
@@ -58,10 +58,10 @@ def scrape_playlist():
         
         logger.info(f"Scraping playlist: {playlist_url}")
         
-        # Scrape and transform playlist data
+        # Scrape playlist data
         playlist_data = scraper_service.scrape_playlist(playlist_url)
         
-        logger.info(f"Successfully scraped playlist: {playlist_data.get('title', 'Unknown')}")
+        logger.info(f"Successfully scraped playlist: {playlist_data.get('name', 'Unknown')}")
         
         return jsonify(playlist_data), 200
         

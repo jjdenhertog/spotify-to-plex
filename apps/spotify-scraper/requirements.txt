@@ -7,17 +7,9 @@ git+https://github.com/AliAkhtari78/SpotifyScraper.git
 
 # HTTP client and utilities
 requests==2.31.0
-urllib3==2.0.4
-
-# JSON and data handling
-python-json-logger==2.0.7
 
 # Environment and configuration
 python-dotenv==1.0.0
 
-# Development and testing (optional)
-pytest==7.4.0
-pytest-flask==1.2.0
-
-# Production server (optional)
+# Production server
 gunicorn==21.2.0
