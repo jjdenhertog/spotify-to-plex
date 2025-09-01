@@ -45,7 +45,11 @@ This project enforces a strict **NO barrel files** policy:
 - **Each file exports exactly ONE function OR ONE type**
 
 ```typescript
-// ✅ CORRECT - Full path imports required
+// ✅ CORRECT - Full path imports required (NO 'src' in path)
+import { filterUnique } from '@spotify-to-plex/shared-utils/array/filterUnique';
+import { TrackLink } from '@spotify-to-plex/shared-types/common/TrackLink';
+
+// ❌ FORBIDDEN - 'src' in import paths
 import { filterUnique } from '@spotify-to-plex/shared-utils/src/array/filterUnique';
 import { TrackLink } from '@spotify-to-plex/shared-types/src/common/TrackLink';
 
@@ -498,7 +502,11 @@ export function generateError(req: NextApiRequest, res: NextApiResponse, subject
 - **NO re-exports** - each import must use full path
 
 ```typescript
-// ✅ CORRECT - Direct imports with full paths
+// ✅ CORRECT - Direct imports with full paths (NO 'src' in path)
+import { Track } from '@spotify-to-plex/shared-types/common/Track';
+import { getAccessToken } from '@spotify-to-plex/shared-utils/spotify/getAccessToken';
+
+// ❌ FORBIDDEN - 'src' in import paths
 import { Track } from '@spotify-to-plex/shared-types/src/common/Track';
 import { getAccessToken } from '@spotify-to-plex/shared-utils/src/spotify/getAccessToken';
 
@@ -509,12 +517,13 @@ import { getAccessToken } from '@spotify-to-plex/shared-utils';
 
 ### Import Patterns
 - **Full path imports** required - no barrel exports allowed
+- **NO 'src' in import paths** - paths must exclude the 'src' directory
 - **Grouped imports**: external libraries first, then internal modules
 - **Type-only imports** when importing only types
 
 ```typescript
-// ✅ CORRECT - Import organization with full paths
-import { AxiosRequest } from '@spotify-to-plex/http-client/src/AxiosRequest';
+// ✅ CORRECT - Import organization with full paths (NO 'src' in path)
+import { AxiosRequest } from '@spotify-to-plex/http-client/AxiosRequest';
 import { generateError } from '@/helpers/errors/generateError';
 import type { NextApiRequest, NextApiResponse } from 'next';
 ```
@@ -602,6 +611,143 @@ The project uses strict ESLint rules that enforce all the patterns in this guide
 
 ---
 
+## Code Reuse and Duplication Prevention
+
+### **CRITICAL: Search Before Creating**
+
+Before implementing any new function or utility, you MUST search the existing codebase to prevent duplication:
+
+**Required Search Process:**
+1. **Search by function name** - Use Grep to find similar function names
+2. **Search by functionality** - Look for functions that do similar operations
+3. **Check domain directories** - Examine relevant utility directories first
+4. **Review related files** - Check files in the same feature area
+
+### Mandatory Pre-Implementation Checklist
+
+```typescript
+// ✅ REQUIRED - Search process before creating new function
+// 1. Search for existing implementations
+//    Grep: "formatDate", "dateFormat", "convertDate"
+// 2. Check domain directories
+//    Look in: utils/, date/, formatting/, helpers/
+// 3. Review similar files
+//    Check files that import date utilities
+// 4. Only then create if truly needed
+
+// If similar function exists - EXTEND or REFACTOR it
+// If duplicate found - USE existing and remove duplicate
+// If close match found - CONSOLIDATE into single function
+```
+
+### Anti-Duplication Rules
+
+- **NEVER create duplicate functions** - always search first
+- **CONSOLIDATE similar functions** - refactor into single, flexible implementation
+- **EXTEND existing functions** - add parameters rather than create new functions
+- **REMOVE redundant functions** - delete duplicates during refactoring
+- **USE existing utilities** - don't reinvent common operations
+
+### Examples
+
+```typescript
+// ❌ FORBIDDEN - Creating duplicate without searching
+export function formatUserName(user: User): string {
+    return `${user.firstName} ${user.lastName}`;
+}
+
+// Later in different file...
+export function getUserFullName(user: User): string {
+    return `${user.firstName} ${user.lastName}`;
+}
+
+// ✅ CORRECT - Single, well-named function
+export function formatFullName(user: User): string {
+    return `${user.firstName} ${user.lastName}`;
+}
+```
+
+### Search Tools and Techniques
+
+- **Use Grep extensively**: Search for function names, keywords, patterns
+- **Check directory structure**: Navigate domain-specific directories
+- **Review imports**: See what utilities other files are using
+- **Use IDE search**: Global search for similar implementations
+- **Check package exports**: Review what's available in shared packages
+
+This prevents code bloat and ensures a clean, consolidated codebase.
+
+---
+
+## Fresh Rebuild Policy - NO Fallback/Legacy Code
+
+### **CRITICAL: Complete Refactor Policy**
+
+This project is undergoing a fresh rebuild with a strict **NO fallback/legacy code** policy:
+
+- **NO fallback functions** - If refactoring changes a function signature, update ALL usage sites
+- **NO legacy properties** - Remove old properties entirely when refactoring data structures  
+- **NO compatibility layers** - Do not create wrappers for old implementations
+- **NO deprecated code paths** - Remove old code completely rather than marking as deprecated
+- **COMPLETE refactors ONLY** - When changing an implementation, change it everywhere at once
+
+### Examples of Forbidden Patterns
+
+```typescript
+// ❌ FORBIDDEN - Fallback/compatibility functions
+export function newFunction(data: NewType): Result {
+    // implementation
+}
+
+export function oldFunction(data: OldType): Result {
+    // Convert old to new format for compatibility
+    return newFunction(convertOldToNew(data));
+}
+
+// ❌ FORBIDDEN - Fallback properties
+export type Config = {
+    newProperty: string;
+    oldProperty?: string; // Keep for backward compatibility
+}
+
+// ❌ FORBIDDEN - Legacy code paths
+function processData(input: any) {
+    if (isNewFormat(input)) {
+        return handleNewFormat(input);
+    } else {
+        // Legacy fallback
+        return handleOldFormat(input);
+    }
+}
+```
+
+### Required Approach
+
+```typescript
+// ✅ CORRECT - Complete refactor, one implementation
+export function processData(data: NewType): Result {
+    // Single, clean implementation
+    return handleNewFormat(data);
+}
+
+export type Config = {
+    newProperty: string;
+    // oldProperty completely removed
+}
+```
+
+### Refactor Requirements
+
+1. **Identify ALL usage sites** before changing any implementation
+2. **Update ALL files simultaneously** in a single change
+3. **Remove old code entirely** - do not comment out or mark as deprecated
+4. **Update ALL type definitions** to use new structures
+5. **Test the complete change** across the entire codebase
+
+This ensures a clean, maintainable codebase without technical debt from legacy compatibility.
+
+---
+
 ## Summary of Critical Requirements
 
 ### **MUST DO** (Enforced by ESLint - Will Break Build)
@@ -613,6 +759,9 @@ The project uses strict ESLint rules that enforce all the patterns in this guide
 6. **4-space indentation**
 7. **Type over interface**
 8. **Functional components only**
+9. **NO 'src' in import paths** - exclude 'src' directory from all imports
+10. **Complete refactors only** - NO fallback/legacy code allowed
+11. **Search before creating** - MUST check for existing implementations first
 
 ### **SHOULD DO** (Best Practices)
 1. Use React.memo for components with props
@@ -629,5 +778,8 @@ The project uses strict ESLint rules that enforce all the patterns in this guide
 5. Direct boolean evaluation in conditional rendering
 6. Barrel files or index.ts exports
 7. Re-export patterns (export * from)
+8. Include 'src' in import paths
+9. Create fallback/legacy code for compatibility
+10. Create duplicate functions without searching existing codebase first
 
 This comprehensive guide ensures consistency and quality across the entire Spotify-to-Plex codebase. All developers and AI code generators MUST follow these patterns without exception.

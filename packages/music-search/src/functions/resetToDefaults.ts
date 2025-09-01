@@ -1,4 +1,3 @@
-import { MatchFilterConfig } from '../types/MatchFilterConfig';
 import { SearchApproachConfig } from '../types/SearchApproachConfig';
 import { MusicSearchConfig } from '../types/MusicSearchConfig';
 import { 
@@ -13,7 +12,7 @@ import { getMusicSearchConfigFromStorage } from './getMusicSearchConfigFromStora
 
 export async function resetToDefaults(storageDir: string): Promise<MusicSearchConfig> {
     await Promise.all([
-        updateMatchFilters(storageDir, DEFAULT_MATCH_FILTERS as MatchFilterConfig[]),
+        updateMatchFilters(storageDir, [...DEFAULT_MATCH_FILTERS]),
         updateTextProcessing(storageDir, DEFAULT_TEXT_PROCESSING),
         updateSearchApproaches(storageDir, DEFAULT_SEARCH_APPROACHES as SearchApproachConfig[])
     ]);

@@ -1,6 +1,6 @@
 /* eslint-disable unicorn/prefer-blob-reading-methods */
 import Logo from "@/components/Logo"
-import MatchFilterEditor from "@/components/MatchFilterEditor"
+import MatchFilterEditor from "@/components/MatchFilterEditorFixed"
 import SearchApproachesEditor from "@/components/SearchApproachesEditor"
 import TextProcessingEditor from "@/components/TextProcessingEditor"
 import { errorBoundary } from "@/helpers/errors/errorBoundary"

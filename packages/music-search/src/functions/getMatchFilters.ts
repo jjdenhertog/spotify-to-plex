@@ -1,7 +1,7 @@
 import fs from 'fs-extra';
 const { pathExists, readFile } = fs;
 import { join } from 'node:path';
-import { MatchFilterConfig } from '../types/MatchFilterConfig';
+import { MatchFilterConfig } from '@spotify-to-plex/shared-types/common/MatchFilterConfig';
 import { DEFAULT_MATCH_FILTERS } from '../config/default-config';
 
 const MATCH_FILTERS_FILE = 'match-filters.json';
