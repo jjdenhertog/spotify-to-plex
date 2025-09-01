@@ -178,7 +178,7 @@ const MatchFilterEditor: React.FC<MatchFilterEditorProps> = ({ onSave }) => {
         items: {
             type: 'string',
             description: 'Expression string using simplified syntax (e.g., "artist:match AND title:contains")',
-            pattern: '^(artist|title|album|artistWithTitle|artistInTitle):(match|contains|similarity>=\\d*\\.?\\d+)(\\s+(AND|OR)\\s+(artist|title|album|artistWithTitle|artistInTitle):(match|contains|similarity>=\\d*\\.?\\d+))*$'
+            pattern: String.raw`^(artist|title|album|artistWithTitle|artistInTitle):(match|contains|similarity>=\d*\.?\d+)(\s+(AND|OR)\s+(artist|title|album|artistWithTitle|artistInTitle):(match|contains|similarity>=\d*\.?\d+))*$`
         }
     };
 
