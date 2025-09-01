@@ -1,244 +1,154 @@
 import { NextApiRequest, NextApiResponse } from 'next';
+import { validateExpression, getMatchFilterValidationErrors } from '@spotify-to-plex/shared-utils/validation/validateMatchFilter';
+import { migrateLegacyFilter } from '@spotify-to-plex/music-search/functions/parseExpression';
+import { MatchFilterConfig } from '@spotify-to-plex/music-search/types/MatchFilterConfig';
 
-// Dynamic validation - no type interfaces needed
-
-
-type ValidationError = {
-    field: string;
-    message: string;
-    value?: any;
-}
-
-// Comprehensive validation function
-const validateConfiguration = (config: any): ValidationError[] => {
-    const errors: ValidationError[] = [];
-
-    // Basic structure validation
-    if (!config || typeof config !== 'object') {
-        errors.push({
-            field: 'root',
-            message: 'Configuration must be an object'
-        });
-
-        return errors;
-    }
-
-    // Validate matchFilters array
-    if (Array.isArray(config.matchFilters)) {
-        config.matchFilters.forEach((filter: any, index: number) => {
-            const prefix = `matchFilters[${index}]`;
-
-            if (!filter.id || typeof filter.id !== 'string') {
-                errors.push({
-                    field: `${prefix}.id`,
-                    message: 'Filter ID is required and must be a string',
-                    value: filter.id
-                });
-            }
-
-            if (!filter.name || typeof filter.name !== 'string') {
-                errors.push({
-                    field: `${prefix}.name`,
-                    message: 'Filter name is required and must be a string',
-                    value: filter.name
-                });
-            }
-
-            if (typeof filter.enabled !== 'boolean') {
-                errors.push({
-                    field: `${prefix}.enabled`,
-                    message: 'Filter enabled must be a boolean',
-                    value: filter.enabled
-                });
-            }
-
-            if (!filter.reason || typeof filter.reason !== 'string') {
-                errors.push({
-                    field: `${prefix}.reason`,
-                    message: 'Filter reason is required and must be a string',
-                    value: filter.reason
-                });
-            }
-
-            // Validate similarity values if present
-            ['artistSimilarity', 'titleSimilarity', 'artistWithTitleSimilarity'].forEach(field => {
-                if (filter[field] !== undefined) {
-                    const value = filter[field];
-                    if (typeof value !== 'number' || value < 0 || value > 1) {
-                        errors.push({
-                            field: `${prefix}.${field}`,
-                            message: `${field} must be a number between 0 and 1`,
-                            value
-                        });
-                    }
-                }
-            });
-
-            // Validate boolean flags if present
-            ['useContains', 'useArtistMatch'].forEach(field => {
-                if (filter[field] !== undefined && typeof filter[field] !== 'boolean') {
-                    errors.push({
-                        field: `${prefix}.${field}`,
-                        message: `${field} must be a boolean`,
-                        value: filter[field]
-                    });
-                }
-            });
-        });
-    } else {
-        errors.push({
-            field: 'matchFilters',
-            message: 'matchFilters must be an array'
-        });
-    }
-
-    // Validate textProcessing object
-    if (!config.textProcessing || typeof config.textProcessing !== 'object') {
-        errors.push({
-            field: 'textProcessing',
-            message: 'textProcessing must be an object'
-        });
-    } else {
-        const {textProcessing} = config;
-
-        // Validate arrays
-        ['filterOutWords', 'filterOutQuotes', 'cutOffSeparators'].forEach(field => {
-            if (Array.isArray(textProcessing[field])) {
-                // Validate array elements are strings
-                textProcessing[field].forEach((item: any, index: number) => {
-                    if (typeof item !== 'string') {
-                        errors.push({
-                            field: `textProcessing.${field}[${index}]`,
-                            message: `All items in ${field} must be strings`,
-                            value: item
-                        });
-                    }
-                });
-            } else {
-                errors.push({
-                    field: `textProcessing.${field}`,
-                    message: `${field} must be an array`,
-                    value: textProcessing[field]
-                });
-            }
-        });
-
-        // Validate boolean flags
-        ['removeQuotes', 'cutOffSeparators'].forEach(field => {
-            if (typeof textProcessing[field] !== 'boolean') {
-                errors.push({
-                    field: `textProcessing.${field}`,
-                    message: `${field} must be a boolean`,
-                    value: textProcessing[field]
-                });
-            }
-        });
-    }
-
-    // Validate searchApproaches object
-    if (!config.searchApproaches || typeof config.searchApproaches !== 'object') {
-        errors.push({
-            field: 'searchApproaches',
-            message: 'searchApproaches must be an object'
-        });
-    } else {
-        ['plex', 'tidal'].forEach(platform => {
-            if (Array.isArray(config.searchApproaches[platform])) {
-                config.searchApproaches[platform].forEach((approach: any, index: number) => {
-                    const prefix = `searchApproaches.${platform}[${index}]`;
-
-                    if (!approach.name || typeof approach.name !== 'string') {
-                        errors.push({
-                            field: `${prefix}.name`,
-                            message: 'Approach name is required and must be a string',
-                            value: approach.name
-                        });
-                    }
-
-                    // Validate boolean flags
-                    ['filtered', 'cutOffSeperators', 'removeQuotes'].forEach(field => {
-                        if (typeof approach[field] !== 'boolean') {
-                            errors.push({
-                                field: `${prefix}.${field}`,
-                                message: `${field} must be a boolean`,
-                                value: approach[field]
-                            });
-                        }
-                    });
-                });
-            } else {
-                errors.push({
-                    field: `searchApproaches.${platform}`,
-                    message: `searchApproaches.${platform} must be an array`,
-                    value: config.searchApproaches[platform]
-                });
-            }
-        });
-    }
-
-    // Business logic validations
-    if (config.matchFilters && Array.isArray(config.matchFilters)) {
-        // Check for duplicate IDs
-        const ids = config.matchFilters.map((f: any) => f.id).filter((id: any) => typeof id === 'string');
-        const duplicateIds = ids.filter((id: string, index: number) => ids.indexOf(id) !== index);
-        
-        if (duplicateIds.length > 0) {
-            errors.push({
-                field: 'matchFilters',
-                message: `Duplicate filter IDs found: ${duplicateIds.join(', ')}`
-            });
-        }
-
-        // Warn about filters with no matching criteria
-        config.matchFilters.forEach((filter: any, index: number) => {
-            const hasMatchingCriteria = filter.artistSimilarity !== undefined || 
-                                      filter.titleSimilarity !== undefined || 
-                                      filter.artistWithTitleSimilarity !== undefined;
-                                      
-            if (!hasMatchingCriteria) {
-                errors.push({
-                    field: `matchFilters[${index}]`,
-                    message: 'Filter must have at least one matching criterion (artistSimilarity, titleSimilarity, or artistWithTitleSimilarity)',
-                    value: filter
-                });
-            }
-        });
-    }
-
-    return errors;
+/**
+ * API response types for validation endpoint
+ */
+type ValidateExpressionRequest = {
+    expression: string;
 };
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+type ValidateFilterRequest = {
+    filter: MatchFilterConfig;
+};
+
+type MigrateLegacyRequest = {
+    legacyFilter: string;
+};
+
+type ValidateExpressionResponse = {
+    valid: boolean;
+    errors: string[];
+    expression: string;
+};
+
+type ValidateFilterResponse = {
+    valid: boolean;
+    errors: string[];
+    filter: MatchFilterConfig;
+};
+
+type MigrateLegacyResponse = {
+    success: boolean;
+    originalFilter: string;
+    migratedExpression: string | null;
+    errors?: string[];
+};
+
+type ErrorResponse = {
+    error: string;
+    details?: string[];
+};
+
+/**
+ * Validation API endpoint for match filters and expressions
+ * 
+ * POST /api/plex/music-search-config/validate
+ * 
+ * Body can be one of:
+ * - { expression: string } - Validate expression syntax
+ * - { filter: MatchFilterConfig } - Validate complete filter
+ * - { legacyFilter: string } - Migrate legacy filter to expression
+ */
+export default async function handler(
+    req: NextApiRequest,
+    res: NextApiResponse<ValidateExpressionResponse | ValidateFilterResponse | MigrateLegacyResponse | ErrorResponse>
+) {
+    if (req.method !== 'POST') {
+        res.setHeader('Allow', ['POST']);
+        return res.status(405).json({
+            error: 'Method not allowed',
+            details: ['Only POST method is supported for validation']
+        } as ErrorResponse);
+    }
+
     try {
-        if (req.method !== 'POST') {
-            res.setHeader('Allow', ['POST']);
+        const body = req.body;
 
-            return res.status(405).json({ error: 'Method not allowed' });
-        }
+        // Validate expression syntax
+        if ('expression' in body) {
+            const { expression } = body as ValidateExpressionRequest;
 
-        const config = req.body;
-        const validationErrors = validateConfiguration(config);
+            if (typeof expression !== 'string') {
+                return res.status(400).json({
+                    error: 'Invalid request',
+                    details: ['Expression must be a string']
+                } as ErrorResponse);
+            }
 
-        if (validationErrors.length === 0) {
+            const validation = validateExpression(expression);
+
             return res.status(200).json({
-                valid: true,
-                message: 'Configuration is valid'
-            });
+                valid: validation.valid,
+                errors: validation.errors,
+                expression
+            } as ValidateExpressionResponse);
         }
- 
+
+        // Validate complete filter
+        if ('filter' in body) {
+            const { filter } = body as ValidateFilterRequest;
+
+            const errors = getMatchFilterValidationErrors(filter);
+
+            return res.status(200).json({
+                valid: errors.length === 0,
+                errors,
+                filter
+            } as ValidateFilterResponse);
+        }
+
+        // Migrate legacy filter
+        if ('legacyFilter' in body) {
+            const { legacyFilter } = body as MigrateLegacyRequest;
+
+            if (typeof legacyFilter !== 'string') {
+                return res.status(400).json({
+                    error: 'Invalid request',
+                    details: ['Legacy filter must be a string']
+                } as ErrorResponse);
+            }
+
+            const migratedExpression = migrateLegacyFilter(legacyFilter);
+
+            if (migratedExpression) {
+                // Validate the migrated expression
+                const validation = validateExpression(migratedExpression);
+
+                return res.status(200).json({
+                    success: true,
+                    originalFilter: legacyFilter,
+                    migratedExpression,
+                    errors: validation.valid ? undefined : validation.errors
+                } as MigrateLegacyResponse);
+            } else {
+                return res.status(200).json({
+                    success: false,
+                    originalFilter: legacyFilter,
+                    migratedExpression: null,
+                    errors: ['Unable to migrate legacy filter - pattern not recognized']
+                } as MigrateLegacyResponse);
+            }
+        }
+
         return res.status(400).json({
-            valid: false,
-            errors: validationErrors,
-            message: `Configuration has ${validationErrors.length} validation error(s)`
-        });
-        
+            error: 'Invalid request',
+            details: [
+                'Request body must contain one of:',
+                '- { expression: string } - to validate expression syntax',
+                '- { filter: MatchFilterConfig } - to validate complete filter',
+                '- { legacyFilter: string } - to migrate legacy filter'
+            ]
+        } as ErrorResponse);
 
     } catch (error) {
-        console.error('Error validating music search config:', error);
+        console.error('Error in validation API:', error);
 
         return res.status(500).json({
             error: 'Internal server error',
-            message: error instanceof Error ? error.message : 'Unknown error'
-        });
+            details: [error instanceof Error ? error.message : 'Unknown error']
+        } as ErrorResponse);
     }
 }

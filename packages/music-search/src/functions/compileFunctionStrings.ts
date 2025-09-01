@@ -19,6 +19,6 @@ function createFilterFunction(filterString: string): (item: TrackWithMatching) =
 export function compileFunctionStrings(filters: readonly MusicSearchConfig['matchFilters'][0][]): RuntimeMatchFilter[] {
     return filters.map(filter => ({
         reason: filter.reason,
-        filter: createFilterFunction(filter.filter)
+        filter: createFilterFunction(filter.filter || '')
     }));
 }
