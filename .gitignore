@@ -101,7 +101,7 @@ lerna-debug.log*
 # Vibe Remote files and initiated folders
 .claude-flow-initialized
 .roomodes
-CLAUDE.md
+#CLAUDE.md
 .claude-flow
 .claude
 memory

@@ -1,0 +1,2 @@
+- Always read @CODING_GUIDELINES.md before performing any action
+- After completing always run pnpm -r run type-check and pnpm -r run lint to fix any errors that have been caused by the change.

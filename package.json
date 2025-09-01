@@ -21,7 +21,7 @@
         "build:web": "npm run build --workspace=@spotify-to-plex/web",
         "build:sync-worker": "npm run build --workspace=@spotify-to-plex/sync-worker",
         "build": "tsc --build",
-        "build:clean": "tsc --build --clean",
+        "build:clean": "pnpm -r run clean",
         "build:force": "tsc --build --force",
         "type-check": "pnpm -r run type-check",
         "type-check:build": "tsc --build --noEmit",

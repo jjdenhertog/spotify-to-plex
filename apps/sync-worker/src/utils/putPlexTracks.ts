@@ -1,8 +1,8 @@
-import { addItemsToPlaylist } from "@spotify-to-plex/plex-helpers/playlist";
-import { putPlaylistPoster } from "@spotify-to-plex/plex-helpers/playlist";
-import { removeItemsFromPlaylist } from "@spotify-to-plex/plex-helpers/playlist";
-import { storePlaylist } from "@spotify-to-plex/plex-helpers/playlist";
-import { updatePlaylist } from "@spotify-to-plex/plex-helpers/playlist";
+import { addItemsToPlaylist } from "@spotify-to-plex/plex-helpers/playlist/addItemsToPlaylist";
+import { putPlaylistPoster } from "@spotify-to-plex/plex-helpers/playlist/putPlaylistPoster";
+import { removeItemsFromPlaylist } from "@spotify-to-plex/plex-helpers/playlist/removeItemsFromPlaylist";
+import { storePlaylist } from "@spotify-to-plex/plex-helpers/playlist/storePlaylist";
+import { updatePlaylist } from "@spotify-to-plex/plex-helpers/playlist/updatePlaylist";
 import { getPlexUri } from "@spotify-to-plex/plex-helpers/utils/getPlexUri";
 import { getAPIUrl } from "@spotify-to-plex/shared-utils/utils/getAPIUrl";
 import { plex } from "../library/plex";

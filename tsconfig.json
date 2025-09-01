@@ -25,6 +25,9 @@
       "path": "./packages/tidal-music-search"
     },
     {
+      "path": "./packages/plex-helpers"
+    },
+    {
       "path": "./apps/sync-worker"
     },
     {
@@ -52,7 +55,9 @@
       "@spotify-to-plex/tidal-music-search": ["./packages/tidal-music-search/src"],
       "@spotify-to-plex/tidal-music-search/*": ["./packages/tidal-music-search/src/*"],
       "@spotify-to-plex/plex-config": ["./packages/plex-config/src"],
-      "@spotify-to-plex/plex-config/*": ["./packages/plex-config/src/*"]
+      "@spotify-to-plex/plex-config/*": ["./packages/plex-config/src/*"],
+      "@spotify-to-plex/plex-helpers": ["./packages/plex-helpers/src"],
+      "@spotify-to-plex/plex-helpers/*": ["./packages/plex-helpers/src/*"]
     }
   },
   "ts-node": {

@@ -1,7 +1,8 @@
 import { decrypt } from '@spotify-to-plex/shared-utils/security/decrypt';
 // MIGRATED: Updated to use shared utils package
 import { generateError } from '@/helpers/errors/generateError';
-import { refreshAccessTokens, settingsDir } from '@spotify-to-plex/shared-utils/server';
+import { refreshAccessTokens } from '@spotify-to-plex/shared-utils/spotify/refreshAccessTokens';
+import { settingsDir } from '@spotify-to-plex/shared-utils/utils/settingsDir';
 import { GetSpotifyAlbum } from '@spotify-to-plex/shared-types/spotify/GetSpotifyAlbum';
 import { GetSpotifyPlaylist } from '@spotify-to-plex/shared-types/spotify/GetSpotifyPlaylist';
 import { SavedItem } from '@spotify-to-plex/shared-types/spotify/SavedItem';

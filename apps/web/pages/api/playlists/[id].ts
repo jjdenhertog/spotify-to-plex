@@ -2,11 +2,13 @@ import { AxiosRequest } from '@spotify-to-plex/http-client/AxiosRequest';
 // MIGRATED: Updated to use http-client package
 import { generateError } from '@/helpers/errors/generateError';
 import { getAPIUrl } from '@spotify-to-plex/shared-utils/utils/getAPIUrl';
-import { addItemsToPlaylist } from '@spotify-to-plex/plex-helpers/playlist';
-import { putPlaylistPoster } from '@spotify-to-plex/plex-helpers/playlist';
-import { removeItemsFromPlaylist } from '@spotify-to-plex/plex-helpers/playlist';
-import { updatePlaylist } from '@spotify-to-plex/plex-helpers/playlist';
-import { plex, PlexPlaylists } from '@/library/plex';
+import { addItemsToPlaylist } from '@spotify-to-plex/plex-helpers/playlist/addItemsToPlaylist';
+import { putPlaylistPoster } from '@spotify-to-plex/plex-helpers/playlist/putPlaylistPoster';
+import { removeItemsFromPlaylist } from '@spotify-to-plex/plex-helpers/playlist/removeItemsFromPlaylist';
+import { updatePlaylist } from '@spotify-to-plex/plex-helpers/playlist/updatePlaylist';
+import { plex } from '@/library/plex';
+import type { PlexPlaylists } from '@spotify-to-plex/plex-config/types/PlexPlaylists';
+import type { PlaylistItem } from '@spotify-to-plex/plex-config/types/PlaylistItem';
 import { GetPlaylistResponse } from '@spotify-to-plex/shared-types/plex/GetPlaylistResponse';
 // MIGRATED: Updated to use shared types package
 import type { NextApiRequest, NextApiResponse } from 'next';
@@ -34,7 +36,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 if (!playlists)
                     return res.status(400).json({ msg: "Invalid playlists" });
 
-                const playlistIds = playlists.find(item => item.id === id)
+                const playlistIds = playlists.find((item: PlaylistItem) => item.id === id)
                 if (!playlistIds)
                     return res.status(404).json({ error: `Playlist not found connected to ${id}` })
 
@@ -73,7 +75,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 if (!playlists)
                     return res.status(400).json({ msg: "Invalid playlists" });
 
-                const playlistIds = playlists.find(item => item.id === id)
+                const playlistIds = playlists.find((item: PlaylistItem) => item.id === id)
                 if (!playlistIds)
                     return res.status(404).json({ error: `Playlist not found connected to ${id}` })
 

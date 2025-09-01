@@ -15,6 +15,7 @@
     },
     "scripts": {
         "build": "tsc",
+        "clean": "rm -rf dist",
         "type-check": "tsc --noEmit",
         "lint": "eslint src",
         "lint:fix": "eslint src --fix"

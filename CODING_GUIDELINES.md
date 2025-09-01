@@ -27,9 +27,39 @@ spotify-to-plex/
 
 ### Package Organization Standards
 - Each package MUST have consistent structure: `src/`, `dist/`, `package.json`, `tsconfig.json`
-- Use **barrel exports** (`index.ts`) for clean package interfaces
+- **NO barrel exports** - each type and function must be imported with full path
 - Separate server-side and client-side utilities clearly
 - Shared types MUST be in dedicated `@spotify-to-plex/shared-types` package
+
+---
+
+## **CRITICAL: NO Barrel Files Policy**
+
+### **Barrel Files Are Strictly Forbidden**
+
+This project enforces a strict **NO barrel files** policy:
+
+- **NO `index.ts` files** for re-exporting modules
+- **NO `export * from` patterns** 
+- **ALL imports MUST use full paths** to specific files
+- **Each file exports exactly ONE function OR ONE type**
+
+```typescript
+// ✅ CORRECT - Full path imports required
+import { filterUnique } from '@spotify-to-plex/shared-utils/src/array/filterUnique';
+import { TrackLink } from '@spotify-to-plex/shared-types/src/common/TrackLink';
+
+// ❌ FORBIDDEN - Barrel imports not allowed
+import { filterUnique, TrackLink } from '@spotify-to-plex/shared-utils';
+import * as utils from '@spotify-to-plex/shared-utils';
+```
+
+### Benefits of NO Barrel Files
+- **Explicit dependencies**: Every import shows exactly which file is used
+- **Better tree shaking**: Bundlers can eliminate unused code more effectively
+- **Clearer debugging**: Stack traces point to exact source files
+- **Prevents circular dependencies**: Full paths make dependency chains visible
+- **Faster builds**: TypeScript doesn't need to resolve barrel exports
 
 ---
 
@@ -65,9 +95,9 @@ packages/shared-utils/src/
 
 ## One Function Per File Rule
 
-### **CRITICAL: Each Utility File Contains Exactly One Function**
+### **CRITICAL: Each File Contains Exactly One Function OR One Type**
 
-This is a fundamental pattern throughout the codebase - every utility function gets its own file:
+This is a fundamental pattern throughout the codebase - every utility function gets its own file, and every type gets its own file:
 
 ```typescript
 // ✅ CORRECT - filterUnique.ts
@@ -87,16 +117,18 @@ export function createSearchString(input: string) {
 }
 ```
 
-### Benefits of One-Function-Per-File
+### Benefits of One-Function-Per-File and One-Type-Per-File
 - **Clear imports**: `import { filterUnique } from './array/filterUnique'`
-- **Easy discovery**: Function location is predictable from name
+- **Easy discovery**: Function/type location is predictable from name
 - **Focused files**: Each file has single responsibility
-- **Better organization**: Related functions grouped by domain directory
+- **Better organization**: Related functions and types grouped by domain directory
+- **NO barrel files**: Full path imports ensure explicit dependencies
 
-### File Naming for Functions
-- **File name MUST match function name**: `getAccessToken.ts` exports `getAccessToken`
-- **camelCase for file names**: `getCachedTrackLink.ts`, `refreshAccessTokens.ts`
-- **Descriptive names**: File name should clearly indicate function purpose
+### File Naming for Functions and Types
+- **File name MUST match export name**: `getAccessToken.ts` exports `getAccessToken`, `TrackLink.ts` exports `TrackLink`
+- **camelCase for function files**: `getCachedTrackLink.ts`, `refreshAccessTokens.ts`
+- **PascalCase for type files**: `TrackLink.ts`, `SearchConfig.ts`
+- **Descriptive names**: File name should clearly indicate function/type purpose
 
 ---
 
@@ -460,29 +492,29 @@ export function generateError(req: NextApiRequest, res: NextApiResponse, subject
 ## Import/Export Conventions
 
 ### Export Patterns
-- **Named exports** preferred for utilities and types
+- **Named exports** required for utilities and types
 - **Default exports** for React components and API route handlers
-- **Barrel exports** using `index.ts` files for package entry points
-- **Re-exports** using `export * from` pattern
+- **NO barrel exports** - `index.ts` files are forbidden
+- **NO re-exports** - each import must use full path
 
 ```typescript
-// ✅ Package barrel export (index.ts)
-// Spotify API types
-export * from './spotify/api';
-// Plex API types  
-export * from './plex/api';
-// Common types
-export * from './common/track';
+// ✅ CORRECT - Direct imports with full paths
+import { Track } from '@spotify-to-plex/shared-types/src/common/Track';
+import { getAccessToken } from '@spotify-to-plex/shared-utils/src/spotify/getAccessToken';
+
+// ❌ FORBIDDEN - Barrel imports
+import { Track } from '@spotify-to-plex/shared-types';
+import { getAccessToken } from '@spotify-to-plex/shared-utils';
 ```
 
 ### Import Patterns
-- **Absolute imports** using TypeScript path mapping
+- **Full path imports** required - no barrel exports allowed
 - **Grouped imports**: external libraries first, then internal modules
 - **Type-only imports** when importing only types
 
 ```typescript
-// ✅ CORRECT - Import organization
-import { AxiosRequest } from '@spotify-to-plex/http-client';
+// ✅ CORRECT - Import organization with full paths
+import { AxiosRequest } from '@spotify-to-plex/http-client/src/AxiosRequest';
 import { generateError } from '@/helpers/errors/generateError';
 import type { NextApiRequest, NextApiResponse } from 'next';
 ```
@@ -584,7 +616,7 @@ The project uses strict ESLint rules that enforce all the patterns in this guide
 
 ### **SHOULD DO** (Best Practices)
 1. Use React.memo for components with props
-2. Use barrel exports for packages
+2. Use full path imports for all internal modules
 3. Follow naming conventions strictly
 4. Organize utilities by domain directories
 5. Implement proper TypeScript typing
@@ -595,5 +627,7 @@ The project uses strict ESLint rules that enforce all the patterns in this guide
 3. Class components
 4. Interface declarations
 5. Direct boolean evaluation in conditional rendering
+6. Barrel files or index.ts exports
+7. Re-export patterns (export * from)
 
 This comprehensive guide ensures consistency and quality across the entire Spotify-to-Plex codebase. All developers and AI code generators MUST follow these patterns without exception.
