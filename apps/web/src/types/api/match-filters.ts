@@ -1,4 +1,5 @@
-import { MatchFilterConfig } from '@spotify-to-plex/music-search/types/MatchFilterConfig';
+/* eslint-disable custom/no-export-only-files */
+import { MatchFilterConfig } from '@spotify-to-plex/shared-types/common/MatchFilterConfig';
 
 /**
  * Match Filters API Types
@@ -19,10 +20,6 @@ export type UpdateMatchFiltersSuccessResponse = {
     success: true;
     message: string;
     filters: MatchFilterConfig[];
-    migrated?: {
-        count: number;
-        details: string[];
-    };
 };
 
 // Error Responses
@@ -89,24 +86,18 @@ export type ValidationErrorResponse = {
  * Client API Functions Types
  */
 
-export interface MatchFiltersApiClient {
+export type MatchFiltersApiClient = {
     // Get current match filters
-    getMatchFilters(params?: GetMatchFiltersParams): Promise<GetMatchFiltersResponse>;
+    getMatchFilters: (params?: GetMatchFiltersParams) => Promise<GetMatchFiltersResponse>;
     
     // Update match filters
-    updateMatchFilters(filters: UpdateMatchFiltersRequest): Promise<UpdateMatchFiltersSuccessResponse>;
-    
-    // Migrate legacy filters to expression format
-    migrateFilters(): Promise<UpdateMatchFiltersSuccessResponse>;
+    updateMatchFilters: (filters: UpdateMatchFiltersRequest) => Promise<UpdateMatchFiltersSuccessResponse>;
     
     // Validate expression syntax
-    validateExpression(expression: string): Promise<ValidateExpressionResponse>;
+    validateExpression: (expression: string) => Promise<ValidateExpressionResponse>;
     
     // Validate complete filter object
-    validateFilter(filter: MatchFilterConfig): Promise<ValidateFilterResponse>;
-    
-    // Migrate legacy filter string to expression
-    migrateLegacyFilter(legacyFilter: string): Promise<MigrateLegacyFilterResponse>;
+    validateFilter: (filter: MatchFilterConfig) => Promise<ValidateFilterResponse>;
 }
 
 /**
@@ -118,21 +109,21 @@ export type ExpressionOperation = 'match' | 'contains' | 'similarity';
 
 export type ExpressionOperator = 'AND' | 'OR';
 
-export interface ExpressionCondition {
+export type ExpressionCondition = {
     field: ExpressionField;
     operation: ExpressionOperation;
     threshold?: number; // For similarity operations
-}
+};
 
-export interface ParsedExpression {
+export type ParsedExpression = {
     conditions: ExpressionCondition[];
     operators: ExpressionOperator[];
-}
+};
 
 /**
  * UI State Types
  */
-export interface MatchFilterEditorState {
+export type MatchFilterEditorState = {
     filters: MatchFilterConfig[];
     isLoading: boolean;
     error: string | null;
@@ -147,19 +138,19 @@ export interface MatchFilterEditorState {
     };
 }
 
-export interface ExpressionBuilderState {
+export type ExpressionBuilderState = {
     conditions: ExpressionCondition[];
     isValid: boolean;
     errors: string[];
     previewExpression: string;
-}
+};
 
 /**
  * Utility Types
  */
 export type FilterFormat = 'legacy' | 'expression' | 'mixed';
 
-export interface FilterFormatInfo {
+export type FilterFormatInfo = {
     format: FilterFormat;
     canMigrate: boolean;
     migrationRequired: boolean;

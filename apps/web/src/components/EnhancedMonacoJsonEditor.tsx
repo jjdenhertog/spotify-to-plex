@@ -95,6 +95,7 @@ const EnhancedMonacoJsonEditor = forwardRef<EnhancedMonacoJsonEditorHandle, Enha
                 id: 'import-json',
                 label: 'Import JSON File',
                 keybindings: [
+                    /* eslint-disable-next-line no-bitwise */
                     monacoInstance.KeyMod.CtrlCmd | monacoInstance.KeyCode.KeyI
                 ],
                 run: () => {
@@ -106,6 +107,7 @@ const EnhancedMonacoJsonEditor = forwardRef<EnhancedMonacoJsonEditorHandle, Enha
                 id: 'export-json',
                 label: 'Export JSON File',
                 keybindings: [
+                    /* eslint-disable-next-line no-bitwise */
                     monacoInstance.KeyMod.CtrlCmd | monacoInstance.KeyCode.KeyE
                 ],
                 run: () => {
@@ -117,6 +119,7 @@ const EnhancedMonacoJsonEditor = forwardRef<EnhancedMonacoJsonEditorHandle, Enha
                 id: 'copy-json',
                 label: 'Copy to Clipboard',
                 keybindings: [
+                    /* eslint-disable-next-line no-bitwise */
                     monacoInstance.KeyMod.CtrlCmd | monacoInstance.KeyMod.Shift | monacoInstance.KeyCode.KeyC
                 ],
                 run: () => {
@@ -159,10 +162,11 @@ const EnhancedMonacoJsonEditor = forwardRef<EnhancedMonacoJsonEditorHandle, Enha
         
         const a = document.createElement('a');
         a.href = url;
-        a.download = `match-filters-${new Date().toISOString().split('T')[0]}.json`;
-        document.body.appendChild(a);
+        a.download = `match-filters-${new Date().toISOString()
+            .split('T')[0]}.json`;
+        document.body.append(a);
         a.click();
-        document.body.removeChild(a);
+        a.remove();
         URL.revokeObjectURL(url);
 
         enqueueSnackbar('Configuration exported successfully', { variant: 'success' });
@@ -176,7 +180,7 @@ const EnhancedMonacoJsonEditor = forwardRef<EnhancedMonacoJsonEditorHandle, Enha
         try {
             await navigator.clipboard.writeText(content);
             enqueueSnackbar('Configuration copied to clipboard', { variant: 'success' });
-        } catch (err) {
+        } catch (_err) {
             enqueueSnackbar('Failed to copy to clipboard', { variant: 'error' });
         }
     }, []);
@@ -194,8 +198,9 @@ const EnhancedMonacoJsonEditor = forwardRef<EnhancedMonacoJsonEditorHandle, Enha
                 if (onChange) {
                     onChange(parsed);
                 }
+
                 enqueueSnackbar('Configuration imported successfully', { variant: 'success' });
-            } catch (err) {
+            } catch (_err) {
                 enqueueSnackbar('Invalid JSON file', { variant: 'error' });
             }
         };
@@ -213,8 +218,9 @@ const EnhancedMonacoJsonEditor = forwardRef<EnhancedMonacoJsonEditorHandle, Enha
             if (onChange) {
                 onChange(parsed);
             }
+
             enqueueSnackbar('Configuration pasted from clipboard', { variant: 'success' });
-        } catch (err) {
+        } catch (_err) {
             enqueueSnackbar('Invalid JSON in clipboard', { variant: 'error' });
         }
     }, [onChange]);
@@ -250,8 +256,8 @@ const EnhancedMonacoJsonEditor = forwardRef<EnhancedMonacoJsonEditorHandle, Enha
 
             <Paper variant="outlined" sx={{ position: 'relative' }}>
                 {/* Toolbar */}
-                {enableImportExport && !readOnly && (
-                    <Box sx={{ 
+                {enableImportExport && !readOnly ? <Box
+                    sx={{ 
                         position: 'absolute', 
                         top: 8, 
                         right: 8, 
@@ -259,21 +265,20 @@ const EnhancedMonacoJsonEditor = forwardRef<EnhancedMonacoJsonEditorHandle, Enha
                         display: 'flex',
                         gap: 0.5
                     }}>
-                        <Tooltip title="Import/Export Options">
-                            <IconButton
-                                size="small"
-                                onClick={handleMenuOpen}
-                                sx={{
-                                    bgcolor: 'background.paper',
-                                    boxShadow: 1,
-                                    '&:hover': { bgcolor: 'action.hover' }
-                                }}
+                    <Tooltip title="Import/Export Options">
+                        <IconButton
+                            size="small"
+                            onClick={handleMenuOpen}
+                            sx={{
+                                bgcolor: 'background.paper',
+                                boxShadow: 1,
+                                '&:hover': { bgcolor: 'action.hover' }
+                            }}
                             >
-                                <MoreIcon fontSize="small" />
-                            </IconButton>
-                        </Tooltip>
-                    </Box>
-                )}
+                            <MoreIcon fontSize="small" />
+                        </IconButton>
+                    </Tooltip>
+                </Box> : null}
 
                 <Editor
                     height={`${height}px`}
@@ -309,13 +314,7 @@ const EnhancedMonacoJsonEditor = forwardRef<EnhancedMonacoJsonEditorHandle, Enha
                 />
 
                 {/* Hidden file input for import */}
-                <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept=".json"
-                    style={{ display: 'none' }}
-                    onChange={handleFileImport}
-                />
+                <input ref={fileInputRef} type="file" accept=".json" style={{ display: 'none' }} onChange={handleFileImport} />
             </Paper>
 
             {/* Import/Export Menu */}
@@ -349,18 +348,18 @@ const EnhancedMonacoJsonEditor = forwardRef<EnhancedMonacoJsonEditorHandle, Enha
                     <ListItemIcon>
                         <PasteIcon fontSize="small" />
                     </ListItemIcon>
-                    <ListItemText>Paste from Clipboard</ListItemText>
+                    <ListItemText>
+                        Paste from Clipboard
+                    </ListItemText>
                 </MenuItem>
             </Menu>
 
             {/* Footer help text */}
-            {enableImportExport && (
-                <Box sx={{ mt: 1 }}>
-                    <Typography variant="caption" color="text.secondary">
-                        <strong>Keyboard shortcuts:</strong> Ctrl+I (Import), Ctrl+E (Export), Ctrl+Shift+C (Copy)
-                    </Typography>
-                </Box>
-            )}
+            {enableImportExport ? <Box sx={{ mt: 1 }}>
+                <Typography variant="caption" color="text.secondary">
+                    <strong>Keyboard shortcuts:</strong> Ctrl+I (Import), Ctrl+E (Export), Ctrl+Shift+C (Copy)
+                </Typography>
+            </Box> : null}
         </Box>
     );
 });

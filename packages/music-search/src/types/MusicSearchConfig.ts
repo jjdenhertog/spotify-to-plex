@@ -1,4 +1,4 @@
-import { MatchFilterConfig } from './MatchFilterConfig';
+import { MatchFilterConfig } from '@spotify-to-plex/shared-types/common/MatchFilterConfig';
 import { TextProcessingConfig } from './TextProcessingConfig';
 import { PlatformSearchConfig } from './PlatformSearchConfig';
 

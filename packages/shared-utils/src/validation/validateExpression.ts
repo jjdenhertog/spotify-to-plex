@@ -1,18 +1,10 @@
-import { MatchFilterConfig } from '@spotify-to-plex/music-search/types/MatchFilterConfig';
-
-/**
- * Validation result with detailed error information
- */
-export type ValidationResult = {
-    valid: boolean;
-    errors: string[];
-};
+import { ValidationResult } from './ValidationResult';
 
 /**
  * Validate expression syntax for new expression format  
- * This is the main implementation file for match filter validation
+ * This is the main implementation file for expression validation
  */
-export const validateExpression = (expression: string): ValidationResult => {
+export function validateExpression(expression: string): ValidationResult {
     const errors: string[] = [];
     
     try {
@@ -99,65 +91,4 @@ export const validateExpression = (expression: string): ValidationResult => {
     }
     
     return { valid: errors.length === 0, errors };
-};
-
-/**
- * Validate match filter structure supporting both legacy and expression formats
- */
-export const validateMatchFilter = (filter: any): filter is MatchFilterConfig => {
-    if (!filter || typeof filter !== 'object' || typeof filter.reason !== 'string') {
-        return false;
-    }
-    
-    const hasFilter = typeof filter.filter === 'string';
-    const hasExpression = typeof filter.expression === 'string';
-    
-    // Must have either filter (legacy) or expression (new format)
-    if (!hasFilter && !hasExpression) {
-        return false;
-    }
-    
-    // If expression is provided, validate it
-    if (hasExpression) {
-        const validation = validateExpression(filter.expression);
-        if (!validation.valid) {
-            // Log validation errors for debugging but still return false
-            console.warn('Expression validation failed:', validation.errors);
-
-            return false;
-        }
-    }
-    
-    return true;
-};
-
-/**
- * Get detailed validation errors for a match filter
- */
-export const getMatchFilterValidationErrors = (filter: any): string[] => {
-    const errors: string[] = [];
-    
-    if (!filter || typeof filter !== 'object') {
-        errors.push('Filter must be an object');
-
-        return errors;
-    }
-    
-    if (typeof filter.reason !== 'string') {
-        errors.push('Filter must have a "reason" property of type string');
-    }
-    
-    const hasFilter = typeof filter.filter === 'string';
-    const hasExpression = typeof filter.expression === 'string';
-    
-    if (!hasFilter && !hasExpression) {
-        errors.push('Filter must have either "filter" (legacy) or "expression" (new format) property');
-    }
-    
-    if (hasExpression) {
-        const validation = validateExpression(filter.expression);
-        errors.push(...validation.errors);
-    }
-    
-    return errors;
-};
+}

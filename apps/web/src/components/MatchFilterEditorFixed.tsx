@@ -35,57 +35,9 @@ const MatchFilterEditor: React.FC<MatchFilterEditorProps> = ({ onSave }) => {
     const [viewMode, setViewMode] = useState<ViewMode>('ui');
     const editorRef = useRef<MonacoJsonEditorHandle>(null);
 
-    // Convert legacy filter to new expression format (simplified for now)
-    const convertLegacyToExpression = useCallback((filter: string): string => {
-        // This is a simplified converter - in practice, you'd want a more robust parser
-        if (filter.includes('artist.match') && filter.includes('title.match')) {
-            return 'artist:match AND title:match';
-        }
-        if (filter.includes('artist.match') && filter.includes('title.contains')) {
-            return 'artist:match AND title:contains';
-        }
-        if (filter.includes('artist.contains') && filter.includes('title.match')) {
-            return 'artist:contains AND title:match';
-        }
-        if (filter.includes('artist.similarity') && filter.includes('title.similarity')) {
-            // Extract similarity threshold (simplified)
-            const threshold = filter.match(/>=\\s*(0\\.\\d+)/)?.[1] || '0.8';
-            return `artist:similarity>=${threshold} AND title:similarity>=${threshold}`;
-        }
-        // Fallback to a basic expression
-        return 'artist:match';
-    }, []);
-
-    // Convert between legacy format and new expression format
-    const convertToExpressionFormat = useCallback((data: MatchFilterConfig[]): MatchFilterRule[] => {
-        return data.map((filter) => ({
-            reason: filter.reason,
-            expression: convertLegacyToExpression(filter.filter),
-            enabled: true
-        }));
-    }, [convertLegacyToExpression]);
-
-    // Convert back to legacy format for saving
-    const convertToLegacyFormat = useCallback((filters: MatchFilterRule[]): MatchFilterConfig[] => {
-        return filters.map(filter => {
-            // Convert expression back to function string (simplified)
-            let functionString = '';
-            if (filter.expression.includes('artist:match') && filter.expression.includes('title:match')) {
-                functionString = '(item) => item.matching.artist.match && item.matching.title.match';
-            } else if (filter.expression.includes('artist:match') && filter.expression.includes('title:contains')) {
-                functionString = '(item) => item.matching.artist.match && item.matching.title.contains';
-            } else if (filter.expression.includes('artist:contains') && filter.expression.includes('title:match')) {
-                functionString = '(item) => item.matching.artist.contains && item.matching.title.match';
-            } else {
-                // Fallback
-                functionString = '(item) => item.matching.artist.match';
-            }
-
-            return {
-                reason: filter.reason,
-                filter: functionString
-            };
-        });
+    // Convert loaded data to expression format for UI
+    const convertToExpressionFormat = useCallback((data: any[]): MatchFilterRule[] => {
+        return data.map((filter) => typeof filter === 'string' ? filter : filter.expression || 'artist:match');
     }, []);
 
     const loadFilters = useCallback(async () => {
@@ -106,6 +58,7 @@ const MatchFilterEditor: React.FC<MatchFilterEditorProps> = ({ onSave }) => {
     // Convert data for UI mode
     const expressionFilters = useMemo(() => {
         if (!jsonData) return [];
+
         return convertToExpressionFormat(jsonData);
     }, [jsonData, convertToExpressionFormat]);
 
@@ -120,36 +73,14 @@ const MatchFilterEditor: React.FC<MatchFilterEditorProps> = ({ onSave }) => {
                 return `Filter at index ${i} is null or undefined`;
             }
             
-            if (typeof filter !== 'object') {
-                return `Filter at index ${i} must be an object`;
-            }
-            
-            if (!filter.reason || (!filter.filter && !filter.expression)) {
-                return `Filter at index ${i} must have both 'reason' and 'filter' (or 'expression') properties`;
+            if (typeof filter !== 'string') {
+                return `Filter at index ${i} must be a string expression`;
             }
 
-            if (typeof filter.reason !== 'string') {
-                return `Filter at index ${i}: 'reason' must be a string`;
-            }
-
-            // Validate based on format
-            if (filter.filter) {
-                if (typeof filter.filter !== 'string') {
-                    return `Filter at index ${i}: 'filter' must be a string`;
-                }
-                // Basic function string validation
-                if (!filter.filter.includes('=>') && !filter.filter.startsWith('function')) {
-                    return `Filter at index ${i}: 'filter' should be a function string (e.g., "(item) => ...")`;
-                }
-            } else if (filter.expression) {
-                if (typeof filter.expression !== 'string') {
-                    return `Filter at index ${i}: 'expression' must be a string`;
-                }
-                // Basic expression validation
-                const validFieldPattern = /^(artist|title|album|artistWithTitle|artistInTitle):(match|contains|similarity>=\\d*\\.?\\d+)(\\s+(AND|OR)\\s+(artist|title|album|artistWithTitle|artistInTitle):(match|contains|similarity>=\\d*\\.?\\d+))*$/;
-                if (!validFieldPattern.test(filter.expression.trim())) {
-                    return `Filter at index ${i}: invalid expression format`;
-                }
+            // Basic expression validation
+            const validFieldPattern = /^(artist|title|album|artistWithTitle|artistInTitle):(match|contains|similarity>=\\d*\\.?\\d+)(\\s+(AND|OR)\\s+(artist|title|album|artistWithTitle|artistInTitle):(match|contains|similarity>=\\d*\\.?\\d+))*$/;
+            if (!validFieldPattern.test(filter.trim())) {
+                return `Filter at index ${i}: invalid expression format`;
             }
         }
         
@@ -164,12 +95,13 @@ const MatchFilterEditor: React.FC<MatchFilterEditorProps> = ({ onSave }) => {
                 // Get current content directly from Monaco editor
                 currentData = editorRef.current?.getCurrentValue?.();
             } else {
-                // Convert UI data back to legacy format
-                currentData = convertToLegacyFormat(expressionFilters);
+                // Use expression format directly
+                currentData = expressionFilters;
             }
             
             if (!currentData) {
                 enqueueSnackbar('No valid data to save', { variant: 'error' });
+
                 return;
             }
 
@@ -178,6 +110,7 @@ const MatchFilterEditor: React.FC<MatchFilterEditorProps> = ({ onSave }) => {
             if (validationErrorMsg) {
                 setValidationError(validationErrorMsg);
                 enqueueSnackbar(`Validation Error: ${validationErrorMsg}`, { variant: 'error' });
+
                 return;
             }
 
@@ -192,7 +125,7 @@ const MatchFilterEditor: React.FC<MatchFilterEditorProps> = ({ onSave }) => {
                 onSave(currentData);
             }
         });
-    }, [viewMode, expressionFilters, convertToLegacyFormat, onSave]);
+    }, [viewMode, expressionFilters, onSave]);
 
     const handleReset = useCallback(async () => {
         if (confirm('Reset to default match filters? This will overwrite your current configuration.')) {
@@ -209,11 +142,10 @@ const MatchFilterEditor: React.FC<MatchFilterEditorProps> = ({ onSave }) => {
     }, []);
 
     const handleTableChange = useCallback((newFilters: MatchFilterRule[]) => {
-        // Convert back to legacy format and update jsonData
-        const legacyData = convertToLegacyFormat(newFilters);
-        setJsonData(legacyData);
+        // Update jsonData with the new expression format
+        setJsonData(newFilters);
         setValidationError('');
-    }, [convertToLegacyFormat]);
+    }, []);
 
     const handleViewModeChange = useCallback((_event: React.MouseEvent<HTMLElement>, newMode: ViewMode | null) => {
         if (newMode) {
@@ -240,53 +172,37 @@ const MatchFilterEditor: React.FC<MatchFilterEditorProps> = ({ onSave }) => {
         );
     }
 
-    // JSON Schema for match filters (updated to support both formats)
+    // JSON Schema for match filters
     const matchFilterSchema = {
         type: 'array',
         items: {
-            type: 'object',
-            properties: {
-                reason: {
-                    type: 'string',
-                    description: 'Description of why this filter should match'
-                },
-                filter: {
-                    type: 'string',
-                    description: 'Function string that returns true/false for matching items'
-                },
-                expression: {
-                    type: 'string',
-                    description: 'Expression string using simplified syntax (e.g., "artist:match AND title:contains")'
-                },
-                enabled: {
-                    type: 'boolean',
-                    description: 'Whether this filter is enabled'
-                }
-            },
-            required: ['reason'],
-            anyOf: [
-                { required: ['filter'] },
-                { required: ['expression'] }
-            ],
-            additionalProperties: false
+            type: 'string',
+            description: 'Expression string using simplified syntax (e.g., "artist:match AND title:contains")',
+            pattern: '^(artist|title|album|artistWithTitle|artistInTitle):(match|contains|similarity>=\\d*\\.?\\d+)(\\s+(AND|OR)\\s+(artist|title|album|artistWithTitle|artistInTitle):(match|contains|similarity>=\\d*\\.?\\d+))*$'
         }
     };
 
     return (
         <Box>
             {/* Header */}
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
-                <Typography variant="h6">
+            <Box
+                sx={{ 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'space-between', 
+                    mb: 3,
+                    p: 2,
+                    bgcolor: 'background.paper',
+                    borderRadius: 1,
+                    border: '1px solid',
+                    borderColor: 'divider'
+                }}>
+                <Typography variant="h6" sx={{ color: 'text.primary' }}>
                     Match Filters Configuration
                 </Typography>
                 <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
                     {/* View Mode Toggle */}
-                    <ToggleButtonGroup
-                        value={viewMode}
-                        exclusive
-                        onChange={handleViewModeChange}
-                        size="small"
-                    >
+                    <ToggleButtonGroup value={viewMode} exclusive onChange={handleViewModeChange} size="small">
                         <ToggleButton value="ui">
                             <TableChart fontSize="small" sx={{ mr: 1 }} />
                             UI Mode
@@ -312,12 +228,11 @@ const MatchFilterEditor: React.FC<MatchFilterEditorProps> = ({ onSave }) => {
             {/* Mode-specific descriptions */}
             {viewMode === 'ui' ? (
                 <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-                    Use the table editor for quick rule management. Drag rows to reorder priority.
-                    Filters are evaluated in order - the first matching filter wins.
+                    Add filter expressions to match tracks. Filters are evaluated in order - the first matching filter wins.
                 </Typography>
             ) : (
                 <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-                    Edit raw JSON for advanced configurations. Each filter should have a 'reason' and 'filter' property. 
+                    Edit raw JSON for advanced configurations. Each filter should have a &apos;reason&apos; and &apos;expression&apos; property. 
                     Filters are evaluated in order - the first matching filter wins.
                 </Typography>
             )}
@@ -326,31 +241,13 @@ const MatchFilterEditor: React.FC<MatchFilterEditorProps> = ({ onSave }) => {
             <Paper variant="outlined" sx={{ p: 0 }}>
                 {viewMode === 'ui' ? (
                     <Box sx={{ p: 2 }}>
-                        <TableEditor 
-                            filters={expressionFilters} 
-                            onChange={handleTableChange}
-                        />
+                        <TableEditor filters={expressionFilters} onChange={handleTableChange} />
                     </Box>
                 ) : (
-                    <MonacoJsonEditor 
-                        ref={editorRef} 
-                        value={jsonData} 
-                        onChange={handleJsonChange} 
-                        schema={matchFilterSchema} 
-                        height={500} 
-                        error={validationError} 
-                    />
+                    <MonacoJsonEditor ref={editorRef} value={jsonData} onChange={handleJsonChange} schema={matchFilterSchema} height={500} error={validationError} />
                 )}
             </Paper>
 
-            {/* Footer help */}
-            <Box sx={{ mt: 2 }}>
-                <Typography variant="caption" color="text.secondary">
-                    <strong>UI Mode:</strong> Visual table editor with drag-and-drop reordering and inline expression editing.
-                    <br />
-                    <strong>JSON Mode:</strong> Direct JSON editing with schema validation for bulk operations and advanced scenarios.
-                </Typography>
-            </Box>
         </Box>
     );
 };

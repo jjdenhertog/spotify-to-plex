@@ -1,4 +1,4 @@
-import { MatchFilterConfig } from '@spotify-to-plex/music-search/types/MatchFilterConfig';
+import { MatchFilterConfig } from '@spotify-to-plex/shared-types/common/MatchFilterConfig';
 import {
     MatchFiltersApiClient,
     GetMatchFiltersParams,
@@ -8,7 +8,6 @@ import {
     MatchFiltersErrorResponse,
     ValidateExpressionResponse,
     ValidateFilterResponse,
-    MigrateLegacyFilterResponse,
     ValidationErrorResponse
 } from '../types/api/match-filters';
 
@@ -16,7 +15,7 @@ import {
  * API client for match filters endpoints
  */
 class MatchFiltersClient implements MatchFiltersApiClient {
-    private baseUrl = '/api/plex/music-search-config';
+    private readonly baseUrl = '/api/plex/music-search-config';
 
     /**
      * Make HTTP request with error handling
@@ -54,7 +53,7 @@ class MatchFiltersClient implements MatchFiltersApiClient {
     /**
      * Get current match filters
      */
-    async getMatchFilters(params?: GetMatchFiltersParams): Promise<GetMatchFiltersResponse> {
+    public async getMatchFilters(params?: GetMatchFiltersParams): Promise<GetMatchFiltersResponse> {
         const queryParams = new URLSearchParams();
         
         if (params?.migrate) {
@@ -71,26 +70,18 @@ class MatchFiltersClient implements MatchFiltersApiClient {
     /**
      * Update match filters
      */
-    async updateMatchFilters(filters: UpdateMatchFiltersRequest): Promise<UpdateMatchFiltersSuccessResponse> {
+    public async updateMatchFilters(filters: UpdateMatchFiltersRequest): Promise<UpdateMatchFiltersSuccessResponse> {
         return this.request<UpdateMatchFiltersSuccessResponse>(`${this.baseUrl}/match-filters`, {
             method: 'POST',
             body: JSON.stringify(filters)
         });
     }
 
-    /**
-     * Migrate legacy filters to expression format
-     */
-    async migrateFilters(): Promise<UpdateMatchFiltersSuccessResponse> {
-        return this.request<UpdateMatchFiltersSuccessResponse>(`${this.baseUrl}/match-filters`, {
-            method: 'PUT'
-        });
-    }
 
     /**
      * Validate expression syntax
      */
-    async validateExpression(expression: string): Promise<ValidateExpressionResponse> {
+    public async validateExpression(expression: string): Promise<ValidateExpressionResponse> {
         return this.request<ValidateExpressionResponse>(`${this.baseUrl}/validate`, {
             method: 'POST',
             body: JSON.stringify({ expression })
@@ -100,22 +91,13 @@ class MatchFiltersClient implements MatchFiltersApiClient {
     /**
      * Validate complete filter object
      */
-    async validateFilter(filter: MatchFilterConfig): Promise<ValidateFilterResponse> {
+    public async validateFilter(filter: MatchFilterConfig): Promise<ValidateFilterResponse> {
         return this.request<ValidateFilterResponse>(`${this.baseUrl}/validate`, {
             method: 'POST',
             body: JSON.stringify({ filter })
         });
     }
 
-    /**
-     * Migrate legacy filter string to expression
-     */
-    async migrateLegacyFilter(legacyFilter: string): Promise<MigrateLegacyFilterResponse> {
-        return this.request<MigrateLegacyFilterResponse>(`${this.baseUrl}/validate`, {
-            method: 'POST',
-            body: JSON.stringify({ legacyFilter })
-        });
-    }
 }
 
 // Export singleton instance
@@ -126,7 +108,7 @@ export const matchFiltersApi = new MatchFiltersClient();
  */
 import { useState, useCallback } from 'react';
 
-export interface UseMatchFiltersApi {
+export type UseMatchFiltersApi = {
     // State
     filters: MatchFilterConfig[];
     isLoading: boolean;
@@ -135,10 +117,8 @@ export interface UseMatchFiltersApi {
     // Actions
     loadFilters: () => Promise<void>;
     saveFilters: (filters: MatchFilterConfig[]) => Promise<void>;
-    migrateFilters: () => Promise<void>;
     validateExpression: (expression: string) => Promise<{ valid: boolean; errors: string[] }>;
     validateFilter: (filter: MatchFilterConfig) => Promise<{ valid: boolean; errors: string[] }>;
-    migrateLegacyFilter: (legacyFilter: string) => Promise<{ success: boolean; expression: string | null; errors?: string[] }>;
     
     // Reset state
     clearError: () => void;
@@ -182,24 +162,11 @@ export function useMatchFiltersApi(): UseMatchFiltersApi {
         }
     }, []);
 
-    const migrateFilters = useCallback(async () => {
-        setIsLoading(true);
-        setError(null);
-        
-        try {
-            const result = await matchFiltersApi.migrateFilters();
-            setFilters(result.filters);
-        } catch (err) {
-            setError(err instanceof Error ? err.message : 'Failed to migrate filters');
-            throw err;
-        } finally {
-            setIsLoading(false);
-        }
-    }, []);
 
     const validateExpression = useCallback(async (expression: string) => {
         try {
             const result = await matchFiltersApi.validateExpression(expression);
+
             return { valid: result.valid, errors: result.errors };
         } catch (err) {
             return { 
@@ -212,6 +179,7 @@ export function useMatchFiltersApi(): UseMatchFiltersApi {
     const validateFilter = useCallback(async (filter: MatchFilterConfig) => {
         try {
             const result = await matchFiltersApi.validateFilter(filter);
+
             return { valid: result.valid, errors: result.errors };
         } catch (err) {
             return { 
@@ -221,22 +189,6 @@ export function useMatchFiltersApi(): UseMatchFiltersApi {
         }
     }, []);
 
-    const migrateLegacyFilter = useCallback(async (legacyFilter: string) => {
-        try {
-            const result = await matchFiltersApi.migrateLegacyFilter(legacyFilter);
-            return { 
-                success: result.success, 
-                expression: result.migratedExpression,
-                errors: result.errors 
-            };
-        } catch (err) {
-            return { 
-                success: false, 
-                expression: null,
-                errors: [err instanceof Error ? err.message : 'Migration failed'] 
-            };
-        }
-    }, []);
 
     return {
         filters,
@@ -244,77 +196,8 @@ export function useMatchFiltersApi(): UseMatchFiltersApi {
         error,
         loadFilters,
         saveFilters,
-        migrateFilters,
         validateExpression,
         validateFilter,
-        migrateLegacyFilter,
         clearError
     };
 }
-
-/**
- * Utility functions for working with match filters
- */
-export const matchFilterUtils = {
-    /**
-     * Check if a filter uses the new expression format
-     */
-    isExpressionFilter(filter: MatchFilterConfig): boolean {
-        return Boolean(filter.expression);
-    },
-
-    /**
-     * Check if a filter uses the legacy format
-     */
-    isLegacyFilter(filter: MatchFilterConfig): boolean {
-        return Boolean(filter.filter && !filter.expression);
-    },
-
-    /**
-     * Check if a filter has both formats (during migration)
-     */
-    isMixedFilter(filter: MatchFilterConfig): boolean {
-        return Boolean(filter.filter && filter.expression);
-    },
-
-    /**
-     * Get format information for an array of filters
-     */
-    getFormatInfo(filters: MatchFilterConfig[]) {
-        const legacyCount = filters.filter(this.isLegacyFilter).length;
-        const expressionCount = filters.filter(f => this.isExpressionFilter(f) && !this.isMixedFilter(f)).length;
-        const mixedCount = filters.filter(this.isMixedFilter).length;
-        
-        let format: 'legacy' | 'expression' | 'mixed';
-        if (legacyCount === filters.length) {
-            format = 'legacy';
-        } else if (expressionCount + mixedCount === filters.length) {
-            format = 'expression';
-        } else {
-            format = 'mixed';
-        }
-        
-        return {
-            format,
-            canMigrate: legacyCount > 0,
-            migrationRequired: format === 'legacy',
-            legacyCount,
-            expressionCount,
-            mixedCount
-        };
-    },
-
-    /**
-     * Create a new expression-based filter
-     */
-    createExpressionFilter(reason: string, expression: string): MatchFilterConfig {
-        return { reason, expression };
-    },
-
-    /**
-     * Create a new legacy filter
-     */
-    createLegacyFilter(reason: string, filter: string): MatchFilterConfig {
-        return { reason, filter };
-    }
-};

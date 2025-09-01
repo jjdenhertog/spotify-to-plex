@@ -1,22 +1,10 @@
-// Types for the new expression-based match filter system
+/* eslint-disable custom/no-export-only-files */
+// Types for the expression-based match filter system
 
 export type ViewMode = 'ui' | 'json';
 
-// New expression-based filter configuration
-export type MatchFilterRule = {
-  reason: string;
-  expression: string; // e.g., "artist:match AND title:match"
-  enabled?: boolean;
-};
-
-// Legacy filter configuration for backward compatibility
-export type LegacyMatchFilterConfig = {
-  reason: string;
-  filter: string; // Legacy function string
-};
-
-// Union type to support both formats during transition
-export type MatchFilterConfig = MatchFilterRule | LegacyMatchFilterConfig;
+// Expression-based filter configuration (just a string)
+export type MatchFilterRule = string; // e.g., "artist:match AND title:match"
 
 // Expression parsing types
 export type FieldType = 'artist' | 'title' | 'album' | 'artistWithTitle' | 'artistInTitle';

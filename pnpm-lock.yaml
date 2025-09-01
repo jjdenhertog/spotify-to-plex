@@ -309,6 +309,9 @@ importers:
 
   packages/music-search:
     dependencies:
+      '@spotify-to-plex/shared-types':
+        specifier: workspace:*
+        version: link:../shared-types
       fs-extra:
         specifier: ^11.3.1
         version: 11.3.1

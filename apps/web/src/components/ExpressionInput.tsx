@@ -2,7 +2,6 @@ import React, { useState, useCallback, useRef, useMemo } from 'react';
 import {
     TextField,
     Autocomplete,
-    Chip,
     Paper,
     Typography,
     Alert,
@@ -12,14 +11,16 @@ import {
     AutocompleteSuggestion,
     ValidationResult
 } from '../types/MatchFilterTypes';
+import CustomOption from './CustomOption';
+import CustomPaper from './CustomPaper';
 
 type ExpressionInputProps = {
-    value: string;
-    onChange: (value: string) => void;
-    error?: string;
-    placeholder?: string;
-    disabled?: boolean;
-    size?: 'small' | 'medium';
+    readonly value: string;
+    readonly onChange: (value: string) => void;
+    readonly error?: string;
+    readonly placeholder?: string;
+    readonly disabled?: boolean;
+    readonly size?: 'small' | 'medium';
 };
 
 // Autocomplete suggestions
@@ -46,6 +47,7 @@ const COMBINATOR_SUGGESTIONS: AutocompleteSuggestion[] = [
 
 const ALL_SUGGESTIONS = [...FIELD_SUGGESTIONS, ...OPERATION_SUGGESTIONS, ...COMBINATOR_SUGGESTIONS];
 
+
 const ExpressionInput: React.FC<ExpressionInputProps> = ({
     value,
     onChange,
@@ -70,7 +72,8 @@ const ExpressionInput: React.FC<ExpressionInputProps> = ({
 
         for (const condition of conditions) {
             const trimmed = condition.trim();
-            if (!trimmed) continue;
+            if (!trimmed)
+                continue;
 
             // Check if condition matches pattern: field:operation or field:operation>=threshold
             const conditionPattern = /^(artist|title|album|artistWithTitle|artistInTitle):(match|contains|similarity(>=\d*\.?\d+)?)$/;
@@ -96,7 +99,7 @@ const ExpressionInput: React.FC<ExpressionInputProps> = ({
         const beforeLastWord = inputText.slice(0, inputText.lastIndexOf(lastWord));
 
         // If the last word starts with a field name, suggest operations
-        const fieldMatch = lastWord.match(/^(artist|title|album|artistWithTitle|artistInTitle)$/);
+        const fieldMatch = /^(artist|title|album|artistWithTitle|artistInTitle)$/.exec(lastWord);
         if (fieldMatch) {
             return OPERATION_SUGGESTIONS;
         }
@@ -130,7 +133,7 @@ const ExpressionInput: React.FC<ExpressionInputProps> = ({
             let newValue: string;
             if (suggestion.category === 'combinator') {
                 newValue = inputValue + suggestion.value;
-            } else if (suggestion.category === 'operation' && lastWord.match(/^(artist|title|album|artistWithTitle|artistInTitle)$/)) {
+            } else if (suggestion.category === 'operation' && /^(artist|title|album|artistWithTitle|artistInTitle)$/.test(lastWord)) {
                 newValue = beforeLastWord + (beforeLastWord ? ' ' : '') + lastWord + suggestion.value;
             } else {
                 newValue = beforeLastWord + (beforeLastWord ? ' ' : '') + suggestion.value;
@@ -185,47 +188,23 @@ const ExpressionInput: React.FC<ExpressionInputProps> = ({
                 )}
                 renderOption={(props, option) => (
                     <Paper component="li" {...props}>
-                        <Box sx={{ display: 'flex', flexDirection: 'column', py: 1 }}>
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                <Chip
-                                    label={option.category}
-                                    size="small"
-                                    variant="outlined"
-                                    color={option.category === 'field' ? 'primary' : 
-                                          option.category === 'operation' ? 'secondary' : 'default'}
-                                />
-                                <Typography variant="body2" fontWeight="medium">
-                                    {option.label}
-                                </Typography>
-                            </Box>
-                            {option.description && (
-                                <Typography variant="caption" color="text.secondary" sx={{ ml: 1 }}>
-                                    {option.description}
-                                </Typography>
-                            )}
-                        </Box>
+                        <CustomOption option={option} />
                     </Paper>
                 )}
-                PaperComponent={({ children, ...props }) => (
-                    <Paper {...props} sx={{ mt: 1 }}>
-                        {children}
-                    </Paper>
-                )}
+                PaperComponent={CustomPaper}
             />
             
             {/* Show suggestions for invalid expressions */}
-            {validationResult.suggestions && validationResult.suggestions.length > 0 && (
-                <Alert severity="info" sx={{ mt: 1 }}>
-                    <Typography variant="body2" fontWeight="medium" gutterBottom>
-                        Suggestions:
+            {validationResult.suggestions && validationResult.suggestions.length > 0 ? <Alert severity="info" sx={{ mt: 1 }}>
+                <Typography variant="body2" fontWeight="medium" gutterBottom>
+                    Suggestions:
+                </Typography>
+                {validationResult.suggestions.map((suggestion, index) => (
+                    <Typography key={index} variant="body2" component="div">
+                        • {suggestion}
                     </Typography>
-                    {validationResult.suggestions.map((suggestion, index) => (
-                        <Typography key={index} variant="body2" component="div">
-                            • {suggestion}
-                        </Typography>
-                    ))}
-                </Alert>
-            )}
+                ))}
+            </Alert> : null}
         </Box>
     );
 };

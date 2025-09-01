@@ -1,7 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { validateExpression, getMatchFilterValidationErrors } from '@spotify-to-plex/shared-utils/validation/validateMatchFilter';
+import { validateExpression } from '@spotify-to-plex/shared-utils/validation/validateExpression';
+import { getMatchFilterValidationErrors } from '@spotify-to-plex/shared-utils/validation/getMatchFilterValidationErrors';
 import { migrateLegacyFilter } from '@spotify-to-plex/music-search/functions/parseExpression';
-import { MatchFilterConfig } from '@spotify-to-plex/music-search/types/MatchFilterConfig';
+import { MatchFilterConfig } from '@spotify-to-plex/shared-types/common/MatchFilterConfig';
 
 /**
  * API response types for validation endpoint
@@ -58,6 +59,7 @@ export default async function handler(
 ) {
     if (req.method !== 'POST') {
         res.setHeader('Allow', ['POST']);
+
         return res.status(405).json({
             error: 'Method not allowed',
             details: ['Only POST method is supported for validation']
@@ -65,7 +67,7 @@ export default async function handler(
     }
 
     try {
-        const body = req.body;
+        const {body} = req;
 
         // Validate expression syntax
         if ('expression' in body) {
@@ -123,14 +125,15 @@ export default async function handler(
                     migratedExpression,
                     errors: validation.valid ? undefined : validation.errors
                 } as MigrateLegacyResponse);
-            } else {
-                return res.status(200).json({
-                    success: false,
-                    originalFilter: legacyFilter,
-                    migratedExpression: null,
-                    errors: ['Unable to migrate legacy filter - pattern not recognized']
-                } as MigrateLegacyResponse);
             }
+ 
+            return res.status(200).json({
+                success: false,
+                originalFilter: legacyFilter,
+                migratedExpression: null,
+                errors: ['Unable to migrate legacy filter - pattern not recognized']
+            } as MigrateLegacyResponse);
+            
         }
 
         return res.status(400).json({
