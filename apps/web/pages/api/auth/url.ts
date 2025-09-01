@@ -1,6 +1,6 @@
 import { generateError } from '@/helpers/errors/generateError';
 import { plex } from '@/library/plex';
-import { PostPinResponse } from '@/types/PostPinResponse';
+import { PostPinResponse } from '@spotify-to-plex/shared-types/plex/PostPinResponse';
 import axios from 'axios';
 
 import type { NextApiRequest, NextApiResponse } from 'next';

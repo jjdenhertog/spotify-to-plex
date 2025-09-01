@@ -1,6 +1,6 @@
 import { removeFeaturing } from "@spotify-to-plex/music-search/utils/removeFeaturing";
 import { HubSearchResult } from "../types/actions/HubSearchResult";
-import { Metadata } from "../types/plex/Metadata";
+import { Metadata } from "@spotify-to-plex/shared-types/plex/Metadata";
 import { getMetadata } from "./getMetadata";
 
 export default async function getAlbumTracks(uri: string, token: string, key: string) {
@@ -12,7 +12,7 @@ export default async function getAlbumTracks(uri: string, token: string, key: st
             id: metadata.key,
             ratingKey: metadata.ratingKey,
             guid: metadata.guid,
-            score: metadata.score,
+            score: parseFloat(metadata.score) || 0,
             image: metadata.thumb,
             title: metadata.title,
             album: {

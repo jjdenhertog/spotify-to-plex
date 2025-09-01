@@ -1,5 +1,5 @@
 import { AxiosResponse } from "axios";
-import { Metadata } from "../types/plex/Metadata";
+import { Metadata } from "@spotify-to-plex/shared-types/plex/Metadata";
 import { AxiosRequest } from "@spotify-to-plex/http-client/AxiosRequest";
 import getAPIUrl from "../utils/getAPIUrl";
 

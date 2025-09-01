@@ -1,4 +1,4 @@
-import { Hub } from './Hub';
+import { Hub } from '@spotify-to-plex/shared-types/plex/Hub';
 
 export type HubSearchResponse = {
     MediaContainer: {

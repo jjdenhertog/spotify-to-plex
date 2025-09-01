@@ -1,4 +1,4 @@
-import { Metadata } from './Metadata';
+import { Metadata } from '@spotify-to-plex/shared-types/plex/Metadata';
 
 export type DiscoveryMetadata = {
     type: Metadata["type"],

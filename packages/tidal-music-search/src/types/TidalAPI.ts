@@ -801,7 +801,6 @@ export type TidalComponents = {
     headers: never;
     pathItems: never;
 }
-export type $defs = Record<string, never>;
 export type operations = {
     getSearchResultsByQuery: TidalComponents["schemas"]["Search_Results_Single_Data_Document"];
     getSearchResultsVideosRelationship: TidalComponents["schemas"]["Videos_Relationships_Document"];
