@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/use-unknown-in-catch-callback-variable */
 import { errorBoundary } from '@/helpers/errors/errorBoundary';
 import { Refresh, Save } from '@mui/icons-material';
-import { Alert, Box, Button, Typography } from '@mui/material';
+import {  Box, Button, Typography } from '@mui/material';
 import axios from 'axios';
 import { enqueueSnackbar } from 'notistack';
 /* eslint-disable no-alert */
@@ -221,18 +221,6 @@ const TextProcessingEditor: React.FC<TextProcessingEditorProps> = ({ onSave }) =
 
             {/* Monaco JSON Editor */}
             <MonacoJsonEditor ref={editorRef} value={jsonData} onChange={handleChange} schema={textProcessingSchema} height={400} error={validationError} />
-            <Alert severity="info" sx={{ mt: 2 }}>
-                <Typography variant="body2">
-                    <strong>
-                        Configuration Structure:
-                    </strong><br />
-                    • <code>filterOutWords</code>: Array of words to remove from titles<br />
-                    • <code>filterOutQuotes</code>: Array of quote characters to remove<br />
-                    • <code>cutOffSeparators</code>: Array of separators that cut off text<br />
-                    • <code>processing</code>: Boolean flags for enabling each processing step<br />
-                    • Note: <code>cutOffSeperators</code> typo is preserved for backward compatibility
-                </Typography>
-            </Alert>
         </Box>
     );
 };

@@ -1,5 +1,5 @@
 import { Refresh, Save } from '@mui/icons-material';
-import { Alert, Box, Button, Typography } from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
 import axios from 'axios';
 import { enqueueSnackbar } from 'notistack';
 /* eslint-disable @typescript-eslint/use-unknown-in-catch-callback-variable */
@@ -208,25 +208,6 @@ const SearchApproachesEditor: React.FC<SearchApproachesEditorProps> = ({ onSave 
 
             {/* Monaco JSON Editor */}
             <MonacoJsonEditor ref={editorRef} value={jsonData} onChange={handleChange} schema={searchApproachesSchema} height={400} error={validationError} />
-            <Alert severity="info" sx={{ mb: 2, mt: 2 }}>
-                <Typography variant="body2">
-                    <strong>
-                        Configuration Structure:
-                    </strong><br />
-                    • Each approach is an object with required <code>id</code> (string)<br />
-                    • Optional boolean flags: <code>filtered</code>, <code>trim</code>, <code>ignoreQuotes</code>, <code>removeQuotes</code>, <code>force</code><br />
-                    • Approaches are executed in the order they appear in the array<br />
-                    • The unified list eliminates platform-specific differentiation
-                </Typography>
-            </Alert>
-
-            <Alert severity="warning">
-                <Typography variant="body2">
-                    <strong>Breaking Change:</strong> This unified approach list replaces the previous platform-specific 
-                    Plex/Tidal separation. All search approaches now work universally across platforms, 
-                    simplifying configuration and maintenance.
-                </Typography>
-            </Alert>
         </Box>
     );
 };
