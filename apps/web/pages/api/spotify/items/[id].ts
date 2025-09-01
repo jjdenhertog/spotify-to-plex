@@ -2,7 +2,7 @@ import { generateError } from '@/helpers/errors/generateError';
 import { getAccessToken } from '@spotify-to-plex/shared-utils/spotify/getAccessToken';
 import { getSpotifyData } from '@spotify-to-plex/shared-utils/spotify/getSpotifyData';
 import { settingsDir } from '@spotify-to-plex/shared-utils/utils/settingsDir';
-import { SavedItem } from '@/types/SavedItem';
+import { SavedItem } from '@spotify-to-plex/shared-types/spotify/SavedItem';
 import { SpotifyApi } from '@spotify/web-api-ts-sdk';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createRouter } from 'next-connect';
