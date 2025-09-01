@@ -2,20 +2,15 @@ import { existsSync, readFileSync, writeFileSync } from "node:fs"
 import { join } from "node:path"
 import { filterUnique } from "../array/filterUnique"
 
-// Import from shared types when packages are linked
-export type TrackLink = {
-    spotify_id: string
-    plex_id?: string[]
-    tidal_id?: string[]
-}
+import type { TrackLink } from "@spotify-to-plex/shared-types/common/track";
 
-export type PlexMusicSearchTrack = {
+type PlexMusicSearchTrack = {
     id: string;
     title: string;
     artists: string[];
 }
 
-export type TidalMusicSearchTrack = {
+type TidalMusicSearchTrack = {
     id: string;
     title: string;
     artists: string[];

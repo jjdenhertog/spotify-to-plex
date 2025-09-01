@@ -6,7 +6,7 @@ import { settingsDir } from '@spotify-to-plex/shared-utils/utils/settingsDir';
 import { search } from '@spotify-to-plex/plex-music-search/functions/search';
 import { searchAlbum } from '@spotify-to-plex/plex-music-search/functions/searchAlbum';
 import { PlexMusicSearchTrack } from '@spotify-to-plex/plex-music-search/types/PlexMusicSearchTrack';
-import { getMusicSearchConfig } from "@spotify-to-plex/music-search/config/config-utils";
+import { getMusicSearchConfigFromStorage } from "@spotify-to-plex/music-search/functions/getMusicSearchConfigFromStorage";
 
 import { SearchResponse } from '@spotify-to-plex/plex-music-search/types/SearchResponse';
 import type { NextApiRequest, NextApiResponse } from 'next';
@@ -32,7 +32,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 //////////////////////////////////////
                 let musicSearchConfig;
                 try {
-                    musicSearchConfig = await getMusicSearchConfig(settingsDir);
+                    musicSearchConfig = await getMusicSearchConfigFromStorage(settingsDir);
                 } catch (error) {
                     // Fallback to default config if error loading
                     console.warn('Failed to load music search config, using defaults:', error);

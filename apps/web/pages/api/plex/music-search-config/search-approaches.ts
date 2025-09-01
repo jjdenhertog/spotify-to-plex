@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { getSearchApproaches } from '@spotify-to-plex/music-search/config/config-utils';
-import { updateSearchApproaches } from '@spotify-to-plex/music-search/config/config-utils';
+import { getSearchApproaches } from '@spotify-to-plex/music-search/functions/getSearchApproaches';
+import { updateSearchApproaches } from '@spotify-to-plex/music-search/functions/updateSearchApproaches';
 import { getStorageDir } from '@spotify-to-plex/shared-utils/utils/getStorageDir';
 import { validateSearchApproaches } from '@spotify-to-plex/shared-utils/validation/validateSearchApproaches';
 

@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { getMatchFilters, updateMatchFilters } from '@spotify-to-plex/music-search/config/config-utils';
+import { getMatchFilters } from '@spotify-to-plex/music-search/functions/getMatchFilters';
+import { updateMatchFilters } from '@spotify-to-plex/music-search/functions/updateMatchFilters';
 import { getStorageDir } from '@spotify-to-plex/shared-utils/utils/getStorageDir';
 import { validateMatchFilters } from '@spotify-to-plex/shared-utils/validation/validateMatchFilters';
 

@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { getTextProcessing } from '@spotify-to-plex/music-search/config/config-utils';
-import { updateTextProcessing } from '@spotify-to-plex/music-search/config/config-utils';
+import { getTextProcessing } from '@spotify-to-plex/music-search/functions/getTextProcessing';
+import { updateTextProcessing } from '@spotify-to-plex/music-search/functions/updateTextProcessing';
 import { getStorageDir } from '@spotify-to-plex/shared-utils/utils/getStorageDir';
 import { validateTextProcessing } from '@spotify-to-plex/shared-utils/validation/validateTextProcessing';
 

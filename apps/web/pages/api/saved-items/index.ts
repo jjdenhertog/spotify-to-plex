@@ -6,7 +6,7 @@ import { settingsDir } from '@spotify-to-plex/shared-utils/utils/settingsDir';
 
 import type { SavedItem } from '@spotify-to-plex/shared-types/spotify/SavedItem';
 import { getById } from '@spotify-to-plex/plex-music-search/functions/getById';
-import { getMusicSearchConfig } from '@spotify-to-plex/music-search/config/config-utils';
+import { getMusicSearchConfigFromStorage } from "@spotify-to-plex/music-search/functions/getMusicSearchConfigFromStorage";
 import { SpotifyApi } from '@spotify/web-api-ts-sdk';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createRouter } from 'next-connect';
@@ -55,7 +55,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                     if (!settings.token || !settings.uri)
                         return res.status(400).json({ msg: "Plex not configured" });
 
-                    const musicSearchConfig = await getMusicSearchConfig(settingsDir);
+                    const musicSearchConfig = await getMusicSearchConfigFromStorage(settingsDir);
 
                     const plexConfig = {
                         uri: settings.uri,

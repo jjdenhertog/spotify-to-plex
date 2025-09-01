@@ -3,7 +3,7 @@ import { settingsDir } from "@spotify-to-plex/shared-utils/utils/settingsDir";
 import { Track } from "@spotify-to-plex/shared-types/spotify/Track";
 import { searchAlbum } from "@spotify-to-plex/tidal-music-search/functions/searchAlbum";
 import { setUser } from "@spotify-to-plex/tidal-music-search/functions/setUser";
-import { getMusicSearchConfig } from "@spotify-to-plex/music-search/config/config-utils";
+import { getMusicSearchConfigFromStorage } from "@spotify-to-plex/music-search/functions/getMusicSearchConfigFromStorage";
 
 export async function findMissingTidalAlbums(missingTracks: Track[]) {
 
@@ -18,7 +18,7 @@ export async function findMissingTidalAlbums(missingTracks: Track[]) {
     // Load music search configuration
     let musicSearchConfig;
     try {
-        musicSearchConfig = await getMusicSearchConfig(settingsDir);
+        musicSearchConfig = await getMusicSearchConfigFromStorage(settingsDir);
     } catch (error) {
         // Fallback to default config if error loading
         console.warn('Failed to load music search config, using defaults:', error);

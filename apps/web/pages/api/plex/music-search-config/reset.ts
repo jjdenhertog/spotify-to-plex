@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { resetToDefaults } from '@spotify-to-plex/music-search/config/config-utils';
+import { resetToDefaults } from '@spotify-to-plex/music-search/functions/resetToDefaults';
 import { getStorageDir } from '@spotify-to-plex/shared-utils/utils/getStorageDir';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {

@@ -4,11 +4,11 @@ import { settingsDir } from "@spotify-to-plex/shared-utils/utils/settingsDir";
 import { handleOneRetryAttempt } from "@spotify-to-plex/plex-helpers/retry";
 import { plex } from "../library/plex";
 import { Playlist } from "@spotify-to-plex/shared-types/plex/Playlist";
-import { GetPlaylistResponse } from "@spotify-to-plex/plex-music-search/types/plex/GetPlaylistResponse";
+import { GetPlaylistResponse } from "@spotify-to-plex/shared-types/plex/GetPlaylistResponse";
 import { SearchResponse } from "@spotify-to-plex/plex-music-search/types/SearchResponse";
 import { search as plexMusicSearch } from "@spotify-to-plex/plex-music-search/functions/search";
 import { createPlexConfig } from "@spotify-to-plex/plex-config/functions/createPlexConfig";
-import { getMusicSearchConfig } from "@spotify-to-plex/music-search/config/config-utils";
+import { getMusicSearchConfigFromStorage } from "@spotify-to-plex/music-search/functions/getMusicSearchConfigFromStorage";
 import { writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { findMissingTidalTracks } from "../utils/findMissingTidalTracks";
@@ -100,7 +100,7 @@ export async function syncPlaylists() {
             // Load music search configuration
             let musicSearchConfig;
             try {
-                musicSearchConfig = await getMusicSearchConfig(settingsDir);
+                musicSearchConfig = await getMusicSearchConfigFromStorage(settingsDir);
             } catch (error) {
                 // Fallback to default config if error loading
                 console.warn('Failed to load music search config, using defaults:', error);

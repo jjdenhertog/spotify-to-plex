@@ -92,16 +92,8 @@ function _main() {
     runSyncJob(jobType);
 }
 
-// Export functions for programmatic use
-
+// Export type for programmatic use
 export type { SyncJobType };
-
-// CLI entry point is handled by package.json scripts
-
-export {syncAlbums} from './jobs/albums';
-export {refreshMQTT} from './jobs/mqtt';
-export {syncPlaylists} from './jobs/playlists';
-export {syncUsers} from './jobs/users';
 
 // Run CLI if this file is executed directly
 // eslint-disable-next-line unicorn/prefer-module

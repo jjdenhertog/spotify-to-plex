@@ -4,7 +4,7 @@ import { MQTTItem } from '@spotify-to-plex/shared-types/dashboard/MQTTItem';
 import { PlaylistData } from '@spotify-to-plex/shared-types/dashboard/PlaylistData';
 import { TrackLink } from '@spotify-to-plex/shared-types/common/track';
 import { getById } from '@spotify-to-plex/plex-music-search/functions/getById';
-import { getMusicSearchConfig } from "@spotify-to-plex/music-search/config/config-utils";
+import { getMusicSearchConfigFromStorage } from "@spotify-to-plex/music-search/functions/getMusicSearchConfigFromStorage";
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { mqttHelpers } from '../helpers/mqttHelpers';
@@ -69,7 +69,7 @@ export async function refreshMQTT(options: MQTTRefreshOptions = {}) {
         // Load music search configuration
         let musicSearchConfig;
         try {
-            musicSearchConfig = await getMusicSearchConfig(settingsDir);
+            musicSearchConfig = await getMusicSearchConfigFromStorage(settingsDir);
         } catch (error) {
             // Fallback to default config if error loading
             console.warn('Failed to load music search config, using defaults:', error);

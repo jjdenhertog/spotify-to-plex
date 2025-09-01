@@ -2,7 +2,7 @@ import { generateError } from '@/helpers/errors/generateError';
 import { plex } from '@/library/plex';
 import { analyze } from '@spotify-to-plex/plex-music-search/functions/analyze';
 import { PlexMusicSearchTrack } from '@spotify-to-plex/plex-music-search/types/PlexMusicSearchTrack';
-import { getMusicSearchConfig } from '@spotify-to-plex/music-search/config/config-utils';
+import { getMusicSearchConfigFromStorage } from "@spotify-to-plex/music-search/functions/getMusicSearchConfigFromStorage";
 import { settingsDir } from '@spotify-to-plex/shared-utils/utils/settingsDir';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createRouter } from 'next-connect';
@@ -26,7 +26,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 //////////////////////////////////////
                 // Load music search configuration and analyze
                 //////////////////////////////////////
-                const musicSearchConfig = await getMusicSearchConfig(settingsDir);
+                const musicSearchConfig = await getMusicSearchConfigFromStorage(settingsDir);
 
                 const plexConfig = {
                     uri: settings.uri,
