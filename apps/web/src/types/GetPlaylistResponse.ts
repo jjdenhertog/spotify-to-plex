@@ -1,4 +1,4 @@
-import { Playlist } from './Playlist';
+import { Playlist } from '@spotify-to-plex/shared-types/plex/Playlist';
 
 export type GetPlaylistResponse = {
     MediaContainer: {
