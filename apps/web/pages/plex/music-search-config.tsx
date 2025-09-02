@@ -20,6 +20,25 @@ import { useCallback, useEffect, useRef, useState } from "react"
 // Tab key type definition
 type TabKey = 'how-it-works' | 'processing' | 'match-filters' | 'test'
 
+// Define tab mappings outside component to avoid useEffect dependency issues
+const TAB_KEY_TO_INDEX: Record<TabKey, number> = {
+    'how-it-works': 0,
+    'processing': 1,
+    'match-filters': 2,
+    'test': 3
+}
+
+const INDEX_TO_TAB_KEY: Record<number, TabKey> = {
+    0: 'how-it-works',
+    1: 'processing', 
+    2: 'match-filters',
+    3: 'test'
+}
+
+const isValidTabKey = (key: string): key is TabKey => {
+    return ['how-it-works', 'processing', 'match-filters', 'test'].includes(key as TabKey)
+}
+
 const Page: NextPage = () => {
     const router = useRouter()
     const [tabValue, setTabValue] = useState(0)
@@ -28,31 +47,16 @@ const Page: NextPage = () => {
     const [importJson, setImportJson] = useState("")
     const fileInputRef = useRef<HTMLInputElement>(null)
 
-    // Tab mapping
-    const tabKeyToIndex: Record<TabKey, number> = {
-        'how-it-works': 0,
-        'processing': 1,
-        'match-filters': 2,
-        'test': 3
-    }
-    
-    const indexToTabKey: Record<number, TabKey> = {
-        0: 'how-it-works',
-        1: 'processing', 
-        2: 'match-filters',
-        3: 'test'
-    }
-
     // Initialize tab from URL on component mount
     useEffect(() => {
-        const urlTab = router.query.tab as TabKey
-        if (urlTab && tabKeyToIndex[urlTab] !== undefined) {
-            setTabValue(tabKeyToIndex[urlTab])
+        const urlTab = router.query.tab as string
+        if (urlTab && isValidTabKey(urlTab)) {
+            setTabValue(TAB_KEY_TO_INDEX[urlTab])
         } else if (!router.query.tab) {
             // Default to first tab and update URL
             router.replace('/plex/music-search-config?tab=how-it-works', undefined, { shallow: true })
         }
-    }, [router.query.tab])
+    }, [router.query.tab, router])
 
     const resetConfiguration = useCallback(() => {
         setResetting(true)
@@ -159,7 +163,7 @@ const Page: NextPage = () => {
 
     const handleTabChange = useCallback((_event: React.SyntheticEvent, newValue: number) => {
         setTabValue(newValue)
-        const tabKey = indexToTabKey[newValue]
+        const tabKey = INDEX_TO_TAB_KEY[newValue]
         router.push(`/plex/music-search-config?tab=${tabKey}`, undefined, { shallow: true })
     }, [router])
 
@@ -195,7 +199,7 @@ const Page: NextPage = () => {
                             Music Search Configuration
                         </Typography>
                         <Typography variant="body1" sx={{ mb: 2, maxWidth: 600 }}>
-                            Configure how the system matches songs between Spotify and Plex. Use the "How It Works" tab 
+                            Configure how the system matches songs between Spotify and Plex. Use the &ldquo;How It Works&rdquo; tab 
                             to understand the system, then configure your settings and test them immediately.
                         </Typography>
 
@@ -219,7 +223,7 @@ const Page: NextPage = () => {
                     <Box>
                         <Tabs value={tabValue} onChange={handleTabChange} sx={{ mb: 3 }} variant="scrollable" scrollButtons="auto">
                             <Tab label="How It Works" />
-                            <Tab label="Text Processing & Search" />
+                            <Tab label="Text Processing & Search Approaches" />
                             <Tab label="Match Filters" />
                             <Tab label="Test Configuration" />
                         </Tabs>
