@@ -11,9 +11,46 @@ import {
     TableRow,
     Divider,
     Card,
-    CardContent
+    CardContent,
 } from '@mui/material';
-import ProcessingStep from './ProcessingStep';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+
+interface ProcessingStepProps {
+    title: string;
+    description: string;
+    isLast?: boolean;
+}
+
+const ProcessingStep: React.FC<ProcessingStepProps> = ({ title, description, isLast = false }) => (
+    <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+        <Paper
+            elevation={2}
+            sx={{
+                p: 2,
+                minWidth: 140,
+                textAlign: 'center',
+                bgcolor: 'primary.light',
+                color: 'primary.contrastText',
+            }}
+        >
+            <Typography variant="subtitle2" fontWeight="bold">
+                {title}
+            </Typography>
+            <Typography variant="caption" sx={{ display: 'block', mt: 0.5 }}>
+                {description}
+            </Typography>
+        </Paper>
+        {!isLast && (
+            <ArrowForwardIcon
+                sx={{
+                    mx: 2,
+                    color: 'primary.main',
+                    fontSize: 32,
+                }}
+            />
+        )}
+    </Box>
+);
 
 const HowItWorksTab: React.FC = () => {
     const exampleSteps = [
@@ -46,7 +83,7 @@ const HowItWorksTab: React.FC = () => {
             input: 'Best match',
             output: 'Plex track',
             description: 'Matched track in your Plex library',
-        }
+        },
     ];
 
     return (
@@ -72,20 +109,35 @@ const HowItWorksTab: React.FC = () => {
             <Typography variant="h5" gutterBottom fontWeight="bold">
                 Processing Flow
             </Typography>
-            <Box
-                sx={{ 
-                    display: 'flex', 
-                    flexDirection: { xs: 'column', md: 'row' },
-                    alignItems: { xs: 'stretch', md: 'center' },
-                    justifyContent: 'center',
-                    my: 4,
-                    gap: { xs: 1, md: 0 },
-                }}>
-                <ProcessingStep title="Spotify Track" description="Source metadata" />
-                <ProcessingStep title="Text Processing" description="Clean & normalize" />
-                <ProcessingStep title="Search Approaches" description="Multiple strategies" />
-                <ProcessingStep title="Match Filters" description="Quality scoring" />
-                <ProcessingStep title="Plex Match" description="Final result" isLast />
+            <Box sx={{ 
+                display: 'flex', 
+                flexDirection: { xs: 'column', md: 'row' },
+                alignItems: { xs: 'stretch', md: 'center' },
+                justifyContent: 'center',
+                my: 4,
+                gap: { xs: 1, md: 0 },
+            }}>
+                <ProcessingStep
+                    title="Spotify Track"
+                    description="Source metadata"
+                />
+                <ProcessingStep
+                    title="Text Processing"
+                    description="Clean & normalize"
+                />
+                <ProcessingStep
+                    title="Search Approaches"
+                    description="Multiple strategies"
+                />
+                <ProcessingStep
+                    title="Match Filters"
+                    description="Quality scoring"
+                />
+                <ProcessingStep
+                    title="Plex Match"
+                    description="Final result"
+                    isLast={true}
+                />
             </Box>
 
             <Divider sx={{ my: 4 }} />
@@ -102,13 +154,13 @@ const HowItWorksTab: React.FC = () => {
                         </Typography>
                         <Typography variant="body2" paragraph>
                             Cleans and normalizes track metadata by removing special characters, 
-                            parenthetical content (like &quot;Remaster&quot;, &quot;Deluxe Edition&quot;), and 
+                            parenthetical content (like "Remaster", "Deluxe Edition"), and 
                             standardizing text formatting. This step ensures consistent comparison 
                             between different sources.
                         </Typography>
                         <Typography variant="body2">
-                            <strong>Examples:</strong> &quot;Song (Remaster)&quot; → &quot;song&quot;, 
-                            &quot;Track - 2023 Mix&quot; → &quot;track&quot;
+                            <strong>Examples:</strong> "Song (Remaster)" → "song", 
+                            "Track - 2023 Mix" → "track"
                         </Typography>
                     </CardContent>
                 </Card>
@@ -155,7 +207,7 @@ const HowItWorksTab: React.FC = () => {
                 Example Processing Steps
             </Typography>
             <Typography variant="body2" paragraph color="text.secondary">
-                Here&apos;s how a typical track moves through the matching pipeline:
+                Here's how a typical track moves through the matching pipeline:
             </Typography>
             
             <TableContainer component={Paper} elevation={2}>
