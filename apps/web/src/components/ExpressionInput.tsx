@@ -75,16 +75,17 @@ const ExpressionInput: React.FC<ExpressionInputProps> = ({
             if (!trimmed)
                 continue;
 
-            // Check if condition matches pattern: field:operation or field:operation>=threshold
-            const conditionPattern = /^(artist|title|album|artistWithTitle|artistInTitle):(match|contains|similarity(>=\d*\.?\d+)?)$/;
+            // Check if condition matches pattern: field:operation, field:operation>=threshold, or just field
+            const conditionPattern = /^(artist|title|album|artistWithTitle|artistInTitle)(:(match|contains|similarity>=\d*\.?\d+))?$/;
             if (!conditionPattern.test(trimmed)) {
                 return {
                     isValid: false,
-                    error: `Invalid condition: "${trimmed}". Expected format: field:operation`,
+                    error: `Invalid condition: "${trimmed}". Expected format: field[:operation]`,
                     suggestions: [
                         'Use fields: artist, title, album, artistWithTitle, artistInTitle',
                         'Use operations: :match, :contains, :similarity>=0.8',
-                        'Combine with AND/OR: artist:match AND title:contains'
+                        'Combine with AND/OR: artist:match AND title:contains',
+                        'Incomplete fields like "artist" are also valid'
                     ]
                 };
             }
@@ -105,7 +106,7 @@ const ExpressionInput: React.FC<ExpressionInputProps> = ({
         }
 
         // If we have a complete condition, suggest combinators
-        const hasCompleteCondition = /^(artist|title|album|artistWithTitle|artistInTitle):(match|contains|similarity>=\d*\.?\d+)$/.test(lastWord);
+        const hasCompleteCondition = /^(artist|title|album|artistWithTitle|artistInTitle)(:(match|contains|similarity>=\d*\.?\d+))?$/.test(lastWord);
         if (hasCompleteCondition && beforeLastWord.trim()) {
             return COMBINATOR_SUGGESTIONS;
         }
@@ -160,6 +161,29 @@ const ExpressionInput: React.FC<ExpressionInputProps> = ({
         return getFilteredSuggestions(inputValue);
     }, [inputValue, getFilteredSuggestions]);
 
+    const getOptionLabel = useCallback((option: string | AutocompleteSuggestion) => {
+        return typeof option === 'string' ? option : option.label;
+    }, []);
+
+    const renderInput = useCallback((params: any) => (
+        <TextField
+            {...params}
+            ref={inputRef}
+            placeholder={placeholder}
+            error={!!hasError}
+            helperText={hasError ? errorMessage : ''}
+            onBlur={handleBlur}
+            onKeyDown={handleKeyDown}
+            fullWidth
+        />
+    ), [placeholder, hasError, errorMessage, handleBlur, handleKeyDown]);
+
+    const renderOption = useCallback((props: any, option: AutocompleteSuggestion) => (
+        <Paper component="li" {...props}>
+            <CustomOption option={option} />
+        </Paper>
+    ), []);
+
     const hasError = error || !validationResult.isValid;
     const errorMessage = error || validationResult.error;
 
@@ -168,29 +192,14 @@ const ExpressionInput: React.FC<ExpressionInputProps> = ({
             <Autocomplete
                 freeSolo
                 options={filteredSuggestions}
-                getOptionLabel={(option) => typeof option === 'string' ? option : option.label}
+                getOptionLabel={getOptionLabel}
                 inputValue={inputValue}
                 onInputChange={handleInputChange}
                 onChange={handleSelectionChange}
                 disabled={disabled}
                 size={size}
-                renderInput={(params) => (
-                    <TextField
-                        {...params}
-                        ref={inputRef}
-                        placeholder={placeholder}
-                        error={!!hasError}
-                        helperText={hasError ? errorMessage : ''}
-                        onBlur={handleBlur}
-                        onKeyDown={handleKeyDown}
-                        fullWidth
-                    />
-                )}
-                renderOption={(props, option) => (
-                    <Paper component="li" {...props}>
-                        <CustomOption option={option} />
-                    </Paper>
-                )}
+                renderInput={renderInput}
+                renderOption={renderOption}
                 PaperComponent={CustomPaper}
             />
             

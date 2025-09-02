@@ -77,8 +77,8 @@ const MatchFilterEditor: React.FC<MatchFilterEditorProps> = ({ onSave }) => {
                 return `Filter at index ${i} must be a string expression`;
             }
 
-            // Basic expression validation
-            const validFieldPattern = /^(artist|title|album|artistWithTitle|artistInTitle):(match|contains|similarity>=\\d*\\.?\\d+)(\\s+(AND|OR)\\s+(artist|title|album|artistWithTitle|artistInTitle):(match|contains|similarity>=\\d*\\.?\\d+))*$/;
+            // Basic expression validation - allow optional operations
+            const validFieldPattern = /^(artist|title|album|artistWithTitle|artistInTitle)(:(match|contains|similarity>=\d*\.?\d+))?((\s+(AND|OR)\s+(artist|title|album|artistWithTitle|artistInTitle)(:(match|contains|similarity>=\d*\.?\d+))?))*$/;
             if (!validFieldPattern.test(filter.trim())) {
                 return `Filter at index ${i}: invalid expression format`;
             }
@@ -178,7 +178,7 @@ const MatchFilterEditor: React.FC<MatchFilterEditorProps> = ({ onSave }) => {
         items: {
             type: 'string',
             description: 'Expression string using simplified syntax (e.g., "artist:match AND title:contains")',
-            pattern: '^(artist|title|album|artistWithTitle|artistInTitle):(match|contains|similarity>=\\d*\\.?\\d+)(\\s+(AND|OR)\\s+(artist|title|album|artistWithTitle|artistInTitle):(match|contains|similarity>=\\d*\\.?\\d+))*$'
+            pattern: String.raw`^(artist|title|album|artistWithTitle|artistInTitle):(match|contains|similarity>=\d*\.?\d+)(\s+(AND|OR)\s+(artist|title|album|artistWithTitle|artistInTitle):(match|contains|similarity>=\d*\.?\d+))*$`
         }
     };
 

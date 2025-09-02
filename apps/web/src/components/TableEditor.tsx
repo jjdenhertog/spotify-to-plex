@@ -17,7 +17,7 @@ import {
     Add as AddIcon
 } from '@mui/icons-material';
 import { MatchFilterRule } from '../types/MatchFilterTypes';
-import ExpressionInput from './ExpressionInput';
+import PillEditor from './PillEditor';
 
 type TableEditorProps = {
     readonly filters: MatchFilterRule[];
@@ -82,7 +82,7 @@ const TableEditor: React.FC<TableEditorProps> = ({
                             <TableRow key={index} hover>
                                 {/* Expression input - takes most space */}
                                 <TableCell sx={{ width: '100%' }}>
-                                    <ExpressionInput value={filter} onChange={createExpressionChangeHandler(index)} disabled={disabled} placeholder="Enter filter expression (e.g., artist:match AND title:contains)" size="small" />
+                                    <PillEditor value={filter} onChange={createExpressionChangeHandler(index)} disabled={disabled} placeholder="Click + Add Field to start" size="small" />
                                 </TableCell>
 
                                 {/* Delete button */}

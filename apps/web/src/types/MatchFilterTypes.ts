@@ -9,6 +9,7 @@ export type MatchFilterRule = string; // e.g., "artist:match AND title:match"
 // Expression parsing types
 export type FieldType = 'artist' | 'title' | 'album' | 'artistWithTitle' | 'artistInTitle';
 export type OperationType = 'match' | 'contains' | 'similarity';
+export type OperationText = OperationType | `similarity>=${number}`;
 export type CombinatorType = 'AND' | 'OR';
 
 export type ParsedCondition = {
