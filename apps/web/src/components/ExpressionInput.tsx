@@ -165,7 +165,11 @@ const ExpressionInput: React.FC<ExpressionInputProps> = ({
         return typeof option === 'string' ? option : option.label;
     }, []);
 
-    const renderInput = useCallback((params: any) => (
+    // Calculate derived state before using in callbacks
+    const hasError = error || !validationResult.isValid;
+    const errorMessage = error || validationResult.error;
+
+    const renderInput = useCallback((params: Parameters<NonNullable<React.ComponentProps<typeof Autocomplete>['renderInput']>>[0]) => (
         <TextField
             {...params}
             ref={inputRef}
@@ -178,14 +182,11 @@ const ExpressionInput: React.FC<ExpressionInputProps> = ({
         />
     ), [placeholder, hasError, errorMessage, handleBlur, handleKeyDown]);
 
-    const renderOption = useCallback((props: any, option: AutocompleteSuggestion) => (
+    const renderOption = useCallback((props: React.HTMLAttributes<HTMLLIElement>, option: AutocompleteSuggestion) => (
         <Paper component="li" {...props}>
             <CustomOption option={option} />
         </Paper>
     ), []);
-
-    const hasError = error || !validationResult.isValid;
-    const errorMessage = error || validationResult.error;
 
     return (
         <Box>
