@@ -143,7 +143,7 @@ export default function TextProcessingAndSearchEditor() {
         handleProcessingSettingChange('removeQuotes', e.target.checked);
     }, [handleProcessingSettingChange]);
 
-    const handleCutOffSeparatorsToggleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleCutOffSeperatorsToggleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         handleProcessingSettingChange('cutOffSeperators', e.target.checked);
     }, [handleProcessingSettingChange]);
 
@@ -250,7 +250,7 @@ export default function TextProcessingAndSearchEditor() {
                     <Box sx={{ display: 'flex', gap: 3, mb: 3, flexWrap: 'wrap' }}>
                         <FormControlLabel control={ <Switch checked={uiData.textProcessing.processing.filtered} onChange={handleFilteredChange} /> } label="Enable Word Filtering" />
                         <FormControlLabel control={ <Switch checked={uiData.textProcessing.processing.removeQuotes} onChange={handleRemoveQuotesChange} /> } label="Enable Quote Removal" />
-                        <FormControlLabel control={ <Switch checked={uiData.textProcessing.processing.cutOffSeperators} onChange={handleCutOffSeparatorsToggleChange} /> } label="Enable Cut-off at Separators" />
+                        <FormControlLabel control={ <Switch checked={uiData.textProcessing.processing.cutOffSeperators} onChange={handleCutOffSeperatorsToggleChange} /> } label="Enable Cut-off at Separators" />
                     </Box>
 
                     {/* String Array Editors */}
