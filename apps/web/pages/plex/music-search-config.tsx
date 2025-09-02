@@ -1,8 +1,9 @@
 /* eslint-disable unicorn/prefer-blob-reading-methods */
 import Logo from "@/components/Logo"
 import MatchFilterEditor from "@/components/MatchFilterEditor"
-import SearchApproachesEditor from "@/components/SearchApproachesEditor"
-import TextProcessingEditor from "@/components/TextProcessingEditor"
+import HowItWorksTab from "@/components/HowItWorksTab"
+import TextProcessingAndSearchEditor from "@/components/TextProcessingAndSearchEditor"
+import TestConfigurationTab from "@/components/TestConfigurationTab"
 import { errorBoundary } from "@/helpers/errors/errorBoundary"
 import MainLayout from "@/layouts/MainLayout"
 import { ChevronLeft, Download, Restore, Upload } from "@mui/icons-material"
@@ -12,15 +13,46 @@ import { Box, Breadcrumbs, Button, Card, CardContent, Container, Dialog, DialogA
 import axios from "axios"
 import { NextPage } from "next"
 import Head from "next/head"
+import { useRouter } from "next/router"
 import { enqueueSnackbar } from "notistack"
-import { useCallback, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
+
+// Tab key type definition
+type TabKey = 'how-it-works' | 'processing' | 'match-filters' | 'test'
 
 const Page: NextPage = () => {
+    const router = useRouter()
     const [tabValue, setTabValue] = useState(0)
     const [resetting, setResetting] = useState(false)
     const [importDialog, setImportDialog] = useState(false)
     const [importJson, setImportJson] = useState("")
     const fileInputRef = useRef<HTMLInputElement>(null)
+
+    // Tab mapping
+    const tabKeyToIndex: Record<TabKey, number> = {
+        'how-it-works': 0,
+        'processing': 1,
+        'match-filters': 2,
+        'test': 3
+    }
+    
+    const indexToTabKey: Record<number, TabKey> = {
+        0: 'how-it-works',
+        1: 'processing', 
+        2: 'match-filters',
+        3: 'test'
+    }
+
+    // Initialize tab from URL on component mount
+    useEffect(() => {
+        const urlTab = router.query.tab as TabKey
+        if (urlTab && tabKeyToIndex[urlTab] !== undefined) {
+            setTabValue(tabKeyToIndex[urlTab])
+        } else if (!router.query.tab) {
+            // Default to first tab and update URL
+            router.replace('/plex/music-search-config?tab=how-it-works', undefined, { shallow: true })
+        }
+    }, [router.query.tab])
 
     const resetConfiguration = useCallback(() => {
         setResetting(true)
@@ -127,7 +159,9 @@ const Page: NextPage = () => {
 
     const handleTabChange = useCallback((_event: React.SyntheticEvent, newValue: number) => {
         setTabValue(newValue)
-    }, [])
+        const tabKey = indexToTabKey[newValue]
+        router.push(`/plex/music-search-config?tab=${tabKey}`, undefined, { shallow: true })
+    }, [router])
 
     const handleCloseImportDialog = useCallback(() => setImportDialog(false), [])
     const handleImportJsonChange = useCallback(
@@ -161,8 +195,8 @@ const Page: NextPage = () => {
                             Music Search Configuration
                         </Typography>
                         <Typography variant="body1" sx={{ mb: 2, maxWidth: 600 }}>
-                            Configure how the system matches songs between Spotify and Plex. The configuration is now
-                            split into focused JSON files for easier management.
+                            Configure how the system matches songs between Spotify and Plex. Use the "How It Works" tab 
+                            to understand the system, then configure your settings and test them immediately.
                         </Typography>
 
                         <Box sx={{ display: "flex", gap: 2, alignItems: "center", flexWrap: "wrap" }}>
@@ -184,13 +218,32 @@ const Page: NextPage = () => {
 
                     <Box>
                         <Tabs value={tabValue} onChange={handleTabChange} sx={{ mb: 3 }} variant="scrollable" scrollButtons="auto">
+                            <Tab label="How It Works" />
+                            <Tab label="Text Processing & Search" />
                             <Tab label="Match Filters" />
-                            <Tab label="Text Processing" />
-                            <Tab label="Search Approaches" />
+                            <Tab label="Test Configuration" />
                         </Tabs>
 
-                        {/* Match Filters Tab */}
+                        {/* How It Works Tab */}
                         {tabValue === 0 && (
+                            <Card>
+                                <CardContent>
+                                    <HowItWorksTab />
+                                </CardContent>
+                            </Card>
+                        )}
+
+                        {/* Text Processing & Search Tab */}
+                        {tabValue === 1 && (
+                            <Card>
+                                <CardContent>
+                                    <TextProcessingAndSearchEditor />
+                                </CardContent>
+                            </Card>
+                        )}
+
+                        {/* Match Filters Tab */}
+                        {tabValue === 2 && (
                             <Card>
                                 <CardContent>
                                     <MatchFilterEditor  />
@@ -198,20 +251,11 @@ const Page: NextPage = () => {
                             </Card>
                         )}
 
-                        {/* Text Processing Tab */}
-                        {tabValue === 1 && (
+                        {/* Test Configuration Tab */}
+                        {tabValue === 3 && (
                             <Card>
                                 <CardContent>
-                                    <TextProcessingEditor  />
-                                </CardContent>
-                            </Card>
-                        )}
-
-                        {/* Search Approaches Tab */}
-                        {tabValue === 2 && (
-                            <Card>
-                                <CardContent>
-                                    <SearchApproachesEditor  />
+                                    <TestConfigurationTab />
                                 </CardContent>
                             </Card>
                         )}
