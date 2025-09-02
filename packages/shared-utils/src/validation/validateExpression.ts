@@ -36,7 +36,7 @@ export function validateExpression(expression: string): ValidationResult {
         }
         
         // Validate operations
-        const validOperations = ['match', 'contains', /^similarity>=(\d*\.?\d+)$/];
+        const validOperations = ['match', 'contains', 'is', 'not', /^similarity>=(\d*\.?\d+)$/];
         const operationRegex = /:\s*(\S+)(?:\s|$)/g;
         const operations = Array.from(expression.matchAll(operationRegex), m => m[1]);
         
@@ -68,7 +68,7 @@ export function validateExpression(expression: string): ValidationResult {
             });
             
             if (!isValidOperation) {
-                errors.push(`Invalid operation: "${operation}". Valid operations are: match, contains, similarity>=0.0-1.0`);
+                errors.push(`Invalid operation: "${operation}". Valid operations are: match, contains, is, not, similarity>=0.0-1.0`);
             }
         }
         

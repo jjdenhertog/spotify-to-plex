@@ -5,8 +5,9 @@ import { TrackWithMatching } from "../types/TrackWithMatching";
  */
 type ParsedCondition = {
     field: string;
-    operation: 'match' | 'contains' | 'similarity';
+    operation: 'match' | 'contains' | 'similarity' | 'is' | 'not';
     threshold?: number;
+    negated?: boolean; // For 'not' operator
 };
 
 /**
@@ -21,7 +22,7 @@ type ParsedExpression = {
  * Safely parse expression syntax into executable filter function
  * Expression format: "artist:match AND title:contains"
  * Supported fields: artist, title, album, artistWithTitle, artistInTitle
- * Supported operations: :match, :contains, :similarity>=threshold
+ * Supported operations: :match, :contains, :is, :not, :similarity>=threshold
  * Supported combinators: AND, OR
  */
 export function parseExpression(expression: string): (item: TrackWithMatching) => boolean {
@@ -100,7 +101,12 @@ function parseCondition(conditionStr: string): ParsedCondition {
     }
     
     // Parse operation
-    if (operation === 'match' || operation === 'contains') {
+    if (operation === 'match' || operation === 'contains' || operation === 'is') {
+        return { field, operation };
+    }
+    
+    // Parse 'not' operation
+    if (operation === 'not') {
         return { field, operation };
     }
     
@@ -178,10 +184,16 @@ function evaluateCondition(item: TrackWithMatching, condition: ParsedCondition):
             return matchingField.match || false;
         case 'contains':
             return matchingField.contains || false;
+        case 'is':
+            // 'is' operator: exact match - both match AND contains must be true
+            return (matchingField.match || false) && (matchingField.contains || false);
         case 'similarity':
             const similarity = matchingField.similarity ?? 0;
-
+            
             return threshold === undefined ? false : similarity >= threshold;
+        case 'not':
+            // 'not' operator: negation of match result
+            return !(matchingField.match || false);
         default:
             return false;
     }
@@ -266,6 +278,31 @@ export function migrateLegacyFilter(filterString: string): string | null {
             {
                 pattern: /\(item\.matching\.artist\.similarity\s*\?\?\s*0\)\s*>=\s*([\d.]+)\s*&&\s*item\.matching\.album\.match\s*&&\s*\(item\.matching\.title\.similarity\s*\?\?\s*0\)\s*>=\s*([\d.]+)/,
                 expression: (match: RegExpMatchArray) => `artist:similarity>=${match[1]} AND album:match AND title:similarity>=${match[2]}`
+            },
+            // artist.match && artist.contains (exact match)
+            {
+                pattern: /item\.matching\.artist\.match\s*&&\s*item\.matching\.artist\.contains/,
+                expression: 'artist:is'
+            },
+            // title.match && title.contains (exact match)
+            {
+                pattern: /item\.matching\.title\.match\s*&&\s*item\.matching\.title\.contains/,
+                expression: 'title:is'
+            },
+            // !artist.match (negation)
+            {
+                pattern: /!item\.matching\.artist\.match/,
+                expression: 'artist:not'
+            },
+            // !title.match (negation)
+            {
+                pattern: /!item\.matching\.title\.match/,
+                expression: 'title:not'
+            },
+            // !(artist.match && title.match) -> artist:not OR title:not
+            {
+                pattern: /!\(item\.matching\.artist\.match\s*&&\s*item\.matching\.title\.match\)/,
+                expression: 'artist:not OR title:not'
             }
         ];
         

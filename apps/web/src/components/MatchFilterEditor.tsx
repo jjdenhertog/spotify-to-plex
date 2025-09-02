@@ -1,23 +1,17 @@
 /* eslint-disable no-alert */
-import { errorBoundary } from '@/helpers/errors/errorBoundary';
-import { Refresh, Save, TableChart, Code } from '@mui/icons-material';
 import { 
     Box, 
-    Button, 
     Typography, 
-    ToggleButtonGroup, 
-    ToggleButton,
-    Paper,
-    Divider 
+    Paper
 } from '@mui/material';
-import axios from 'axios';
-import { enqueueSnackbar } from 'notistack';
 /* eslint-disable no-console */
-import React, { useCallback, useEffect, useRef, useState, useMemo } from 'react';
+import React, { useCallback, useEffect } from 'react';
 
-import MonacoJsonEditor, { MonacoJsonEditorHandle } from './MonacoJsonEditor';
+import EditorHeader from './EditorHeader';
+import MonacoJsonEditor from './MonacoJsonEditor';
 import TableEditor from './TableEditor';
-import { MatchFilterRule, ViewMode } from '../types/MatchFilterTypes';
+import { MatchFilterRule } from '../types/MatchFilterTypes';
+import { useDualModeEditor } from '../hooks/useDualModeEditor';
 
 type MatchFilterConfig = {
     reason: string;
@@ -29,40 +23,19 @@ type MatchFilterEditorProps = {
 }
 
 const MatchFilterEditor: React.FC<MatchFilterEditorProps> = ({ onSave }) => {
-    const [jsonData, setJsonData] = useState<any>(null);
-    const [loading, setLoading] = useState(true);
-    const [validationError, setValidationError] = useState<string>('');
-    const [viewMode, setViewMode] = useState<ViewMode>('ui');
-    const editorRef = useRef<MonacoJsonEditorHandle>(null);
+    // Define conversion functions for the useDualModeEditor hook
+    const jsonToUI = useCallback((data: MatchFilterRule[]): MatchFilterRule[] => {
+        if (!Array.isArray(data)) return [];
 
-    // Convert loaded data to expression format for UI
-    const convertToExpressionFormat = useCallback((data: any[]): MatchFilterRule[] => {
-        return data.map((filter) => typeof filter === 'string' ? filter : filter.expression || 'artist:match');
+        return data.map((filter) => typeof filter === 'string' ? filter : (filter as any).expression || 'artist:match');
     }, []);
 
-    const loadFilters = useCallback(async () => {
-        errorBoundary(async () => {
-            setLoading(true);
-            const response = await axios.get('/api/plex/music-search-config/match-filters');
-            setJsonData(response.data);
-            setLoading(false);
-        }, () => {
-            setLoading(false);
-        });
+    const uiToJSON = useCallback((data: MatchFilterRule[]): MatchFilterRule[] => {
+        return data;
     }, []);
 
-    useEffect(() => {
-        loadFilters();
-    }, [loadFilters]);
-
-    // Convert data for UI mode
-    const expressionFilters = useMemo(() => {
-        if (!jsonData) return [];
-
-        return convertToExpressionFormat(jsonData);
-    }, [jsonData, convertToExpressionFormat]);
-
-    const validateFilters = (data: any): string | null => {
+    // Validation function
+    const validateFilters = useCallback((data: any): string | null => {
         if (!Array.isArray(data)) {
             return 'Configuration must be an array';
         }
@@ -85,81 +58,52 @@ const MatchFilterEditor: React.FC<MatchFilterEditorProps> = ({ onSave }) => {
         }
         
         return null; // Valid
-    };
+    }, []);
 
-    const handleSave = useCallback(async () => {
-        errorBoundary(async () => {
-            let currentData: any;
+    // Use the dual mode editor hook
+    const {
+        viewMode,
+        jsonData,
+        uiData,
+        loading,
+        validationError,
+        editorRef,
+        loadData,
+        handleSave,
+        handleReset,
+        handleViewModeChange,
+        handleUIDataChange,
+        handleJSONDataChange
+    } = useDualModeEditor<MatchFilterRule[], MatchFilterRule[]>({
+        loadEndpoint: '/api/plex/music-search-config/match-filters',
+        saveEndpoint: '/api/plex/music-search-config/match-filters',
+        validator: validateFilters,
+        jsonToUI,
+        uiToJSON,
+        initialData: []
+    });
 
-            if (viewMode === 'json') {
-                // Get current content directly from Monaco editor
-                currentData = editorRef.current?.getCurrentValue?.();
-            } else {
-                // Use expression format directly
-                currentData = expressionFilters;
-            }
-            
-            if (!currentData) {
-                enqueueSnackbar('No valid data to save', { variant: 'error' });
+    // Load data on component mount
+    useEffect(() => {
+        loadData();
+    }, [loadData]);
 
-                return;
-            }
-
-            // Do validation only on save
-            const validationErrorMsg = validateFilters(currentData);
-            if (validationErrorMsg) {
-                setValidationError(validationErrorMsg);
-                enqueueSnackbar(`Validation Error: ${validationErrorMsg}`, { variant: 'error' });
-
-                return;
-            }
-
-            setValidationError('');
-            await axios.post('/api/plex/music-search-config/match-filters', currentData);
-            enqueueSnackbar('Match filters saved successfully', { variant: 'success' });
-            
-            // Update local state with saved data
-            setJsonData(currentData);
-            
-            if (onSave) {
-                onSave(currentData);
-            }
-        });
-    }, [viewMode, expressionFilters, onSave]);
-
-    const handleReset = useCallback(async () => {
-        if (confirm('Reset to default match filters? This will overwrite your current configuration.')) {
-            errorBoundary(async () => {
-                await loadFilters();
-                setValidationError('');
-            });
+    // Custom save handler that includes onSave callback
+    const handleSaveWithCallback = useCallback(() => {
+        handleSave();
+        if (onSave) {
+            const currentData = viewMode === 'json' ? jsonData : uiData;
+            onSave(currentData as unknown as MatchFilterConfig[]);
         }
-    }, [loadFilters]);
-
-    const handleJsonChange = useCallback((newValue: any) => {
-        setJsonData(newValue);
-        setValidationError(''); // Clear validation error when user types
-    }, []);
-
-    const handleTableChange = useCallback((newFilters: MatchFilterRule[]) => {
-        // Update jsonData with the new expression format
-        setJsonData(newFilters);
-        setValidationError('');
-    }, []);
-
-    const handleViewModeChange = useCallback((_event: React.MouseEvent<HTMLElement>, newMode: ViewMode | null) => {
-        if (newMode) {
-            setViewMode(newMode);
-        }
-    }, []);
+    }, [handleSave, onSave, viewMode, jsonData, uiData]);
 
     // Wrapper functions to handle promises properly for onClick
     const handleSaveClick = useCallback(() => {
-        handleSave().catch((error: unknown) => console.error(error));
-    }, [handleSave]);
+        handleSaveWithCallback();
+    }, [handleSaveWithCallback]);
 
     const handleResetClick = useCallback(() => {
-        handleReset().catch((error: unknown) => console.error(error));
+        handleReset();
     }, [handleReset]);
 
     if (loading) {
@@ -185,48 +129,10 @@ const MatchFilterEditor: React.FC<MatchFilterEditorProps> = ({ onSave }) => {
     return (
         <Box>
             {/* Header */}
-            <Box
-                sx={{ 
-                    display: 'flex', 
-                    alignItems: 'center', 
-                    justifyContent: 'space-between', 
-                    mb: 3,
-                    p: 2,
-                    bgcolor: 'background.paper',
-                    borderRadius: 1,
-                    border: '1px solid',
-                    borderColor: 'divider'
-                }}>
-                <Typography variant="h6" sx={{ color: 'text.primary' }}>
-                    Match Filters Configuration
-                </Typography>
-                <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-                    {/* View Mode Toggle */}
-                    <ToggleButtonGroup value={viewMode} exclusive onChange={handleViewModeChange} size="small">
-                        <ToggleButton value="ui">
-                            <TableChart fontSize="small" sx={{ mr: 1 }} />
-                            UI Mode
-                        </ToggleButton>
-                        <ToggleButton value="json">
-                            <Code fontSize="small" sx={{ mr: 1 }} />
-                            JSON Mode
-                        </ToggleButton>
-                    </ToggleButtonGroup>
-
-                    <Divider orientation="vertical" flexItem />
-
-                    {/* Action Buttons */}
-                    <Button onClick={handleResetClick} variant="outlined" size="small" startIcon={<Refresh />}>
-                        Reset to Defaults
-                    </Button>
-                    <Button onClick={handleSaveClick} variant="contained" size="small" startIcon={<Save />}>
-                        Save Filters
-                    </Button>
-                </Box>
-            </Box>
+            <EditorHeader title="Match Filters Configuration" viewMode={viewMode} onViewModeChange={handleViewModeChange} onSave={handleSaveClick} onReset={handleResetClick} disabled={loading} />
             
             {/* Mode-specific descriptions */}
-            {viewMode === 'ui' ? (
+            {!!viewMode && viewMode === 'ui' ? (
                 <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
                     Add filter expressions to match tracks. Filters are evaluated in order - the first matching filter wins.
                 </Typography>
@@ -239,12 +145,12 @@ const MatchFilterEditor: React.FC<MatchFilterEditorProps> = ({ onSave }) => {
 
             {/* Content based on view mode */}
             <Paper variant="outlined" sx={{ p: 0 }}>
-                {viewMode === 'ui' ? (
+                {!!viewMode && viewMode === 'ui' ? (
                     <Box sx={{ p: 2 }}>
-                        <TableEditor filters={expressionFilters} onChange={handleTableChange} />
+                        <TableEditor filters={uiData} onChange={handleUIDataChange} />
                     </Box>
                 ) : (
-                    <MonacoJsonEditor ref={editorRef} value={jsonData} onChange={handleJsonChange} schema={matchFilterSchema} height={500} error={validationError} />
+                    <MonacoJsonEditor ref={editorRef} value={jsonData} onChange={handleJSONDataChange} schema={matchFilterSchema} height={500} error={validationError} />
                 )}
             </Paper>
 
