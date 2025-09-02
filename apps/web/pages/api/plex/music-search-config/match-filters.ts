@@ -38,8 +38,12 @@ function validateExpressions(filters: MatchFilterConfig[]): string | null {
             return `Filter at index ${i} cannot be empty`;
         }
         
-        // Basic expression validation
-        const validPattern = /^(artist|title|album|artistWithTitle|artistInTitle):(match|contains|similarity>=\d*\.?\d+)(\s+(AND|OR)\s+(artist|title|album|artistWithTitle|artistInTitle):(match|contains|similarity>=\d*\.?\d+))*$/;
+        // Basic expression validation - allow both complete (field:operation) and incomplete (field) conditions
+        const fieldPattern = '(artist|title|album|artistWithTitle|artistInTitle)';
+        const operationPattern = String.raw`:(match|contains|similarity>=\d*\.?\d+)`;
+        const conditionPattern = `${fieldPattern}(${operationPattern})?`; // Operation is optional
+        const validPattern = new RegExp(String.raw`^${conditionPattern}(\s+(AND|OR)\s+${conditionPattern})*$`);
+        
         if (!validPattern.test((filter).trim())) {
             return `Filter at index ${i} has invalid expression format`;
         }

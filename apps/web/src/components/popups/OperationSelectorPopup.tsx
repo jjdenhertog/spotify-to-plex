@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 import { MenuItem, Popover, Radio, RadioGroup, FormControlLabel, Divider, Typography } from "@mui/material";
-import { useCallback, useState } from "react";
+import { useCallback, useState, useEffect } from "react";
+import { Delete } from "@mui/icons-material";
 
 import type { OperationType } from "@/types/MatchFilterTypes";
 
@@ -9,15 +10,28 @@ type OperationSelectorPopupProps = {
     readonly anchorEl: HTMLElement | null;
     readonly onClose: () => void;
     readonly onOperationSelect: (operation: OperationType, threshold?: number) => void;
+    readonly onDelete?: () => void;
+    readonly currentOperation?: OperationType;
+    readonly currentThreshold?: number;
 }
 
 const OperationSelectorPopup: React.FC<OperationSelectorPopupProps> = ({
     open,
     anchorEl,
     onClose,
-    onOperationSelect
+    onOperationSelect,
+    onDelete,
+    currentOperation,
+    currentThreshold
 }) => {
-    const [selectedThreshold, setSelectedThreshold] = useState<number>(85);
+    const [selectedThreshold, setSelectedThreshold] = useState<number>(currentThreshold || 85);
+
+    // Update selectedThreshold when currentThreshold changes
+    useEffect(() => {
+        if (currentThreshold !== undefined) {
+            setSelectedThreshold(currentThreshold);
+        }
+    }, [currentThreshold]);
 
     const operations = [
         { value: 'match' as OperationType, label: 'Match', description: 'Exact text matching' },
@@ -45,7 +59,22 @@ const OperationSelectorPopup: React.FC<OperationSelectorPopupProps> = ({
     }, [onOperationSelect, onClose, selectedThreshold]);
 
     const onThresholdChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-        setSelectedThreshold(Number(event.target.value));
+        const newThreshold = Number(event.target.value);
+        setSelectedThreshold(newThreshold);
+        // Automatically apply similarity with the selected threshold
+        onOperationSelect('similarity', newThreshold);
+        onClose();
+    }, [onOperationSelect, onClose]);
+
+    const handleDelete = useCallback(() => {
+        if (onDelete) {
+            onDelete();
+            onClose();
+        }
+    }, [onDelete, onClose]);
+
+    const handleRadioGroupClick = useCallback((e: React.MouseEvent) => {
+        e.stopPropagation();
     }, []);
 
     return (
@@ -68,12 +97,17 @@ const OperationSelectorPopup: React.FC<OperationSelectorPopupProps> = ({
             {operations.map((operation, index) => (
                 <div key={operation.value}>
                     <MenuItem
-                        onClick={createOperationClickHandler(operation.value)}
+                        onClick={operation.value === 'similarity' ? undefined : createOperationClickHandler(operation.value)}
+                        selected={currentOperation === operation.value}
                         sx={{
                             minWidth: 250,
                             flexDirection: 'column',
                             alignItems: 'flex-start',
-                            py: 1.5
+                            py: 1.5,
+                            cursor: operation.value === 'similarity' ? 'default' : 'pointer',
+                            '&.Mui-selected': {
+                                backgroundColor: 'action.selected'
+                            }
                         }}
                     >
                         <div style={{ fontWeight: 500 }}>
@@ -92,6 +126,7 @@ const OperationSelectorPopup: React.FC<OperationSelectorPopupProps> = ({
                                     row
                                     value={selectedThreshold}
                                     onChange={onThresholdChange}
+                                    onClick={handleRadioGroupClick}
                                     sx={{
                                         '& .MuiFormControlLabel-root': {
                                             mr: 1.5,
@@ -112,6 +147,16 @@ const OperationSelectorPopup: React.FC<OperationSelectorPopupProps> = ({
                     {index < operations.length - 1 && <Divider />}
                 </div>
             ))}
+            
+            {!!onDelete && (
+                <>
+                    <Divider />
+                    <MenuItem onClick={handleDelete} sx={{ color: 'error.main', py: 1.5 }}>
+                        <Delete sx={{ mr: 1, fontSize: '1rem' }} />
+                        Delete Field
+                    </MenuItem>
+                </>
+            )}
         </Popover>
     );
 };

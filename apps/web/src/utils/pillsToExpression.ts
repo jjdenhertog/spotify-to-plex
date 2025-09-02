@@ -19,11 +19,18 @@ export function pillsToExpression(pills: Pill[]): string {
                 if (pill.operation === 'similarity' && pill.threshold !== undefined) {
                     operationText = `similarity>=${pill.threshold}`;
                 }
+
                 return `${pill.field}:${operationText}`;
             }
             
-            // Return the raw text if we can't parse it properly
-            return pill.text;
+            if (pill.field) {
+                // Incomplete pill - just show the field name
+                return pill.field;
+            }
+            
+            // Skip pills without a field (shouldn't happen, but safety check)
+            return '';
         })
+        .filter(text => text && text.trim() !== '')
         .join(' ');
 }

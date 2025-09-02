@@ -7,13 +7,15 @@ type FieldPillProps = {
     readonly isConfigured?: boolean;
     readonly onClick?: (field: FieldType) => void;
     readonly disabled?: boolean;
+    readonly displayText?: string;
 };
 
 const FieldPill: React.FC<FieldPillProps> = ({
     field,
     isConfigured = false,
     onClick,
-    disabled = false
+    disabled = false,
+    displayText
 }) => {
     const handleClick = useCallback(() => {
         if (!!onClick && !disabled) {
@@ -23,7 +25,7 @@ const FieldPill: React.FC<FieldPillProps> = ({
 
     return (
         <Chip
-            label={field}
+            label={displayText || field}
             clickable={!!onClick && !disabled}
             disabled={disabled}
             onClick={handleClick}
@@ -31,22 +33,11 @@ const FieldPill: React.FC<FieldPillProps> = ({
             color={isConfigured ? 'primary' : 'default'}
             size="small"
             sx={{
-                marginRight: 1,
-                marginBottom: 0.5,
+                mr: 1,
+                mb: 0.5,
                 fontFamily: 'monospace',
                 fontSize: '0.75rem',
-                transition: 'all 0.2s ease-in-out',
-                '&:hover': {
-                    transform: !!onClick && !disabled ? 'scale(1.05)' : 'none',
-                },
-                '&.MuiChip-filled': {
-                    backgroundColor: 'primary.main',
-                    color: 'primary.contrastText',
-                },
-                '&.MuiChip-outlined': {
-                    borderColor: 'grey.400',
-                    color: 'text.secondary',
-                },
+                cursor: !!onClick && !disabled ? 'pointer' : 'default'
             }}
         />
     );

@@ -15,12 +15,21 @@ export function validateExpression(expression: string): ValidationResult {
             return { valid: false, errors };
         }
         
-        // Validate field names
+        // Validate field names - check both standalone fields and fields with operations
         const validFields = ['artist', 'title', 'album', 'artistWithTitle', 'artistInTitle'];
-        const fieldRegex = /([A-Za-z]+):/g;
-        const fields = Array.from(expression.matchAll(fieldRegex), m => m[1]);
         
-        for (const field of fields) {
+        // Extract fields with operations
+        const fieldWithOpRegex = /([A-Za-z]+):/g;
+        const fieldsWithOps = Array.from(expression.matchAll(fieldWithOpRegex), m => m[1]);
+        
+        // Extract standalone fields (not followed by colon)
+        const standaloneFieldRegex = /\b(artist|title|album|artistWithTitle|artistInTitle)\b(?!:)/g;
+        const standaloneFields = Array.from(expression.matchAll(standaloneFieldRegex), m => m[1]);
+        
+        // Combine and validate all fields
+        const allFields = [...fieldsWithOps, ...standaloneFields];
+        
+        for (const field of allFields) {
             if (field && !validFields.includes(field)) {
                 errors.push(`Invalid field: "${field}". Valid fields are: ${validFields.join(', ')}`);
             }
@@ -73,17 +82,20 @@ export function validateExpression(expression: string): ValidationResult {
         }
         
         // Check for balanced conditions and operators
-        const conditionCount = expression.split(/\s+(?:AND|OR)\s+/).length;
+        // Count all conditions (both field:operation and standalone field)
+        const conditions = expression.split(/\s+(?:AND|OR)\s+/);
+        const conditionCount = conditions.length;
         const operatorCount = operators.length;
         
         if (conditionCount !== operatorCount + 1) {
             errors.push('Unbalanced expression: number of conditions must equal operators + 1');
         }
         
-        // Check for proper syntax structure
-        const conditionRegex = /^\s*[A-Za-z]+:[\d.=>A-Za-z]+(?:\s+(?:AND|OR)\s+[A-Za-z]+:[\d.=>A-Za-z]+)*\s*$/;
+        // Check for proper syntax structure - allow both complete (field:operation) and incomplete (field) conditions
+        const conditionPattern = String.raw`[A-Za-z]+(?::[\d.=>A-Za-z]+)?`; // Operation is optional
+        const conditionRegex = new RegExp(String.raw`^\s*${conditionPattern}(?:\s+(?:AND|OR)\s+${conditionPattern})*\s*$`);
         if (!conditionRegex.test(expression)) {
-            errors.push('Invalid expression syntax. Expected format: "field:operation AND/OR field:operation"');
+            errors.push('Invalid expression syntax. Expected format: "field[:operation] AND/OR field[:operation]"');
         }
         
     } catch (error) {

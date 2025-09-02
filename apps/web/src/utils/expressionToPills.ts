@@ -49,12 +49,26 @@ export function expressionToPills(expression: string): Pill[] {
                     text: token
                 });
             } else {
-                // Invalid condition - create a pill with the raw text
-                pills.push({
-                    id: `pill-${pillId++}`,
-                    type: 'condition',
-                    text: token
-                });
+                // Check if this is just a field name without operation
+                const fieldOnlyPattern = /^(artist|title|album|artistWithTitle|artistInTitle)$/;
+                const fieldMatch = fieldOnlyPattern.exec(token);
+                
+                if (fieldMatch) {
+                    // This is a standalone field - create an incomplete pill
+                    pills.push({
+                        id: `pill-${pillId++}`,
+                        type: 'condition',
+                        field: fieldMatch[1] as FieldType,
+                        text: token
+                    });
+                } else {
+                    // Invalid condition - create a pill with the raw text
+                    pills.push({
+                        id: `pill-${pillId++}`,
+                        type: 'condition',
+                        text: token
+                    });
+                }
             }
         }
     }

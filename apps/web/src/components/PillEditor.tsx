@@ -35,6 +35,11 @@ const PillEditor: React.FC<PillEditorProps> = ({
         return expressionToPills(value);
     }, [value]);
 
+    // Get selected pill for popup
+    const selectedPill = useMemo(() => {
+        return selectedPillId ? pills.find(p => p.id === selectedPillId) : undefined;
+    }, [selectedPillId, pills]);
+
     // Convert pills back to expression and notify parent
     const updateExpression = useCallback((newPills: Pill[]) => {
         const newExpression = pillsToExpression(newPills);
@@ -59,14 +64,27 @@ const PillEditor: React.FC<PillEditorProps> = ({
 
     // Handle field selection from popup
     const handleFieldSelect = useCallback((field: FieldType) => {
-        const newPill: Pill = {
+        const newPills = [...pills];
+        
+        // If there are already condition pills, add an AND combinator first
+        const conditionPills = pills.filter(p => p.type === 'condition');
+        if (conditionPills.length > 0) {
+            newPills.push({
+                id: `pill-${Date.now()}-and`,
+                type: 'combinator',
+                combinator: 'AND',
+                text: 'AND'
+            });
+        }
+        
+        // Add the new field pill
+        newPills.push({
             id: `pill-${Date.now()}`,
             type: 'condition',
             field,
-            text: `${field}:?`
-        };
+            text: field
+        });
 
-        const newPills = [...pills, newPill];
         updateExpression(newPills);
         setFieldSelectorOpen(false);
         setPopupAnchorEl(null);
@@ -96,13 +114,45 @@ const PillEditor: React.FC<PillEditorProps> = ({
                 return {
                     ...pill,
                     operation,
-                    threshold: operation === 'similarity' ? threshold : undefined,
+                    threshold: operation === 'similarity' && threshold !== undefined ? threshold / 100 : undefined,
                     text: `${pill.field}:${operationText}`
                 };
             }
 
             return pill;
         });
+
+        updateExpression(newPills);
+        setOperationSelectorOpen(false);
+        setSelectedPillId(null);
+        setPopupAnchorEl(null);
+    }, [selectedPillId, pills, updateExpression]);
+
+    // Handle pill deletion
+    const handlePillDelete = useCallback(() => {
+        if (!selectedPillId) return;
+
+        // Find the pill and its index
+        const pillIndex = pills.findIndex(pill => pill.id === selectedPillId);
+        if (pillIndex === -1) return;
+
+        const newPills = [...pills];
+        
+        // Remove the pill
+        newPills.splice(pillIndex, 1);
+        
+        // If we removed a condition pill and there's a combinator before or after, remove it too
+        const removedPill = pills[pillIndex];
+        if (removedPill?.type === 'condition') {
+            // Check if there's a combinator after this position
+            if (pillIndex < newPills.length && newPills[pillIndex]?.type === 'combinator') {
+                newPills.splice(pillIndex, 1);
+            }
+            // Otherwise check if there's a combinator before this position
+            else if (pillIndex > 0 && newPills[pillIndex - 1]?.type === 'combinator') {
+                newPills.splice(pillIndex - 1, 1);
+            }
+        }
 
         updateExpression(newPills);
         setOperationSelectorOpen(false);
@@ -145,38 +195,31 @@ const PillEditor: React.FC<PillEditorProps> = ({
                     display: 'flex',
                     flexWrap: 'wrap',
                     gap: 0.5,
-                    minHeight: size === 'small' ? '32px' : '40px',
+                    minHeight: size === 'small' ? 32 : 40,
                     alignItems: 'center',
                     p: 1,
-                    border: '1px solid',
+                    border: 1,
                     borderColor: 'divider',
                     borderRadius: 1,
                     backgroundColor: disabled ? 'action.disabled' : 'background.paper',
-                    '&:hover': disabled ? {} : {
+                    '&:hover:not([data-disabled])': {
                         borderColor: 'primary.main'
                     }
                 }}
+                data-disabled={disabled || undefined}
             >
-                {/* Render condition pills */}
-                {pills.filter(pill => pill.type === 'condition').map((pill, index) => (
+                {/* Render all pills */}
+                {pills.map((pill) => (
                     <React.Fragment key={pill.id}>
-                        <Box id={`pill-${pill.id}`}>
-                            <FieldPill field={pill.field!} isConfigured={isPillConfigured(pill)} onClick={createFieldPillClickHandler(pill)} disabled={disabled} />
-                        </Box>
-                        {/* Add AND text between condition pills */}
-                        {index < pills.filter(p => p.type === 'condition').length - 1 && (
-                            <Box
-                                component="span"
-                                sx={{
-                                    mx: 0.5,
-                                    fontSize: '0.75rem',
-                                    color: 'text.secondary',
-                                    fontWeight: 'medium'
-                                }}
-                            >
-                                AND
+                        {pill.type === 'condition' && pill.field ? (
+                            <Box id={`pill-${pill.id}`}>
+                                <FieldPill field={pill.field} isConfigured={isPillConfigured(pill)} onClick={createFieldPillClickHandler(pill)} disabled={disabled} displayText={isPillConfigured(pill) ? pill.text : pill.field} />
                             </Box>
-                        )}
+                        ) : pill.type === 'combinator' ? (
+                            <Box component="span" sx={{ mx: 1, fontSize: '0.75rem', color: 'text.secondary', fontWeight: 'medium' }}>
+                                {pill.combinator}
+                            </Box>
+                        ) : null}
                     </React.Fragment>
                 ))}
 
@@ -187,14 +230,7 @@ const PillEditor: React.FC<PillEditorProps> = ({
 
                 {/* Empty state */}
                 {pills.length === 0 && (
-                    <Box
-                        sx={{
-                            color: 'text.secondary',
-                            fontSize: '0.875rem',
-                            fontStyle: 'italic',
-                            py: 0.5
-                        }}
-                    >
+                    <Box sx={{ color: 'text.secondary', fontSize: '0.875rem', fontStyle: 'italic', py: 0.5 }}>
                         {placeholder}
                     </Box>
                 )}
@@ -204,7 +240,15 @@ const PillEditor: React.FC<PillEditorProps> = ({
             <FieldSelectorPopup open={fieldSelectorOpen} anchorEl={popupAnchorEl} onClose={handleClosePopups} onFieldSelect={handleFieldSelect} />
 
             {/* Operation selector popup */}
-            <OperationSelectorPopup open={operationSelectorOpen} anchorEl={popupAnchorEl} onClose={handleClosePopups} onOperationSelect={handleOperationSelect} />
+            <OperationSelectorPopup 
+                open={operationSelectorOpen} 
+                anchorEl={popupAnchorEl} 
+                onClose={handleClosePopups} 
+                onOperationSelect={handleOperationSelect}
+                onDelete={handlePillDelete}
+                currentOperation={selectedPill?.operation}
+                currentThreshold={selectedPill?.threshold ? Math.round(selectedPill.threshold * 100) : undefined}
+            />
         </Box>
     );
 };
