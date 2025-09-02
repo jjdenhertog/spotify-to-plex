@@ -1,5 +1,4 @@
 /* eslint-disable no-alert */
-import { errorBoundary } from '@/helpers/errors/errorBoundary';
 import { 
     Box, 
     Typography, 
@@ -27,6 +26,7 @@ const MatchFilterEditor: React.FC<MatchFilterEditorProps> = ({ onSave }) => {
     // Define conversion functions for the useDualModeEditor hook
     const jsonToUI = useCallback((data: MatchFilterRule[]): MatchFilterRule[] => {
         if (!Array.isArray(data)) return [];
+
         return data.map((filter) => typeof filter === 'string' ? filter : (filter as any).expression || 'artist:match');
     }, []);
 
@@ -90,13 +90,11 @@ const MatchFilterEditor: React.FC<MatchFilterEditorProps> = ({ onSave }) => {
 
     // Custom save handler that includes onSave callback
     const handleSaveWithCallback = useCallback(() => {
-        errorBoundary(async () => {
-            await handleSave();
-            if (onSave) {
-                const currentData = viewMode === 'json' ? jsonData : uiData;
-                onSave(currentData as unknown as MatchFilterConfig[]);
-            }
-        });
+        handleSave();
+        if (onSave) {
+            const currentData = viewMode === 'json' ? jsonData : uiData;
+            onSave(currentData as unknown as MatchFilterConfig[]);
+        }
     }, [handleSave, onSave, viewMode, jsonData, uiData]);
 
     // Wrapper functions to handle promises properly for onClick
@@ -131,14 +129,7 @@ const MatchFilterEditor: React.FC<MatchFilterEditorProps> = ({ onSave }) => {
     return (
         <Box>
             {/* Header */}
-            <EditorHeader
-                title="Match Filters Configuration"
-                viewMode={viewMode}
-                onViewModeChange={handleViewModeChange}
-                onSave={handleSaveClick}
-                onReset={handleResetClick}
-                disabled={loading}
-            />
+            <EditorHeader title="Match Filters Configuration" viewMode={viewMode} onViewModeChange={handleViewModeChange} onSave={handleSaveClick} onReset={handleResetClick} disabled={loading} />
             
             {/* Mode-specific descriptions */}
             {!!viewMode && viewMode === 'ui' ? (
