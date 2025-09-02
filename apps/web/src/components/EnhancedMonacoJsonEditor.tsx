@@ -127,7 +127,7 @@ const EnhancedMonacoJsonEditor = forwardRef<EnhancedMonacoJsonEditorHandle, Enha
                 }
             });
         }
-    }, [schema, enableImportExport]);
+    }, [schema, enableImportExport, copyToClipboard, exportToFile]);
 
     const handleEditorChange = useCallback((value: string | undefined) => {
         if (!value || !onChange) return;
@@ -190,9 +190,7 @@ const EnhancedMonacoJsonEditor = forwardRef<EnhancedMonacoJsonEditorHandle, Enha
         const file = event.target.files?.[0];
         if (!file) return;
 
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            const content = e.target?.result as string;
+        file.text().then(content => {
             try {
                 const parsed = JSON.parse(content);
                 if (onChange) {
@@ -203,8 +201,10 @@ const EnhancedMonacoJsonEditor = forwardRef<EnhancedMonacoJsonEditorHandle, Enha
             } catch (_err) {
                 enqueueSnackbar('Invalid JSON file', { variant: 'error' });
             }
-        };
-        reader.readAsText(file);
+        })
+            .catch(() => {
+                enqueueSnackbar('Failed to read file', { variant: 'error' });
+            });
 
         // Reset file input
         event.target.value = '';
@@ -234,12 +234,33 @@ const EnhancedMonacoJsonEditor = forwardRef<EnhancedMonacoJsonEditorHandle, Enha
         setAnchorEl(null);
     }, []);
 
+    // Menu item handlers
+    const handleImportClick = useCallback(() => {
+        handleMenuClose();
+        fileInputRef.current?.click();
+    }, [handleMenuClose]);
+
+    const handleExportClick = useCallback(() => {
+        handleMenuClose();
+        exportToFile();
+    }, [handleMenuClose, exportToFile]);
+
+    const handleCopyClick = useCallback(() => {
+        handleMenuClose();
+        copyToClipboard();
+    }, [handleMenuClose, copyToClipboard]);
+
+    const handlePasteClick = useCallback(() => {
+        handleMenuClose();
+        pasteFromClipboard();
+    }, [handleMenuClose, pasteFromClipboard]);
+
     // Expose methods through ref
     useImperativeHandle(ref, () => ({
         getCurrentValue,
         exportToFile,
         copyToClipboard
-    }));
+    }), [getCurrentValue, exportToFile, copyToClipboard]);
 
     const jsonString = React.useMemo(() => {
         return JSON.stringify(value, null, 2);
@@ -326,25 +347,25 @@ const EnhancedMonacoJsonEditor = forwardRef<EnhancedMonacoJsonEditorHandle, Enha
                     sx: { minWidth: 200 }
                 }}
             >
-                <MenuItem onClick={() => { handleMenuClose(); fileInputRef.current?.click(); }}>
+                <MenuItem onClick={handleImportClick}>
                     <ListItemIcon>
                         <ImportIcon fontSize="small" />
                     </ListItemIcon>
                     <ListItemText>Import JSON File</ListItemText>
                 </MenuItem>
-                <MenuItem onClick={() => { handleMenuClose(); exportToFile(); }}>
+                <MenuItem onClick={handleExportClick}>
                     <ListItemIcon>
                         <ExportIcon fontSize="small" />
                     </ListItemIcon>
                     <ListItemText>Export JSON File</ListItemText>
                 </MenuItem>
-                <MenuItem onClick={() => { handleMenuClose(); copyToClipboard(); }}>
+                <MenuItem onClick={handleCopyClick}>
                     <ListItemIcon>
                         <CopyIcon fontSize="small" />
                     </ListItemIcon>
                     <ListItemText>Copy to Clipboard</ListItemText>
                 </MenuItem>
-                <MenuItem onClick={() => { handleMenuClose(); pasteFromClipboard(); }}>
+                <MenuItem onClick={handlePasteClick}>
                     <ListItemIcon>
                         <PasteIcon fontSize="small" />
                     </ListItemIcon>
