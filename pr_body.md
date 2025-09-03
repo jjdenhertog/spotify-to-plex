@@ -1,1 +1,3 @@
-In the past there was a TrackAnalyzer what happened with that?
+The goal of this task / commit is to actually fully move the TrackAnalyzer to this section. This is the section that should also be linked to if there is a reference to the track analyzer somewhere. Initially I would think that we would leverage the TrackAnalyzer but it seems it is more of a sort of rebuild.
+
+Please take your time to analyse the full code and understand the goal we are trying to reach. Than go ahead and implement it correctly. Before you end you should make sure that pnpm -r run type-check and pnpm -r run lint is given no errors. Warnings are allowed.

@@ -132,7 +132,7 @@ export default function PlexTrack(props: Props) {
         </Box>}
         <Divider sx={{ mt: 1, mb: 1 }} />
         {!!showMatchAnalyser &&
-            <TrackAnalyzer track={track} onClose={onNotPerfectMatchClick} fast={fast} />
+            <TrackAnalyzer track={track} onClose={onNotPerfectMatchClick} fast={fast} asModal />
         }
     </Box>)
 }

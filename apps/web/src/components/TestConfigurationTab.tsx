@@ -1,15 +1,16 @@
 import { errorBoundary } from "@/helpers/errors/errorBoundary";
 import type { SearchResponse } from "@spotify-to-plex/plex-music-search/types/SearchResponse";
-import type { PlexTrack } from "@spotify-to-plex/plex-music-search/types/PlexTrack";
-import { Box, CircularProgress, Divider, Typography, TextField, Button, Paper, Link } from "@mui/material";
+import { Box, Divider, Typography, TextField, Button, Link } from "@mui/material";
 import { Search as SearchIcon } from '@mui/icons-material';
 import axios from "axios";
 import { useState, useCallback } from "react";
+import TrackAnalyzer from "./TrackAnalyzer";
 
 export default function TestConfigurationTab() {
     const [loading, setLoading] = useState(false);
     const [searchResponse, setSearchResponse] = useState<SearchResponse>();
     const [testTrack, setTestTrack] = useState('{"id": "test1", "artists": ["The Beatles"], "title": "Hey Jude"}');
+    const [parsedTrack, setParsedTrack] = useState<{ id: string; artists: string[]; title: string } | undefined>();
 
     const handleTestTrackChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         setTestTrack(e.target.value);
@@ -22,6 +23,7 @@ export default function TestConfigurationTab() {
 
             try {
                 const track = JSON.parse(testTrack);
+                setParsedTrack(track);
                 const result = await axios.post(`/api/plex/analyze`, {
                     item: track,
                     fast: false
@@ -35,10 +37,6 @@ export default function TestConfigurationTab() {
             }
         });
     }, [testTrack]);
-
-    const getRoundedSimilarity = useCallback((value: number) => {
-        return `${Math.round(value * 100)}%`;
-    }, []);
 
     const handleQuickTest1 = useCallback(() => {
         setTestTrack('{"id": "test1", "artists": ["The Beatles"], "title": "Hey Jude (Remastered 2009)"}');
@@ -116,87 +114,8 @@ export default function TestConfigurationTab() {
                 </Box>
             </Box>
 
-            {/* Loading State */}
-            {!!loading && (
-                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', py: 5 }}>
-                    <CircularProgress />
-                </Box>
-            )}
-
-            {/* Results */}
-            {!loading && !!searchResponse && (
-                <>
-                    <Typography variant="h6" sx={{ mb: 2 }}>Results</Typography>
-                    
-                    {!!searchResponse.result && searchResponse.result.length === 0 && (
-                        <Paper variant="outlined" sx={{ p: 2, mb: 2, bgcolor: 'warning.50' }}>
-                            <Typography variant="body1">
-                                No matches found for this track.
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                                Try adjusting your configuration settings or check if the track exists in your Plex library.
-                            </Typography>
-                        </Paper>
-                    )}
-                    
-                    {searchResponse.result.map(({ id, title, artist, matching, reason }: PlexTrack) => {
-                        if (!matching) return null;
-
-                        return (
-                            <Paper key={`analyze-${id}`} variant="outlined" sx={{ p: 2, mb: 2 }}>
-                                <Box sx={{ mb: 2 }}>
-                                    <Typography variant="subtitle1" fontWeight="bold" sx={{ mb: 0.5 }}>
-                                        Matched Track
-                                    </Typography>
-                                    <Typography variant="body1">{title}</Typography>
-                                    <Typography variant="body2" color="text.secondary">{artist.title}</Typography>
-                                    {!!reason && (
-                                        <Typography variant="body2" sx={{ mt: 1, color: 'success.main' }}>
-                                            Match Reason: {reason}
-                                        </Typography>
-                                    )}
-                                </Box>
-                                
-                                <Divider sx={{ my: 2 }} />
-                                
-                                <Typography variant="subtitle2" sx={{ mb: 1 }}>Matching Details:</Typography>
-                                <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 2 }}>
-                                    <Box>
-                                        <Typography variant="body2" fontWeight="bold">Artist</Typography>
-                                        <Typography variant="body2">Match: {matching.artist.match ? "✅" : "❌"}</Typography>
-                                        <Typography variant="body2">Contains: {matching.artist.contains ? "✅" : "❌"}</Typography>
-                                        <Typography variant="body2">Similarity: {getRoundedSimilarity(matching.artist.similarity)}</Typography>
-                                    </Box>
-                                    <Box>
-                                        <Typography variant="body2" fontWeight="bold">Artist in Title</Typography>
-                                        <Typography variant="body2">Match: {matching.artistInTitle.match ? "✅" : "❌"}</Typography>
-                                        <Typography variant="body2">Contains: {matching.artistInTitle.contains ? "✅" : "❌"}</Typography>
-                                        <Typography variant="body2">Similarity: {getRoundedSimilarity(matching.artistInTitle.similarity)}</Typography>
-                                    </Box>
-                                    <Box>
-                                        <Typography variant="body2" fontWeight="bold">Artist with Title</Typography>
-                                        <Typography variant="body2">Match: {matching.artistWithTitle.match ? "✅" : "❌"}</Typography>
-                                        <Typography variant="body2">Contains: {matching.artistWithTitle.contains ? "✅" : "❌"}</Typography>
-                                        <Typography variant="body2">Similarity: {getRoundedSimilarity(matching.artistWithTitle.similarity)}</Typography>
-                                    </Box>
-                                    <Box>
-                                        <Typography variant="body2" fontWeight="bold">Title</Typography>
-                                        <Typography variant="body2">Match: {matching.title.match ? "✅" : "❌"}</Typography>
-                                        <Typography variant="body2">Contains: {matching.title.contains ? "✅" : "❌"}</Typography>
-                                        <Typography variant="body2">Similarity: {getRoundedSimilarity(matching.title.similarity)}</Typography>
-                                    </Box>
-                                    <Box>
-                                        <Typography variant="body2" fontWeight="bold">Album</Typography>
-                                        <Typography variant="body2">Match: {matching.album.match ? "✅" : "❌"}</Typography>
-                                        <Typography variant="body2">Contains: {matching.album.contains ? "✅" : "❌"}</Typography>
-                                        <Typography variant="body2">Similarity: {getRoundedSimilarity(matching.album.similarity)}</Typography>
-                                    </Box>
-                                </Box>
-                            </Paper>
-                        );
-                    })}
-                </>
-            )}
+            {/* TrackAnalyzer Component - Now embedded instead of modal */}
+            <TrackAnalyzer track={parsedTrack} searchResponse={searchResponse} loading={loading} asModal={false} fast={false} />
         </Box>
     );
 }
