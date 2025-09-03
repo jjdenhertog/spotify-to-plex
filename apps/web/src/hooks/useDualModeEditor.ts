@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef } from 'react';
-import { errorBoundary } from '@/helpers/errors/errorBoundary';
+import { errorBoundary } from '../helpers/errors/errorBoundary';
 import axios from 'axios';
 import { enqueueSnackbar } from 'notistack';
 

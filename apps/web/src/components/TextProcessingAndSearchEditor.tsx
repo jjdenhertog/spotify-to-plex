@@ -1,11 +1,11 @@
 import { Box, Typography, Button, FormControlLabel, Switch, Divider } from '@mui/material';
 import { Add as AddIcon } from '@mui/icons-material';
 import { useCallback, useEffect } from 'react';
-import { useDualModeEditor } from '@/hooks/useDualModeEditor';
-import EditorHeader from '@/components/EditorHeader';
-import StringArrayChipEditor from '@/components/StringArrayChipEditor';
-import SearchApproachCard from '@/components/SearchApproachCard';
-import MonacoJsonEditor from '@/components/MonacoJsonEditor';
+import { useDualModeEditor } from '../hooks/useDualModeEditor';
+import EditorHeader from './EditorHeader';
+import StringArrayChipEditor from './StringArrayChipEditor';
+import SearchApproachCard from './SearchApproachCard';
+import MonacoJsonEditor from './MonacoJsonEditor';
 
 // Type definitions
 type TextProcessingConfig = {
@@ -49,12 +49,30 @@ const validateCombinedConfig = (data: CombinedConfig): string | null => {
     
     for (let i = 0; i < data.searchApproaches.length; i++) {
         const approach = data.searchApproaches[i];
-        if (!approach.id || typeof approach.id !== 'string') {
+        if (!approach?.id || typeof approach.id !== 'string') {
             return `Approach at index ${i} must have a valid ID`;
         }
     }
     
     return null;
+};
+
+// Configuration object defined outside component to prevent recreation
+const editorConfig = {
+    loadEndpoint: '/api/plex/music-search-config/combined',
+    saveEndpoint: '/api/plex/music-search-config/combined',
+    validator: validateCombinedConfig,
+    jsonToUI: convertToUI,
+    uiToJSON: convertToJSON,
+    initialData: {
+        textProcessing: {
+            filterOutWords: [],
+            filterOutQuotes: [],
+            cutOffSeparators: [],
+            processing: { filtered: false, cutOffSeperators: false, removeQuotes: false }
+        },
+        searchApproaches: []
+    }
 };
 
 export default function TextProcessingAndSearchEditor() {
@@ -70,22 +88,7 @@ export default function TextProcessingAndSearchEditor() {
         handleReset,
         handleViewModeChange,
         handleUIDataChange
-    } = useDualModeEditor<CombinedConfig, CombinedConfig>({
-        loadEndpoint: '/api/plex/music-search-config/combined',
-        saveEndpoint: '/api/plex/music-search-config/combined',
-        validator: validateCombinedConfig,
-        jsonToUI: convertToUI,
-        uiToJSON: convertToJSON,
-        initialData: {
-            textProcessing: {
-                filterOutWords: [],
-                filterOutQuotes: [],
-                cutOffSeparators: [],
-                processing: { filtered: false, cutOffSeperators: false, removeQuotes: false }
-            },
-            searchApproaches: []
-        }
-    });
+    } = useDualModeEditor<CombinedConfig, CombinedConfig>(editorConfig);
 
     useEffect(() => {
         loadData();
@@ -158,7 +161,7 @@ export default function TextProcessingAndSearchEditor() {
     }, [uiData, handleUIDataChange]);
 
     const handleApproachDelete = useCallback((index: number) => {
-        const newApproaches = uiData.searchApproaches.filter((_, i) => i !== index);
+        const newApproaches = uiData.searchApproaches.filter((_: SearchApproachConfig, i: number) => i !== index);
         handleUIDataChange({
             ...uiData,
             searchApproaches: newApproaches
@@ -268,7 +271,7 @@ export default function TextProcessingAndSearchEditor() {
                         Configure when to apply the text processing rules. Each approach represents a different combination.
                     </Typography>
 
-                    {uiData.searchApproaches.map((approach, index) => (
+                    {uiData.searchApproaches.map((approach: SearchApproachConfig, index: number) => (
                         <SearchApproachCard key={approach.id || index} approach={approach} onChange={createApproachChangeHandler(index)} onDelete={createApproachDeleteHandler(index)} disabled={loading} />
                     ))}
 

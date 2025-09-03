@@ -1,10 +1,12 @@
 # Task 4: Test Configuration Integration and Navigation Finalization
 
 ## Objective
-Integrate the SearchAnalyzer component into the configuration page as a "Test Configuration" tab, remove the old search analyzer page, and finalize the overall navigation structure.
+Integrate the existing TrackAnalyzer functionality into the configuration page as a "Test Configuration" tab, remove the old search analyzer page, and finalize the overall navigation structure.
 
 ## Context
-Users need immediate testing capability within the configuration interface to iterate quickly on their settings. This task moves the existing SearchAnalyzer into the configuration page and removes the old standalone testing page.
+Users need immediate testing capability within the configuration interface to iterate quickly on their settings. This task adapts the existing TrackAnalyzer component (currently a modal) into a tab within the configuration page and removes the old standalone testing page.
+
+**IMPORTANT**: This is NOT about building a new test environment. This is about adapting the existing `src/components/TrackAnalyzer.tsx` component from a modal format into a tab format within the configuration page.
 
 ## Implementation Requirements
 
@@ -12,116 +14,100 @@ Users need immediate testing capability within the configuration interface to it
 
 **File**: `src/components/TestConfigurationTab.tsx`
 
-Move and enhance the existing SearchAnalyzer functionality:
+**Base the component on the existing TrackAnalyzer pattern** (`src/components/TrackAnalyzer.tsx`). Convert it from modal format to tab content format.
+
+**Key Differences from Original Task**:
+- **API Approach**: Use the existing `/api/plex/analyze` endpoint directly (like TrackAnalyzer does)
+- **Input Format**: Accept track objects `{id, artists: string[], title: string}` rather than Spotify URLs
+- **Data Flow**: Single API call, not two-step Spotify→Plex process
+- **UI Simplicity**: Focus on essential functionality, not complex status systems
 
 ```typescript
-import { Box, Typography, TextField, Button, CircularProgress, Divider, Link, Paper } from '@mui/material';
-import { Search as SearchIcon, Settings as SettingsIcon } from '@mui/icons-material';
-import { useState, useCallback, Fragment } from 'react';
-import { errorBoundary } from '@/helpers/errors/errorBoundary';
-import axios from 'axios';
-import type { SearchResponse, SearchQuery } from '@spotify-to-plex/plex-music-search/types/SearchResponse';
-import type { PlexTrack } from '@spotify-to-plex/plex-music-search/types/PlexTrack';
-import type { GetSpotifyTrackResponse } from '@/pages/api/spotify/track';
+import { errorBoundary } from "@/helpers/errors/errorBoundary";
+import type { SearchResponse } from "@spotify-to-plex/plex-music-search/types/SearchResponse";
+import type { PlexTrack } from "@spotify-to-plex/plex-music-search/types/PlexTrack";
+import { Box, CircularProgress, Divider, Typography, TextField, Button, Paper, Link } from "@mui/material";
+import { Search as SearchIcon } from '@mui/icons-material';
+import axios from "axios";
+import { Fragment, useState, useCallback } from "react";
 
 export default function TestConfigurationTab() {
     const [loading, setLoading] = useState(false);
-    const [searchResponse, setSearchResponse] = useState<SearchResponse | null>(null);
-    const [spotifyURI, setSpotifyURI] = useState('');
+    const [searchResponse, setSearchResponse] = useState<SearchResponse>();
+    const [testTrack, setTestTrack] = useState('{"id": "test1", "artists": ["The Beatles"], "title": "Hey Jude"}');
 
-    const handleSpotifyInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-        setSpotifyURI(e.target.value);
+    const handleTestTrackChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+        setTestTrack(e.target.value);
     }, []);
 
-    const handleAnalyzeSongMatch = useCallback(() => {
-        errorBoundary(
-            async () => {
-                setSearchResponse(null);
-                setLoading(true);
+    const handleAnalyzeTrack = useCallback(() => {
+        errorBoundary(async () => {
+            setSearchResponse(undefined);
+            setLoading(true);
 
-                const spotifyTrack = await axios.post<GetSpotifyTrackResponse>('/api/spotify/track', {
-                    search: spotifyURI
+            try {
+                const track = JSON.parse(testTrack);
+                const result = await axios.post(`/api/plex/analyze`, {
+                    item: track,
+                    fast: false
                 });
-                setLoading(false);
 
-                const result = await axios.post('/api/plex/analyze', { item: spotifyTrack.data });
                 setSearchResponse(result.data);
-            },
-            () => {
+            } catch (error) {
+                console.error('Error analyzing track:', error);
+            } finally {
                 setLoading(false);
             }
-        );
-    }, [spotifyURI]);
+        });
+    }, [testTrack]);
 
     const getRoundedSimilarity = useCallback((value: number) => {
         return `${Math.round(value * 100)}%`;
     }, []);
 
     return (
-        <Box sx={{ p: 3, maxWidth: 1000, mx: 'auto' }}>
-            {/* Header Section */}
+        <Box sx={{ p: 3 }}>
+            <Typography variant="h5" sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
+                <SearchIcon />
+                Test Your Configuration
+            </Typography>
+            
+            <Typography variant="body1" sx={{ mb: 2 }}>
+                Test how your current configuration processes and matches tracks. This helps you fine-tune 
+                your settings for better matching results.
+            </Typography>
+            
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+                When reporting issues, please share a screenshot of the results from this page at{' '}
+                <Link href="https://github.com/jjdenhertog/spotify-to-plex/issues" target="_blank" color="warning">
+                    GitHub Issues
+                </Link>.
+            </Typography>
+
+            <Divider sx={{ mb: 3 }} />
+
+            {/* Test Input */}
             <Box sx={{ mb: 4 }}>
-                <Typography variant="h5" sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <SearchIcon />
-                    Test Your Configuration
-                </Typography>
-                <Typography variant="body1" sx={{ mb: 2 }}>
-                    Test how your current configuration processes and matches tracks. This helps you fine-tune 
-                    your settings for better matching results.
-                </Typography>
+                <Typography variant="h6" sx={{ mb: 2 }}>Track Data Input</Typography>
                 <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                    When reporting issues, please share a screenshot of the results from this page at{' '}
-                    <Link href="https://github.com/jjdenhertog/spotify-to-plex/issues" target="_blank" color="warning">
-                        GitHub Issues
-                    </Link>
-                    .
-                </Typography>
-            </Box>
-
-            {/* Configuration Status */}
-            <Paper variant="outlined" sx={{ p: 3, mb: 4, bgcolor: 'info.50', borderColor: 'info.200' }}>
-                <Typography variant="h6" sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <SettingsIcon fontSize="small" />
-                    Current Configuration Status
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                    The test will use your current saved configuration. Make sure to save any changes 
-                    in the other tabs before testing.
-                </Typography>
-            </Paper>
-
-            <Divider sx={{ mb: 4 }} />
-
-            {/* Test Input Section */}
-            <Box sx={{ mb: 4 }}>
-                <Typography variant="h6" sx={{ mb: 2 }}>Spotify Track Input</Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                    Enter a Spotify URL or URI to test how it matches with your Plex library:
+                    Enter track data in JSON format to test matching:
                 </Typography>
                 
-                <Box sx={{ mb: 2 }}>
-                    <Typography variant="body2" sx={{ mb: 0.5, color: 'text.secondary' }}>
-                        • Spotify URL: https://open.spotify.com/track/7KwZNVEaqikRSBSpyhXK2j
-                    </Typography>
-                    <Typography variant="body2" sx={{ mb: 1, color: 'text.secondary' }}>
-                        • Spotify URI: spotify:track:7KwZNVEaqikRSBSpyhXK2j
-                    </Typography>
-                </Box>
-
-                <Box sx={{ display: 'flex', gap: 2, alignItems: 'flex-end' }}>
+                <Box sx={{ display: 'flex', gap: 2, alignItems: 'flex-end', mb: 2 }}>
                     <TextField
                         fullWidth
-                        label="Spotify URL or URI"
-                        placeholder="Enter your Spotify URL or URI here..."
-                        value={spotifyURI}
-                        onChange={handleSpotifyInputChange}
+                        multiline
+                        rows={3}
+                        label="Track JSON"
+                        value={testTrack}
+                        onChange={handleTestTrackChange}
                         disabled={loading}
-                        sx={{ flexGrow: 1 }}
+                        placeholder='{"id": "test", "artists": ["Artist Name"], "title": "Song Title"}'
                     />
                     <Button
                         variant="contained"
-                        onClick={handleAnalyzeSongMatch}
-                        disabled={loading || !spotifyURI.trim()}
+                        onClick={handleAnalyzeTrack}
+                        disabled={loading || !testTrack.trim()}
                         startIcon={<SearchIcon />}
                         sx={{ minWidth: 120 }}
                     >
@@ -132,190 +118,62 @@ export default function TestConfigurationTab() {
 
             {/* Loading State */}
             {!!loading && (
-                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', py: 8 }}>
-                    <Box sx={{ textAlign: 'center' }}>
-                        <CircularProgress sx={{ mb: 2 }} />
-                        <Typography variant="body2" color="text.secondary">
-                            Analyzing track and testing configuration...
-                        </Typography>
-                    </Box>
+                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', py: 5 }}>
+                    <CircularProgress />
                 </Box>
             )}
 
-            {/* Results Section */}
-            {!!searchResponse && (
-                <Box>
-                    <Divider sx={{ mb: 4 }} />
-                    
-                    {/* Search Queries Section */}
-                    {!!searchResponse.queries && (
-                        <Box sx={{ mb: 4 }}>
-                            <Typography variant="h6" sx={{ mb: 2 }}>
-                                Search Queries Generated
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                                These are the different queries generated based on your search approaches:
-                            </Typography>
-                            
-                            {searchResponse.queries.map((item: SearchQuery, index: number) => {
-                                const { approach, album, artist, title } = item;
-                                
-                                return (
-                                    <Paper key={`query-${index}`} variant="outlined" sx={{ p: 3, mb: 2, bgcolor: 'grey.50' }}>
-                                        <Typography variant="subtitle1" sx={{ mb: 2, fontWeight: 'medium' }}>
-                                            Approach: {approach}
-                                        </Typography>
-                                        <Box sx={{ display: 'grid', gridTemplateColumns: 'auto 1fr', gap: 1, alignItems: 'center' }}>
-                                            <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 'medium' }}>
-                                                Artist:
-                                            </Typography>
-                                            <Typography variant="body2">{artist}</Typography>
-                                            
-                                            <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 'medium' }}>
-                                                Title:
-                                            </Typography>
-                                            <Typography variant="body2">{title}</Typography>
-                                            
-                                            <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 'medium' }}>
-                                                Album:
-                                            </Typography>
-                                            <Typography variant="body2">{album}</Typography>
-                                        </Box>
-                                    </Paper>
-                                );
-                            })}
-                        </Box>
-                    )}
+            {/* Results */}
+            {!loading && !!searchResponse && (
+                <>
+                    <Typography variant="h6" sx={{ mb: 1 }}>Results</Typography>
+                    {searchResponse.result.map(({ id, title, artist, matching, reason }: PlexTrack) => {
+                        if (!matching) return null;
 
-                    {/* Search Results Section */}
-                    {!!(searchResponse.result.length > 0) && (
-                        <Box>
-                            <Typography variant="h6" sx={{ mb: 2 }}>
-                                Matching Results
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-                                Found {searchResponse.result.filter(item => item.matching).length} matching track(s):
-                            </Typography>
-
-                            {searchResponse.result.map((item: PlexTrack) => {
-                                const { title, artist, id, matching, reason } = item;
-
-                                if (!matching) return null;
-
-                                return (
-                                    <Paper key={`analyze-${id}`} variant="outlined" sx={{ p: 3, mb: 3, bgcolor: 'success.50', borderColor: 'success.200' }}>
-                                        <Typography variant="h6" sx={{ mb: 2, color: 'success.dark' }}>
-                                            ✓ Match Found: {reason}
-                                        </Typography>
-                                        
-                                        <Box sx={{ mb: 3 }}>
-                                            <Typography variant="subtitle1" sx={{ fontWeight: 'medium' }}>
-                                                {title}
-                                            </Typography>
-                                            <Typography variant="body2" color="text.secondary">
-                                                {artist.title}
-                                            </Typography>
-                                        </Box>
-
-                                        <Typography variant="subtitle2" sx={{ mb: 2 }}>
-                                            Matching Details:
-                                        </Typography>
-                                        
-                                        <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 3 }}>
-                                            <Box>
-                                                <Typography variant="body2" sx={{ fontWeight: 'medium', mb: 1 }}>
-                                                    Artist
-                                                </Typography>
-                                                <Typography variant="caption" display="block">
-                                                    Match: {matching.artist.match ? 'Yes' : 'No'}
-                                                </Typography>
-                                                <Typography variant="caption" display="block">
-                                                    Contains: {matching.artist.contains ? 'Yes' : 'No'}
-                                                </Typography>
-                                                <Typography variant="caption" display="block">
-                                                    Similarity: {getRoundedSimilarity(matching.artist.similarity)}
-                                                </Typography>
-                                            </Box>
-
-                                            <Box>
-                                                <Typography variant="body2" sx={{ fontWeight: 'medium', mb: 1 }}>
-                                                    Title
-                                                </Typography>
-                                                <Typography variant="caption" display="block">
-                                                    Match: {matching.title.match ? 'Yes' : 'No'}
-                                                </Typography>
-                                                <Typography variant="caption" display="block">
-                                                    Contains: {matching.title.contains ? 'Yes' : 'No'}
-                                                </Typography>
-                                                <Typography variant="caption" display="block">
-                                                    Similarity: {getRoundedSimilarity(matching.title.similarity)}
-                                                </Typography>
-                                            </Box>
-
-                                            <Box>
-                                                <Typography variant="body2" sx={{ fontWeight: 'medium', mb: 1 }}>
-                                                    Album
-                                                </Typography>
-                                                <Typography variant="caption" display="block">
-                                                    Match: {matching.album.match ? 'Yes' : 'No'}
-                                                </Typography>
-                                                <Typography variant="caption" display="block">
-                                                    Contains: {matching.album.contains ? 'Yes' : 'No'}
-                                                </Typography>
-                                                <Typography variant="caption" display="block">
-                                                    Similarity: {getRoundedSimilarity(matching.album.similarity)}
-                                                </Typography>
-                                            </Box>
-
-                                            <Box>
-                                                <Typography variant="body2" sx={{ fontWeight: 'medium', mb: 1 }}>
-                                                    Artist in Title
-                                                </Typography>
-                                                <Typography variant="caption" display="block">
-                                                    Match: {matching.artistInTitle.match ? 'Yes' : 'No'}
-                                                </Typography>
-                                                <Typography variant="caption" display="block">
-                                                    Contains: {matching.artistInTitle.contains ? 'Yes' : 'No'}
-                                                </Typography>
-                                                <Typography variant="caption" display="block">
-                                                    Similarity: {getRoundedSimilarity(matching.artistInTitle.similarity)}
-                                                </Typography>
-                                            </Box>
-
-                                            <Box>
-                                                <Typography variant="body2" sx={{ fontWeight: 'medium', mb: 1 }}>
-                                                    Artist with Title
-                                                </Typography>
-                                                <Typography variant="caption" display="block">
-                                                    Match: {matching.artistWithTitle.match ? 'Yes' : 'No'}
-                                                </Typography>
-                                                <Typography variant="caption" display="block">
-                                                    Contains: {matching.artistWithTitle.contains ? 'Yes' : 'No'}
-                                                </Typography>
-                                                <Typography variant="caption" display="block">
-                                                    Similarity: {getRoundedSimilarity(matching.artistWithTitle.similarity)}
-                                                </Typography>
-                                            </Box>
-                                        </Box>
-                                    </Paper>
-                                );
-                            })}
-                        </Box>
-                    )}
-
-                    {/* No Results */}
-                    {!!(searchResponse.result.length === 0) && (
-                        <Paper variant="outlined" sx={{ p: 4, textAlign: 'center', bgcolor: 'warning.50', borderColor: 'warning.200' }}>
-                            <Typography variant="h6" sx={{ mb: 1, color: 'warning.dark' }}>
-                                No Matches Found
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary">
-                                The track could not be matched with your current configuration. 
-                                Try adjusting your text processing rules or search approaches.
-                            </Typography>
-                        </Paper>
-                    )}
-                </Box>
+                        return (
+                            <Fragment key={`analyze-${id}`}>
+                                <Box>
+                                    <Typography variant="h6" sx={{ mb: 1 }}>Reason for match: {reason}</Typography>
+                                    <Typography variant="body1">{title}</Typography>
+                                    <Typography variant="body2">{artist.title}</Typography>
+                                </Box>
+                                <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
+                                    <Box>
+                                        <Typography variant="body1">Artist</Typography>
+                                        <Typography variant="body2">Match: {matching.artist.match ? "Yes" : "No"}</Typography>
+                                        <Typography variant="body2">Contains: {matching.artist.contains ? "Yes" : "No"}</Typography>
+                                        <Typography variant="body2">Similarity: {getRoundedSimilarity(matching.artist.similarity)}</Typography>
+                                    </Box>
+                                    <Box>
+                                        <Typography variant="body1">Artist in Title</Typography>
+                                        <Typography variant="body2">Match: {matching.artistInTitle.match ? "Yes" : "No"}</Typography>
+                                        <Typography variant="body2">Contains: {matching.artistInTitle.contains ? "Yes" : "No"}</Typography>
+                                        <Typography variant="body2">Similarity: {getRoundedSimilarity(matching.artistInTitle.similarity)}</Typography>
+                                    </Box>
+                                    <Box>
+                                        <Typography variant="body1">Artist with Title</Typography>
+                                        <Typography variant="body2">Match: {matching.artistWithTitle.match ? "Yes" : "No"}</Typography>
+                                        <Typography variant="body2">Contains: {matching.artistWithTitle.contains ? "Yes" : "No"}</Typography>
+                                        <Typography variant="body2">Similarity: {getRoundedSimilarity(matching.artistWithTitle.similarity)}</Typography>
+                                    </Box>
+                                    <Box>
+                                        <Typography variant="body1">Title</Typography>
+                                        <Typography variant="body2">Match: {matching.title.match ? "Yes" : "No"}</Typography>
+                                        <Typography variant="body2">Contains: {matching.title.contains ? "Yes" : "No"}</Typography>
+                                        <Typography variant="body2">Similarity: {getRoundedSimilarity(matching.title.similarity)}</Typography>
+                                    </Box>
+                                    <Box>
+                                        <Typography variant="body1">Album</Typography>
+                                        <Typography variant="body2">Match: {matching.album.match ? "Yes" : "No"}</Typography>
+                                        <Typography variant="body2">Contains: {matching.album.contains ? "Yes" : "No"}</Typography>
+                                        <Typography variant="body2">Similarity: {getRoundedSimilarity(matching.album.similarity)}</Typography>
+                                    </Box>
+                                </Box>
+                                <Divider sx={{ mt: 1, mb: 1 }} />
+                            </Fragment>
+                        );
+                    })}
+                </>
             )}
         </Box>
     );
@@ -366,15 +224,14 @@ Ensure the import is correct:
 import TestConfigurationTab from "@/components/TestConfigurationTab";
 ```
 
-### 4. Enhanced Features for Test Tab
+### 4. Enhanced Features for Test Tab (Optional)
 
-#### Add Quick Test Buttons (Optional Enhancement)
-Add shortcuts for common test scenarios:
+Add quick test buttons for common scenarios:
 
 ```typescript
 // Add to TestConfigurationTab component
 const handleQuickTest = useCallback((testTrack: string) => {
-    setSpotifyURI(testTrack);
+    setTestTrack(testTrack);
     // Could auto-trigger analysis
 }, []);
 
@@ -385,14 +242,14 @@ const handleQuickTest = useCallback((testTrack: string) => {
         <Button 
             size="small" 
             variant="outlined" 
-            onClick={() => handleQuickTest('https://open.spotify.com/track/4iV5W9uYEdYUVa79Axb7Rh')}
+            onClick={() => handleQuickTest('{"id": "test1", "artists": ["The Beatles"], "title": "Hey Jude (Remastered 2009)"}')}
         >
             Song with (Remaster)
         </Button>
         <Button 
             size="small" 
             variant="outlined" 
-            onClick={() => handleQuickTest('https://open.spotify.com/track/7KwZNVEaqikRSBSpyhXK2j')}
+            onClick={() => handleQuickTest('{"id": "test2", "artists": ["Ed Sheeran", "Justin Bieber"], "title": "I Don\'t Care"}')}
         >
             Song with Features
         </Button>
@@ -412,7 +269,7 @@ In `pages/plex/music-search-config.tsx`, ensure the description mentions testing
 </Typography>
 ```
 
-#### Add breadcrumb or navigation hint
+#### Add navigation hint
 Consider adding a note about the testing capability:
 
 ```typescript
@@ -427,7 +284,7 @@ Consider adding a note about the testing capability:
 ### Required Patterns
 - ✅ **useCallback for ALL event handlers** - All onClick, onChange handlers use useCallback
 - ✅ **!! for conditional rendering** - All conditionals use explicit boolean coercion
-- ✅ **errorBoundary for ALL async operations** - Used in handleAnalyzeSongMatch
+- ✅ **errorBoundary for ALL async operations** - Used in handleAnalyzeTrack
 - ✅ **Default export** for React component
 - ✅ **Props destructuring** if props are added
 - ✅ **4-space indentation** throughout

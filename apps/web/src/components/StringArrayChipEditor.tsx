@@ -53,19 +53,35 @@ export default function StringArrayChipEditor({
             </Typography>
             
             {/* Items Display */}
-            <Paper variant="outlined" sx={{ p: 2, mb: 2, minHeight: 60, bgcolor: 'grey.50' }}>
-                {!!items.length && (
-                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-                        {items.map((item) => (
-                            <Chip key={item} label={item} onDelete={disabled ? undefined : createDeleteHandler(item)} deleteIcon={<CloseIcon />} size="small" variant="outlined" />
-                        ))}
-                    </Box>
-                )}
-                {!items.length && (
-                    <Typography variant="body2" color="text.secondary" sx={{ fontStyle: 'italic' }}>
-                        No {label.toLowerCase()} configured
-                    </Typography>
-                )}
+            <Paper variant="outlined" sx={{ p: 0, mb: 2, minHeight: 60 }}>
+                <Box sx={{ p: 2 }}>
+                    {!!items.length && (
+                        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                            {items.map((item) => (
+                                <Chip 
+                                    key={item} 
+                                    label={item} 
+                                    onDelete={disabled ? undefined : createDeleteHandler(item)} 
+                                    deleteIcon={<CloseIcon />} 
+                                    size="small"
+                                    variant="filled"
+                                    color="primary"
+                                    sx={{ 
+                                        mr: 1,
+                                        mb: 0.5,
+                                        fontFamily: 'monospace',
+                                        fontSize: '0.75rem'
+                                    }}
+                                />
+                            ))}
+                        </Box>
+                    )}
+                    {!items.length && (
+                        <Typography variant="body2" color="text.secondary" sx={{ fontStyle: 'italic' }}>
+                            No {label.toLowerCase()} configured
+                        </Typography>
+                    )}
+                </Box>
             </Paper>
 
             {/* Add New Item */}

@@ -3,9 +3,29 @@
   "version": "1.0.0",
   "description": "Shared TypeScript type definitions for Spotify-to-Plex applications",
   "exports": {
-    "./*": {
-      "types": "./dist/*.d.ts",
-      "default": "./dist/*.js"
+    "./common/MatchFilterConfig": {
+      "types": "./dist/common/MatchFilterConfig.d.ts",
+      "default": "./dist/common/MatchFilterConfig.js"
+    },
+    "./common/*": {
+      "types": "./dist/common/*.d.ts",
+      "default": "./dist/common/*.js"
+    },
+    "./dashboard/*": {
+      "types": "./dist/dashboard/*.d.ts",
+      "default": "./dist/dashboard/*.js"
+    },
+    "./plex/*": {
+      "types": "./dist/plex/*.d.ts",
+      "default": "./dist/plex/*.js"
+    },
+    "./spotify/*": {
+      "types": "./dist/spotify/*.d.ts",
+      "default": "./dist/spotify/*.js"
+    },
+    "./tidal/*": {
+      "types": "./dist/tidal/*.d.ts",
+      "default": "./dist/tidal/*.js"
     }
   },
   "scripts": {

@@ -53,6 +53,39 @@ const EnhancedMonacoJsonEditor = forwardRef<EnhancedMonacoJsonEditorHandle, Enha
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
+    // Export to file
+    const exportToFile = useCallback(() => {
+        if (!editorRef.current) return;
+
+        const content = editorRef.current.getValue();
+        const blob = new Blob([content], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `match-filters-${new Date().toISOString()
+            .split('T')[0]}.json`;
+        document.body.append(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+
+        enqueueSnackbar('Configuration exported successfully', { variant: 'success' });
+    }, []);
+
+    // Copy to clipboard
+    const copyToClipboard = useCallback(async () => {
+        if (!editorRef.current) return;
+
+        const content = editorRef.current.getValue();
+        try {
+            await navigator.clipboard.writeText(content);
+            enqueueSnackbar('Configuration copied to clipboard', { variant: 'success' });
+        } catch (_err) {
+            enqueueSnackbar('Failed to copy to clipboard', { variant: 'error' });
+        }
+    }, []);
+
     const handleEditorDidMount = useCallback((editor: monaco.editor.IStandaloneCodeEditor, monacoInstance: typeof monaco) => {
         editorRef.current = editor;
 
@@ -149,39 +182,6 @@ const EnhancedMonacoJsonEditor = forwardRef<EnhancedMonacoJsonEditorHandle, Enha
             return JSON.parse(content);
         } catch {
             return null;
-        }
-    }, []);
-
-    // Export to file
-    const exportToFile = useCallback(() => {
-        if (!editorRef.current) return;
-
-        const content = editorRef.current.getValue();
-        const blob = new Blob([content], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `match-filters-${new Date().toISOString()
-            .split('T')[0]}.json`;
-        document.body.append(a);
-        a.click();
-        a.remove();
-        URL.revokeObjectURL(url);
-
-        enqueueSnackbar('Configuration exported successfully', { variant: 'success' });
-    }, []);
-
-    // Copy to clipboard
-    const copyToClipboard = useCallback(async () => {
-        if (!editorRef.current) return;
-
-        const content = editorRef.current.getValue();
-        try {
-            await navigator.clipboard.writeText(content);
-            enqueueSnackbar('Configuration copied to clipboard', { variant: 'success' });
-        } catch (_err) {
-            enqueueSnackbar('Failed to copy to clipboard', { variant: 'error' });
         }
     }, []);
 

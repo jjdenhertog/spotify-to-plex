@@ -5,7 +5,7 @@ import {
     Paper
 } from '@mui/material';
 /* eslint-disable no-console */
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 
 import EditorHeader from './EditorHeader';
 import MonacoJsonEditor from './MonacoJsonEditor';
@@ -60,6 +60,16 @@ const MatchFilterEditor: React.FC<MatchFilterEditorProps> = ({ onSave }) => {
         return null; // Valid
     }, []);
 
+    // Configuration object defined outside component to prevent recreation
+    const editorConfig = useMemo(() => ({
+        loadEndpoint: '/api/plex/music-search-config/match-filters',
+        saveEndpoint: '/api/plex/music-search-config/match-filters',
+        validator: validateFilters,
+        jsonToUI,
+        uiToJSON,
+        initialData: [] as MatchFilterRule[]
+    }), [validateFilters, jsonToUI, uiToJSON]);
+
     // Use the dual mode editor hook
     const {
         viewMode,
@@ -74,14 +84,7 @@ const MatchFilterEditor: React.FC<MatchFilterEditorProps> = ({ onSave }) => {
         handleViewModeChange,
         handleUIDataChange,
         handleJSONDataChange
-    } = useDualModeEditor<MatchFilterRule[], MatchFilterRule[]>({
-        loadEndpoint: '/api/plex/music-search-config/match-filters',
-        saveEndpoint: '/api/plex/music-search-config/match-filters',
-        validator: validateFilters,
-        jsonToUI,
-        uiToJSON,
-        initialData: []
-    });
+    } = useDualModeEditor<MatchFilterRule[], MatchFilterRule[]>(editorConfig);
 
     // Load data on component mount
     useEffect(() => {

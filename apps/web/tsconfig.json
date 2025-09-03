@@ -35,6 +35,9 @@
       "@/hoc/*": [
         "src/hoc/*"
       ],
+      "@/hooks/*": [
+        "src/hooks/*"
+      ],
       "cronjob/*": [
         "../sync-worker/src/jobs/*"
       ]
