@@ -1,4 +1,4 @@
-import { Assignment, People, PlaylistPlay, Search } from "@mui/icons-material";
+import { Assignment, People, PlaylistPlay } from "@mui/icons-material";
 import { Box, Tab, Tabs } from "@mui/material";
 import { useRouter } from "next/router";
 import { useCallback } from "react";
@@ -13,11 +13,6 @@ const navigationItems = [
         label: 'Users',
         path: '/spotify/manage-users',
         icon: <People sx={{ fontSize: 20 }} />
-    },
-    {
-        label: 'Search Analyzer',
-        path: '/spotify/search-analyzer',
-        icon: <Search sx={{ fontSize: 20 }} />
     },
     {
         label: 'Logs',

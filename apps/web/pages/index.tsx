@@ -3,7 +3,7 @@ import PlexConnection from "@/components/PlexConnection";
 import PlexConnectionDialog from "@/components/PlexConnectionDialog";
 import { errorBoundary } from "@/helpers/errors/errorBoundary";
 import MainLayout from "@/layouts/MainLayout";
-import { Assignment, People, PlaylistPlay, Search, Tune } from "@mui/icons-material";
+import { Assignment, People, PlaylistPlay, Tune } from "@mui/icons-material";
 import { Alert, Box, Button, Card, CardActionArea, CardContent, Container, Divider, Paper, Typography } from "@mui/material";
 import Grid2 from '@mui/material/Grid2';
 import axios from "axios";
@@ -76,12 +76,6 @@ const Page: NextPage = () => {
             description: 'Manage Spotify user connections',
             icon: <People sx={{ fontSize: 40 }} />,
             path: '/spotify/manage-users'
-        },
-        {
-            title: 'Search Analyzer',
-            description: 'Debug Spotify to Plex search results',
-            icon: <Search sx={{ fontSize: 40 }} />,
-            path: '/spotify/search-analyzer'
         },
         {
             title: 'Plex Search Settings',
