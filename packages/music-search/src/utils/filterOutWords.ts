@@ -45,7 +45,7 @@ export function filterOutWords(input: string, filtered: boolean = false, cutOffS
         result = result.slice(0, Math.max(0, result.length - 2)).trim();
 
     while (result.length > 3 && result.startsWith('-'))
-        result = result.slice(0, 1).trim();
+        result = result.slice(1).trim();
 
     return result;
 }

@@ -1,4 +1,4 @@
-import { createMocks } from 'node-mocks-http';
+import { createMocks, RequestMethod } from 'node-mocks-http';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 // Helper to create mock request and response objects
@@ -9,7 +9,7 @@ export function createMockRequestResponse(options: {
   headers?: Record<string, string>;
 }) {
   const { req, res } = createMocks<NextApiRequest, NextApiResponse>({
-    method: options.method || 'GET',
+    method: (options.method || 'GET') as RequestMethod,
     body: options.body || {},
     query: options.query || {},
     headers: options.headers || {},
@@ -32,7 +32,7 @@ export function mockEnvVars(envVars: Record<string, string>) {
 }
 
 // Helper to check response status and data
-export function expectResponse(res: NextApiResponse, expectedStatus: number, expectedData?: any) {
+export function expectResponse(res: any, expectedStatus: number, expectedData?: any) {
   expect(res._getStatusCode()).toBe(expectedStatus);
   
   if (expectedData !== undefined) {

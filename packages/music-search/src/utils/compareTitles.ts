@@ -9,14 +9,14 @@ export function compareTitles(a?: string, b?: string, twoWayContain: boolean = f
 
     const similarity = stringSimilarity(a, b);
 
-    let contains = (twoWayContain) ?
-        createSearchString(a).indexOf(createSearchString(b)) > -1 || createSearchString(b).indexOf(createSearchString(a)) > -1
-        :
-        createSearchString(a).indexOf(createSearchString(b)) > -1;
-
     // To small titles shouldn't use contain
-    if (a.length < 5 || b.length < 5)
-        contains = false;
+    let contains = false;
+    if (a.length >= 5 && b.length >= 5) {
+        contains = (twoWayContain) ?
+            createSearchString(a).indexOf(createSearchString(b)) > -1 || createSearchString(b).indexOf(createSearchString(a)) > -1
+            :
+            createSearchString(a).indexOf(createSearchString(b)) > -1;
+    }
 
 
     return { match, contains, similarity };
