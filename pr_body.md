@@ -1,3 +1,5 @@
-Currently the task_creare_test still contains reference to mqtt. Make sure it is removed and that it is clear that no test should be created for it.
+Can you modify the task_create_test.md:
+- do not include the git hooks
+- make sure that it is easy, just like lint and type-check. To run all tests at once. For example something like pnom -r run tests
 
-The samen goes for sync-worker. It should not have any tests. And it should be clear in the document that none should be created for it
+Also do a final check on the document. Keep in mind that we will feed this to an ai to read and execute.

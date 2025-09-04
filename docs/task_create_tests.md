@@ -1,5 +1,18 @@
 # Comprehensive Test Suite Implementation Guide for Spotify-to-Plex
 
+## 🤖 AI Implementation Instructions
+
+**FOR AI AGENTS READING THIS DOCUMENT:**
+
+This is a comprehensive guide for implementing a test suite. Follow these steps in order:
+
+1. **Quick Start**: Run `pnpm add -D vitest` then configure as shown in sections below
+2. **Test Command**: Use `pnpm test` to run all tests across the monorepo at once
+3. **Lint & Type Check**: Use `pnpm lint` and `pnpm type-check` before committing
+4. **Follow Exclusions**: DO NOT create tests for sync-worker or MQTT functionality
+5. **Use Patterns**: Copy the provided test patterns exactly as shown
+6. **Organize Files**: Place tests in `__tests__` directories adjacent to source code
+
 ## Executive Summary
 
 This document provides a comprehensive guide for implementing a complete test suite for the Spotify-to-Plex monorepo project. The testing strategy covers all aspects of the application including frontend components, backend services, API routes, and cross-package integration. The guide emphasizes meaningful tests that validate business logic and user workflows rather than implementation details.
@@ -146,6 +159,31 @@ pnpm add -D @playwright/test
 
 # Type definitions
 pnpm add -D @types/supertest @types/node-mocks-http
+```
+
+### 🚀 Running Tests - Simple Commands
+
+After installation, add these scripts to your root `package.json`:
+
+```json
+{
+  "scripts": {
+    "test": "pnpm -r run test",
+    "lint": "pnpm -r run lint",
+    "type-check": "pnpm -r run type-check"
+  }
+}
+```
+
+**One command to run all tests:**
+```bash
+pnpm test      # Runs all tests in all packages
+```
+
+**Quality checks:**
+```bash
+pnpm lint       # Runs linting across all packages
+pnpm type-check # Runs TypeScript type checking
 ```
 
 ---
@@ -699,16 +737,28 @@ jobs:
           path: ./performance-results
 ```
 
-### Pre-commit Hooks
+### Running Tests
 
 ```json
-// package.json
+// package.json - Root level scripts
 {
   "scripts": {
-    "pre-commit": "pnpm run lint && pnpm run type-check && pnpm test:affected"
+    "test": "pnpm -r run test",
+    "test:all": "pnpm -r run test",
+    "test:unit": "pnpm -r run test:unit", 
+    "test:integration": "pnpm -r run test:integration",
+    "test:e2e": "pnpm -r run test:e2e",
+    "test:coverage": "pnpm -r run test:coverage",
+    "lint": "pnpm -r run lint",
+    "type-check": "pnpm -r run type-check"
   }
 }
 ```
+
+**Quick Commands:**
+- `pnpm test` - Run all tests across all packages at once
+- `pnpm lint` - Run linting across all packages
+- `pnpm type-check` - Run type checking across all packages
 
 ---
 
@@ -926,6 +976,40 @@ it('should handle async operations with error boundary', async () => {
 
 ---
 
+## Quick Reference for AI Implementation
+
+### 🎯 Essential Commands
+```bash
+# Install all test dependencies
+pnpm add -D vitest @vitest/ui @vitest/coverage-v8 @testing-library/react @testing-library/user-event @testing-library/jest-dom jsdom supertest node-mocks-http msw
+
+# Run tests
+pnpm test           # Run all tests everywhere
+pnpm lint          # Lint all code
+pnpm type-check    # Check TypeScript types
+```
+
+### 📁 Where to Place Test Files
+- Component tests: `apps/web/__tests__/components/`
+- API tests: `apps/web/__tests__/api/`
+- Package tests: `packages/[name]/__tests__/`
+- Integration tests: `apps/web/tests/`
+
+### ⛔ What NOT to Test
+- ❌ sync-worker application (completely excluded)
+- ❌ MQTT functionality
+- ❌ Background jobs
+- ❌ Queue management
+- ❌ Service-to-service communication
+
+### ✅ What TO Test
+- ✅ React components and hooks
+- ✅ API routes in Next.js
+- ✅ Utility functions in shared packages
+- ✅ Music search algorithms
+- ✅ Authentication flows
+- ✅ Settings management
+
 ## Conclusion
 
 This comprehensive testing guide provides a complete roadmap for implementing a robust test suite for the Spotify-to-Plex application. By following this guide and completing the implementation checklist, the project will achieve:
@@ -937,3 +1021,5 @@ This comprehensive testing guide provides a complete roadmap for implementing a 
 5. **Regression prevention** ensuring features stay working
 
 The test suite should be implemented incrementally, starting with the most critical components and expanding to full coverage over the 5-week implementation period. Each phase builds upon the previous, creating a solid foundation for long-term project maintainability and reliability.
+
+**Remember:** Use `pnpm test` to run all tests at once - it's that simple!
