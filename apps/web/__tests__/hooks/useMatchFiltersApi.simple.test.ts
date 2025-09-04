@@ -12,24 +12,12 @@ import type { MatchFilterConfig } from '@spotify-to-plex/shared-types/common/Mat
 const mockFetch = vi.fn();
 global.fetch = mockFetch;
 
-// Test data
-const mockMatchFilter: MatchFilterConfig = {
-  id: 'test-filter-1',
-  name: 'Test Filter',
-  expression: 'artist.includes("test")',
-  enabled: true,
-  priority: 1,
-};
+// Test data - MatchFilterConfig is a string type representing expressions
+const mockMatchFilter: MatchFilterConfig = 'artist:match AND title:contains';
 
 const mockMatchFilters: MatchFilterConfig[] = [
   mockMatchFilter,
-  {
-    id: 'test-filter-2',
-    name: 'Another Filter',
-    expression: 'album.startsWith("A")',
-    enabled: false,
-    priority: 2,
-  },
+  'album:similarity>=0.8 OR genre:match',
 ];
 
 describe('useMatchFiltersApi Hook', () => {
@@ -313,7 +301,7 @@ describe('useMatchFiltersApi Hook', () => {
 
     it('should update filters state with response data', async () => {
       const updatedFilters = [
-        { ...mockMatchFilter, name: 'Updated Filter' }
+        'artist:similarity>=0.9 AND title:match'
       ];
       
       mockFetch.mockResolvedValueOnce({
@@ -445,7 +433,7 @@ describe('useMatchFiltersApi Hook', () => {
 
       const { result } = renderHook(() => useMatchFiltersApi());
 
-      const invalidFilter = { ...mockMatchFilter, name: '', expression: 'invalid(' };
+      const invalidFilter: MatchFilterConfig = 'invalid_expression_syntax(';
 
       let validationResult: any;
       await act(async () => {
@@ -576,11 +564,11 @@ describe('useMatchFiltersApi Hook', () => {
       // Start multiple saves concurrently
       await act(async () => {
         const savePromises = [
-          result.current.saveFilters([mockMatchFilters[0]]),
+          result.current.saveFilters([mockMatchFilters[0] || '']),
           result.current.saveFilters(mockMatchFilters),
         ];
 
-        await Promise.all(savePromises.map(p => p.catch(() => {})));
+        await Promise.all(savePromises.map(p => p.catch(() => null)));
       });
 
       expect(result.current.isLoading).toBe(false);

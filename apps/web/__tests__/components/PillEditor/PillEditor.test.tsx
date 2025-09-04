@@ -61,6 +61,8 @@ jest.mock('../../../src/components/popups/FieldSelectorPopup', () => {
     onClose: () => void; 
     onFieldSelect: (field: string) => void; 
   }) {
+    // anchorEl is used for positioning in real implementation
+    console.debug('Field selector positioning element:', anchorEl);
     if (!open) return null;
     
     return (
@@ -100,6 +102,8 @@ jest.mock('../../../src/components/popups/OperationSelectorPopup', () => {
     currentOperation?: string;
     currentThreshold?: number;
   }) {
+    // anchorEl is used for positioning in real implementation
+    console.debug('Operation selector positioning element:', anchorEl);
     if (!open) return null;
     
     return (

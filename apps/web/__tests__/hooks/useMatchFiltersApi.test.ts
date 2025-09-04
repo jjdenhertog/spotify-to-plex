@@ -14,12 +14,7 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import { 
   renderHookWithSetup, 
-  act, 
-  mockAxiosInstance,
-  resetAllMocks,
-  testDataGenerators,
-  waitForAsync,
-  type MockedFunction
+  act
 } from './hook-test-utils';
 import { useMatchFiltersApi } from '../../src/api/match-filters';
 import type { MatchFilterConfig } from '@spotify-to-plex/shared-types/common/MatchFilterConfig';
@@ -28,29 +23,16 @@ import type { MatchFilterConfig } from '@spotify-to-plex/shared-types/common/Mat
 const mockFetch = vi.fn();
 global.fetch = mockFetch;
 
-// Test data
-const mockMatchFilter: MatchFilterConfig = {
-  id: 'test-filter-1',
-  name: 'Test Filter',
-  expression: 'artist.includes("test")',
-  enabled: true,
-  priority: 1,
-};
+// Test data - MatchFilterConfig is a string type representing expressions
+const mockMatchFilter: MatchFilterConfig = 'artist:match AND title:contains';
 
 const mockMatchFilters: MatchFilterConfig[] = [
   mockMatchFilter,
-  {
-    id: 'test-filter-2',
-    name: 'Another Filter',
-    expression: 'album.startsWith("A")',
-    enabled: false,
-    priority: 2,
-  },
+  'album:similarity>=0.8 OR genre:match',
 ];
 
 describe('useMatchFiltersApi Hook', () => {
   beforeEach(() => {
-    resetAllMocks();
     vi.clearAllMocks();
     mockFetch.mockClear();
   });
@@ -330,7 +312,7 @@ describe('useMatchFiltersApi Hook', () => {
 
     it('should update filters state with response data', async () => {
       const updatedFilters = [
-        { ...mockMatchFilter, name: 'Updated Filter' }
+        'artist:similarity>=0.9 AND title:match'
       ];
       
       mockFetch.mockResolvedValueOnce({
@@ -462,7 +444,7 @@ describe('useMatchFiltersApi Hook', () => {
 
       const { result } = renderHookWithSetup(() => useMatchFiltersApi());
 
-      const invalidFilter = { ...mockMatchFilter, name: '', expression: 'invalid(' };
+      const invalidFilter: MatchFilterConfig = 'invalid_expression_syntax(';
 
       let validationResult: any;
       await act(async () => {
@@ -593,11 +575,11 @@ describe('useMatchFiltersApi Hook', () => {
       // Start multiple saves concurrently
       await act(async () => {
         const savePromises = [
-          result.current.saveFilters([mockMatchFilters[0]]),
+          result.current.saveFilters([mockMatchFilters[0] || '']),
           result.current.saveFilters(mockMatchFilters),
         ];
 
-        await Promise.all(savePromises.map(p => p.catch(() => {})));
+        await Promise.all(savePromises.map(p => p.catch(() => null)));
       });
 
       expect(result.current.isLoading).toBe(false);
@@ -605,7 +587,7 @@ describe('useMatchFiltersApi Hook', () => {
     });
 
     it('should handle mixed concurrent operations', async () => {
-      mockFetch.mockImplementation((url, options) => {
+      mockFetch.mockImplementation((_url, options) => {
         if (options?.method === 'GET') {
           return Promise.resolve({
             ok: true,
@@ -635,7 +617,7 @@ describe('useMatchFiltersApi Hook', () => {
         await Promise.all([
           result.current.loadFilters(),
           result.current.validateExpression('test.expression'),
-          result.current.saveFilters(mockMatchFilters).catch(() => {}),
+          result.current.saveFilters(mockMatchFilters).catch(() => null),
         ]);
       });
 

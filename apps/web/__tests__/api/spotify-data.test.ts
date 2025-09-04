@@ -11,7 +11,6 @@ import handlerUsersItems from '../../pages/api/spotify/users/[id]/items';
 import {
   createMockRequestResponse,
   expectResponse,
-  mockEnvVars,
   createMockAxiosResponse,
   createMockAxiosError,
   mockSpotifyResponses
@@ -45,7 +44,7 @@ describe('Spotify Data API Routes', () => {
         }
       });
 
-      mockedAxios.get.mockResolvedValue(
+      vi.mocked(mockedAxios.get).mockResolvedValue(
         createMockAxiosResponse(mockSpotifyResponses.user)
       );
 
@@ -58,7 +57,7 @@ describe('Spotify Data API Routes', () => {
       const responseData = JSON.parse(res._getData());
       expect(responseData).toEqual(mockSpotifyResponses.user);
       
-      expect(mockedAxios.get).toHaveBeenCalledWith(
+      expect(vi.mocked(mockedAxios.get)).toHaveBeenCalledWith(
         'https://api.spotify.com/v1/me',
         {
           headers: {
@@ -80,7 +79,7 @@ describe('Spotify Data API Routes', () => {
       
       const responseData = JSON.parse(res._getData());
       expect(responseData.error).toBe('Authorization required');
-      expect(mockedAxios.get).not.toHaveBeenCalled();
+      expect(vi.mocked(mockedAxios.get)).not.toHaveBeenCalled();
     });
 
     it('should handle invalid authorization token', async () => {
@@ -92,7 +91,7 @@ describe('Spotify Data API Routes', () => {
         }
       });
 
-      mockedAxios.get.mockRejectedValue(
+      vi.mocked(mockedAxios.get).mockRejectedValue(
         createMockAxiosError('Invalid access token', 401)
       );
 
@@ -115,7 +114,7 @@ describe('Spotify Data API Routes', () => {
         }
       });
 
-      mockedAxios.get.mockRejectedValue(
+      vi.mocked(mockedAxios.get).mockRejectedValue(
         createMockAxiosError('Spotify API unavailable', 503)
       );
 
@@ -157,7 +156,7 @@ describe('Spotify Data API Routes', () => {
         }
       };
 
-      mockedAxios.get.mockResolvedValue(
+      vi.mocked(mockedAxios.get).mockResolvedValue(
         createMockAxiosResponse(trackData)
       );
 
@@ -170,7 +169,7 @@ describe('Spotify Data API Routes', () => {
       const responseData = JSON.parse(res._getData());
       expect(responseData).toEqual(trackData);
       
-      expect(mockedAxios.get).toHaveBeenCalledWith(
+      expect(vi.mocked(mockedAxios.get)).toHaveBeenCalledWith(
         'https://api.spotify.com/v1/tracks/track-123',
         {
           headers: {
@@ -197,7 +196,7 @@ describe('Spotify Data API Routes', () => {
       
       const responseData = JSON.parse(res._getData());
       expect(responseData.error).toBe('Track ID required');
-      expect(mockedAxios.get).not.toHaveBeenCalled();
+      expect(vi.mocked(mockedAxios.get)).not.toHaveBeenCalled();
     });
 
     it('should handle track not found', async () => {
@@ -210,7 +209,7 @@ describe('Spotify Data API Routes', () => {
         }
       });
 
-      mockedAxios.get.mockRejectedValue(
+      vi.mocked(mockedAxios.get).mockRejectedValue(
         createMockAxiosError('Track not found', 404)
       );
 
@@ -234,7 +233,7 @@ describe('Spotify Data API Routes', () => {
         }
       });
 
-      mockedAxios.get.mockRejectedValue(
+      vi.mocked(mockedAxios.get).mockRejectedValue(
         createMockAxiosError('Invalid track ID format', 400)
       );
 
@@ -260,7 +259,7 @@ describe('Spotify Data API Routes', () => {
         }
       });
 
-      mockedAxios.get.mockResolvedValue(
+      vi.mocked(mockedAxios.get).mockResolvedValue(
         createMockAxiosResponse(mockSpotifyResponses.playlists)
       );
 
@@ -273,7 +272,7 @@ describe('Spotify Data API Routes', () => {
       const responseData = JSON.parse(res._getData());
       expect(responseData).toEqual(mockSpotifyResponses.playlists);
       
-      expect(mockedAxios.get).toHaveBeenCalledWith(
+      expect(vi.mocked(mockedAxios.get)).toHaveBeenCalledWith(
         'https://api.spotify.com/v1/users/user-123/playlists',
         {
           headers: {
@@ -304,7 +303,7 @@ describe('Spotify Data API Routes', () => {
         total: mockSpotifyResponses.tracks.length
       };
 
-      mockedAxios.get.mockResolvedValue(
+      vi.mocked(mockedAxios.get).mockResolvedValue(
         createMockAxiosResponse(savedTracks)
       );
 
@@ -317,7 +316,7 @@ describe('Spotify Data API Routes', () => {
       const responseData = JSON.parse(res._getData());
       expect(responseData).toEqual(savedTracks);
       
-      expect(mockedAxios.get).toHaveBeenCalledWith(
+      expect(vi.mocked(mockedAxios.get)).toHaveBeenCalledWith(
         'https://api.spotify.com/v1/me/tracks',
         {
           headers: {
@@ -341,7 +340,7 @@ describe('Spotify Data API Routes', () => {
         }
       });
 
-      mockedAxios.get.mockResolvedValue(
+      vi.mocked(mockedAxios.get).mockResolvedValue(
         createMockAxiosResponse(mockSpotifyResponses.playlists)
       );
 
@@ -349,7 +348,7 @@ describe('Spotify Data API Routes', () => {
       await handlerUsersItems(req, res);
 
       // Assert
-      expect(mockedAxios.get).toHaveBeenCalledWith(
+      expect(vi.mocked(mockedAxios.get)).toHaveBeenCalledWith(
         'https://api.spotify.com/v1/users/user-123/playlists',
         {
           headers: {
@@ -380,7 +379,7 @@ describe('Spotify Data API Routes', () => {
       
       const responseData = JSON.parse(res._getData());
       expect(responseData.error).toBe('User ID required');
-      expect(mockedAxios.get).not.toHaveBeenCalled();
+      expect(vi.mocked(mockedAxios.get)).not.toHaveBeenCalled();
     });
 
     it('should handle user not found', async () => {
@@ -393,7 +392,7 @@ describe('Spotify Data API Routes', () => {
         }
       });
 
-      mockedAxios.get.mockRejectedValue(
+      vi.mocked(mockedAxios.get).mockRejectedValue(
         createMockAxiosError('User not found', 404)
       );
 
@@ -417,7 +416,7 @@ describe('Spotify Data API Routes', () => {
         }
       });
 
-      mockedAxios.get.mockRejectedValue(
+      vi.mocked(mockedAxios.get).mockRejectedValue(
         createMockAxiosError('Insufficient scope', 403)
       );
 
@@ -447,7 +446,7 @@ describe('Spotify Data API Routes', () => {
         'retry-after': '60'
       };
 
-      mockedAxios.get.mockRejectedValue(rateLimitError);
+      vi.mocked(mockedAxios.get).mockRejectedValue(rateLimitError);
 
       // Act
       await handlerUsers(req, res);
@@ -469,7 +468,7 @@ describe('Spotify Data API Routes', () => {
         }
       });
 
-      mockedAxios.get.mockRejectedValue(
+      vi.mocked(mockedAxios.get).mockRejectedValue(
         createMockAxiosError('The access token expired', 401)
       );
 
@@ -504,7 +503,7 @@ describe('Spotify Data API Routes', () => {
         await handlerUsers(req, res);
 
         expect([400, 401]).toContain(res._getStatusCode());
-        expect(mockedAxios.get).not.toHaveBeenCalled();
+        expect(vi.mocked(mockedAxios.get)).not.toHaveBeenCalled();
         
         vi.clearAllMocks();
       }
@@ -519,9 +518,9 @@ describe('Spotify Data API Routes', () => {
         }
       });
 
-      const timeoutError = new Error('timeout');
+      const timeoutError = new Error('timeout') as any;
       timeoutError.code = 'ETIMEDOUT';
-      mockedAxios.get.mockRejectedValue(timeoutError);
+      vi.mocked(mockedAxios.get).mockRejectedValue(timeoutError);
 
       // Act
       await handlerUsers(req, res);
@@ -543,7 +542,7 @@ describe('Spotify Data API Routes', () => {
       });
 
       const errorWithSensitiveData = createMockAxiosError('Error with token: secret-data', 500);
-      mockedAxios.get.mockRejectedValue(errorWithSensitiveData);
+      vi.mocked(mockedAxios.get).mockRejectedValue(errorWithSensitiveData);
 
       // Act
       await handlerUsers(req, res);
@@ -575,7 +574,7 @@ describe('Spotify Data API Routes', () => {
         ]
       };
 
-      mockedAxios.get.mockResolvedValue(
+      vi.mocked(mockedAxios.get).mockResolvedValue(
         createMockAxiosResponse(malformedPlaylistData)
       );
 
@@ -600,7 +599,7 @@ describe('Spotify Data API Routes', () => {
         }
       });
 
-      mockedAxios.get.mockResolvedValue(
+      vi.mocked(mockedAxios.get).mockResolvedValue(
         createMockAxiosResponse({ items: [], total: 0 })
       );
 
@@ -631,7 +630,7 @@ describe('Spotify Data API Routes', () => {
         total: 1000
       };
 
-      mockedAxios.get.mockResolvedValue(
+      vi.mocked(mockedAxios.get).mockResolvedValue(
         createMockAxiosResponse(largePlaylists)
       );
 

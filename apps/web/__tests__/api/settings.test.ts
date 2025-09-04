@@ -7,7 +7,6 @@ import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import handler from '../../pages/api/settings';
 import {
   createMockRequestResponse,
-  expectResponse,
   mockPlexResponses
 } from './api-test-helpers';
 
@@ -311,7 +310,7 @@ describe('/api/settings - Settings CRUD Operations', () => {
       });
       
       // Mock file system operations
-      let persistedData = null;
+      let persistedData: any = null;
       mockPlex.updateSettings.mockImplementation((data) => {
         persistedData = data;
         return Promise.resolve();
@@ -343,7 +342,7 @@ describe('/api/settings - Settings CRUD Operations', () => {
         body: { uri: 'http://server:32400' }
       });
       
-      const permissionError = new Error('EACCES: permission denied');
+      const permissionError = new Error('EACCES: permission denied') as any;
       permissionError.code = 'EACCES';
       mockPlex.updateSettings.mockRejectedValue(permissionError);
 
@@ -364,7 +363,7 @@ describe('/api/settings - Settings CRUD Operations', () => {
         body: { uri: 'http://server:32400' }
       });
       
-      const diskFullError = new Error('ENOSPC: no space left on device');
+      const diskFullError = new Error('ENOSPC: no space left on device') as any;
       diskFullError.code = 'ENOSPC';
       mockPlex.updateSettings.mockRejectedValue(diskFullError);
 

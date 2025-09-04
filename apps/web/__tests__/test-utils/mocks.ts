@@ -70,16 +70,16 @@ export function setupMocks() {
   // Mock IntersectionObserver
   global.IntersectionObserver = class IntersectionObserver {
     constructor() {}
-    observe() {
-      return null;
+    observe(): void {
+      // Mock implementation
     }
-    disconnect() {
-      return null;
+    disconnect(): void {
+      // Mock implementation
     }
-    unobserve() {
-      return null;
+    unobserve(): void {
+      // Mock implementation
     }
-  };
+  } as any;
 
   // Mock ResizeObserver
   global.ResizeObserver = class ResizeObserver {

@@ -8,8 +8,7 @@ import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import handler from '../../pages/api/sync/[type]';
 import {
   createMockRequestResponse,
-  expectResponse,
-  mockEnvVars
+  expectResponse
 } from './api-test-helpers';
 
 // Mock cronjob functions
@@ -323,11 +322,12 @@ describe('/api/sync/[type] - Sync Operations', () => {
         const largeArray = new Array(100000).fill(null).map((_, i) => ({
           id: i,
           name: `Playlist ${i}`,
-          tracks: new Array(50).fill(null).map((_, j) => `Track ${j}`)
+          tracks: new Array(50).fill(null).map((_, j) => `Track ${j}`),
+          processed: false
         }));
 
         // Process the data
-        largeArray.forEach(playlist => {
+        largeArray.forEach((playlist: { processed: boolean }) => {
           playlist.processed = true;
         });
 

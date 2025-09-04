@@ -57,7 +57,7 @@ describe('/api/plex/resources - Plex Connection Validation', () => {
         id: 'test-server-id'
       });
 
-      mockedAxios.get.mockResolvedValue(
+      vi.mocked(mockedAxios.get).mockResolvedValue(
         createMockAxiosResponse(mockPlexResponses.resources)
       );
 
@@ -79,7 +79,7 @@ describe('/api/plex/resources - Plex Connection Validation', () => {
       });
 
       // Verify Plex API was called with correct parameters
-      expect(mockedAxios.get).toHaveBeenCalledWith(
+      expect(vi.mocked(mockedAxios.get)).toHaveBeenCalledWith(
         'https://plex.tv/api/v2/resources',
         {
           params: {
@@ -106,7 +106,7 @@ describe('/api/plex/resources - Plex Connection Validation', () => {
 
       // Assert
       expectResponse(res, 400, { message: "No Plex connection found" });
-      expect(mockedAxios.get).not.toHaveBeenCalled();
+      expect(vi.mocked(mockedAxios.get)).not.toHaveBeenCalled();
     });
 
     it('should return 400 when Plex API fails', async () => {
@@ -119,7 +119,7 @@ describe('/api/plex/resources - Plex Connection Validation', () => {
         id: 'test-server-id'
       });
 
-      mockedAxios.get.mockRejectedValue(
+      vi.mocked(mockedAxios.get).mockRejectedValue(
         createMockAxiosError('Plex API Error', 401)
       );
 
@@ -150,7 +150,7 @@ describe('/api/plex/resources - Plex Connection Validation', () => {
         ]
       }];
 
-      mockedAxios.get.mockResolvedValue(
+      vi.mocked(mockedAxios.get).mockResolvedValue(
         createMockAxiosResponse(httpsRequiredResponse)
       );
 
@@ -189,7 +189,7 @@ describe('/api/plex/resources - Plex Connection Validation', () => {
         }
       ];
 
-      mockedAxios.get.mockResolvedValue(
+      vi.mocked(mockedAxios.get).mockResolvedValue(
         createMockAxiosResponse(mixedProductsResponse)
       );
 
@@ -214,7 +214,7 @@ describe('/api/plex/resources - Plex Connection Validation', () => {
         id: 'test-server-id'
       });
 
-      mockedAxios.get.mockResolvedValue(
+      vi.mocked(mockedAxios.get).mockResolvedValue(
         createMockAxiosResponse([])
       );
 
@@ -240,7 +240,7 @@ describe('/api/plex/resources - Plex Connection Validation', () => {
         id: 'test-server-id'
       });
 
-      mockedAxios.get.mockResolvedValue(
+      vi.mocked(mockedAxios.get).mockResolvedValue(
         createMockAxiosResponse(mockPlexResponses.resources)
       );
 
@@ -248,7 +248,7 @@ describe('/api/plex/resources - Plex Connection Validation', () => {
       await handler(req, res);
 
       // Assert - Should still work with undefined PLEX_APP_ID
-      expect(mockedAxios.get).toHaveBeenCalledWith(
+      expect(vi.mocked(mockedAxios.get)).toHaveBeenCalledWith(
         'https://plex.tv/api/v2/resources',
         {
           params: {
@@ -293,9 +293,9 @@ describe('/api/plex/resources - Plex Connection Validation', () => {
         id: 'test-server-id'
       });
 
-      const timeoutError = new Error('timeout');
+      const timeoutError = new Error('timeout') as any;
       timeoutError.code = 'ETIMEDOUT';
-      mockedAxios.get.mockRejectedValue(timeoutError);
+      vi.mocked(mockedAxios.get).mockRejectedValue(timeoutError);
 
       await handler(req, res);
 
@@ -317,7 +317,7 @@ describe('/api/plex/resources - Plex Connection Validation', () => {
         // missing name, clientIdentifier, connections
       }];
 
-      mockedAxios.get.mockResolvedValue(
+      vi.mocked(mockedAxios.get).mockResolvedValue(
         createMockAxiosResponse(malformedResponse)
       );
 

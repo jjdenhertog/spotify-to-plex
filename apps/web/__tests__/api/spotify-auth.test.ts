@@ -6,9 +6,7 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import handler from '../../pages/api/spotify/login';
 import {
-  createMockRequestResponse,
-  expectResponse,
-  mockEnvVars
+  createMockRequestResponse
 } from './api-test-helpers';
 
 // Mock error helper
@@ -261,9 +259,9 @@ describe('/api/spotify/login - Spotify OAuth Flow', () => {
       try {
         await handler(req, res);
         expect.fail('Should have thrown an error');
-      } catch (error) {
-        expect(error.message).not.toContain('secret-client-id');
-        expect(error.message).toContain('SPOTIFY_API_REDIRECT_URI');
+      } catch (error: unknown) {
+        expect((error as Error).message).not.toContain('secret-client-id');
+        expect((error as Error).message).toContain('SPOTIFY_API_REDIRECT_URI');
       }
     });
 
@@ -352,7 +350,7 @@ describe('/api/spotify/login - Spotify OAuth Flow', () => {
       expect(scopeParam).toContain(' ');
       expect(scopeParam).not.toContain(',');
       
-      const scopes = scopeParam.split(' ');
+      const scopes = scopeParam!.split(' ');
       expect(scopes.length).toBeGreaterThan(1);
     });
   });

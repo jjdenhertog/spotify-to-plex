@@ -8,7 +8,6 @@ import handler from '../../pages/api/plex/tracks';
 import {
   createMockRequestResponse,
   expectResponse,
-  mockEnvVars,
   mockPlexResponses
 } from './api-test-helpers';
 
@@ -198,7 +197,7 @@ describe('/api/plex/tracks - Plex Library Data', () => {
         ...trackData,
         imported: true 
       });
-      mockPlex.importTrack = mockImportTrack;
+      (mockPlex as any).importTrack = mockImportTrack;
 
       // Act
       await handler(req, res);

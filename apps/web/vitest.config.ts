@@ -17,7 +17,7 @@ export default defineConfig({
     ],
     globals: true,
     css: false,
-    reporter: ['verbose', 'junit', 'html'],
+    reporters: ['verbose', 'junit', 'html'],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
