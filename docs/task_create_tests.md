@@ -4,6 +4,16 @@
 
 This document provides a comprehensive guide for implementing a complete test suite for the Spotify-to-Plex monorepo project. The testing strategy covers all aspects of the application including frontend components, backend services, API routes, and cross-package integration. The guide emphasizes meaningful tests that validate business logic and user workflows rather than implementation details.
 
+## ⚠️ IMPORTANT EXCLUSIONS
+
+### The following components are EXCLUDED from testing:
+1. **sync-worker application** - No tests should be created for any sync-worker functionality
+2. **MQTT communication** - All MQTT-related functionality is excluded from testing
+3. **Background job processing** - Queue management and job scheduling are not tested
+4. **Service-to-service communication** - Inter-service messaging is out of scope
+
+**These exclusions are intentional architectural decisions. Focus testing efforts on the web application, API routes, and shared packages only.**
+
 ---
 
 ## Table of Contents
@@ -25,14 +35,14 @@ This document provides a comprehensive guide for implementing a complete test su
 ### Architecture Summary
 - **Structure**: pnpm monorepo with 3 applications and 8 shared packages
 - **Frontend**: Next.js 14.2.32 with React 18.3.1 and Material-UI v6
-- **Backend**: Node.js sync-worker with MQTT communication
+- **Backend**: Node.js sync-worker (NO TESTS REQUIRED - excluded from test suite)
 - **Scraper**: Python Flask service for Spotify data extraction
 - **TypeScript**: Version 5.7.2 with strict type checking
 - **Package Management**: pnpm 10.15.0 with workspace support
 
 ### Key Applications
 1. **apps/web**: Next.js frontend with 44 React components and 34 API routes
-2. **apps/sync-worker**: Background synchronization service with job queue system
+2. **apps/sync-worker**: Background synchronization service (EXCLUDED FROM TESTING - no test coverage required)
 3. **apps/spotify-scraper**: Python Flask API for playlist data scraping
 
 ### Shared Packages
@@ -111,7 +121,6 @@ This document provides a comprehensive guide for implementing a complete test su
 - **Vitest**: Unified testing across frontend and backend
 - **Supertest**: HTTP assertion library for API routes
 - **node-mocks-http**: Mock HTTP objects for Next.js API testing
-- **mqtt-mock**: MQTT message queue testing
 - **mock-fs**: File system mocking for settings management
 
 #### E2E Testing
@@ -130,7 +139,7 @@ pnpm add -D jsdom happy-dom
 pnpm add -D supertest node-mocks-http msw
 
 # Backend specific
-pnpm add -D mqtt-mock mock-fs
+pnpm add -D mock-fs
 
 # E2E testing
 pnpm add -D @playwright/test
@@ -162,8 +171,7 @@ spotify-to-plex/
 │   │   │   ├── pages/           # Page component tests
 │   │   │   └── api/             # API route tests
 │   │   └── tests/               # Integration tests
-│   ├── sync-worker/
-│   │   └── __tests__/           # Service and job tests
+│   ├── sync-worker/              # NO TESTS - Excluded from test coverage
 │   └── spotify-scraper/
 │       └── tests/               # Python Flask tests
 └── packages/
@@ -222,7 +230,7 @@ import { defineWorkspace } from 'vitest/config';
 
 export default defineWorkspace([
     './apps/web/vitest.config.ts',
-    './apps/sync-worker/vitest.config.ts',
+    // './apps/sync-worker/vitest.config.ts', // EXCLUDED - No tests for sync-worker
     './packages/*/vitest.config.ts'
 ]);
 ```
@@ -429,59 +437,27 @@ describe('/api/plex/connection', () => {
 
 ### 4. Background Services (sync-worker)
 
-**Job Testing Requirements**
-```typescript
-// Albums Job Tests:
-- Album search and matching logic
-- Tidal fallback for missing tracks
-- Caching behavior
-- Error handling and retries
-- MQTT message publishing
+**⚠️ IMPORTANT: NO TESTS REQUIRED FOR SYNC-WORKER**
 
-// Playlists Job Tests:
-- Playlist creation/update logic
-- Track-by-track matching
-- Duplicate handling
-- Progress reporting
-- Interval-based scheduling
+The sync-worker application is **explicitly excluded** from the test suite. No test coverage is required or should be created for:
+- Background job processing
+- Service communication
+- Queue management
+- Any sync-worker related functionality
 
-// MQTT Job Tests:
-- Home Assistant discovery messages
-- Entity state updates
-- Connection handling
-- Message queue overflow
+This is an architectural decision to focus testing efforts on the web application and shared packages.
+
+**⛔ NO BACKGROUND JOB TESTING PATTERN**
 ```
+IMPORTANT: The sync-worker application and all its background jobs
+are EXCLUDED from testing. Do not create tests for:
+- Album sync jobs
+- Playlist sync jobs
+- Any background processing
+- Queue management
+- Worker services
 
-**Background Job Testing Pattern**
-```typescript
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { processAlbums } from '../src/jobs/albums';
-import { mockPlexAPI, mockSpotifyAPI } from './mocks';
-
-describe('Albums Sync Job', () => {
-    beforeEach(() => {
-        vi.clearAllMocks();
-    });
-
-    it('should sync Spotify albums to Plex', async () => {
-        const mockAlbums = [
-            { id: 'album1', name: 'Test Album', artists: ['Artist'] }
-        ];
-        
-        mockSpotifyAPI.getSavedAlbums.mockResolvedValue(mockAlbums);
-        mockPlexAPI.searchAlbum.mockResolvedValue({ found: true });
-        
-        const result = await processAlbums();
-        
-        expect(result.processed).toBe(1);
-        expect(result.matched).toBe(1);
-        expect(mockPlexAPI.addToLibrary).toHaveBeenCalledWith('album1');
-    });
-
-    it('should use Tidal fallback for missing tracks', async () => {
-        // Test Tidal integration fallback logic
-    });
-});
+Focus testing efforts on the web application and shared packages instead.
 ```
 
 ### 5. Shared Packages
@@ -523,47 +499,37 @@ describe('createSearchString', () => {
 **Cross-Service Communication Tests**
 ```typescript
 // Test Requirements:
-- Web app to sync-worker API calls
-- MQTT message flow
+- Web app API calls
 - File system settings persistence
 - Cross-package dependency resolution
 - OAuth flow integration
+// NOTE: sync-worker communication is NOT tested
 ```
 
 **Integration Test Pattern**
 ```typescript
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { setupTestServer } from './helpers/setupTestServer';
-import { MQTTTestClient } from './helpers/mqttTestClient';
 
-describe('Playlist Sync Integration', () => {
+describe('API Integration', () => {
     let server;
-    let mqttClient;
 
     beforeAll(async () => {
         server = await setupTestServer();
-        mqttClient = new MQTTTestClient();
-        await mqttClient.connect();
     });
 
     afterAll(async () => {
-        await mqttClient.disconnect();
         await server.close();
     });
 
-    it('should sync playlist and publish MQTT updates', async () => {
-        const messagePromise = mqttClient.waitForMessage('sync/playlist/status');
-        
-        const response = await fetch('/api/sync/playlist', {
-            method: 'POST',
-            body: JSON.stringify({ playlistId: 'test-playlist' })
+    it('should handle API requests correctly', async () => {
+        const response = await fetch('/api/settings', {
+            method: 'GET'
         });
 
         expect(response.status).toBe(200);
-        
-        const mqttMessage = await messagePromise;
-        expect(mqttMessage.status).toBe('completed');
-        expect(mqttMessage.playlistId).toBe('test-playlist');
+        const data = await response.json();
+        expect(data).toBeDefined();
     });
 });
 ```
@@ -756,9 +722,8 @@ jobs:
 - Throughput targets: 1000 req/s minimum
 
 **Background Jobs**
-- Queue processing rate: 100 items/minute
-- Memory usage: < 500MB per worker
-- CPU usage: < 80% sustained
+- ⛔ EXCLUDED - No performance testing for sync-worker
+- Background jobs and queue processing are not part of the test suite
 
 ### Performance Test Implementation
 
@@ -835,26 +800,34 @@ describe('Search Performance', () => {
 - [ ] Test rate limiting (if implemented)
 
 ### ✅ Backend Service Tests
-- [ ] Test album sync job with mocked APIs
-- [ ] Test playlist sync job logic
-- [ ] Test user processing job
-- [ ] Test MQTT publishing job
-- [ ] Test Spotify API integration
-- [ ] Test Plex API integration
-- [ ] Test Tidal fallback logic
-- [ ] Test caching mechanisms
-- [ ] Test retry logic and error handling
-- [ ] Test job scheduling and intervals
+**⛔ EXCLUDED FROM TESTING**
+- sync-worker and all background jobs are NOT tested
+- No test coverage required for:
+  - Album sync jobs
+  - Playlist sync jobs  
+  - User processing jobs
+  - Background job scheduling
+  - Queue management
+  - Worker services
+
+**Focus testing on:**
+- [ ] Test Spotify API integration (in web app context)
+- [ ] Test Plex API integration (in web app context)
+- [ ] Test Tidal fallback logic (in shared packages)
+- [ ] Test caching mechanisms (in shared packages)
 
 ### ✅ Integration Tests
-- [ ] Test full playlist sync flow
-- [ ] Test album discovery and sync
-- [ ] Test MQTT message flow
+- [ ] Test API endpoint integration
 - [ ] Test settings file persistence
 - [ ] Test cross-package imports work correctly
 - [ ] Test OAuth authentication flow
-- [ ] Test error propagation across services
-- [ ] Test concurrent job execution
+- [ ] Test error propagation in web app
+- [ ] Test user workflows in web interface
+
+**⛔ NOT TESTED:**
+- Full sync flows (handled by excluded sync-worker)
+- Background job execution
+- Service-to-service communication
 
 ### ✅ E2E Tests
 - [ ] Test user onboarding flow
