@@ -16,8 +16,7 @@ This document provides a comprehensive guide for implementing a complete test su
 6. [Implementation Strategy](#implementation-strategy)
 7. [Test Coverage Requirements](#test-coverage-requirements)
 8. [CI/CD Integration](#cicd-integration)
-9. [Performance Testing](#performance-testing)
-10. [Test Implementation Checklist](#test-implementation-checklist)
+9. [Test Implementation Checklist](#test-implementation-checklist)
 
 ---
 
@@ -612,7 +611,6 @@ describe('Playlist Sync Integration', () => {
 ### Phase 4: Integration Testing (Week 4)
 1. **Cross-Service Tests**
    - Full sync workflows
-   - MQTT communication
    - Settings persistence
 
 2. **E2E Critical Paths**
