@@ -1,0 +1,109 @@
+name: Dependencies & Security
+
+on:
+  schedule:
+    # Run weekly on Mondays at 9 AM UTC
+    - cron: '0 9 * * 1'
+  workflow_dispatch:
+  push:
+    paths:
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - '**/package.json'
+
+jobs:
+  audit:
+    name: Security Audit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: '10.15.0'
+
+      - name: Run security audit
+        run: |
+          pnpm audit --json > audit-results.json || true
+          pnpm audit --audit-level high
+
+      - name: Upload audit results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: security-audit-results
+          path: audit-results.json
+          retention-days: 30
+
+  dependency-review:
+    name: Dependency Review
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Dependency Review
+        uses: actions/dependency-review-action@v4
+        with:
+          fail-on-severity: moderate
+          comment-summary-in-pr: always
+
+  update-dependencies:
+    name: Update Dependencies
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: '10.15.0'
+
+      - name: Update dependencies
+        run: |
+          pnpm update --latest --recursive
+          pnpm install
+
+      - name: Run tests after update
+        run: |
+          pnpm test:run
+          pnpm build
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: 'chore: update dependencies'
+          title: 'chore: Weekly dependency updates'
+          body: |
+            ## Automated Dependency Updates
+            
+            This PR contains automated dependency updates. 
+            
+            ### Changes
+            - Updated all dependencies to their latest versions
+            - Verified tests still pass
+            - Verified build still works
+            
+            Please review the changes and ensure everything works as expected.
+            
+            **Note**: sync-worker is excluded from testing as per project requirements.
+          branch: chore/dependency-updates
+          delete-branch: true

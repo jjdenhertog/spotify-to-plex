@@ -1,5 +1,6 @@
-Can you modify the task_create_test.md:
-- do not include the git hooks
-- make sure that it is easy, just like lint and type-check. To run all tests at once. For example something like pnom -r run tests
+Title: Create test suite 
 
-Also do a final check on the document. Keep in mind that we will feed this to an ai to read and execute.
+Description:Can you read and execute the docs/task_create_tests.md. and make sure ethat:
+
+- before completing the task pnpm -r run type-check/lint is succesfull
+- the created tests ar successful 
