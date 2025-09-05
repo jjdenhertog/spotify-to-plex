@@ -1,1 +1,1 @@
-Run pnpm -r run type-check and take your time to fix all erors you find. Warnings are Okay
+Can you check if you can commit all changes
