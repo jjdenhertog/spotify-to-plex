@@ -18,6 +18,10 @@ export default defineConfig({
     globals: true,
     css: false,
     reporters: ['verbose', 'junit', 'html'],
+    outputFile: {
+      junit: './test-results/junit.xml',
+      html: './test-results/index.html',
+    },
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],

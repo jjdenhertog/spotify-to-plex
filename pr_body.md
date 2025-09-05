@@ -1,4 +1,4 @@
-I'm getting an error
-Failed to push branch to GitHub: cannot set upstream for branch 'vk-b25b-create-tes'; class=Reference (4); code=NotFound (-3)
+I'm getting this error in GitHub 
+https://github.com/jjdenhertog/spotify-to-plex/actions/runs/17492321045/job/49684733865
 
-Cab you check if you can fix that?
+Can you fix that. It is caused during the GitHub actions
