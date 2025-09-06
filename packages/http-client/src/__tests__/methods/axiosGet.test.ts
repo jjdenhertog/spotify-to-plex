@@ -1,3 +1,4 @@
+/* eslint-disable max-lines, @typescript-eslint/prefer-destructuring */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import axios from 'axios';
 import { Agent } from 'node:https';
@@ -254,10 +255,9 @@ describe('axiosGet', () => {
 
             await axiosGet(testUrl, testToken);
 
-            const callArgs = mockedAxios.get.mock.calls[0];
-            const config = callArgs![1] as any;
+            const [, config] = mockedAxios.get.mock.calls[0]!;
       
-            expect(config.headers).toHaveProperty('X-Plex-Token', testToken);
+            expect((config as any).headers).toHaveProperty('X-Plex-Token', testToken);
         });
 
         it('should handle different token formats', async () => {
@@ -351,11 +351,10 @@ describe('axiosGet', () => {
             const {calls} = mockedAxios.get.mock;
             expect(calls).toHaveLength(3);
 
-            calls.forEach(call => {
-                const config = call[1] as any;
+            calls.forEach(([, config]) => {
                 expect(config).toHaveProperty('timeout', 10_000);
                 expect(config).toHaveProperty('httpsAgent', mockAgent);
-                expect(config.headers).toHaveProperty('X-Plex-Token', testToken);
+                expect((config as any).headers).toHaveProperty('X-Plex-Token', testToken);
             });
         });
     });

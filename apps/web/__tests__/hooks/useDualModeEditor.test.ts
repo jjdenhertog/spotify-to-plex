@@ -15,24 +15,24 @@
 
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { 
-  renderHookWithSetup, 
-  act, 
-  mockAxiosInstance, 
-  mockEnqueueSnackbar,
-  resetAllMocks,
-  testDataGenerators,
-  waitForAsync,
+    renderHookWithSetup, 
+    act, 
+    mockAxiosInstance, 
+    mockEnqueueSnackbar,
+    resetAllMocks,
+    testDataGenerators,
+    waitForAsync
 } from './hook-test-utils';
 import { useDualModeEditor } from '../../src/hooks/useDualModeEditor';
 
 // Type definitions for test data
-interface TestJsonData {
+type TestJsonData = {
   name: string;
   value: number;
   active: boolean;
 }
 
-interface TestUIData {
+type TestUIData = {
   displayName: string;
   count: number;
   enabled: boolean;
@@ -40,580 +40,584 @@ interface TestUIData {
 
 // Test configuration
 const mockConfig = {
-  loadEndpoint: '/api/test/load',
-  saveEndpoint: '/api/test/save',
-  validator: vi.fn((data: TestJsonData) => {
-    if (!data.name || data.name.trim() === '') {
-      return 'Name is required';
-    }
-    if (data.value < 0) {
-      return 'Value must be non-negative';
-    }
-    return null;
-  }),
-  jsonToUI: vi.fn((json: TestJsonData): TestUIData => ({
-    displayName: json.name,
-    count: json.value,
-    enabled: json.active,
-  })),
-  uiToJSON: vi.fn((ui: TestUIData): TestJsonData => ({
-    name: ui.displayName,
-    value: ui.count,
-    active: ui.enabled,
-  })),
-  initialData: {
-    name: 'Initial',
-    value: 10,
-    active: true,
-  } as TestJsonData,
+    loadEndpoint: '/api/test/load',
+    saveEndpoint: '/api/test/save',
+    validator: vi.fn((data: TestJsonData) => {
+        if (!data.name || data.name.trim() === '') {
+            return 'Name is required';
+        }
+
+        if (data.value < 0) {
+            return 'Value must be non-negative';
+        }
+
+        return null;
+    }),
+    jsonToUI: vi.fn((json: TestJsonData): TestUIData => ({
+        displayName: json.name,
+        count: json.value,
+        enabled: json.active,
+    })),
+    uiToJSON: vi.fn((ui: TestUIData): TestJsonData => ({
+        name: ui.displayName,
+        value: ui.count,
+        active: ui.enabled,
+    })),
+    initialData: {
+        name: 'Initial',
+        value: 10,
+        active: true,
+    } as TestJsonData,
 };
 
 // Mock editor ref with getCurrentValue method
 const mockEditorRef = {
-  current: {
-    getCurrentValue: vi.fn(),
-  },
+    current: {
+        getCurrentValue: vi.fn(),
+    },
 };
 
 describe('useDualModeEditor Hook', () => {
-  beforeEach(() => {
-    resetAllMocks();
-    vi.clearAllMocks();
+    beforeEach(() => {
+        resetAllMocks();
+        vi.clearAllMocks();
     
-    // Reset config function mocks
-    mockConfig.validator.mockImplementation((data: TestJsonData) => {
-      if (!data.name || data.name.trim() === '') {
-        return 'Name is required';
-      }
-      if (data.value < 0) {
-        return 'Value must be non-negative';
-      }
-      return null;
-    });
+        // Reset config function mocks
+        mockConfig.validator.mockImplementation((data: TestJsonData) => {
+            if (!data.name || data.name.trim() === '') {
+                return 'Name is required';
+            }
+
+            if (data.value < 0) {
+                return 'Value must be non-negative';
+            }
+
+            return null;
+        });
     
-    mockConfig.jsonToUI.mockImplementation((json: TestJsonData): TestUIData => ({
-      displayName: json.name,
-      count: json.value,
-      enabled: json.active,
-    }));
+        mockConfig.jsonToUI.mockImplementation((json: TestJsonData): TestUIData => ({
+            displayName: json.name,
+            count: json.value,
+            enabled: json.active,
+        }));
     
-    mockConfig.uiToJSON.mockImplementation((ui: TestUIData): TestJsonData => ({
-      name: ui.displayName,
-      value: ui.count,
-      active: ui.enabled,
-    }));
-  });
-
-  describe('Initialization', () => {
-    it('should initialize with correct default state', () => {
-      const { result } = renderHookWithSetup(() => useDualModeEditor(mockConfig));
-
-      expect(result.current.viewMode).toBe('ui');
-      expect(result.current.jsonData).toEqual(mockConfig.initialData);
-      expect(result.current.uiData).toEqual({
-        displayName: 'Initial',
-        count: 10,
-        enabled: true,
-      });
-      expect(result.current.loading).toBe(true);
-      expect(result.current.validationError).toBe('');
-      expect(result.current.editorRef).toBeDefined();
+        mockConfig.uiToJSON.mockImplementation((ui: TestUIData): TestJsonData => ({
+            name: ui.displayName,
+            value: ui.count,
+            active: ui.enabled,
+        }));
     });
 
-    it('should call jsonToUI converter on initialization', () => {
-      renderHookWithSetup(() => useDualModeEditor(mockConfig));
+    describe('Initialization', () => {
+        it('should initialize with correct default state', () => {
+            const { result } = renderHookWithSetup(() => useDualModeEditor(mockConfig));
 
-      expect(mockConfig.jsonToUI).toHaveBeenCalledWith(mockConfig.initialData);
-    });
-  });
+            expect(result.current.viewMode).toBe('ui');
+            expect(result.current.jsonData).toEqual(mockConfig.initialData);
+            expect(result.current.uiData).toEqual({
+                displayName: 'Initial',
+                count: 10,
+                enabled: true,
+            });
+            expect(result.current.loading).toBe(true);
+            expect(result.current.validationError).toBe('');
+            expect(result.current.editorRef).toBeDefined();
+        });
 
-  describe('Data Loading', () => {
-    it('should load data successfully', async () => {
-      const apiData = { name: 'Loaded', value: 20, active: false };
-      mockAxiosInstance.get.mockResolvedValue(
-        testDataGenerators.createMockResponse(apiData)
-      );
+        it('should call jsonToUI converter on initialization', () => {
+            renderHookWithSetup(() => useDualModeEditor(mockConfig));
 
-      const { result } = renderHookWithSetup(() => useDualModeEditor(mockConfig));
-
-      await act(async () => {
-        await result.current.loadData();
-      });
-
-      expect(mockAxiosInstance.get).toHaveBeenCalledWith('/api/test/load');
-      expect(result.current.jsonData).toEqual(apiData);
-      expect(result.current.uiData).toEqual({
-        displayName: 'Loaded',
-        count: 20,
-        enabled: false,
-      });
-      expect(result.current.loading).toBe(false);
+            expect(mockConfig.jsonToUI).toHaveBeenCalledWith(mockConfig.initialData);
+        });
     });
 
-    it('should handle loading errors gracefully', async () => {
-      mockAxiosInstance.get.mockRejectedValue(
-        testDataGenerators.createMockError('Load failed')
-      );
+    describe('Data Loading', () => {
+        it('should load data successfully', async () => {
+            const apiData = { name: 'Loaded', value: 20, active: false };
+            mockAxiosInstance.get.mockResolvedValue(
+                testDataGenerators.createMockResponse(apiData)
+            );
 
-      const { result } = renderHookWithSetup(() => useDualModeEditor(mockConfig));
+            const { result } = renderHookWithSetup(() => useDualModeEditor(mockConfig));
 
-      await act(async () => {
-        await result.current.loadData();
-      });
+            await act(async () => {
+                await result.current.loadData();
+            });
 
-      expect(result.current.loading).toBe(false);
-      // Data should remain unchanged
-      expect(result.current.jsonData).toEqual(mockConfig.initialData);
-    });
+            expect(mockAxiosInstance.get).toHaveBeenCalledWith('/api/test/load');
+            expect(result.current.jsonData).toEqual(apiData);
+            expect(result.current.uiData).toEqual({
+                displayName: 'Loaded',
+                count: 20,
+                enabled: false,
+            });
+            expect(result.current.loading).toBe(false);
+        });
 
-    it('should set loading state correctly during load operation', async () => {
-      let resolvePromise: (value: any) => void;
-      const loadPromise = new Promise(resolve => {
-        resolvePromise = resolve;
-      });
+        it('should handle loading errors gracefully', async () => {
+            mockAxiosInstance.get.mockRejectedValue(
+                testDataGenerators.createMockError('Load failed')
+            );
+
+            const { result } = renderHookWithSetup(() => useDualModeEditor(mockConfig));
+
+            await act(async () => {
+                await result.current.loadData();
+            });
+
+            expect(result.current.loading).toBe(false);
+            // Data should remain unchanged
+            expect(result.current.jsonData).toEqual(mockConfig.initialData);
+        });
+
+        it('should set loading state correctly during load operation', async () => {
+            let resolvePromise: (value: any) => void;
+            const loadPromise = new Promise(resolve => {
+                resolvePromise = resolve;
+            });
       
-      mockAxiosInstance.get.mockReturnValue(loadPromise);
+            mockAxiosInstance.get.mockReturnValue(loadPromise);
 
-      const { result } = renderHookWithSetup(() => useDualModeEditor(mockConfig));
+            const { result } = renderHookWithSetup(() => useDualModeEditor(mockConfig));
 
-      // Start loading
-      act(() => {
-        result.current.loadData();
-      });
+            // Start loading
+            act(() => {
+                result.current.loadData();
+            });
 
-      expect(result.current.loading).toBe(true);
+            expect(result.current.loading).toBe(true);
 
-      // Complete loading
-      await act(async () => {
+            // Complete loading
+            await act(async () => {
         resolvePromise!(testDataGenerators.createMockResponse({ name: 'Test', value: 5, active: true }));
         await loadPromise;
-      });
+            });
 
-      expect(result.current.loading).toBe(false);
-    });
-  });
-
-  describe('View Mode Switching', () => {
-    it('should switch from UI to JSON mode', () => {
-      const { result } = renderHookWithSetup(() => useDualModeEditor(mockConfig));
-
-      act(() => {
-        result.current.handleViewModeChange({} as React.MouseEvent<HTMLElement>, 'json');
-      });
-
-      expect(result.current.viewMode).toBe('json');
-      expect(mockConfig.uiToJSON).toHaveBeenCalledWith(result.current.uiData);
+            expect(result.current.loading).toBe(false);
+        });
     });
 
-    it('should switch from JSON to UI mode', () => {
-      const { result } = renderHookWithSetup(() => useDualModeEditor(mockConfig));
+    describe('View Mode Switching', () => {
+        it('should switch from UI to JSON mode', () => {
+            const { result } = renderHookWithSetup(() => useDualModeEditor(mockConfig));
 
-      // First switch to JSON
-      act(() => {
-        result.current.handleViewModeChange({} as React.MouseEvent<HTMLElement>, 'json');
-      });
+            act(() => {
+                result.current.handleViewModeChange({} as React.MouseEvent<HTMLElement>, 'json');
+            });
 
-      // Then switch back to UI
-      act(() => {
-        result.current.handleViewModeChange({} as React.MouseEvent<HTMLElement>, 'ui');
-      });
+            expect(result.current.viewMode).toBe('json');
+            expect(mockConfig.uiToJSON).toHaveBeenCalledWith(result.current.uiData);
+        });
 
-      expect(result.current.viewMode).toBe('ui');
-      expect(mockConfig.jsonToUI).toHaveBeenCalledWith(result.current.jsonData);
+        it('should switch from JSON to UI mode', () => {
+            const { result } = renderHookWithSetup(() => useDualModeEditor(mockConfig));
+
+            // First switch to JSON
+            act(() => {
+                result.current.handleViewModeChange({} as React.MouseEvent<HTMLElement>, 'json');
+            });
+
+            // Then switch back to UI
+            act(() => {
+                result.current.handleViewModeChange({} as React.MouseEvent<HTMLElement>, 'ui');
+            });
+
+            expect(result.current.viewMode).toBe('ui');
+            expect(mockConfig.jsonToUI).toHaveBeenCalledWith(result.current.jsonData);
+        });
+
+        it('should not change mode when null is passed', () => {
+            const { result } = renderHookWithSetup(() => useDualModeEditor(mockConfig));
+            const originalMode = result.current.viewMode;
+
+            act(() => {
+                result.current.handleViewModeChange({} as React.MouseEvent<HTMLElement>, null);
+            });
+
+            expect(result.current.viewMode).toBe(originalMode);
+        });
+
+        it('should synchronize data when switching modes', () => {
+            const { result } = renderHookWithSetup(() => useDualModeEditor(mockConfig));
+
+            // Modify UI data
+            const newUIData = { displayName: 'Modified', count: 15, enabled: false };
+            act(() => {
+                result.current.handleUIDataChange(newUIData);
+            });
+
+            // Switch to JSON mode
+            act(() => {
+                result.current.handleViewModeChange({} as React.MouseEvent<HTMLElement>, 'json');
+            });
+
+            expect(mockConfig.uiToJSON).toHaveBeenCalledWith(newUIData);
+            expect(result.current.jsonData).toEqual({
+                name: 'Modified',
+                value: 15,
+                active: false,
+            });
+        });
     });
 
-    it('should not change mode when null is passed', () => {
-      const { result } = renderHookWithSetup(() => useDualModeEditor(mockConfig));
-      const originalMode = result.current.viewMode;
+    describe('Data Changes', () => {
+        it('should update UI data and clear validation error', () => {
+            const { result } = renderHookWithSetup(() => useDualModeEditor(mockConfig));
 
-      act(() => {
-        result.current.handleViewModeChange({} as React.MouseEvent<HTMLElement>, null);
-      });
+            // Set an initial validation error
+            act(() => {
+                result.current.handleSave(); // This might set validation error
+            });
 
-      expect(result.current.viewMode).toBe(originalMode);
+            const newUIData = { displayName: 'New Name', count: 25, enabled: true };
+            act(() => {
+                result.current.handleUIDataChange(newUIData);
+            });
+
+            expect(result.current.uiData).toEqual(newUIData);
+            expect(result.current.validationError).toBe('');
+        });
+
+        it('should update JSON data and clear validation error', () => {
+            const { result } = renderHookWithSetup(() => useDualModeEditor(mockConfig));
+
+            const newJsonData = { name: 'New JSON', value: 30, active: false };
+            act(() => {
+                result.current.handleJSONDataChange(newJsonData);
+            });
+
+            expect(result.current.jsonData).toEqual(newJsonData);
+            expect(result.current.validationError).toBe('');
+        });
     });
 
-    it('should synchronize data when switching modes', () => {
-      const { result } = renderHookWithSetup(() => useDualModeEditor(mockConfig));
+    describe('Save Operations', () => {
+        it('should save UI data successfully', async () => {
+            mockAxiosInstance.post.mockResolvedValue(
+                testDataGenerators.createMockResponse('Success')
+            );
 
-      // Modify UI data
-      const newUIData = { displayName: 'Modified', count: 15, enabled: false };
-      act(() => {
-        result.current.handleUIDataChange(newUIData);
-      });
+            const { result } = renderHookWithSetup(() => useDualModeEditor(mockConfig));
 
-      // Switch to JSON mode
-      act(() => {
-        result.current.handleViewModeChange({} as React.MouseEvent<HTMLElement>, 'json');
-      });
+            // Set some UI data
+            const uiData = { displayName: 'Test Save', count: 100, enabled: true };
+            act(() => {
+                result.current.handleUIDataChange(uiData);
+            });
 
-      expect(mockConfig.uiToJSON).toHaveBeenCalledWith(newUIData);
-      expect(result.current.jsonData).toEqual({
-        name: 'Modified',
-        value: 15,
-        active: false,
-      });
-    });
-  });
+            await act(async () => {
+                await result.current.handleSave();
+            });
 
-  describe('Data Changes', () => {
-    it('should update UI data and clear validation error', () => {
-      const { result } = renderHookWithSetup(() => useDualModeEditor(mockConfig));
+            expect(mockConfig.uiToJSON).toHaveBeenCalledWith(uiData);
+            expect(mockConfig.validator).toHaveBeenCalledWith({
+                name: 'Test Save',
+                value: 100,
+                active: true,
+            });
+            expect(mockAxiosInstance.post).toHaveBeenCalledWith('/api/test/save', {
+                name: 'Test Save',
+                value: 100,
+                active: true,
+            });
+            expect(mockEnqueueSnackbar).toHaveBeenCalledWith(
+                'Configuration saved successfully', 
+                { variant: 'success' }
+            );
+        });
 
-      // Set an initial validation error
-      act(() => {
-        result.current.handleSave(); // This might set validation error
-      });
+        it('should save JSON data when in JSON mode', async () => {
+            mockAxiosInstance.post.mockResolvedValue(
+                testDataGenerators.createMockResponse('Success')
+            );
 
-      const newUIData = { displayName: 'New Name', count: 25, enabled: true };
-      act(() => {
-        result.current.handleUIDataChange(newUIData);
-      });
+            const { result } = renderHookWithSetup(() => useDualModeEditor(mockConfig));
 
-      expect(result.current.uiData).toEqual(newUIData);
-      expect(result.current.validationError).toBe('');
-    });
+            // Switch to JSON mode
+            act(() => {
+                result.current.handleViewModeChange({} as React.MouseEvent<HTMLElement>, 'json');
+            });
 
-    it('should update JSON data and clear validation error', () => {
-      const { result } = renderHookWithSetup(() => useDualModeEditor(mockConfig));
+            // Mock editor ref
+            const jsonData = { name: 'Editor Data', value: 50, active: true };
+            result.current.editorRef.current = {
+                getCurrentValue: vi.fn().mockReturnValue(jsonData),
+            };
 
-      const newJsonData = { name: 'New JSON', value: 30, active: false };
-      act(() => {
-        result.current.handleJSONDataChange(newJsonData);
-      });
+            await act(async () => {
+                await result.current.handleSave();
+            });
 
-      expect(result.current.jsonData).toEqual(newJsonData);
-      expect(result.current.validationError).toBe('');
-    });
-  });
+            expect(result.current.editorRef.current.getCurrentValue).toHaveBeenCalled();
+            expect(mockAxiosInstance.post).toHaveBeenCalledWith('/api/test/save', jsonData);
+        });
 
-  describe('Save Operations', () => {
-    it('should save UI data successfully', async () => {
-      mockAxiosInstance.post.mockResolvedValue(
-        testDataGenerators.createMockResponse('Success')
-      );
+        it('should handle validation errors during save', async () => {
+            const { result } = renderHookWithSetup(() => useDualModeEditor(mockConfig));
 
-      const { result } = renderHookWithSetup(() => useDualModeEditor(mockConfig));
+            // Set invalid data (negative value)
+            const invalidUIData = { displayName: 'Invalid', count: -5, enabled: true };
+            act(() => {
+                result.current.handleUIDataChange(invalidUIData);
+            });
 
-      // Set some UI data
-      const uiData = { displayName: 'Test Save', count: 100, enabled: true };
-      act(() => {
-        result.current.handleUIDataChange(uiData);
-      });
+            await act(async () => {
+                await result.current.handleSave();
+            });
 
-      await act(async () => {
-        await result.current.handleSave();
-      });
+            expect(result.current.validationError).toBe('Value must be non-negative');
+            expect(mockEnqueueSnackbar).toHaveBeenCalledWith(
+                'Validation Error: Value must be non-negative',
+                { variant: 'error' }
+            );
+            expect(mockAxiosInstance.post).not.toHaveBeenCalled();
+        });
 
-      expect(mockConfig.uiToJSON).toHaveBeenCalledWith(uiData);
-      expect(mockConfig.validator).toHaveBeenCalledWith({
-        name: 'Test Save',
-        value: 100,
-        active: true,
-      });
-      expect(mockAxiosInstance.post).toHaveBeenCalledWith('/api/test/save', {
-        name: 'Test Save',
-        value: 100,
-        active: true,
-      });
-      expect(mockEnqueueSnackbar).toHaveBeenCalledWith(
-        'Configuration saved successfully', 
-        { variant: 'success' }
-      );
-    });
+        it('should handle empty data during save', async () => {
+            const { result } = renderHookWithSetup(() => useDualModeEditor(mockConfig));
 
-    it('should save JSON data when in JSON mode', async () => {
-      mockAxiosInstance.post.mockResolvedValue(
-        testDataGenerators.createMockResponse('Success')
-      );
+            // Switch to JSON mode and mock empty data
+            act(() => {
+                result.current.handleViewModeChange({} as React.MouseEvent<HTMLElement>, 'json');
+            });
 
-      const { result } = renderHookWithSetup(() => useDualModeEditor(mockConfig));
+            result.current.editorRef.current = {
+                getCurrentValue: vi.fn().mockReturnValue(null),
+            };
 
-      // Switch to JSON mode
-      act(() => {
-        result.current.handleViewModeChange({} as React.MouseEvent<HTMLElement>, 'json');
-      });
+            await act(async () => {
+                await result.current.handleSave();
+            });
 
-      // Mock editor ref
-      const jsonData = { name: 'Editor Data', value: 50, active: true };
-      result.current.editorRef.current = {
-        getCurrentValue: vi.fn().mockReturnValue(jsonData),
-      };
+            expect(mockEnqueueSnackbar).toHaveBeenCalledWith(
+                'No valid data to save',
+                { variant: 'error' }
+            );
+            expect(mockAxiosInstance.post).not.toHaveBeenCalled();
+        });
 
-      await act(async () => {
-        await result.current.handleSave();
-      });
+        it('should handle save API errors', async () => {
+            mockAxiosInstance.post.mockRejectedValue(
+                testDataGenerators.createMockError('Save failed')
+            );
 
-      expect(result.current.editorRef.current.getCurrentValue).toHaveBeenCalled();
-      expect(mockAxiosInstance.post).toHaveBeenCalledWith('/api/test/save', jsonData);
-    });
+            const { result } = renderHookWithSetup(() => useDualModeEditor(mockConfig));
 
-    it('should handle validation errors during save', async () => {
-      const { result } = renderHookWithSetup(() => useDualModeEditor(mockConfig));
+            await act(async () => {
+                await result.current.handleSave();
+            });
 
-      // Set invalid data (negative value)
-      const invalidUIData = { displayName: 'Invalid', count: -5, enabled: true };
-      act(() => {
-        result.current.handleUIDataChange(invalidUIData);
-      });
+            // Should not throw, error is handled by errorBoundary
+            expect(mockAxiosInstance.post).toHaveBeenCalled();
+        });
 
-      await act(async () => {
-        await result.current.handleSave();
-      });
+        it('should update local state after successful save', async () => {
+            mockAxiosInstance.post.mockResolvedValue(
+                testDataGenerators.createMockResponse('Success')
+            );
 
-      expect(result.current.validationError).toBe('Value must be non-negative');
-      expect(mockEnqueueSnackbar).toHaveBeenCalledWith(
-        'Validation Error: Value must be non-negative',
-        { variant: 'error' }
-      );
-      expect(mockAxiosInstance.post).not.toHaveBeenCalled();
-    });
+            const { result } = renderHookWithSetup(() => useDualModeEditor(mockConfig));
 
-    it('should handle empty data during save', async () => {
-      const { result } = renderHookWithSetup(() => useDualModeEditor(mockConfig));
+            const uiData = { displayName: 'Updated', count: 75, enabled: false };
+            act(() => {
+                result.current.handleUIDataChange(uiData);
+            });
 
-      // Switch to JSON mode and mock empty data
-      act(() => {
-        result.current.handleViewModeChange({} as React.MouseEvent<HTMLElement>, 'json');
-      });
+            await act(async () => {
+                await result.current.handleSave();
+            });
 
-      result.current.editorRef.current = {
-        getCurrentValue: vi.fn().mockReturnValue(null),
-      };
-
-      await act(async () => {
-        await result.current.handleSave();
-      });
-
-      expect(mockEnqueueSnackbar).toHaveBeenCalledWith(
-        'No valid data to save',
-        { variant: 'error' }
-      );
-      expect(mockAxiosInstance.post).not.toHaveBeenCalled();
+            const expectedJsonData = { name: 'Updated', value: 75, active: false };
+            expect(result.current.jsonData).toEqual(expectedJsonData);
+            expect(result.current.uiData).toEqual({
+                displayName: 'Updated',
+                count: 75,
+                enabled: false,
+            });
+        });
     });
 
-    it('should handle save API errors', async () => {
-      mockAxiosInstance.post.mockRejectedValue(
-        testDataGenerators.createMockError('Save failed')
-      );
+    describe('Reset Operations', () => {
+        it('should reset data when confirmed', async () => {
+            const apiData = { name: 'Reset Data', value: 999, active: false };
+            mockAxiosInstance.get.mockResolvedValue(
+                testDataGenerators.createMockResponse(apiData)
+            );
 
-      const { result } = renderHookWithSetup(() => useDualModeEditor(mockConfig));
+            // Mock window.confirm to return true
+            const mockConfirm = vi.spyOn(window, 'confirm');
+            mockConfirm.mockReturnValue(true);
 
-      await act(async () => {
-        await result.current.handleSave();
-      });
+            const { result } = renderHookWithSetup(() => useDualModeEditor(mockConfig));
 
-      // Should not throw, error is handled by errorBoundary
-      expect(mockAxiosInstance.post).toHaveBeenCalled();
-    });
+            // Modify data first
+            act(() => {
+                result.current.handleUIDataChange({ displayName: 'Modified', count: 1, enabled: true });
+            });
 
-    it('should update local state after successful save', async () => {
-      mockAxiosInstance.post.mockResolvedValue(
-        testDataGenerators.createMockResponse('Success')
-      );
+            await act(async () => {
+                await result.current.handleReset();
+            });
 
-      const { result } = renderHookWithSetup(() => useDualModeEditor(mockConfig));
+            expect(mockConfirm).toHaveBeenCalledWith(
+                'Reset to defaults? This will overwrite your current configuration.'
+            );
+            expect(mockAxiosInstance.get).toHaveBeenCalledWith('/api/test/load');
+            expect(result.current.jsonData).toEqual(apiData);
+            expect(result.current.validationError).toBe('');
 
-      const uiData = { displayName: 'Updated', count: 75, enabled: false };
-      act(() => {
-        result.current.handleUIDataChange(uiData);
-      });
+            mockConfirm.mockRestore();
+        });
 
-      await act(async () => {
-        await result.current.handleSave();
-      });
+        it('should not reset data when not confirmed', async () => {
+            const mockConfirm = vi.spyOn(window, 'confirm');
+            mockConfirm.mockReturnValue(false);
 
-      const expectedJsonData = { name: 'Updated', value: 75, active: false };
-      expect(result.current.jsonData).toEqual(expectedJsonData);
-      expect(result.current.uiData).toEqual({
-        displayName: 'Updated',
-        count: 75,
-        enabled: false,
-      });
-    });
-  });
+            const { result } = renderHookWithSetup(() => useDualModeEditor(mockConfig));
 
-  describe('Reset Operations', () => {
-    it('should reset data when confirmed', async () => {
-      const apiData = { name: 'Reset Data', value: 999, active: false };
-      mockAxiosInstance.get.mockResolvedValue(
-        testDataGenerators.createMockResponse(apiData)
-      );
+            const originalJsonData = result.current.jsonData;
 
-      // Mock window.confirm to return true
-      const mockConfirm = vi.spyOn(window, 'confirm');
-      mockConfirm.mockReturnValue(true);
+            await act(async () => {
+                await result.current.handleReset();
+            });
 
-      const { result } = renderHookWithSetup(() => useDualModeEditor(mockConfig));
+            expect(mockConfirm).toHaveBeenCalled();
+            expect(mockAxiosInstance.get).not.toHaveBeenCalled();
+            expect(result.current.jsonData).toEqual(originalJsonData);
 
-      // Modify data first
-      act(() => {
-        result.current.handleUIDataChange({ displayName: 'Modified', count: 1, enabled: true });
-      });
+            mockConfirm.mockRestore();
+        });
 
-      await act(async () => {
-        await result.current.handleReset();
-      });
-
-      expect(mockConfirm).toHaveBeenCalledWith(
-        'Reset to defaults? This will overwrite your current configuration.'
-      );
-      expect(mockAxiosInstance.get).toHaveBeenCalledWith('/api/test/load');
-      expect(result.current.jsonData).toEqual(apiData);
-      expect(result.current.validationError).toBe('');
-
-      mockConfirm.mockRestore();
-    });
-
-    it('should not reset data when not confirmed', async () => {
-      const mockConfirm = vi.spyOn(window, 'confirm');
-      mockConfirm.mockReturnValue(false);
-
-      const { result } = renderHookWithSetup(() => useDualModeEditor(mockConfig));
-
-      const originalJsonData = result.current.jsonData;
-
-      await act(async () => {
-        await result.current.handleReset();
-      });
-
-      expect(mockConfirm).toHaveBeenCalled();
-      expect(mockAxiosInstance.get).not.toHaveBeenCalled();
-      expect(result.current.jsonData).toEqual(originalJsonData);
-
-      mockConfirm.mockRestore();
-    });
-
-    it('should clear validation error on reset', async () => {
-      const mockConfirm = vi.spyOn(window, 'confirm');
-      mockConfirm.mockReturnValue(true);
+        it('should clear validation error on reset', async () => {
+            const mockConfirm = vi.spyOn(window, 'confirm');
+            mockConfirm.mockReturnValue(true);
       
-      mockAxiosInstance.get.mockResolvedValue(
-        testDataGenerators.createMockResponse({ name: 'Reset', value: 1, active: true })
-      );
+            mockAxiosInstance.get.mockResolvedValue(
+                testDataGenerators.createMockResponse({ name: 'Reset', value: 1, active: true })
+            );
 
-      const { result } = renderHookWithSetup(() => useDualModeEditor(mockConfig));
+            const { result } = renderHookWithSetup(() => useDualModeEditor(mockConfig));
 
-      // Set a validation error first
-      await act(async () => {
-        result.current.handleUIDataChange({ displayName: '', count: -1, enabled: true });
-        await result.current.handleSave();
-      });
+            // Set a validation error first
+            await act(async () => {
+                result.current.handleUIDataChange({ displayName: '', count: -1, enabled: true });
+                await result.current.handleSave();
+            });
 
-      expect(result.current.validationError).toBeTruthy();
+            expect(result.current.validationError).toBeTruthy();
 
-      await act(async () => {
-        await result.current.handleReset();
-      });
+            await act(async () => {
+                await result.current.handleReset();
+            });
 
-      expect(result.current.validationError).toBe('');
+            expect(result.current.validationError).toBe('');
 
-      mockConfirm.mockRestore();
-    });
-  });
-
-  describe('Validation', () => {
-    it('should validate data with custom validator', () => {
-      // Use the result to avoid unused variable warning
-      renderHookWithSetup(() => useDualModeEditor(mockConfig));
-
-      // Test valid data
-      expect(mockConfig.validator({ name: 'Valid', value: 10, active: true })).toBeNull();
-
-      // Test empty name
-      expect(mockConfig.validator({ name: '', value: 10, active: true })).toBe('Name is required');
-
-      // Test negative value
-      expect(mockConfig.validator({ name: 'Test', value: -1, active: true })).toBe('Value must be non-negative');
+            mockConfirm.mockRestore();
+        });
     });
 
-    it('should clear validation error when data changes', () => {
-      const { result } = renderHookWithSetup(() => useDualModeEditor(mockConfig));
+    describe('Validation', () => {
+        it('should validate data with custom validator', () => {
+            // Use the result to avoid unused variable warning
+            renderHookWithSetup(() => useDualModeEditor(mockConfig));
 
-      // First, create a validation error
-      act(() => {
-        result.current.handleUIDataChange({ displayName: '', count: -1, enabled: true });
-      });
+            // Test valid data
+            expect(mockConfig.validator({ name: 'Valid', value: 10, active: true })).toBeNull();
 
-      // Now fix the data
-      act(() => {
-        result.current.handleUIDataChange({ displayName: 'Fixed', count: 10, enabled: true });
-      });
+            // Test empty name
+            expect(mockConfig.validator({ name: '', value: 10, active: true })).toBe('Name is required');
 
-      expect(result.current.validationError).toBe('');
-    });
-  });
+            // Test negative value
+            expect(mockConfig.validator({ name: 'Test', value: -1, active: true })).toBe('Value must be non-negative');
+        });
 
-  describe('Edge Cases', () => {
-    it('should handle concurrent save operations', async () => {
-      mockAxiosInstance.post.mockImplementation(() => 
-        new Promise(resolve => setTimeout(() => resolve(testDataGenerators.createMockResponse('Success')), 100))
-      );
+        it('should clear validation error when data changes', () => {
+            const { result } = renderHookWithSetup(() => useDualModeEditor(mockConfig));
 
-      const { result } = renderHookWithSetup(() => useDualModeEditor(mockConfig));
+            // First, create a validation error
+            act(() => {
+                result.current.handleUIDataChange({ displayName: '', count: -1, enabled: true });
+            });
 
-      // Start multiple saves concurrently
-      const savePromises = [
-        result.current.handleSave(),
-        result.current.handleSave(),
-        result.current.handleSave(),
-      ];
+            // Now fix the data
+            act(() => {
+                result.current.handleUIDataChange({ displayName: 'Fixed', count: 10, enabled: true });
+            });
 
-      await act(async () => {
-        await Promise.all(savePromises);
-      });
-
-      // All should complete without throwing
-      expect(mockAxiosInstance.post).toHaveBeenCalled();
+            expect(result.current.validationError).toBe('');
+        });
     });
 
-    it('should handle malformed JSON data', async () => {
-      const { result } = renderHookWithSetup(() => useDualModeEditor(mockConfig));
+    describe('Edge Cases', () => {
+        it('should handle concurrent save operations', async () => {
+            mockAxiosInstance.post.mockImplementation(() => 
+                new Promise(resolve => setTimeout(() => resolve(testDataGenerators.createMockResponse('Success')), 100))
+            );
 
-      // Switch to JSON mode
-      act(() => {
-        result.current.handleViewModeChange({} as React.MouseEvent<HTMLElement>, 'json');
-      });
+            const { result } = renderHookWithSetup(() => useDualModeEditor(mockConfig));
 
-      // Mock malformed JSON from editor
-      result.current.editorRef.current = {
-        getCurrentValue: vi.fn().mockReturnValue('invalid json'),
-      };
+            // Start multiple saves concurrently
+            const savePromises = [
+                result.current.handleSave(),
+                result.current.handleSave(),
+                result.current.handleSave()
+            ];
 
-      await act(async () => {
-        await result.current.handleSave();
-      });
+            await act(async () => {
+                await Promise.all(savePromises);
+            });
 
-      expect(mockEnqueueSnackbar).toHaveBeenCalledWith(
-        'No valid data to save',
-        { variant: 'error' }
-      );
+            // All should complete without throwing
+            expect(mockAxiosInstance.post).toHaveBeenCalled();
+        });
+
+        it('should handle malformed JSON data', async () => {
+            const { result } = renderHookWithSetup(() => useDualModeEditor(mockConfig));
+
+            // Switch to JSON mode
+            act(() => {
+                result.current.handleViewModeChange({} as React.MouseEvent<HTMLElement>, 'json');
+            });
+
+            // Mock malformed JSON from editor
+            result.current.editorRef.current = {
+                getCurrentValue: vi.fn().mockReturnValue('invalid json'),
+            };
+
+            await act(async () => {
+                await result.current.handleSave();
+            });
+
+            expect(mockEnqueueSnackbar).toHaveBeenCalledWith(
+                'No valid data to save',
+                { variant: 'error' }
+            );
+        });
+
+        it('should handle converter function errors', () => {
+            const errorConfig = {
+                ...mockConfig,
+                jsonToUI: vi.fn().mockImplementation(() => {
+                    throw new Error('Conversion failed');
+                }),
+            };
+
+            // Should not crash on initialization
+            const { result } = renderHookWithSetup(() => useDualModeEditor(errorConfig));
+
+            // Hook should still be initialized
+            expect(result.current).toBeDefined();
+            expect(result.current.viewMode).toBe('ui');
+        });
     });
 
-    it('should handle converter function errors', () => {
-      const errorConfig = {
-        ...mockConfig,
-        jsonToUI: vi.fn().mockImplementation(() => {
-          throw new Error('Conversion failed');
-        }),
-      };
-
-      // Should not crash on initialization
-      const { result } = renderHookWithSetup(() => useDualModeEditor(errorConfig));
-
-      // Hook should still be initialized
-      expect(result.current).toBeDefined();
-      expect(result.current.viewMode).toBe('ui');
+    describe('Variable Usage Test', () => {
+        it('should mock variables to avoid unused warnings', () => {
+            // This test exists purely to use variables that might otherwise be unused
+            expect(mockEditorRef).toBeDefined();
+            expect(testDataGenerators).toBeDefined();
+            expect(waitForAsync).toBeDefined();
+            // MockedFunction was a type import that we no longer need
+        });
     });
-  });
-
-  describe('Variable Usage Test', () => {
-    it('should mock variables to avoid unused warnings', () => {
-      // This test exists purely to use variables that might otherwise be unused
-      expect(mockEditorRef).toBeDefined();
-      expect(testDataGenerators).toBeDefined();
-      expect(waitForAsync).toBeDefined();
-      // MockedFunction was a type import that we no longer need
-    });
-  });
 });

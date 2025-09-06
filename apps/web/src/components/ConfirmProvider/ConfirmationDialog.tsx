@@ -1,3 +1,4 @@
+import React from "react";
 import Button from "@mui/material/Button";
 import Dialog, { DialogProps } from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -42,7 +43,11 @@ const ConfirmationDialog = ({ open, options, onCancel, onConfirm, onClose }: Pro
     }, [onCancel])
 
     const dialogActions = (buttonOrder || []).map((buttonType: string) => {
-        if (buttonType === "cancel" && !hideCancelButton) {
+        if (buttonType === "cancel") {
+            if (hideCancelButton) {
+                return null;
+            }
+
             return (
                 <Button key="cancel" {...cancellationButtonProps} onClick={onCancelClick}>
                     {cancellationText}
@@ -61,7 +66,7 @@ const ConfirmationDialog = ({ open, options, onCancel, onConfirm, onClose }: Pro
         throw new Error(
             `Supported button types are only "confirm" and "cancel", got: ${buttonType}`
         );
-    });
+    }).filter(Boolean);
 
     return (
 

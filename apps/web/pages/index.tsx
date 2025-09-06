@@ -11,7 +11,7 @@ import { NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { enqueueSnackbar } from "notistack";
-import { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
 import { GetSettingsResponse } from "./api/settings";
 

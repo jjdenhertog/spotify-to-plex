@@ -1,3 +1,4 @@
+/* eslint-disable max-lines, @typescript-eslint/prefer-destructuring */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import axios from 'axios';
 import { Agent } from 'node:https';
@@ -53,11 +54,10 @@ describe('axiosDelete', () => {
 
             await axiosDelete(testUrl, testToken);
 
-            const callArgs = mockedAxios.delete.mock.calls[0];
-            expect(callArgs).toBeDefined();
-            expect(callArgs).toHaveLength(2); // URL and config only, no body
-            expect(callArgs![0]).toBe(testUrl);
-            expect(callArgs![1]).toHaveProperty('headers');
+            const [callUrl, callConfig] = mockedAxios.delete.mock.calls[0]!;
+            expect(callUrl).toBe(testUrl);
+            expect(callConfig).toHaveProperty('headers');
+            expect(mockedAxios.delete.mock.calls[0]).toHaveLength(2); // URL and config only, no body
         });
 
         it('should create Agent with rejectUnauthorized: false', () => {
@@ -91,10 +91,9 @@ describe('axiosDelete', () => {
 
             await axiosDelete(testUrl, testToken);
 
-            const callArgs = mockedAxios.delete.mock.calls[0];
-            const config = callArgs![1] as any;
+            const [, config] = mockedAxios.delete.mock.calls[0]!;
       
-            expect(config.headers).toHaveProperty('Accept', 'application/json');
+            expect((config as any).headers).toHaveProperty('Accept', 'application/json');
         });
 
         it('should always include X-Plex-Token header', async () => {
@@ -103,10 +102,9 @@ describe('axiosDelete', () => {
 
             await axiosDelete(testUrl, testToken);
 
-            const callArgs = mockedAxios.delete.mock.calls[0];
-            const config = callArgs![1] as any;
+            const [, config] = mockedAxios.delete.mock.calls[0]!;
       
-            expect(config.headers).toHaveProperty('X-Plex-Token', testToken);
+            expect((config as any).headers).toHaveProperty('X-Plex-Token', testToken);
         });
     });
 
@@ -266,7 +264,7 @@ describe('axiosDelete', () => {
             };
             mockedAxios.delete.mockResolvedValue(mockResponse);
 
-            const result = await axiosDelete<void>(testUrl, testToken);
+            const result = await axiosDelete<undefined>(testUrl, testToken);
 
             expect(result.status).toBe(204);
             expect(result.data).toBeNull();
@@ -280,7 +278,7 @@ describe('axiosDelete', () => {
             };
             mockedAxios.delete.mockResolvedValue(mockResponse);
 
-            const result = await axiosDelete<{}>(testUrl, testToken);
+            const result = await axiosDelete<Record<string, unknown>>(testUrl, testToken);
 
             expect(result.status).toBe(200);
             expect(result.data).toEqual({});
@@ -386,8 +384,7 @@ describe('axiosDelete', () => {
             const {calls} = mockedAxios.delete.mock;
             expect(calls).toHaveLength(3);
 
-            calls.forEach(call => {
-                const [url, config] = call;
+            calls.forEach(([url, config]) => {
                 expect(url).toBe(testUrl);
                 expect(config).toHaveProperty('httpsAgent', mockAgent);
                 expect((config as any).headers).toHaveProperty('Accept', 'application/json');
@@ -541,12 +538,12 @@ describe('axiosDelete', () => {
 
             await axiosDelete(testUrl, testToken);
 
-            const callArgs = mockedAxios.delete.mock.calls[0];
+            const [callUrl, callConfig] = mockedAxios.delete.mock.calls[0]!;
             // DELETE should only have URL and config, no body parameter
-            expect(callArgs).toHaveLength(2);
-            expect(typeof callArgs![0]).toBe('string'); // URL
-            expect(typeof callArgs![1]).toBe('object'); // Config
-            expect(callArgs![1]).toHaveProperty('headers');
+            expect(mockedAxios.delete.mock.calls[0]).toHaveLength(2);
+            expect(typeof callUrl).toBe('string'); // URL
+            expect(typeof callConfig).toBe('object'); // Config
+            expect(callConfig).toHaveProperty('headers');
         });
 
         it('should support query parameters for delete operations', async () => {

@@ -7,69 +7,66 @@ import ErrorProvider from '../../src/components/ErrorProvider/ErrorProvider';
 
 // Create a theme for testing
 const theme = createTheme({
-  palette: {
-    mode: 'light',
-  },
+    palette: {
+        mode: 'light',
+    },
 });
 
 // Create a custom render function that includes providers
-interface CustomRenderOptions extends Omit<RenderOptions, 'wrapper'> {
+type CustomRenderOptions = {
   withErrorProvider?: boolean;
   withSnackbar?: boolean;
-}
+} & Omit<RenderOptions, 'wrapper'>
 
 const AllTheProviders = ({ 
-  children, 
-  withErrorProvider = true, 
-  withSnackbar = true 
+    children, 
+    withErrorProvider = true, 
+    withSnackbar = true 
 }: { 
-  children: React.ReactNode;
-  withErrorProvider?: boolean;
-  withSnackbar?: boolean;
+  readonly children: React.ReactNode;
+  readonly withErrorProvider?: boolean;
+  readonly withSnackbar?: boolean;
 }) => {
-  let component = (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      {children}
-    </ThemeProvider>
-  );
-
-  if (withSnackbar) {
-    component = (
-      <SnackbarProvider maxSnack={3}>
-        {component}
-      </SnackbarProvider>
+    let component = (
+        <ThemeProvider theme={theme}>
+            <CssBaseline />
+            {children}
+        </ThemeProvider>
     );
-  }
 
-  if (withErrorProvider) {
-    component = (
-      <ErrorProvider>
-        {component}
-      </ErrorProvider>
-    );
-  }
+    if (withSnackbar) {
+        component = (
+            <SnackbarProvider maxSnack={3}>
+                {component}
+            </SnackbarProvider>
+        );
+    }
 
-  return component;
+    if (withErrorProvider) {
+        component = (
+            <ErrorProvider>
+                {component}
+            </ErrorProvider>
+        );
+    }
+
+    return component;
 };
 
 const customRender = (
-  ui: ReactElement,
-  options?: CustomRenderOptions
+    ui: ReactElement,
+    options?: CustomRenderOptions
 ) => {
-  const { withErrorProvider = true, withSnackbar = true, ...renderOptions } = options || {};
+    const { withErrorProvider = true, withSnackbar = true, ...renderOptions } = options || {};
   
-  return render(ui, {
-    wrapper: ({ children }) => (
-      <AllTheProviders 
-        withErrorProvider={withErrorProvider} 
-        withSnackbar={withSnackbar}
-      >
-        {children}
-      </AllTheProviders>
-    ),
-    ...renderOptions,
-  });
+    return render(ui, {
+        wrapper: ({ children }) => (
+            <AllTheProviders withErrorProvider={withErrorProvider} withSnackbar={withSnackbar}>
+                {children}
+            </AllTheProviders>
+        ),
+        ...renderOptions,
+    });
 };
 
 // Re-export everything

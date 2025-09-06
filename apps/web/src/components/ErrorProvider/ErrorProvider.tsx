@@ -1,9 +1,9 @@
 "use client";
 
+import React, { memo, useCallback, useMemo, useState } from "react";
 import CloseOutlined from '@mui/icons-material/CloseOutlined';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import { Accordion, AccordionDetails, AccordionSummary, Box, Dialog, DialogContent, DialogTitle, IconButton, Paper, Typography } from "@mui/material";
-import { memo, useCallback, useMemo, useState } from "react";
 import { ErrorContext } from "./ErrorContext";
 import { ProviderContext } from "./types";
 

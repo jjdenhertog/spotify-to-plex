@@ -77,7 +77,7 @@ export function validateExpression(expression: string): ValidationResult {
         const operators = Array.from(expression.matchAll(operatorRegex), m => m[1]);
         
         // Also check for words that might be intended as operators but aren't valid
-        const invalidOperatorRegex = /\s+(BUT|XOR|NOR|NAND)\s+/gi;
+        const invalidOperatorRegex = /\s+(but|xor|nor|nand)\s+/gi;
         const invalidOps = Array.from(expression.matchAll(invalidOperatorRegex), m => m[1]);
         
         if (invalidOps.length > 0) {

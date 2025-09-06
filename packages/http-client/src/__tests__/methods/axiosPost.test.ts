@@ -1,3 +1,4 @@
+/* eslint-disable max-lines, @typescript-eslint/prefer-destructuring */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import axios from 'axios';
 import { Agent } from 'node:https';
@@ -54,8 +55,7 @@ describe('axiosPost', () => {
 
             await axiosPost(testUrl, testToken);
 
-            const callArgs = mockedAxios.post.mock.calls[0];
-            const body = callArgs![1];
+            const [, body] = mockedAxios.post.mock.calls[0]!;
       
             expect(body).toEqual({});
         });
@@ -92,10 +92,10 @@ describe('axiosPost', () => {
 
             await axiosPost(testUrl, testToken);
 
-            const callArgs = mockedAxios.post.mock.calls[0];
-            const config = callArgs![2] as any;
+            // eslint-disable-next-line unicorn/no-unreadable-array-destructuring
+            const [, , config] = mockedAxios.post.mock.calls[0]!;
       
-            expect(config.headers).toHaveProperty('Accept', 'application/json');
+            expect((config as any).headers).toHaveProperty('Accept', 'application/json');
         });
 
         it('should always include X-Plex-Token header', async () => {
@@ -104,10 +104,10 @@ describe('axiosPost', () => {
 
             await axiosPost(testUrl, testToken);
 
-            const callArgs = mockedAxios.post.mock.calls[0];
-            const config = callArgs![2] as any;
+            // eslint-disable-next-line unicorn/no-unreadable-array-destructuring
+            const [, , config] = mockedAxios.post.mock.calls[0]!;
       
-            expect(config.headers).toHaveProperty('X-Plex-Token', testToken);
+            expect((config as any).headers).toHaveProperty('X-Plex-Token', testToken);
         });
     });
 
@@ -248,7 +248,7 @@ describe('axiosPost', () => {
             };
             mockedAxios.post.mockResolvedValue(mockResponse);
 
-            const result = await axiosPost<void>(testUrl, testToken);
+            const result = await axiosPost<undefined>(testUrl, testToken);
 
             expect(result.status).toBe(204);
             expect(result.data).toBeNull();
@@ -357,8 +357,7 @@ describe('axiosPost', () => {
             const {calls} = mockedAxios.post.mock;
             expect(calls).toHaveLength(3);
 
-            calls.forEach(call => {
-                const [url, body, config] = call;
+            calls.forEach(([url, body, config]) => {
                 expect(url).toBe(testUrl);
                 expect(body).toEqual({});
                 expect(config).toHaveProperty('httpsAgent', mockAgent);
@@ -442,12 +441,11 @@ describe('axiosPost', () => {
 
             await axiosPost(testUrl, testToken);
 
-            const callArgs = mockedAxios.post.mock.calls[0];
-            const body = callArgs![1];
+            const [, body] = mockedAxios.post.mock.calls[0]!;
       
             expect(body).toEqual({});
             expect(typeof body).toBe('object');
-            expect(Object.keys(body as any)).toHaveLength(0);
+            expect(Object.keys(body as object)).toHaveLength(0);
         });
 
         it('should send same body structure across multiple calls', async () => {
@@ -459,8 +457,7 @@ describe('axiosPost', () => {
             await axiosPost(testUrl, testToken);
 
             const {calls} = mockedAxios.post.mock;
-            calls.forEach(call => {
-                const body = call[1];
+            calls.forEach(([, body]) => {
                 expect(body).toEqual({});
             });
         });
