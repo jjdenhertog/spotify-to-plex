@@ -1,55 +1,1126 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuites name="vitest tests" tests="25" failures="0" errors="0" time="0.81948891">
-    <testsuite name="__tests__/components/CustomPaper/CustomPaper.test.tsx" timestamp="2025-09-06T19:03:00.651Z" hostname="c82ba9db4d53" tests="25" failures="0" errors="0" skipped="0" time="0.81948891">
-        <testcase classname="__tests__/components/CustomPaper/CustomPaper.test.tsx" name="CustomPaper &gt; Basic Rendering &gt; should render without crashing" time="0.072877121">
+<testsuites name="vitest tests" tests="35" failures="35" errors="0" time="0.530569986">
+    <testsuite name="__tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx" timestamp="2025-09-06T19:52:50.664Z" hostname="c82ba9db4d53" tests="35" failures="35" errors="0" skipped="0" time="0.530569986">
+        <testcase classname="__tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx" name="EnhancedMonacoJsonEditor &gt; Basic Rendering &gt; should render without crashing" time="0.136457833">
+            <system-err>
+Error: Uncaught [TypeError: editor.addAction is not a function]
+    at reportException (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/helpers/runtime-script-errors.js:66:24)
+    at innerInvokeEventListeners (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:353:9)
+    at invokeEventListeners (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:286:3)
+    at HTMLUnknownElementImpl._dispatch (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:233:9)
+    at HTMLUnknownElementImpl.dispatchEvent (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:104:17)
+    at HTMLUnknownElement.dispatchEvent (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/generated/EventTarget.js:241:34)
+    at Object.invokeGuardedCallbackDev (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:4213:16)
+    at invokeGuardedCallback (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:4277:31)
+    at reportUncaughtErrorInDEV (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:22877:5)
+    at captureCommitPhaseError (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27165:5) TypeError: editor.addAction is not a function
+    at [90m/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/[39msrc/components/EnhancedMonacoJsonEditor.tsx:127:20
+    at [90m/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/[39m__tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx:35:21
+    at commitHookEffectListMount (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:23189:26)
+    at commitPassiveMountOnFiber (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24970:11)
+    at commitPassiveMountEffects_complete (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24930:9)
+    at commitPassiveMountEffects_begin (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24917:7)
+    at commitPassiveMountEffects (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24905:3)
+    at flushPassiveEffectsImpl (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:27078:3)
+    at flushPassiveEffects (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:27023:14)
+    at performSyncWorkOnRoot (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:26115:3)
+
+            </system-err>
+            <failure message="editor.addAction is not a function" type="TypeError">
+TypeError: editor.addAction is not a function
+ ❯ src/components/EnhancedMonacoJsonEditor.tsx:127:20
+ ❯ __tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx:35:21
+ ❯ commitHookEffectListMount ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:23189:26
+ ❯ commitPassiveMountOnFiber ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24970:11
+ ❯ commitPassiveMountEffects_complete ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24930:9
+ ❯ commitPassiveMountEffects_begin ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24917:7
+ ❯ commitPassiveMountEffects ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24905:3
+ ❯ flushPassiveEffectsImpl ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27078:3
+ ❯ flushPassiveEffects ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27023:14
+ ❯ performSyncWorkOnRoot ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:26115:3
+            </failure>
+            <failure message="Timers are not mocked. Try calling &quot;vi.useFakeTimers()&quot; first." type="Error">
+Error: Timers are not mocked. Try calling &quot;vi.useFakeTimers()&quot; first.
+ ❯ __tests__/test-utils/setup-tests.ts:32:8
+            </failure>
         </testcase>
-        <testcase classname="__tests__/components/CustomPaper/CustomPaper.test.tsx" name="CustomPaper &gt; Basic Rendering &gt; should render with children" time="0.02143135">
+        <testcase classname="__tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx" name="EnhancedMonacoJsonEditor &gt; Basic Rendering &gt; should render with JSON value" time="0.0205227">
+            <system-err>
+Error: Uncaught [TypeError: editor.addAction is not a function]
+    at reportException (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/helpers/runtime-script-errors.js:66:24)
+    at innerInvokeEventListeners (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:353:9)
+    at invokeEventListeners (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:286:3)
+    at HTMLUnknownElementImpl._dispatch (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:233:9)
+    at HTMLUnknownElementImpl.dispatchEvent (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:104:17)
+    at HTMLUnknownElement.dispatchEvent (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/generated/EventTarget.js:241:34)
+    at Object.invokeGuardedCallbackDev (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:4213:16)
+    at invokeGuardedCallback (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:4277:31)
+    at reportUncaughtErrorInDEV (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:22877:5)
+    at captureCommitPhaseError (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27165:5) TypeError: editor.addAction is not a function
+    at [90m/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/[39msrc/components/EnhancedMonacoJsonEditor.tsx:127:20
+    at [90m/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/[39m__tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx:35:21
+    at commitHookEffectListMount (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:23189:26)
+    at commitPassiveMountOnFiber (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24970:11)
+    at commitPassiveMountEffects_complete (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24930:9)
+    at commitPassiveMountEffects_begin (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24917:7)
+    at commitPassiveMountEffects (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24905:3)
+    at flushPassiveEffectsImpl (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:27078:3)
+    at flushPassiveEffects (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:27023:14)
+    at performSyncWorkOnRoot (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:26115:3)
+
+            </system-err>
+            <failure message="editor.addAction is not a function" type="TypeError">
+TypeError: editor.addAction is not a function
+ ❯ src/components/EnhancedMonacoJsonEditor.tsx:127:20
+ ❯ __tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx:35:21
+ ❯ commitHookEffectListMount ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:23189:26
+ ❯ commitPassiveMountOnFiber ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24970:11
+ ❯ commitPassiveMountEffects_complete ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24930:9
+ ❯ commitPassiveMountEffects_begin ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24917:7
+ ❯ commitPassiveMountEffects ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24905:3
+ ❯ flushPassiveEffectsImpl ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27078:3
+ ❯ flushPassiveEffects ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27023:14
+ ❯ performSyncWorkOnRoot ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:26115:3
+            </failure>
+            <failure message="Timers are not mocked. Try calling &quot;vi.useFakeTimers()&quot; first." type="Error">
+Error: Timers are not mocked. Try calling &quot;vi.useFakeTimers()&quot; first.
+ ❯ __tests__/test-utils/setup-tests.ts:32:8
+            </failure>
         </testcase>
-        <testcase classname="__tests__/components/CustomPaper/CustomPaper.test.tsx" name="CustomPaper &gt; Basic Rendering &gt; should render multiple children" time="0.02146629">
+        <testcase classname="__tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx" name="EnhancedMonacoJsonEditor &gt; Basic Rendering &gt; should render with custom height" time="0.016328199">
+            <system-err>
+Error: Uncaught [TypeError: editor.addAction is not a function]
+    at reportException (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/helpers/runtime-script-errors.js:66:24)
+    at innerInvokeEventListeners (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:353:9)
+    at invokeEventListeners (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:286:3)
+    at HTMLUnknownElementImpl._dispatch (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:233:9)
+    at HTMLUnknownElementImpl.dispatchEvent (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:104:17)
+    at HTMLUnknownElement.dispatchEvent (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/generated/EventTarget.js:241:34)
+    at Object.invokeGuardedCallbackDev (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:4213:16)
+    at invokeGuardedCallback (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:4277:31)
+    at reportUncaughtErrorInDEV (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:22877:5)
+    at captureCommitPhaseError (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27165:5) TypeError: editor.addAction is not a function
+    at [90m/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/[39msrc/components/EnhancedMonacoJsonEditor.tsx:127:20
+    at [90m/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/[39m__tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx:35:21
+    at commitHookEffectListMount (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:23189:26)
+    at commitPassiveMountOnFiber (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24970:11)
+    at commitPassiveMountEffects_complete (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24930:9)
+    at commitPassiveMountEffects_begin (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24917:7)
+    at commitPassiveMountEffects (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24905:3)
+    at flushPassiveEffectsImpl (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:27078:3)
+    at flushPassiveEffects (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:27023:14)
+    at performSyncWorkOnRoot (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:26115:3)
+
+            </system-err>
+            <failure message="editor.addAction is not a function" type="TypeError">
+TypeError: editor.addAction is not a function
+ ❯ src/components/EnhancedMonacoJsonEditor.tsx:127:20
+ ❯ __tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx:35:21
+ ❯ commitHookEffectListMount ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:23189:26
+ ❯ commitPassiveMountOnFiber ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24970:11
+ ❯ commitPassiveMountEffects_complete ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24930:9
+ ❯ commitPassiveMountEffects_begin ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24917:7
+ ❯ commitPassiveMountEffects ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24905:3
+ ❯ flushPassiveEffectsImpl ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27078:3
+ ❯ flushPassiveEffects ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27023:14
+ ❯ performSyncWorkOnRoot ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:26115:3
+            </failure>
+            <failure message="Timers are not mocked. Try calling &quot;vi.useFakeTimers()&quot; first." type="Error">
+Error: Timers are not mocked. Try calling &quot;vi.useFakeTimers()&quot; first.
+ ❯ __tests__/test-utils/setup-tests.ts:32:8
+            </failure>
         </testcase>
-        <testcase classname="__tests__/components/CustomPaper/CustomPaper.test.tsx" name="CustomPaper &gt; Basic Rendering &gt; should render without children" time="0.010514087">
+        <testcase classname="__tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx" name="EnhancedMonacoJsonEditor &gt; Basic Rendering &gt; should render in read-only mode" time="0.012243249">
+            <system-err>
+Error: Uncaught [TypeError: editor.addAction is not a function]
+    at reportException (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/helpers/runtime-script-errors.js:66:24)
+    at innerInvokeEventListeners (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:353:9)
+    at invokeEventListeners (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:286:3)
+    at HTMLUnknownElementImpl._dispatch (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:233:9)
+    at HTMLUnknownElementImpl.dispatchEvent (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:104:17)
+    at HTMLUnknownElement.dispatchEvent (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/generated/EventTarget.js:241:34)
+    at Object.invokeGuardedCallbackDev (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:4213:16)
+    at invokeGuardedCallback (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:4277:31)
+    at reportUncaughtErrorInDEV (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:22877:5)
+    at captureCommitPhaseError (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27165:5) TypeError: editor.addAction is not a function
+    at [90m/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/[39msrc/components/EnhancedMonacoJsonEditor.tsx:127:20
+    at [90m/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/[39m__tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx:35:21
+    at commitHookEffectListMount (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:23189:26)
+    at commitPassiveMountOnFiber (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24970:11)
+    at commitPassiveMountEffects_complete (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24930:9)
+    at commitPassiveMountEffects_begin (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24917:7)
+    at commitPassiveMountEffects (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24905:3)
+    at flushPassiveEffectsImpl (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:27078:3)
+    at flushPassiveEffects (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:27023:14)
+    at /var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:26808:9
+
+            </system-err>
+            <failure message="editor.addAction is not a function" type="TypeError">
+TypeError: editor.addAction is not a function
+ ❯ src/components/EnhancedMonacoJsonEditor.tsx:127:20
+ ❯ __tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx:35:21
+ ❯ commitHookEffectListMount ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:23189:26
+ ❯ commitPassiveMountOnFiber ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24970:11
+ ❯ commitPassiveMountEffects_complete ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24930:9
+ ❯ commitPassiveMountEffects_begin ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24917:7
+ ❯ commitPassiveMountEffects ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24905:3
+ ❯ flushPassiveEffectsImpl ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27078:3
+ ❯ flushPassiveEffects ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27023:14
+ ❯ ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:26808:9
+            </failure>
+            <failure message="Timers are not mocked. Try calling &quot;vi.useFakeTimers()&quot; first." type="Error">
+Error: Timers are not mocked. Try calling &quot;vi.useFakeTimers()&quot; first.
+ ❯ __tests__/test-utils/setup-tests.ts:32:8
+            </failure>
         </testcase>
-        <testcase classname="__tests__/components/CustomPaper/CustomPaper.test.tsx" name="CustomPaper &gt; Props Handling &gt; should apply HTML attributes correctly" time="0.014223939">
+        <testcase classname="__tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx" name="EnhancedMonacoJsonEditor &gt; Basic Rendering &gt; should display error message when provided" time="0.02261707">
+            <system-err>
+Error: Uncaught [TypeError: editor.addAction is not a function]
+    at reportException (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/helpers/runtime-script-errors.js:66:24)
+    at innerInvokeEventListeners (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:353:9)
+    at invokeEventListeners (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:286:3)
+    at HTMLUnknownElementImpl._dispatch (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:233:9)
+    at HTMLUnknownElementImpl.dispatchEvent (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:104:17)
+    at HTMLUnknownElement.dispatchEvent (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/generated/EventTarget.js:241:34)
+    at Object.invokeGuardedCallbackDev (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:4213:16)
+    at invokeGuardedCallback (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:4277:31)
+    at reportUncaughtErrorInDEV (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:22877:5)
+    at captureCommitPhaseError (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27165:5) TypeError: editor.addAction is not a function
+    at [90m/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/[39msrc/components/EnhancedMonacoJsonEditor.tsx:127:20
+    at [90m/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/[39m__tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx:35:21
+    at commitHookEffectListMount (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:23189:26)
+    at commitPassiveMountOnFiber (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24970:11)
+    at commitPassiveMountEffects_complete (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24930:9)
+    at commitPassiveMountEffects_begin (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24917:7)
+    at commitPassiveMountEffects (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24905:3)
+    at flushPassiveEffectsImpl (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:27078:3)
+    at flushPassiveEffects (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:27023:14)
+    at performSyncWorkOnRoot (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:26115:3)
+
+            </system-err>
+            <failure message="editor.addAction is not a function" type="TypeError">
+TypeError: editor.addAction is not a function
+ ❯ src/components/EnhancedMonacoJsonEditor.tsx:127:20
+ ❯ __tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx:35:21
+ ❯ commitHookEffectListMount ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:23189:26
+ ❯ commitPassiveMountOnFiber ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24970:11
+ ❯ commitPassiveMountEffects_complete ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24930:9
+ ❯ commitPassiveMountEffects_begin ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24917:7
+ ❯ commitPassiveMountEffects ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24905:3
+ ❯ flushPassiveEffectsImpl ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27078:3
+ ❯ flushPassiveEffects ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27023:14
+ ❯ performSyncWorkOnRoot ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:26115:3
+            </failure>
+            <failure message="Timers are not mocked. Try calling &quot;vi.useFakeTimers()&quot; first." type="Error">
+Error: Timers are not mocked. Try calling &quot;vi.useFakeTimers()&quot; first.
+ ❯ __tests__/test-utils/setup-tests.ts:32:8
+            </failure>
         </testcase>
-        <testcase classname="__tests__/components/CustomPaper/CustomPaper.test.tsx" name="CustomPaper &gt; Props Handling &gt; should handle click events" time="0.022381133">
+        <testcase classname="__tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx" name="EnhancedMonacoJsonEditor &gt; Import/Export Functionality &gt; should render import/export menu when enabled" time="0.015116991">
+            <system-err>
+Error: Uncaught [TypeError: editor.addAction is not a function]
+    at reportException (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/helpers/runtime-script-errors.js:66:24)
+    at innerInvokeEventListeners (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:353:9)
+    at invokeEventListeners (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:286:3)
+    at HTMLUnknownElementImpl._dispatch (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:233:9)
+    at HTMLUnknownElementImpl.dispatchEvent (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:104:17)
+    at HTMLUnknownElement.dispatchEvent (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/generated/EventTarget.js:241:34)
+    at Object.invokeGuardedCallbackDev (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:4213:16)
+    at invokeGuardedCallback (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:4277:31)
+    at reportUncaughtErrorInDEV (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:22877:5)
+    at captureCommitPhaseError (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27165:5) TypeError: editor.addAction is not a function
+    at [90m/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/[39msrc/components/EnhancedMonacoJsonEditor.tsx:127:20
+    at [90m/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/[39m__tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx:35:21
+    at commitHookEffectListMount (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:23189:26)
+    at commitPassiveMountOnFiber (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24970:11)
+    at commitPassiveMountEffects_complete (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24930:9)
+    at commitPassiveMountEffects_begin (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24917:7)
+    at commitPassiveMountEffects (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24905:3)
+    at flushPassiveEffectsImpl (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:27078:3)
+    at flushPassiveEffects (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:27023:14)
+    at performSyncWorkOnRoot (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:26115:3)
+
+            </system-err>
+            <failure message="editor.addAction is not a function" type="TypeError">
+TypeError: editor.addAction is not a function
+ ❯ src/components/EnhancedMonacoJsonEditor.tsx:127:20
+ ❯ __tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx:35:21
+ ❯ commitHookEffectListMount ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:23189:26
+ ❯ commitPassiveMountOnFiber ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24970:11
+ ❯ commitPassiveMountEffects_complete ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24930:9
+ ❯ commitPassiveMountEffects_begin ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24917:7
+ ❯ commitPassiveMountEffects ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24905:3
+ ❯ flushPassiveEffectsImpl ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27078:3
+ ❯ flushPassiveEffects ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27023:14
+ ❯ performSyncWorkOnRoot ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:26115:3
+            </failure>
+            <failure message="Timers are not mocked. Try calling &quot;vi.useFakeTimers()&quot; first." type="Error">
+Error: Timers are not mocked. Try calling &quot;vi.useFakeTimers()&quot; first.
+ ❯ __tests__/test-utils/setup-tests.ts:32:8
+            </failure>
         </testcase>
-        <testcase classname="__tests__/components/CustomPaper/CustomPaper.test.tsx" name="CustomPaper &gt; Props Handling &gt; should handle mouse events" time="0.014959819">
+        <testcase classname="__tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx" name="EnhancedMonacoJsonEditor &gt; Import/Export Functionality &gt; should not render import/export menu when disabled" time="0.024159213">
+            <failure message="Timers are not mocked. Try calling &quot;vi.useFakeTimers()&quot; first." type="Error">
+Error: Timers are not mocked. Try calling &quot;vi.useFakeTimers()&quot; first.
+ ❯ __tests__/test-utils/setup-tests.ts:32:8
+            </failure>
         </testcase>
-        <testcase classname="__tests__/components/CustomPaper/CustomPaper.test.tsx" name="CustomPaper &gt; Props Handling &gt; should handle keyboard events" time="0.020906872">
+        <testcase classname="__tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx" name="EnhancedMonacoJsonEditor &gt; Import/Export Functionality &gt; should not render import/export menu when read-only" time="0.011608189">
+            <system-err>
+Error: Uncaught [TypeError: editor.addAction is not a function]
+    at reportException (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/helpers/runtime-script-errors.js:66:24)
+    at innerInvokeEventListeners (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:353:9)
+    at invokeEventListeners (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:286:3)
+    at HTMLUnknownElementImpl._dispatch (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:233:9)
+    at HTMLUnknownElementImpl.dispatchEvent (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:104:17)
+    at HTMLUnknownElement.dispatchEvent (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/generated/EventTarget.js:241:34)
+    at Object.invokeGuardedCallbackDev (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:4213:16)
+    at invokeGuardedCallback (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:4277:31)
+    at reportUncaughtErrorInDEV (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:22877:5)
+    at captureCommitPhaseError (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27165:5) TypeError: editor.addAction is not a function
+    at [90m/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/[39msrc/components/EnhancedMonacoJsonEditor.tsx:127:20
+    at [90m/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/[39m__tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx:35:21
+    at commitHookEffectListMount (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:23189:26)
+    at commitPassiveMountOnFiber (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24970:11)
+    at commitPassiveMountEffects_complete (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24930:9)
+    at commitPassiveMountEffects_begin (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24917:7)
+    at commitPassiveMountEffects (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24905:3)
+    at flushPassiveEffectsImpl (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:27078:3)
+    at flushPassiveEffects (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:27023:14)
+    at /var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:26808:9
+
+            </system-err>
+            <failure message="editor.addAction is not a function" type="TypeError">
+TypeError: editor.addAction is not a function
+ ❯ src/components/EnhancedMonacoJsonEditor.tsx:127:20
+ ❯ __tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx:35:21
+ ❯ commitHookEffectListMount ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:23189:26
+ ❯ commitPassiveMountOnFiber ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24970:11
+ ❯ commitPassiveMountEffects_complete ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24930:9
+ ❯ commitPassiveMountEffects_begin ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24917:7
+ ❯ commitPassiveMountEffects ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24905:3
+ ❯ flushPassiveEffectsImpl ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27078:3
+ ❯ flushPassiveEffects ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27023:14
+ ❯ ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:26808:9
+            </failure>
+            <failure message="Timers are not mocked. Try calling &quot;vi.useFakeTimers()&quot; first." type="Error">
+Error: Timers are not mocked. Try calling &quot;vi.useFakeTimers()&quot; first.
+ ❯ __tests__/test-utils/setup-tests.ts:32:8
+            </failure>
         </testcase>
-        <testcase classname="__tests__/components/CustomPaper/CustomPaper.test.tsx" name="CustomPaper &gt; Styling and Theme Integration &gt; should have Material-UI Paper base styling" time="0.01069">
+        <testcase classname="__tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx" name="EnhancedMonacoJsonEditor &gt; Import/Export Functionality &gt; should open menu when menu button is clicked" time="0.002496106">
+            <failure message="Cannot redefine property: clipboard" type="TypeError">
+TypeError: Cannot redefine property: clipboard
+ ❯ attachClipboardStubToView ../../node_modules/.pnpm/@testing-library+user-event@14.6.1_@testing-library+dom@10.4.1/node_modules/@testing-library/user-event/dist/esm/utils/dataTransfer/Clipboard.js:108:12
+ ❯ Object.setupMain [as setup] ../../node_modules/.pnpm/@testing-library+user-event@14.6.1_@testing-library+dom@10.4.1/node_modules/@testing-library/user-event/dist/esm/setup/setup.js:56:5
+ ❯ __tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx:130:36
+            </failure>
+            <failure message="Timers are not mocked. Try calling &quot;vi.useFakeTimers()&quot; first." type="Error">
+Error: Timers are not mocked. Try calling &quot;vi.useFakeTimers()&quot; first.
+ ❯ __tests__/test-utils/setup-tests.ts:32:8
+            </failure>
         </testcase>
-        <testcase classname="__tests__/components/CustomPaper/CustomPaper.test.tsx" name="CustomPaper &gt; Styling and Theme Integration &gt; should apply custom margin top styling" time="0.102892071">
+        <testcase classname="__tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx" name="EnhancedMonacoJsonEditor &gt; Export Functionality &gt; should export JSON to file when export is clicked" time="0.001288749">
+            <failure message="Cannot redefine property: clipboard" type="TypeError">
+TypeError: Cannot redefine property: clipboard
+ ❯ attachClipboardStubToView ../../node_modules/.pnpm/@testing-library+user-event@14.6.1_@testing-library+dom@10.4.1/node_modules/@testing-library/user-event/dist/esm/utils/dataTransfer/Clipboard.js:108:12
+ ❯ Object.setupMain [as setup] ../../node_modules/.pnpm/@testing-library+user-event@14.6.1_@testing-library+dom@10.4.1/node_modules/@testing-library/user-event/dist/esm/setup/setup.js:56:5
+ ❯ __tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx:145:36
+            </failure>
+            <failure message="Timers are not mocked. Try calling &quot;vi.useFakeTimers()&quot; first." type="Error">
+Error: Timers are not mocked. Try calling &quot;vi.useFakeTimers()&quot; first.
+ ❯ __tests__/test-utils/setup-tests.ts:32:8
+            </failure>
         </testcase>
-        <testcase classname="__tests__/components/CustomPaper/CustomPaper.test.tsx" name="CustomPaper &gt; Styling and Theme Integration &gt; should merge with additional sx props when provided" time="0.018092143">
+        <testcase classname="__tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx" name="EnhancedMonacoJsonEditor &gt; Export Functionality &gt; should copy JSON to clipboard when copy is clicked" time="0.001262339">
+            <failure message="Cannot redefine property: clipboard" type="TypeError">
+TypeError: Cannot redefine property: clipboard
+ ❯ attachClipboardStubToView ../../node_modules/.pnpm/@testing-library+user-event@14.6.1_@testing-library+dom@10.4.1/node_modules/@testing-library/user-event/dist/esm/utils/dataTransfer/Clipboard.js:108:12
+ ❯ Object.setupMain [as setup] ../../node_modules/.pnpm/@testing-library+user-event@14.6.1_@testing-library+dom@10.4.1/node_modules/@testing-library/user-event/dist/esm/setup/setup.js:56:5
+ ❯ __tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx:161:36
+            </failure>
+            <failure message="Timers are not mocked. Try calling &quot;vi.useFakeTimers()&quot; first." type="Error">
+Error: Timers are not mocked. Try calling &quot;vi.useFakeTimers()&quot; first.
+ ❯ __tests__/test-utils/setup-tests.ts:32:8
+            </failure>
         </testcase>
-        <testcase classname="__tests__/components/CustomPaper/CustomPaper.test.tsx" name="CustomPaper &gt; Accessibility &gt; should be keyboard accessible when tabIndex is provided" time="0.011189177">
+        <testcase classname="__tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx" name="EnhancedMonacoJsonEditor &gt; Export Functionality &gt; should handle clipboard copy failure gracefully" time="0.001289919">
+            <failure message="Cannot redefine property: clipboard" type="TypeError">
+TypeError: Cannot redefine property: clipboard
+ ❯ attachClipboardStubToView ../../node_modules/.pnpm/@testing-library+user-event@14.6.1_@testing-library+dom@10.4.1/node_modules/@testing-library/user-event/dist/esm/utils/dataTransfer/Clipboard.js:108:12
+ ❯ Object.setupMain [as setup] ../../node_modules/.pnpm/@testing-library+user-event@14.6.1_@testing-library+dom@10.4.1/node_modules/@testing-library/user-event/dist/esm/setup/setup.js:56:5
+ ❯ __tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx:174:36
+            </failure>
+            <failure message="Timers are not mocked. Try calling &quot;vi.useFakeTimers()&quot; first." type="Error">
+Error: Timers are not mocked. Try calling &quot;vi.useFakeTimers()&quot; first.
+ ❯ __tests__/test-utils/setup-tests.ts:32:8
+            </failure>
         </testcase>
-        <testcase classname="__tests__/components/CustomPaper/CustomPaper.test.tsx" name="CustomPaper &gt; Accessibility &gt; should support ARIA attributes" time="0.013726943">
+        <testcase classname="__tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx" name="EnhancedMonacoJsonEditor &gt; Import Functionality &gt; should trigger file input when import is clicked" time="0.001110656">
+            <failure message="Cannot redefine property: clipboard" type="TypeError">
+TypeError: Cannot redefine property: clipboard
+ ❯ attachClipboardStubToView ../../node_modules/.pnpm/@testing-library+user-event@14.6.1_@testing-library+dom@10.4.1/node_modules/@testing-library/user-event/dist/esm/utils/dataTransfer/Clipboard.js:108:12
+ ❯ Object.setupMain [as setup] ../../node_modules/.pnpm/@testing-library+user-event@14.6.1_@testing-library+dom@10.4.1/node_modules/@testing-library/user-event/dist/esm/setup/setup.js:56:5
+ ❯ __tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx:194:36
+            </failure>
+            <failure message="Timers are not mocked. Try calling &quot;vi.useFakeTimers()&quot; first." type="Error">
+Error: Timers are not mocked. Try calling &quot;vi.useFakeTimers()&quot; first.
+ ❯ __tests__/test-utils/setup-tests.ts:32:8
+            </failure>
         </testcase>
-        <testcase classname="__tests__/components/CustomPaper/CustomPaper.test.tsx" name="CustomPaper &gt; Accessibility &gt; should support screen reader content" time="0.01001333">
+        <testcase classname="__tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx" name="EnhancedMonacoJsonEditor &gt; Import Functionality &gt; should handle file import with valid JSON" time="0.016189497">
+            <system-err>
+Error: Uncaught [TypeError: editor.addAction is not a function]
+    at reportException (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/helpers/runtime-script-errors.js:66:24)
+    at innerInvokeEventListeners (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:353:9)
+    at invokeEventListeners (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:286:3)
+    at HTMLUnknownElementImpl._dispatch (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:233:9)
+    at HTMLUnknownElementImpl.dispatchEvent (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:104:17)
+    at HTMLUnknownElement.dispatchEvent (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/generated/EventTarget.js:241:34)
+    at Object.invokeGuardedCallbackDev (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:4213:16)
+    at invokeGuardedCallback (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:4277:31)
+    at reportUncaughtErrorInDEV (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:22877:5)
+    at captureCommitPhaseError (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27165:5) TypeError: editor.addAction is not a function
+    at [90m/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/[39msrc/components/EnhancedMonacoJsonEditor.tsx:127:20
+    at [90m/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/[39m__tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx:35:21
+    at commitHookEffectListMount (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:23189:26)
+    at commitPassiveMountOnFiber (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24970:11)
+    at commitPassiveMountEffects_complete (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24930:9)
+    at commitPassiveMountEffects_begin (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24917:7)
+    at commitPassiveMountEffects (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24905:3)
+    at flushPassiveEffectsImpl (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:27078:3)
+    at flushPassiveEffects (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:27023:14)
+    at performSyncWorkOnRoot (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:26115:3)
+
+            </system-err>
+            <failure message="editor.addAction is not a function" type="TypeError">
+TypeError: editor.addAction is not a function
+ ❯ src/components/EnhancedMonacoJsonEditor.tsx:127:20
+ ❯ __tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx:35:21
+ ❯ commitHookEffectListMount ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:23189:26
+ ❯ commitPassiveMountOnFiber ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24970:11
+ ❯ commitPassiveMountEffects_complete ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24930:9
+ ❯ commitPassiveMountEffects_begin ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24917:7
+ ❯ commitPassiveMountEffects ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24905:3
+ ❯ flushPassiveEffectsImpl ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27078:3
+ ❯ flushPassiveEffects ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27023:14
+ ❯ performSyncWorkOnRoot ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:26115:3
+            </failure>
+            <failure message="Timers are not mocked. Try calling &quot;vi.useFakeTimers()&quot; first." type="Error">
+Error: Timers are not mocked. Try calling &quot;vi.useFakeTimers()&quot; first.
+ ❯ __tests__/test-utils/setup-tests.ts:32:8
+            </failure>
         </testcase>
-        <testcase classname="__tests__/components/CustomPaper/CustomPaper.test.tsx" name="CustomPaper &gt; Content Types &gt; should render text content" time="0.007793409">
+        <testcase classname="__tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx" name="EnhancedMonacoJsonEditor &gt; Import Functionality &gt; should handle file import with invalid JSON" time="0.015815671">
+            <system-err>
+Error: Uncaught [TypeError: editor.addAction is not a function]
+    at reportException (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/helpers/runtime-script-errors.js:66:24)
+    at innerInvokeEventListeners (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:353:9)
+    at invokeEventListeners (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:286:3)
+    at HTMLUnknownElementImpl._dispatch (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:233:9)
+    at HTMLUnknownElementImpl.dispatchEvent (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:104:17)
+    at HTMLUnknownElement.dispatchEvent (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/generated/EventTarget.js:241:34)
+    at Object.invokeGuardedCallbackDev (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:4213:16)
+    at invokeGuardedCallback (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:4277:31)
+    at reportUncaughtErrorInDEV (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:22877:5)
+    at captureCommitPhaseError (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27165:5) TypeError: editor.addAction is not a function
+    at [90m/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/[39msrc/components/EnhancedMonacoJsonEditor.tsx:127:20
+    at [90m/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/[39m__tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx:35:21
+    at commitHookEffectListMount (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:23189:26)
+    at commitPassiveMountOnFiber (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24970:11)
+    at commitPassiveMountEffects_complete (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24930:9)
+    at commitPassiveMountEffects_begin (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24917:7)
+    at commitPassiveMountEffects (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24905:3)
+    at flushPassiveEffectsImpl (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:27078:3)
+    at flushPassiveEffects (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:27023:14)
+    at performSyncWorkOnRoot (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:26115:3)
+
+            </system-err>
+            <failure message="editor.addAction is not a function" type="TypeError">
+TypeError: editor.addAction is not a function
+ ❯ src/components/EnhancedMonacoJsonEditor.tsx:127:20
+ ❯ __tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx:35:21
+ ❯ commitHookEffectListMount ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:23189:26
+ ❯ commitPassiveMountOnFiber ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24970:11
+ ❯ commitPassiveMountEffects_complete ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24930:9
+ ❯ commitPassiveMountEffects_begin ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24917:7
+ ❯ commitPassiveMountEffects ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24905:3
+ ❯ flushPassiveEffectsImpl ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27078:3
+ ❯ flushPassiveEffects ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27023:14
+ ❯ performSyncWorkOnRoot ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:26115:3
+            </failure>
+            <failure message="Timers are not mocked. Try calling &quot;vi.useFakeTimers()&quot; first." type="Error">
+Error: Timers are not mocked. Try calling &quot;vi.useFakeTimers()&quot; first.
+ ❯ __tests__/test-utils/setup-tests.ts:32:8
+            </failure>
         </testcase>
-        <testcase classname="__tests__/components/CustomPaper/CustomPaper.test.tsx" name="CustomPaper &gt; Content Types &gt; should render React elements" time="0.007557806">
+        <testcase classname="__tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx" name="EnhancedMonacoJsonEditor &gt; Import Functionality &gt; should paste from clipboard when paste is clicked" time="0.005821205">
+            <failure message="Cannot redefine property: clipboard" type="TypeError">
+TypeError: Cannot redefine property: clipboard
+ ❯ attachClipboardStubToView ../../node_modules/.pnpm/@testing-library+user-event@14.6.1_@testing-library+dom@10.4.1/node_modules/@testing-library/user-event/dist/esm/utils/dataTransfer/Clipboard.js:108:12
+ ❯ Object.setupMain [as setup] ../../node_modules/.pnpm/@testing-library+user-event@14.6.1_@testing-library+dom@10.4.1/node_modules/@testing-library/user-event/dist/esm/setup/setup.js:56:5
+ ❯ __tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx:252:36
+            </failure>
+            <failure message="Timers are not mocked. Try calling &quot;vi.useFakeTimers()&quot; first." type="Error">
+Error: Timers are not mocked. Try calling &quot;vi.useFakeTimers()&quot; first.
+ ❯ __tests__/test-utils/setup-tests.ts:32:8
+            </failure>
         </testcase>
-        <testcase classname="__tests__/components/CustomPaper/CustomPaper.test.tsx" name="CustomPaper &gt; Content Types &gt; should render arrays of elements" time="0.010606509">
+        <testcase classname="__tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx" name="EnhancedMonacoJsonEditor &gt; Import Functionality &gt; should handle clipboard paste with invalid JSON" time="0.001245538">
+            <failure message="Cannot redefine property: clipboard" type="TypeError">
+TypeError: Cannot redefine property: clipboard
+ ❯ attachClipboardStubToView ../../node_modules/.pnpm/@testing-library+user-event@14.6.1_@testing-library+dom@10.4.1/node_modules/@testing-library/user-event/dist/esm/utils/dataTransfer/Clipboard.js:108:12
+ ❯ Object.setupMain [as setup] ../../node_modules/.pnpm/@testing-library+user-event@14.6.1_@testing-library+dom@10.4.1/node_modules/@testing-library/user-event/dist/esm/setup/setup.js:56:5
+ ❯ __tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx:268:36
+            </failure>
+            <failure message="Timers are not mocked. Try calling &quot;vi.useFakeTimers()&quot; first." type="Error">
+Error: Timers are not mocked. Try calling &quot;vi.useFakeTimers()&quot; first.
+ ❯ __tests__/test-utils/setup-tests.ts:32:8
+            </failure>
         </testcase>
-        <testcase classname="__tests__/components/CustomPaper/CustomPaper.test.tsx" name="CustomPaper &gt; Content Types &gt; should handle conditional rendering" time="0.00786436">
+        <testcase classname="__tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx" name="EnhancedMonacoJsonEditor &gt; Value Changes and Validation &gt; should call onChange when valid JSON is entered" time="0.001025985">
+            <failure message="Cannot redefine property: clipboard" type="TypeError">
+TypeError: Cannot redefine property: clipboard
+ ❯ attachClipboardStubToView ../../node_modules/.pnpm/@testing-library+user-event@14.6.1_@testing-library+dom@10.4.1/node_modules/@testing-library/user-event/dist/esm/utils/dataTransfer/Clipboard.js:108:12
+ ❯ Object.setupMain [as setup] ../../node_modules/.pnpm/@testing-library+user-event@14.6.1_@testing-library+dom@10.4.1/node_modules/@testing-library/user-event/dist/esm/setup/setup.js:56:5
+ ❯ __tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx:290:36
+            </failure>
+            <failure message="Timers are not mocked. Try calling &quot;vi.useFakeTimers()&quot; first." type="Error">
+Error: Timers are not mocked. Try calling &quot;vi.useFakeTimers()&quot; first.
+ ❯ __tests__/test-utils/setup-tests.ts:32:8
+            </failure>
         </testcase>
-        <testcase classname="__tests__/components/CustomPaper/CustomPaper.test.tsx" name="CustomPaper &gt; Content Types &gt; should handle complex nested content" time="0.02357851">
+        <testcase classname="__tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx" name="EnhancedMonacoJsonEditor &gt; Value Changes and Validation &gt; should not call onChange when invalid JSON is entered" time="0.001114447">
+            <failure message="Cannot redefine property: clipboard" type="TypeError">
+TypeError: Cannot redefine property: clipboard
+ ❯ attachClipboardStubToView ../../node_modules/.pnpm/@testing-library+user-event@14.6.1_@testing-library+dom@10.4.1/node_modules/@testing-library/user-event/dist/esm/utils/dataTransfer/Clipboard.js:108:12
+ ❯ Object.setupMain [as setup] ../../node_modules/.pnpm/@testing-library+user-event@14.6.1_@testing-library+dom@10.4.1/node_modules/@testing-library/user-event/dist/esm/setup/setup.js:56:5
+ ❯ __tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx:301:36
+            </failure>
+            <failure message="Timers are not mocked. Try calling &quot;vi.useFakeTimers()&quot; first." type="Error">
+Error: Timers are not mocked. Try calling &quot;vi.useFakeTimers()&quot; first.
+ ❯ __tests__/test-utils/setup-tests.ts:32:8
+            </failure>
         </testcase>
-        <testcase classname="__tests__/components/CustomPaper/CustomPaper.test.tsx" name="CustomPaper &gt; Edge Cases &gt; should handle null children gracefully" time="0.0050182">
+        <testcase classname="__tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx" name="EnhancedMonacoJsonEditor &gt; Value Changes and Validation &gt; should not call onChange when readOnly is true" time="0.013484647">
+            <system-err>
+Error: Uncaught [TypeError: editor.addAction is not a function]
+    at reportException (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/helpers/runtime-script-errors.js:66:24)
+    at innerInvokeEventListeners (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:353:9)
+    at invokeEventListeners (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:286:3)
+    at HTMLUnknownElementImpl._dispatch (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:233:9)
+    at HTMLUnknownElementImpl.dispatchEvent (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:104:17)
+    at HTMLUnknownElement.dispatchEvent (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/generated/EventTarget.js:241:34)
+    at Object.invokeGuardedCallbackDev (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:4213:16)
+    at invokeGuardedCallback (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:4277:31)
+    at reportUncaughtErrorInDEV (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:22877:5)
+    at captureCommitPhaseError (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27165:5) TypeError: editor.addAction is not a function
+    at [90m/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/[39msrc/components/EnhancedMonacoJsonEditor.tsx:127:20
+    at [90m/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/[39m__tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx:35:21
+    at commitHookEffectListMount (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:23189:26)
+    at commitPassiveMountOnFiber (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24970:11)
+    at commitPassiveMountEffects_complete (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24930:9)
+    at commitPassiveMountEffects_begin (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24917:7)
+    at commitPassiveMountEffects (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24905:3)
+    at flushPassiveEffectsImpl (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:27078:3)
+    at flushPassiveEffects (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:27023:14)
+    at /var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:26808:9
+
+            </system-err>
+            <failure message="editor.addAction is not a function" type="TypeError">
+TypeError: editor.addAction is not a function
+ ❯ src/components/EnhancedMonacoJsonEditor.tsx:127:20
+ ❯ __tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx:35:21
+ ❯ commitHookEffectListMount ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:23189:26
+ ❯ commitPassiveMountOnFiber ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24970:11
+ ❯ commitPassiveMountEffects_complete ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24930:9
+ ❯ commitPassiveMountEffects_begin ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24917:7
+ ❯ commitPassiveMountEffects ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24905:3
+ ❯ flushPassiveEffectsImpl ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27078:3
+ ❯ flushPassiveEffects ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27023:14
+ ❯ ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:26808:9
+            </failure>
+            <failure message="Timers are not mocked. Try calling &quot;vi.useFakeTimers()&quot; first." type="Error">
+Error: Timers are not mocked. Try calling &quot;vi.useFakeTimers()&quot; first.
+ ❯ __tests__/test-utils/setup-tests.ts:32:8
+            </failure>
         </testcase>
-        <testcase classname="__tests__/components/CustomPaper/CustomPaper.test.tsx" name="CustomPaper &gt; Edge Cases &gt; should handle empty string children" time="0.004752536">
+        <testcase classname="__tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx" name="EnhancedMonacoJsonEditor &gt; Schema Validation &gt; should configure schema validation when schema is provided" time="0.014660034">
+            <system-err>
+Error: Uncaught [TypeError: editor.addAction is not a function]
+    at reportException (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/helpers/runtime-script-errors.js:66:24)
+    at innerInvokeEventListeners (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:353:9)
+    at invokeEventListeners (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:286:3)
+    at HTMLUnknownElementImpl._dispatch (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:233:9)
+    at HTMLUnknownElementImpl.dispatchEvent (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:104:17)
+    at HTMLUnknownElement.dispatchEvent (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/generated/EventTarget.js:241:34)
+    at Object.invokeGuardedCallbackDev (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:4213:16)
+    at invokeGuardedCallback (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:4277:31)
+    at reportUncaughtErrorInDEV (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:22877:5)
+    at captureCommitPhaseError (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27165:5) TypeError: editor.addAction is not a function
+    at [90m/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/[39msrc/components/EnhancedMonacoJsonEditor.tsx:127:20
+    at [90m/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/[39m__tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx:35:21
+    at commitHookEffectListMount (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:23189:26)
+    at commitPassiveMountOnFiber (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24970:11)
+    at commitPassiveMountEffects_complete (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24930:9)
+    at commitPassiveMountEffects_begin (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24917:7)
+    at commitPassiveMountEffects (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24905:3)
+    at flushPassiveEffectsImpl (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:27078:3)
+    at flushPassiveEffects (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:27023:14)
+    at performSyncWorkOnRoot (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:26115:3)
+
+            </system-err>
+            <failure message="editor.addAction is not a function" type="TypeError">
+TypeError: editor.addAction is not a function
+ ❯ src/components/EnhancedMonacoJsonEditor.tsx:127:20
+ ❯ __tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx:35:21
+ ❯ commitHookEffectListMount ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:23189:26
+ ❯ commitPassiveMountOnFiber ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24970:11
+ ❯ commitPassiveMountEffects_complete ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24930:9
+ ❯ commitPassiveMountEffects_begin ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24917:7
+ ❯ commitPassiveMountEffects ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24905:3
+ ❯ flushPassiveEffectsImpl ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27078:3
+ ❯ flushPassiveEffects ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27023:14
+ ❯ performSyncWorkOnRoot ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:26115:3
+            </failure>
+            <failure message="Timers are not mocked. Try calling &quot;vi.useFakeTimers()&quot; first." type="Error">
+Error: Timers are not mocked. Try calling &quot;vi.useFakeTimers()&quot; first.
+ ❯ __tests__/test-utils/setup-tests.ts:32:8
+            </failure>
         </testcase>
-        <testcase classname="__tests__/components/CustomPaper/CustomPaper.test.tsx" name="CustomPaper &gt; Edge Cases &gt; should handle numeric children" time="0.005941573">
+        <testcase classname="__tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx" name="EnhancedMonacoJsonEditor &gt; Ref Functionality &gt; should expose getCurrentValue method through ref" time="0.017362764">
+            <system-err>
+Error: Uncaught [TypeError: editor.addAction is not a function]
+    at reportException (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/helpers/runtime-script-errors.js:66:24)
+    at innerInvokeEventListeners (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:353:9)
+    at invokeEventListeners (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:286:3)
+    at HTMLUnknownElementImpl._dispatch (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:233:9)
+    at HTMLUnknownElementImpl.dispatchEvent (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:104:17)
+    at HTMLUnknownElement.dispatchEvent (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/generated/EventTarget.js:241:34)
+    at Object.invokeGuardedCallbackDev (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:4213:16)
+    at invokeGuardedCallback (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:4277:31)
+    at reportUncaughtErrorInDEV (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:22877:5)
+    at captureCommitPhaseError (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27165:5) TypeError: editor.addAction is not a function
+    at [90m/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/[39msrc/components/EnhancedMonacoJsonEditor.tsx:127:20
+    at [90m/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/[39m__tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx:35:21
+    at commitHookEffectListMount (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:23189:26)
+    at commitPassiveMountOnFiber (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24970:11)
+    at commitPassiveMountEffects_complete (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24930:9)
+    at commitPassiveMountEffects_begin (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24917:7)
+    at commitPassiveMountEffects (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24905:3)
+    at flushPassiveEffectsImpl (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:27078:3)
+    at flushPassiveEffects (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:27023:14)
+    at performSyncWorkOnRoot (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:26115:3)
+
+            </system-err>
+            <failure message="editor.addAction is not a function" type="TypeError">
+TypeError: editor.addAction is not a function
+ ❯ src/components/EnhancedMonacoJsonEditor.tsx:127:20
+ ❯ __tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx:35:21
+ ❯ commitHookEffectListMount ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:23189:26
+ ❯ commitPassiveMountOnFiber ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24970:11
+ ❯ commitPassiveMountEffects_complete ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24930:9
+ ❯ commitPassiveMountEffects_begin ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24917:7
+ ❯ commitPassiveMountEffects ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24905:3
+ ❯ flushPassiveEffectsImpl ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27078:3
+ ❯ flushPassiveEffects ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27023:14
+ ❯ performSyncWorkOnRoot ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:26115:3
+            </failure>
+            <failure message="Timers are not mocked. Try calling &quot;vi.useFakeTimers()&quot; first." type="Error">
+Error: Timers are not mocked. Try calling &quot;vi.useFakeTimers()&quot; first.
+ ❯ __tests__/test-utils/setup-tests.ts:32:8
+            </failure>
         </testcase>
-        <testcase classname="__tests__/components/CustomPaper/CustomPaper.test.tsx" name="CustomPaper &gt; Edge Cases &gt; should handle mixed content types" time="0.008145264">
+        <testcase classname="__tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx" name="EnhancedMonacoJsonEditor &gt; Ref Functionality &gt; should return current JSON value through getCurrentValue" time="0.013748481">
+            <system-err>
+Error: Uncaught [TypeError: editor.addAction is not a function]
+    at reportException (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/helpers/runtime-script-errors.js:66:24)
+    at innerInvokeEventListeners (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:353:9)
+    at invokeEventListeners (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:286:3)
+    at HTMLUnknownElementImpl._dispatch (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:233:9)
+    at HTMLUnknownElementImpl.dispatchEvent (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:104:17)
+    at HTMLUnknownElement.dispatchEvent (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/generated/EventTarget.js:241:34)
+    at Object.invokeGuardedCallbackDev (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:4213:16)
+    at invokeGuardedCallback (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:4277:31)
+    at reportUncaughtErrorInDEV (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:22877:5)
+    at captureCommitPhaseError (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27165:5) TypeError: editor.addAction is not a function
+    at [90m/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/[39msrc/components/EnhancedMonacoJsonEditor.tsx:127:20
+    at [90m/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/[39m__tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx:35:21
+    at commitHookEffectListMount (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:23189:26)
+    at commitPassiveMountOnFiber (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24970:11)
+    at commitPassiveMountEffects_complete (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24930:9)
+    at commitPassiveMountEffects_begin (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24917:7)
+    at commitPassiveMountEffects (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24905:3)
+    at flushPassiveEffectsImpl (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:27078:3)
+    at flushPassiveEffects (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:27023:14)
+    at performSyncWorkOnRoot (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:26115:3)
+
+            </system-err>
+            <failure message="editor.addAction is not a function" type="TypeError">
+TypeError: editor.addAction is not a function
+ ❯ src/components/EnhancedMonacoJsonEditor.tsx:127:20
+ ❯ __tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx:35:21
+ ❯ commitHookEffectListMount ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:23189:26
+ ❯ commitPassiveMountOnFiber ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24970:11
+ ❯ commitPassiveMountEffects_complete ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24930:9
+ ❯ commitPassiveMountEffects_begin ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24917:7
+ ❯ commitPassiveMountEffects ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24905:3
+ ❯ flushPassiveEffectsImpl ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27078:3
+ ❯ flushPassiveEffects ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27023:14
+ ❯ performSyncWorkOnRoot ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:26115:3
+            </failure>
+            <failure message="Timers are not mocked. Try calling &quot;vi.useFakeTimers()&quot; first." type="Error">
+Error: Timers are not mocked. Try calling &quot;vi.useFakeTimers()&quot; first.
+ ❯ __tests__/test-utils/setup-tests.ts:32:8
+            </failure>
         </testcase>
-        <testcase classname="__tests__/components/CustomPaper/CustomPaper.test.tsx" name="CustomPaper &gt; Performance &gt; should not re-render unnecessarily with same props" time="0.012596207">
+        <testcase classname="__tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx" name="EnhancedMonacoJsonEditor &gt; Ref Functionality &gt; should handle invalid JSON in getCurrentValue" time="0.012308439">
+            <system-err>
+Error: Uncaught [TypeError: editor.addAction is not a function]
+    at reportException (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/helpers/runtime-script-errors.js:66:24)
+    at innerInvokeEventListeners (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:353:9)
+    at invokeEventListeners (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:286:3)
+    at HTMLUnknownElementImpl._dispatch (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:233:9)
+    at HTMLUnknownElementImpl.dispatchEvent (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:104:17)
+    at HTMLUnknownElement.dispatchEvent (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/generated/EventTarget.js:241:34)
+    at Object.invokeGuardedCallbackDev (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:4213:16)
+    at invokeGuardedCallback (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:4277:31)
+    at reportUncaughtErrorInDEV (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:22877:5)
+    at captureCommitPhaseError (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27165:5) TypeError: editor.addAction is not a function
+    at [90m/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/[39msrc/components/EnhancedMonacoJsonEditor.tsx:127:20
+    at [90m/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/[39m__tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx:35:21
+    at commitHookEffectListMount (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:23189:26)
+    at commitPassiveMountOnFiber (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24970:11)
+    at commitPassiveMountEffects_complete (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24930:9)
+    at commitPassiveMountEffects_begin (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24917:7)
+    at commitPassiveMountEffects (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24905:3)
+    at flushPassiveEffectsImpl (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:27078:3)
+    at flushPassiveEffects (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:27023:14)
+    at performSyncWorkOnRoot (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:26115:3)
+
+            </system-err>
+            <failure message="editor.addAction is not a function" type="TypeError">
+TypeError: editor.addAction is not a function
+ ❯ src/components/EnhancedMonacoJsonEditor.tsx:127:20
+ ❯ __tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx:35:21
+ ❯ commitHookEffectListMount ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:23189:26
+ ❯ commitPassiveMountOnFiber ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24970:11
+ ❯ commitPassiveMountEffects_complete ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24930:9
+ ❯ commitPassiveMountEffects_begin ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24917:7
+ ❯ commitPassiveMountEffects ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24905:3
+ ❯ flushPassiveEffectsImpl ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27078:3
+ ❯ flushPassiveEffects ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27023:14
+ ❯ performSyncWorkOnRoot ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:26115:3
+            </failure>
+            <failure message="Timers are not mocked. Try calling &quot;vi.useFakeTimers()&quot; first." type="Error">
+Error: Timers are not mocked. Try calling &quot;vi.useFakeTimers()&quot; first.
+ ❯ __tests__/test-utils/setup-tests.ts:32:8
+            </failure>
         </testcase>
-        <testcase classname="__tests__/components/CustomPaper/CustomPaper.test.tsx" name="CustomPaper &gt; Performance &gt; should handle large amounts of content efficiently" time="0.355094934">
+        <testcase classname="__tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx" name="EnhancedMonacoJsonEditor &gt; Keyboard Shortcuts &gt; should display keyboard shortcuts help text when import/export is enabled" time="0.012060977">
+            <system-err>
+Error: Uncaught [TypeError: editor.addAction is not a function]
+    at reportException (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/helpers/runtime-script-errors.js:66:24)
+    at innerInvokeEventListeners (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:353:9)
+    at invokeEventListeners (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:286:3)
+    at HTMLUnknownElementImpl._dispatch (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:233:9)
+    at HTMLUnknownElementImpl.dispatchEvent (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:104:17)
+    at HTMLUnknownElement.dispatchEvent (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/generated/EventTarget.js:241:34)
+    at Object.invokeGuardedCallbackDev (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:4213:16)
+    at invokeGuardedCallback (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:4277:31)
+    at reportUncaughtErrorInDEV (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:22877:5)
+    at captureCommitPhaseError (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27165:5) TypeError: editor.addAction is not a function
+    at [90m/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/[39msrc/components/EnhancedMonacoJsonEditor.tsx:127:20
+    at [90m/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/[39m__tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx:35:21
+    at commitHookEffectListMount (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:23189:26)
+    at commitPassiveMountOnFiber (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24970:11)
+    at commitPassiveMountEffects_complete (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24930:9)
+    at commitPassiveMountEffects_begin (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24917:7)
+    at commitPassiveMountEffects (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24905:3)
+    at flushPassiveEffectsImpl (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:27078:3)
+    at flushPassiveEffects (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:27023:14)
+    at performSyncWorkOnRoot (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:26115:3)
+
+            </system-err>
+            <failure message="editor.addAction is not a function" type="TypeError">
+TypeError: editor.addAction is not a function
+ ❯ src/components/EnhancedMonacoJsonEditor.tsx:127:20
+ ❯ __tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx:35:21
+ ❯ commitHookEffectListMount ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:23189:26
+ ❯ commitPassiveMountOnFiber ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24970:11
+ ❯ commitPassiveMountEffects_complete ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24930:9
+ ❯ commitPassiveMountEffects_begin ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24917:7
+ ❯ commitPassiveMountEffects ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24905:3
+ ❯ flushPassiveEffectsImpl ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27078:3
+ ❯ flushPassiveEffects ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27023:14
+ ❯ performSyncWorkOnRoot ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:26115:3
+            </failure>
+            <failure message="Timers are not mocked. Try calling &quot;vi.useFakeTimers()&quot; first." type="Error">
+Error: Timers are not mocked. Try calling &quot;vi.useFakeTimers()&quot; first.
+ ❯ __tests__/test-utils/setup-tests.ts:32:8
+            </failure>
+        </testcase>
+        <testcase classname="__tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx" name="EnhancedMonacoJsonEditor &gt; Keyboard Shortcuts &gt; should not display keyboard shortcuts when import/export is disabled" time="0.011959354">
+            <failure message="Timers are not mocked. Try calling &quot;vi.useFakeTimers()&quot; first." type="Error">
+Error: Timers are not mocked. Try calling &quot;vi.useFakeTimers()&quot; first.
+ ❯ __tests__/test-utils/setup-tests.ts:32:8
+            </failure>
+        </testcase>
+        <testcase classname="__tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx" name="EnhancedMonacoJsonEditor &gt; Edge Cases and Error Handling &gt; should handle null value gracefully" time="0.020104603">
+            <system-err>
+Error: Uncaught [TypeError: editor.addAction is not a function]
+    at reportException (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/helpers/runtime-script-errors.js:66:24)
+    at innerInvokeEventListeners (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:353:9)
+    at invokeEventListeners (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:286:3)
+    at HTMLUnknownElementImpl._dispatch (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:233:9)
+    at HTMLUnknownElementImpl.dispatchEvent (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:104:17)
+    at HTMLUnknownElement.dispatchEvent (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/generated/EventTarget.js:241:34)
+    at Object.invokeGuardedCallbackDev (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:4213:16)
+    at invokeGuardedCallback (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:4277:31)
+    at reportUncaughtErrorInDEV (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:22877:5)
+    at captureCommitPhaseError (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27165:5) TypeError: editor.addAction is not a function
+    at [90m/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/[39msrc/components/EnhancedMonacoJsonEditor.tsx:127:20
+    at [90m/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/[39m__tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx:35:21
+    at commitHookEffectListMount (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:23189:26)
+    at commitPassiveMountOnFiber (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24970:11)
+    at commitPassiveMountEffects_complete (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24930:9)
+    at commitPassiveMountEffects_begin (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24917:7)
+    at commitPassiveMountEffects (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24905:3)
+    at flushPassiveEffectsImpl (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:27078:3)
+    at flushPassiveEffects (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:27023:14)
+    at performSyncWorkOnRoot (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:26115:3)
+
+            </system-err>
+            <failure message="editor.addAction is not a function" type="TypeError">
+TypeError: editor.addAction is not a function
+ ❯ src/components/EnhancedMonacoJsonEditor.tsx:127:20
+ ❯ __tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx:35:21
+ ❯ commitHookEffectListMount ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:23189:26
+ ❯ commitPassiveMountOnFiber ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24970:11
+ ❯ commitPassiveMountEffects_complete ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24930:9
+ ❯ commitPassiveMountEffects_begin ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24917:7
+ ❯ commitPassiveMountEffects ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24905:3
+ ❯ flushPassiveEffectsImpl ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27078:3
+ ❯ flushPassiveEffects ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27023:14
+ ❯ performSyncWorkOnRoot ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:26115:3
+            </failure>
+            <failure message="Timers are not mocked. Try calling &quot;vi.useFakeTimers()&quot; first." type="Error">
+Error: Timers are not mocked. Try calling &quot;vi.useFakeTimers()&quot; first.
+ ❯ __tests__/test-utils/setup-tests.ts:32:8
+            </failure>
+        </testcase>
+        <testcase classname="__tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx" name="EnhancedMonacoJsonEditor &gt; Edge Cases and Error Handling &gt; should handle undefined value gracefully" time="0.012253369">
+            <system-err>
+Error: Uncaught [TypeError: editor.addAction is not a function]
+    at reportException (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/helpers/runtime-script-errors.js:66:24)
+    at innerInvokeEventListeners (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:353:9)
+    at invokeEventListeners (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:286:3)
+    at HTMLUnknownElementImpl._dispatch (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:233:9)
+    at HTMLUnknownElementImpl.dispatchEvent (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:104:17)
+    at HTMLUnknownElement.dispatchEvent (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/generated/EventTarget.js:241:34)
+    at Object.invokeGuardedCallbackDev (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:4213:16)
+    at invokeGuardedCallback (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:4277:31)
+    at reportUncaughtErrorInDEV (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:22877:5)
+    at captureCommitPhaseError (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27165:5) TypeError: editor.addAction is not a function
+    at [90m/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/[39msrc/components/EnhancedMonacoJsonEditor.tsx:127:20
+    at [90m/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/[39m__tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx:35:21
+    at commitHookEffectListMount (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:23189:26)
+    at commitPassiveMountOnFiber (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24970:11)
+    at commitPassiveMountEffects_complete (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24930:9)
+    at commitPassiveMountEffects_begin (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24917:7)
+    at commitPassiveMountEffects (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24905:3)
+    at flushPassiveEffectsImpl (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:27078:3)
+    at flushPassiveEffects (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:27023:14)
+    at performSyncWorkOnRoot (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:26115:3)
+
+            </system-err>
+            <failure message="editor.addAction is not a function" type="TypeError">
+TypeError: editor.addAction is not a function
+ ❯ src/components/EnhancedMonacoJsonEditor.tsx:127:20
+ ❯ __tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx:35:21
+ ❯ commitHookEffectListMount ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:23189:26
+ ❯ commitPassiveMountOnFiber ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24970:11
+ ❯ commitPassiveMountEffects_complete ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24930:9
+ ❯ commitPassiveMountEffects_begin ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24917:7
+ ❯ commitPassiveMountEffects ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24905:3
+ ❯ flushPassiveEffectsImpl ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27078:3
+ ❯ flushPassiveEffects ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27023:14
+ ❯ performSyncWorkOnRoot ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:26115:3
+            </failure>
+            <failure message="Timers are not mocked. Try calling &quot;vi.useFakeTimers()&quot; first." type="Error">
+Error: Timers are not mocked. Try calling &quot;vi.useFakeTimers()&quot; first.
+ ❯ __tests__/test-utils/setup-tests.ts:32:8
+            </failure>
+        </testcase>
+        <testcase classname="__tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx" name="EnhancedMonacoJsonEditor &gt; Edge Cases and Error Handling &gt; should handle empty object value" time="0.015584507">
+            <system-err>
+Error: Uncaught [TypeError: editor.addAction is not a function]
+    at reportException (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/helpers/runtime-script-errors.js:66:24)
+    at innerInvokeEventListeners (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:353:9)
+    at invokeEventListeners (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:286:3)
+    at HTMLUnknownElementImpl._dispatch (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:233:9)
+    at HTMLUnknownElementImpl.dispatchEvent (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:104:17)
+    at HTMLUnknownElement.dispatchEvent (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/generated/EventTarget.js:241:34)
+    at Object.invokeGuardedCallbackDev (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:4213:16)
+    at invokeGuardedCallback (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:4277:31)
+    at reportUncaughtErrorInDEV (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:22877:5)
+    at captureCommitPhaseError (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27165:5) TypeError: editor.addAction is not a function
+    at [90m/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/[39msrc/components/EnhancedMonacoJsonEditor.tsx:127:20
+    at [90m/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/[39m__tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx:35:21
+    at commitHookEffectListMount (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:23189:26)
+    at commitPassiveMountOnFiber (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24970:11)
+    at commitPassiveMountEffects_complete (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24930:9)
+    at commitPassiveMountEffects_begin (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24917:7)
+    at commitPassiveMountEffects (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24905:3)
+    at flushPassiveEffectsImpl (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:27078:3)
+    at flushPassiveEffects (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:27023:14)
+    at performSyncWorkOnRoot (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:26115:3)
+
+            </system-err>
+            <failure message="editor.addAction is not a function" type="TypeError">
+TypeError: editor.addAction is not a function
+ ❯ src/components/EnhancedMonacoJsonEditor.tsx:127:20
+ ❯ __tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx:35:21
+ ❯ commitHookEffectListMount ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:23189:26
+ ❯ commitPassiveMountOnFiber ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24970:11
+ ❯ commitPassiveMountEffects_complete ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24930:9
+ ❯ commitPassiveMountEffects_begin ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24917:7
+ ❯ commitPassiveMountEffects ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24905:3
+ ❯ flushPassiveEffectsImpl ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27078:3
+ ❯ flushPassiveEffects ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27023:14
+ ❯ performSyncWorkOnRoot ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:26115:3
+            </failure>
+            <failure message="Timers are not mocked. Try calling &quot;vi.useFakeTimers()&quot; first." type="Error">
+Error: Timers are not mocked. Try calling &quot;vi.useFakeTimers()&quot; first.
+ ❯ __tests__/test-utils/setup-tests.ts:32:8
+            </failure>
+        </testcase>
+        <testcase classname="__tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx" name="EnhancedMonacoJsonEditor &gt; Edge Cases and Error Handling &gt; should handle complex nested objects" time="0.012399431">
+            <system-err>
+Error: Uncaught [TypeError: editor.addAction is not a function]
+    at reportException (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/helpers/runtime-script-errors.js:66:24)
+    at innerInvokeEventListeners (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:353:9)
+    at invokeEventListeners (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:286:3)
+    at HTMLUnknownElementImpl._dispatch (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:233:9)
+    at HTMLUnknownElementImpl.dispatchEvent (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:104:17)
+    at HTMLUnknownElement.dispatchEvent (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/generated/EventTarget.js:241:34)
+    at Object.invokeGuardedCallbackDev (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:4213:16)
+    at invokeGuardedCallback (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:4277:31)
+    at reportUncaughtErrorInDEV (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:22877:5)
+    at captureCommitPhaseError (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27165:5) TypeError: editor.addAction is not a function
+    at [90m/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/[39msrc/components/EnhancedMonacoJsonEditor.tsx:127:20
+    at [90m/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/[39m__tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx:35:21
+    at commitHookEffectListMount (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:23189:26)
+    at commitPassiveMountOnFiber (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24970:11)
+    at commitPassiveMountEffects_complete (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24930:9)
+    at commitPassiveMountEffects_begin (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24917:7)
+    at commitPassiveMountEffects (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24905:3)
+    at flushPassiveEffectsImpl (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:27078:3)
+    at flushPassiveEffects (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:27023:14)
+    at performSyncWorkOnRoot (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:26115:3)
+
+            </system-err>
+            <failure message="editor.addAction is not a function" type="TypeError">
+TypeError: editor.addAction is not a function
+ ❯ src/components/EnhancedMonacoJsonEditor.tsx:127:20
+ ❯ __tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx:35:21
+ ❯ commitHookEffectListMount ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:23189:26
+ ❯ commitPassiveMountOnFiber ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24970:11
+ ❯ commitPassiveMountEffects_complete ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24930:9
+ ❯ commitPassiveMountEffects_begin ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24917:7
+ ❯ commitPassiveMountEffects ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24905:3
+ ❯ flushPassiveEffectsImpl ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27078:3
+ ❯ flushPassiveEffects ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27023:14
+ ❯ performSyncWorkOnRoot ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:26115:3
+            </failure>
+            <failure message="Timers are not mocked. Try calling &quot;vi.useFakeTimers()&quot; first." type="Error">
+Error: Timers are not mocked. Try calling &quot;vi.useFakeTimers()&quot; first.
+ ❯ __tests__/test-utils/setup-tests.ts:32:8
+            </failure>
+        </testcase>
+        <testcase classname="__tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx" name="EnhancedMonacoJsonEditor &gt; Edge Cases and Error Handling &gt; should handle large JSON objects efficiently" time="0.019870251">
+            <system-err>
+Error: Uncaught [TypeError: editor.addAction is not a function]
+    at reportException (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/helpers/runtime-script-errors.js:66:24)
+    at innerInvokeEventListeners (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:353:9)
+    at invokeEventListeners (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:286:3)
+    at HTMLUnknownElementImpl._dispatch (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:233:9)
+    at HTMLUnknownElementImpl.dispatchEvent (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:104:17)
+    at HTMLUnknownElement.dispatchEvent (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/generated/EventTarget.js:241:34)
+    at Object.invokeGuardedCallbackDev (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:4213:16)
+    at invokeGuardedCallback (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:4277:31)
+    at reportUncaughtErrorInDEV (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:22877:5)
+    at captureCommitPhaseError (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27165:5) TypeError: editor.addAction is not a function
+    at [90m/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/[39msrc/components/EnhancedMonacoJsonEditor.tsx:127:20
+    at [90m/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/[39m__tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx:35:21
+    at commitHookEffectListMount (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:23189:26)
+    at commitPassiveMountOnFiber (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24970:11)
+    at commitPassiveMountEffects_complete (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24930:9)
+    at commitPassiveMountEffects_begin (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24917:7)
+    at commitPassiveMountEffects (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24905:3)
+    at flushPassiveEffectsImpl (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:27078:3)
+    at flushPassiveEffects (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:27023:14)
+    at performSyncWorkOnRoot (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:26115:3)
+
+            </system-err>
+            <failure message="editor.addAction is not a function" type="TypeError">
+TypeError: editor.addAction is not a function
+ ❯ src/components/EnhancedMonacoJsonEditor.tsx:127:20
+ ❯ __tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx:35:21
+ ❯ commitHookEffectListMount ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:23189:26
+ ❯ commitPassiveMountOnFiber ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24970:11
+ ❯ commitPassiveMountEffects_complete ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24930:9
+ ❯ commitPassiveMountEffects_begin ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24917:7
+ ❯ commitPassiveMountEffects ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24905:3
+ ❯ flushPassiveEffectsImpl ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27078:3
+ ❯ flushPassiveEffects ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27023:14
+ ❯ performSyncWorkOnRoot ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:26115:3
+            </failure>
+            <failure message="Timers are not mocked. Try calling &quot;vi.useFakeTimers()&quot; first." type="Error">
+Error: Timers are not mocked. Try calling &quot;vi.useFakeTimers()&quot; first.
+ ❯ __tests__/test-utils/setup-tests.ts:32:8
+            </failure>
+        </testcase>
+        <testcase classname="__tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx" name="EnhancedMonacoJsonEditor &gt; Edge Cases and Error Handling &gt; should handle menu close when clicking outside" time="0.001310499">
+            <failure message="Cannot redefine property: clipboard" type="TypeError">
+TypeError: Cannot redefine property: clipboard
+ ❯ attachClipboardStubToView ../../node_modules/.pnpm/@testing-library+user-event@14.6.1_@testing-library+dom@10.4.1/node_modules/@testing-library/user-event/dist/esm/utils/dataTransfer/Clipboard.js:108:12
+ ❯ Object.setupMain [as setup] ../../node_modules/.pnpm/@testing-library+user-event@14.6.1_@testing-library+dom@10.4.1/node_modules/@testing-library/user-event/dist/esm/setup/setup.js:56:5
+ ❯ __tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx:463:36
+            </failure>
+            <failure message="Timers are not mocked. Try calling &quot;vi.useFakeTimers()&quot; first." type="Error">
+Error: Timers are not mocked. Try calling &quot;vi.useFakeTimers()&quot; first.
+ ❯ __tests__/test-utils/setup-tests.ts:32:8
+            </failure>
+        </testcase>
+        <testcase classname="__tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx" name="EnhancedMonacoJsonEditor &gt; Edge Cases and Error Handling &gt; should handle file input without files selected" time="0.012376201">
+            <system-err>
+Error: Uncaught [TypeError: editor.addAction is not a function]
+    at reportException (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/helpers/runtime-script-errors.js:66:24)
+    at innerInvokeEventListeners (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:353:9)
+    at invokeEventListeners (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:286:3)
+    at HTMLUnknownElementImpl._dispatch (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:233:9)
+    at HTMLUnknownElementImpl.dispatchEvent (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:104:17)
+    at HTMLUnknownElement.dispatchEvent (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/generated/EventTarget.js:241:34)
+    at Object.invokeGuardedCallbackDev (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:4213:16)
+    at invokeGuardedCallback (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:4277:31)
+    at reportUncaughtErrorInDEV (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:22877:5)
+    at captureCommitPhaseError (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27165:5) TypeError: editor.addAction is not a function
+    at [90m/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/[39msrc/components/EnhancedMonacoJsonEditor.tsx:127:20
+    at [90m/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/[39m__tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx:35:21
+    at commitHookEffectListMount (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:23189:26)
+    at commitPassiveMountOnFiber (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24970:11)
+    at commitPassiveMountEffects_complete (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24930:9)
+    at commitPassiveMountEffects_begin (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24917:7)
+    at commitPassiveMountEffects (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24905:3)
+    at flushPassiveEffectsImpl (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:27078:3)
+    at flushPassiveEffects (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:27023:14)
+    at performSyncWorkOnRoot (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:26115:3)
+
+            </system-err>
+            <failure message="editor.addAction is not a function" type="TypeError">
+TypeError: editor.addAction is not a function
+ ❯ src/components/EnhancedMonacoJsonEditor.tsx:127:20
+ ❯ __tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx:35:21
+ ❯ commitHookEffectListMount ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:23189:26
+ ❯ commitPassiveMountOnFiber ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24970:11
+ ❯ commitPassiveMountEffects_complete ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24930:9
+ ❯ commitPassiveMountEffects_begin ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24917:7
+ ❯ commitPassiveMountEffects ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24905:3
+ ❯ flushPassiveEffectsImpl ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27078:3
+ ❯ flushPassiveEffects ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27023:14
+ ❯ performSyncWorkOnRoot ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:26115:3
+            </failure>
+            <failure message="Timers are not mocked. Try calling &quot;vi.useFakeTimers()&quot; first." type="Error">
+Error: Timers are not mocked. Try calling &quot;vi.useFakeTimers()&quot; first.
+ ❯ __tests__/test-utils/setup-tests.ts:32:8
+            </failure>
+        </testcase>
+        <testcase classname="__tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx" name="EnhancedMonacoJsonEditor &gt; Cleanup and Memory Management &gt; should cleanup properly on unmount" time="0.010860949">
+            <system-err>
+Error: Uncaught [TypeError: editor.addAction is not a function]
+    at reportException (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/helpers/runtime-script-errors.js:66:24)
+    at innerInvokeEventListeners (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:353:9)
+    at invokeEventListeners (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:286:3)
+    at HTMLUnknownElementImpl._dispatch (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:233:9)
+    at HTMLUnknownElementImpl.dispatchEvent (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:104:17)
+    at HTMLUnknownElement.dispatchEvent (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/generated/EventTarget.js:241:34)
+    at Object.invokeGuardedCallbackDev (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:4213:16)
+    at invokeGuardedCallback (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:4277:31)
+    at reportUncaughtErrorInDEV (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:22877:5)
+    at captureCommitPhaseError (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27165:5) TypeError: editor.addAction is not a function
+    at [90m/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/[39msrc/components/EnhancedMonacoJsonEditor.tsx:127:20
+    at [90m/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/[39m__tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx:35:21
+    at commitHookEffectListMount (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:23189:26)
+    at commitPassiveMountOnFiber (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24970:11)
+    at commitPassiveMountEffects_complete (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24930:9)
+    at commitPassiveMountEffects_begin (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24917:7)
+    at commitPassiveMountEffects (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24905:3)
+    at flushPassiveEffectsImpl (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:27078:3)
+    at flushPassiveEffects (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:27023:14)
+    at performSyncWorkOnRoot (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:26115:3)
+
+            </system-err>
+            <failure message="editor.addAction is not a function" type="TypeError">
+TypeError: editor.addAction is not a function
+ ❯ src/components/EnhancedMonacoJsonEditor.tsx:127:20
+ ❯ __tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx:35:21
+ ❯ commitHookEffectListMount ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:23189:26
+ ❯ commitPassiveMountOnFiber ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24970:11
+ ❯ commitPassiveMountEffects_complete ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24930:9
+ ❯ commitPassiveMountEffects_begin ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24917:7
+ ❯ commitPassiveMountEffects ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24905:3
+ ❯ flushPassiveEffectsImpl ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27078:3
+ ❯ flushPassiveEffects ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27023:14
+ ❯ performSyncWorkOnRoot ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:26115:3
+            </failure>
+            <failure message="Timers are not mocked. Try calling &quot;vi.useFakeTimers()&quot; first." type="Error">
+Error: Timers are not mocked. Try calling &quot;vi.useFakeTimers()&quot; first.
+ ❯ __tests__/test-utils/setup-tests.ts:32:8
+            </failure>
+        </testcase>
+        <testcase classname="__tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx" name="EnhancedMonacoJsonEditor &gt; Cleanup and Memory Management &gt; should handle rapid re-renders without memory leaks" time="0.017353673">
+            <system-err>
+Error: Uncaught [TypeError: editor.addAction is not a function]
+    at reportException (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/helpers/runtime-script-errors.js:66:24)
+    at innerInvokeEventListeners (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:353:9)
+    at invokeEventListeners (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:286:3)
+    at HTMLUnknownElementImpl._dispatch (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:233:9)
+    at HTMLUnknownElementImpl.dispatchEvent (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:104:17)
+    at HTMLUnknownElement.dispatchEvent (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/jsdom@26.1.0/node_modules/jsdom/lib/jsdom/living/generated/EventTarget.js:241:34)
+    at Object.invokeGuardedCallbackDev (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:4213:16)
+    at invokeGuardedCallback (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:4277:31)
+    at reportUncaughtErrorInDEV (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:22877:5)
+    at captureCommitPhaseError (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27165:5) TypeError: editor.addAction is not a function
+    at [90m/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/[39msrc/components/EnhancedMonacoJsonEditor.tsx:127:20
+    at [90m/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/[39m__tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx:35:21
+    at commitHookEffectListMount (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:23189:26)
+    at commitPassiveMountOnFiber (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24970:11)
+    at commitPassiveMountEffects_complete (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24930:9)
+    at commitPassiveMountEffects_begin (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24917:7)
+    at commitPassiveMountEffects (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:24905:3)
+    at flushPassiveEffectsImpl (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:27078:3)
+    at flushPassiveEffects (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:27023:14)
+    at performSyncWorkOnRoot (/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/node_modules/[4m.pnpm[24m/react-dom@18.3.1_react@18.3.1/node_modules/[4mreact-dom[24m/cjs/react-dom.development.js:26115:3)
+
+            </system-err>
+            <failure message="editor.addAction is not a function" type="TypeError">
+TypeError: editor.addAction is not a function
+ ❯ src/components/EnhancedMonacoJsonEditor.tsx:127:20
+ ❯ __tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx:35:21
+ ❯ commitHookEffectListMount ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:23189:26
+ ❯ commitPassiveMountOnFiber ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24970:11
+ ❯ commitPassiveMountEffects_complete ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24930:9
+ ❯ commitPassiveMountEffects_begin ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24917:7
+ ❯ commitPassiveMountEffects ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:24905:3
+ ❯ flushPassiveEffectsImpl ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27078:3
+ ❯ flushPassiveEffects ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:27023:14
+ ❯ performSyncWorkOnRoot ../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:26115:3
+            </failure>
+            <failure message="Timers are not mocked. Try calling &quot;vi.useFakeTimers()&quot; first." type="Error">
+Error: Timers are not mocked. Try calling &quot;vi.useFakeTimers()&quot; first.
+ ❯ __tests__/test-utils/setup-tests.ts:32:8
+            </failure>
         </testcase>
     </testsuite>
 </testsuites>

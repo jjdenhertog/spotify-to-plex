@@ -1,19 +1,21 @@
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import React from 'react';
-import { render, screen, waitFor } from '../../test-utils';
+import { render, screen, waitFor } from '../../test-utils/test-utils';
 import userEvent from '@testing-library/user-event';
 import MatchFilterEditor from '../../../src/components/MatchFilterEditor';
 import { MatchFilterRule } from '../../../src/types/MatchFilterTypes';
 import axios from 'axios';
 
 // Mock dependencies
-jest.mock('axios');
-jest.mock('notistack', () => ({
-    enqueueSnackbar: jest.fn(),
+vi.mock('axios');
+vi.mock('notistack', () => ({
+    enqueueSnackbar: vi.fn(),
+    SnackbarProvider: ({ children }: { children: React.ReactNode }) => children,
 }));
 
 // Mock the Monaco Editor
-jest.mock('../../../src/components/MonacoJsonEditor', () => {
-    return React.forwardRef<any, any>(((props, ref) => {
+vi.mock('../../../src/components/MonacoJsonEditor', () => ({
+    default: React.forwardRef<any, any>(((props, ref) => {
         const {
             value,
             onChange,
@@ -42,12 +44,12 @@ jest.mock('../../../src/components/MonacoJsonEditor', () => {
                 {error ? <div data-testid="monaco-error">{error}</div> : null}
             </div>
         );
-    }));
-});
+    }))
+}));
 
 // Mock TableEditor
-jest.mock('../../../src/components/TableEditor', () => {
-    return function TableEditor({ filters, onChange }: { readonly filters: MatchFilterRule[], readonly onChange: (filters: MatchFilterRule[]) => void }) {
+vi.mock('../../../src/components/TableEditor', () => ({
+    default: function TableEditor({ filters, onChange }: { readonly filters: MatchFilterRule[], readonly onChange: (filters: MatchFilterRule[]) => void }) {
         return (
             <div data-testid="table-editor">
                 <div data-testid="filters-count">{filters.length} filters</div>
@@ -68,12 +70,12 @@ jest.mock('../../../src/components/TableEditor', () => {
                 ))}
             </div>
         );
-    };
-});
+    }
+}));
 
 // Mock EditorHeader
-jest.mock('../../../src/components/EditorHeader', () => {
-    return function EditorHeader({ 
+vi.mock('../../../src/components/EditorHeader', () => ({
+    default: function EditorHeader({ 
         title, 
     viewMode, 
     onViewModeChange, 
@@ -117,10 +119,10 @@ jest.mock('../../../src/components/EditorHeader', () => {
                 </button>
             </div>
         );
-    };
-});
+    }
+}));
 
-const mockedAxios = axios as jest.Mocked<typeof axios>;
+const mockedAxios = axios as any;
 
 // Sample test data
 const mockFilters: MatchFilterRule[] = [
@@ -131,7 +133,7 @@ const mockFilters: MatchFilterRule[] = [
 
 describe('MatchFilterEditor', () => {
     beforeEach(() => {
-        jest.clearAllMocks();
+        vi.clearAllMocks();
         // Setup default mock responses
         mockedAxios.get.mockResolvedValue({ data: mockFilters });
         mockedAxios.post.mockResolvedValue({ data: 'success' });
@@ -319,7 +321,7 @@ describe('MatchFilterEditor', () => {
     describe('Save and Load Operations', () => {
         it('should save filters successfully', async () => {
             const user = userEvent.setup();
-            const onSave = jest.fn();
+            const onSave = vi.fn();
             render(<MatchFilterEditor onSave={onSave} />);
 
             await waitFor(() => {
@@ -341,7 +343,7 @@ describe('MatchFilterEditor', () => {
             const user = userEvent.setup();
       
             // Mock window.confirm
-            const confirmSpy = jest.spyOn(window, 'confirm').mockReturnValue(true);
+            const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(true);
       
             render(<MatchFilterEditor />);
 
@@ -369,7 +371,7 @@ describe('MatchFilterEditor', () => {
             const user = userEvent.setup();
       
             // Mock window.confirm to return false
-            const confirmSpy = jest.spyOn(window, 'confirm').mockReturnValue(false);
+            const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(false);
       
             render(<MatchFilterEditor />);
 

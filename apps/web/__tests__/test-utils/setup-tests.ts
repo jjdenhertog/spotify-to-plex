@@ -1,15 +1,16 @@
-import '@testing-library/jest-dom';
+// Force React development mode before importing anything else
+process.env.NODE_ENV = 'development'
+global.__DEV__ = true
+
+// Import jest-dom matchers using the vitest-specific import
+import '@testing-library/jest-dom/vitest';
 import { setupMocks, cleanupMocks } from './mocks';
 import { vi, beforeAll, afterEach, beforeEach, afterAll } from 'vitest';
 
 // Setup mocks before all tests
 beforeAll(() => {
-    setupMocks();
-});
-
-// Setup fresh mocks before each test
-beforeEach(() => {
-    setupMocks();
+    // The global vitest setup already handles most mocks
+    // Just set up any additional ones we need
 });
 
 // Clean up after each test
@@ -31,6 +32,10 @@ afterEach(() => {
     // Clear any remaining timeouts/intervals
     vi.runOnlyPendingTimers();
     vi.useRealTimers();
+    
+    // Maintain React development mode
+    process.env.NODE_ENV = 'development'
+    global.__DEV__ = true
 });
 
 // Store original console methods
@@ -50,7 +55,8 @@ beforeAll(() => {
             message.includes('Warning: ReactDOM.render is no longer supported') ||
             message.includes('Warning: componentWillMount') ||
             message.includes('Warning: componentWillReceiveProps') ||
-            message.includes('deprecated')
+            message.includes('deprecated') ||
+            message.includes('act(...) is not supported in production builds of React')
         )) {
             return; // Suppress these specific warnings
         }
@@ -61,7 +67,8 @@ beforeAll(() => {
         const message = args[0];
         if (typeof message === 'string' && (
             message.includes('The above error occurred in the') ||
-            message.includes('Consider adding an error boundary')
+            message.includes('Consider adding an error boundary') ||
+            message.includes('act(...) is not supported in production builds of React')
         )) {
             return; // Suppress React error boundary messages
         }

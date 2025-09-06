@@ -1,8 +1,22 @@
-import { vi, beforeAll, afterAll, beforeEach, afterEach } from 'vitest'
+import { vi, beforeAll, afterAll, beforeEach, afterEach, expect } from 'vitest'
 import { TextEncoder, TextDecoder } from 'util'
 
-// Don't import @testing-library/jest-dom here since it requires expect to be available globally
-// The vitest config should handle globals and jest-dom matchers
+// Import jest-dom matchers - this must be done after vitest globals are available
+// We need to import it in a way that extends the expect object properly
+import '@testing-library/jest-dom/vitest'
+
+// Ensure React runs in development mode for tests
+// This is crucial for act() warnings to be resolved
+process.env.NODE_ENV = 'development'
+global.__DEV__ = true
+
+// Override any production mode React environment
+if (typeof globalThis !== 'undefined') {
+  globalThis.process = globalThis.process || {}
+  globalThis.process.env = globalThis.process.env || {}
+  globalThis.process.env.NODE_ENV = 'development'
+  globalThis.__DEV__ = true
+}
 
 // Polyfills for Node.js environment
 global.TextEncoder = TextEncoder
@@ -105,10 +119,22 @@ afterAll(() => {
 afterEach(() => {
   vi.clearAllMocks()
   vi.clearAllTimers()
+  
+  // Clear DOM if in jsdom environment
+  if (typeof document !== 'undefined') {
+    document.body.innerHTML = ''
+    while (document.body.firstChild) {
+      document.body.removeChild(document.body.firstChild)
+    }
+  }
 })
 
 // Global test environment setup
 beforeEach(() => {
   // Reset any mocks that should be clean for each test
   vi.clearAllMocks()
+  
+  // Ensure development mode is maintained throughout tests
+  process.env.NODE_ENV = 'development'
+  global.__DEV__ = true
 })

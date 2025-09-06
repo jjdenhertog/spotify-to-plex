@@ -1,11 +1,12 @@
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import React from 'react';
-import { render, screen, waitFor } from '../../test-utils';
+import { render, screen, waitFor } from '../../test-utils/test-utils';
 import userEvent from '@testing-library/user-event';
 import PillEditor from '../../../src/components/PillEditor';
 
 // Mock the child components
-jest.mock('../../../src/components/pills/FieldPill', () => {
-    return function FieldPill({ 
+vi.mock('../../../src/components/pills/FieldPill', () => ({
+    default: function FieldPill({ 
         field, 
     isConfigured, 
     onClick, 
@@ -32,21 +33,21 @@ jest.mock('../../../src/components/pills/FieldPill', () => {
                 {displayText}
             </button>
         );
-    };
-});
+    }
+}));
 
-jest.mock('../../../src/components/pills/AddPill', () => {
-    return function AddPill({ onClick, disabled, label }: { readonly onClick: () => void; readonly disabled?: boolean; readonly label: string }) {
+vi.mock('../../../src/components/pills/AddPill', () => ({
+    default: function AddPill({ onClick, disabled, label }: { readonly onClick: () => void; readonly disabled?: boolean; readonly label: string }) {
         return (
             <button type="button" data-testid="add-pill" onClick={onClick} disabled={disabled} style={{ opacity: disabled ? 0.5 : 1 }}>
                 {label}
             </button>
         );
-    };
-});
+    }
+}));
 
-jest.mock('../../../src/components/popups/FieldSelectorPopup', () => {
-    return function FieldSelectorPopup({ 
+vi.mock('../../../src/components/popups/FieldSelectorPopup', () => ({
+    default: function FieldSelectorPopup({ 
         open, 
     anchorEl, 
     onClose, 
@@ -77,11 +78,11 @@ jest.mock('../../../src/components/popups/FieldSelectorPopup', () => {
                 </button>
             </div>
         );
-    };
-});
+    }
+}));
 
-jest.mock('../../../src/components/popups/OperationSelectorPopup', () => {
-    return function OperationSelectorPopup({ 
+vi.mock('../../../src/components/popups/OperationSelectorPopup', () => ({
+    default: function OperationSelectorPopup({ 
         open, 
     anchorEl, 
     onClose, 
@@ -123,17 +124,17 @@ jest.mock('../../../src/components/popups/OperationSelectorPopup', () => {
                 </button>
             </div>
         );
-    };
-});
+    }
+}));
 
 describe('PillEditor', () => {
     const defaultProps = {
         value: '',
-        onChange: jest.fn(),
+        onChange: vi.fn(),
     };
 
     beforeEach(() => {
-        jest.clearAllMocks();
+        vi.clearAllMocks();
     });
 
     describe('Component Initialization', () => {
@@ -260,7 +261,7 @@ describe('PillEditor', () => {
 
         it('should add field when selected from popup', async () => {
             const user = userEvent.setup();
-            const onChange = jest.fn();
+            const onChange = vi.fn();
             render(<PillEditor {...defaultProps} onChange={onChange} />);
 
             await user.click(screen.getByTestId('add-pill'));
@@ -272,7 +273,7 @@ describe('PillEditor', () => {
 
         it('should add AND combinator when adding second field', async () => {
             const user = userEvent.setup();
-            const onChange = jest.fn();
+            const onChange = vi.fn();
             render(
                 <PillEditor 
                     {...defaultProps} 
@@ -315,7 +316,7 @@ describe('PillEditor', () => {
 
         it('should update operation when selected from popup', async () => {
             const user = userEvent.setup();
-            const onChange = jest.fn();
+            const onChange = vi.fn();
             render(
                 <PillEditor 
                     {...defaultProps} 
@@ -333,7 +334,7 @@ describe('PillEditor', () => {
 
         it('should handle similarity operation with threshold', async () => {
             const user = userEvent.setup();
-            const onChange = jest.fn();
+            const onChange = vi.fn();
             render(
                 <PillEditor 
                     {...defaultProps} 
@@ -381,7 +382,7 @@ describe('PillEditor', () => {
     describe('Pill Deletion', () => {
         it('should delete pill when delete button is clicked in operation popup', async () => {
             const user = userEvent.setup();
-            const onChange = jest.fn();
+            const onChange = vi.fn();
             render(
                 <PillEditor 
                     {...defaultProps} 
@@ -398,7 +399,7 @@ describe('PillEditor', () => {
 
         it('should remove combinator when deleting condition pill', async () => {
             const user = userEvent.setup();
-            const onChange = jest.fn();
+            const onChange = vi.fn();
             render(
                 <PillEditor 
                     {...defaultProps} 
@@ -415,7 +416,7 @@ describe('PillEditor', () => {
 
         it('should handle deletion of middle pill in complex expression', async () => {
             const user = userEvent.setup();
-            const onChange = jest.fn();
+            const onChange = vi.fn();
             render(
                 <PillEditor 
                     {...defaultProps} 
@@ -646,7 +647,7 @@ describe('PillEditor', () => {
     describe('Expression Updates', () => {
         it('should call onChange with updated expression when pills change', async () => {
             const user = userEvent.setup();
-            const onChange = jest.fn();
+            const onChange = vi.fn();
             render(
                 <PillEditor 
                     {...defaultProps} 
@@ -662,7 +663,7 @@ describe('PillEditor', () => {
 
         it('should preserve other pills when updating one pill', async () => {
             const user = userEvent.setup();
-            const onChange = jest.fn();
+            const onChange = vi.fn();
             render(
                 <PillEditor 
                     {...defaultProps} 
@@ -679,7 +680,7 @@ describe('PillEditor', () => {
 
         it('should handle rapid updates without conflicts', async () => {
             const user = userEvent.setup();
-            const onChange = jest.fn();
+            const onChange = vi.fn();
             render(
                 <PillEditor 
                     {...defaultProps} 

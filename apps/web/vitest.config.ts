@@ -7,11 +7,17 @@ const __dirname = fileURLToPath(new URL('.', import.meta.url));
 export default defineConfig({
     define: {
         'process.env.NODE_ENV': '"development"',
+        __DEV__: true,
+        // Ensure React Development mode
+        'global.__DEV__': true
     },
     test: {
         name: 'web',
         environment: 'jsdom',
-        setupFiles: ['./tests/setup/vitest.setup.ts'],
+        setupFiles: [
+            './tests/setup/vitest.setup.ts',
+            './__tests__/test-utils/setup-tests.ts'
+        ],
         include: ['**/__tests__/**/*.{test,spec}.{js,ts,tsx}'],
         exclude: [
             '**/node_modules/**',
@@ -20,6 +26,9 @@ export default defineConfig({
         ],
         globals: true,
         css: false,
+        env: {
+            NODE_ENV: 'development'
+        },
         reporters: ['verbose', 'junit', 'html'],
         outputFile: {
             junit: './test-results/junit.xml',

@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, waitFor } from '../test-utils';
+import { render, screen, waitFor } from '../test-utils/test-utils';
 import userEvent from '@testing-library/user-event';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import axios from 'axios';

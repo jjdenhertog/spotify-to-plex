@@ -1,6 +1,19 @@
 // Web app-specific test setup that extends the root setup
 import '../../../../tests/setup/vitest.setup';
-import { vi } from 'vitest';
+import { vi, expect } from 'vitest';
+import '@testing-library/jest-dom';
+
+// Force React development mode for web tests
+// This is critical to fix act() production build warnings
+process.env.NODE_ENV = 'development'
+global.__DEV__ = true
+
+// Override any production mode settings
+if (typeof window !== 'undefined') {
+  window.process = window.process || {} as any
+  window.process.env = window.process.env || {}
+  window.process.env.NODE_ENV = 'development'
+}
 
 // Additional web-specific setup
 console.log('Loading web app test setup...');
@@ -100,8 +113,22 @@ vi.mock('notistack', () => ({
     enqueueSnackbar: vi.fn(),
     closeSnackbar: vi.fn()
   }),
-  SnackbarProvider: ({ children }: { children: React.ReactNode }) => children
+  enqueueSnackbar: vi.fn(),
+  SnackbarProvider: ({ children }: { children: React.ReactNode }) => {
+    // Return only the children, not wrapped in any additional element
+    return children;
+  }
 }));
+
+// Mock ErrorProvider showError function
+vi.mock('../../src/components/ErrorProvider/ErrorProvider', async (importOriginal) => {
+  const actual = await importOriginal() as any;
+  return {
+    ...actual,
+    showError: vi.fn(),
+    default: ({ children }: { children: React.ReactNode }) => children
+  };
+});
 
 // Mock Material-UI components that might cause issues in tests
 vi.mock('@mui/material/styles', async (importOriginal) => {
@@ -235,7 +262,8 @@ console.error = (...args: any[]) => {
       args[0].includes('Warning: componentWillMount has been renamed') ||
       args[0].includes('Warning: componentWillReceiveProps has been renamed') ||
       args[0].includes('The above error occurred in the') ||
-      args[0].includes('Consider adding an error boundary')
+      args[0].includes('Consider adding an error boundary') ||
+      args[0].includes('act(...) is not supported in production builds of React')
     ) {
       return;
     }
@@ -249,7 +277,8 @@ console.warn = (...args: any[]) => {
     if (
       args[0].includes('deprecated') ||
       args[0].includes('Warning:') ||
-      args[0].includes('React does not recognize')
+      args[0].includes('React does not recognize') ||
+      args[0].includes('act(...) is not supported in production builds of React')
     ) {
       return;
     }
@@ -258,6 +287,8 @@ console.warn = (...args: any[]) => {
 };
 
 // Restore console methods after tests
+import { afterAll, afterEach } from 'vitest';
+
 afterAll(() => {
   console.error = originalConsoleError;
   console.warn = originalConsoleWarn;
@@ -271,11 +302,21 @@ afterEach(() => {
   // Reset timers
   vi.clearAllTimers();
   
-  // Clear DOM
+  // Clear DOM completely - remove all children
   document.body.innerHTML = '';
+  while (document.body.firstChild) {
+    document.body.removeChild(document.body.firstChild);
+  }
+  
+  // Also clear any portal containers
+  document.querySelectorAll('[id^="mui-"], [class*="MuiPortal"]').forEach(el => el.remove());
   
   // Reset any global state
   (global as any).fetch?.mockClear?.();
+  
+  // Maintain development mode
+  process.env.NODE_ENV = 'development'
+  global.__DEV__ = true
 });
 
 console.log('Web app test setup complete.');

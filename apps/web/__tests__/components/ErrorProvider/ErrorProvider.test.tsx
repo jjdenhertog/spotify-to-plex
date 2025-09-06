@@ -1,5 +1,6 @@
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import React from 'react';
-import { render, screen, fireEvent, waitFor } from '../../test-utils';
+import { render, screen, fireEvent, waitFor } from '../../test-utils/test-utils';
 import userEvent from '@testing-library/user-event';
 import ErrorProvider, { showError } from '../../../src/components/ErrorProvider/ErrorProvider';
 import { useContext } from 'react';
@@ -39,7 +40,7 @@ const TestComponent = () => {
 describe('ErrorProvider', () => {
     beforeEach(() => {
     // Clear any existing errors before each test
-        jest.clearAllMocks();
+        vi.clearAllMocks();
     });
 
     describe('Context Value Propagation', () => {

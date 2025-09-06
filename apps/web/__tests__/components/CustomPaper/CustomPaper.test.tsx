@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent } from '../../test-utils';
+import { render, screen, fireEvent } from '../../test-utils/test-utils';
 import { vi, describe, it, expect } from 'vitest';
 import CustomPaper from '../../../src/components/CustomPaper';
 

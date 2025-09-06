@@ -84,8 +84,42 @@ export const mockFetch = vi.fn(() =>
     } as Response)
 );
 
-// Setup mocks function
+// Mock clipboard API
+export const mockClipboard = {
+    writeText: vi.fn(() => Promise.resolve()),
+    readText: vi.fn(() => Promise.resolve('{"test": "clipboard"}')),
+    read: vi.fn(() => Promise.resolve()),
+    write: vi.fn(() => Promise.resolve()),
+};
+
+// Mock URL for blob handling
+export const mockURL = {
+    createObjectURL: vi.fn(() => 'mock-blob-url'),
+    revokeObjectURL: vi.fn(),
+};
+
+// Mock anchor element for file downloads
+export const mockAnchorElement = {
+    href: '',
+    download: '',
+    click: vi.fn(),
+    remove: vi.fn(),
+    style: {},
+    setAttribute: vi.fn(),
+    getAttribute: vi.fn(),
+};
+
+// Track if mocks have been set up to avoid conflicts
+let mocksInitialized = false;
+
+// Setup mocks function  
 export function setupMocks() {
+    // Ensure document.body exists and is clean
+    if (!document.body) {
+        document.documentElement.appendChild(document.createElement('body'));
+    }
+    document.body.innerHTML = '';
+    
     // Mock fetch globally
     global.fetch = mockFetch;
     
@@ -98,6 +132,58 @@ export function setupMocks() {
     Object.defineProperty(window, 'alert', {
         writable: true,
         value: mockWindowAlert,
+    });
+
+    // Navigator.clipboard is already mocked in vitest setup, just ensure methods are available
+    if (navigator.clipboard) {
+        // Enhance existing mock with our mock functions
+        if (typeof navigator.clipboard.writeText === 'function') {
+            navigator.clipboard.writeText = mockClipboard.writeText;
+        }
+        if (typeof navigator.clipboard.readText === 'function') {
+            navigator.clipboard.readText = mockClipboard.readText;
+        }
+    }
+
+    // Mock URL
+    if (!global.URL) {
+        Object.defineProperty(global, 'URL', {
+            writable: true,
+            configurable: true,
+            value: mockURL,
+        });
+    } else {
+        // If URL already exists, replace its methods
+        global.URL.createObjectURL = mockURL.createObjectURL;
+        global.URL.revokeObjectURL = mockURL.revokeObjectURL;
+    }
+
+    // Mock document.createElement to avoid recursive calls
+    const originalCreateElement = document.createElement.bind(document);
+    const mockCreateElement = vi.fn((tagName: string) => {
+        if (tagName === 'a') {
+            return mockAnchorElement as any;
+        }
+        return originalCreateElement(tagName);
+    });
+    
+    Object.defineProperty(document, 'createElement', {
+        writable: true,
+        configurable: true,
+        value: mockCreateElement,
+    });
+
+    // Mock document.body.appendChild and append
+    Object.defineProperty(document.body, 'appendChild', {
+        writable: true,
+        configurable: true,
+        value: vi.fn(),
+    });
+
+    Object.defineProperty(document.body, 'append', {
+        writable: true,
+        configurable: true,
+        value: vi.fn(),
     });
 
     // Mock localStorage
@@ -193,6 +279,25 @@ export function cleanupMocks() {
     mockWindowConfirm.mockReturnValue(true);
     mockWindowAlert.mockClear();
     mockFetch.mockClear();
+    
+    // Reset clipboard mocks
+    mockClipboard.writeText.mockClear();
+    mockClipboard.readText.mockClear();
+    mockClipboard.writeText.mockResolvedValue(undefined);
+    mockClipboard.readText.mockResolvedValue('{"test": "clipboard"}');
+    
+    // Reset URL mocks
+    mockURL.createObjectURL.mockClear();
+    mockURL.revokeObjectURL.mockClear();
+    mockURL.createObjectURL.mockReturnValue('mock-blob-url');
+    
+    // Reset document mocks
+    mockAnchorElement.click.mockClear();
+    mockAnchorElement.remove.mockClear();
+    mockAnchorElement.setAttribute.mockClear();
+    mockAnchorElement.getAttribute.mockClear();
+    mockAnchorElement.href = '';
+    mockAnchorElement.download = '';
     
     // Reset axios mocks
     mockAxios.get.mockClear();

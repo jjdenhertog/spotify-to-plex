@@ -2,18 +2,9 @@ import { defineConfig } from 'vitest/config'
 import { resolve } from 'path'
 
 export default defineConfig({
-  define: {
-    // Ensure React runs in development mode during tests
-    'process.env.NODE_ENV': '"development"',
-    __DEV__: true
-  },
   test: {
     // Global configuration defaults
     globals: true,
-    // Explicitly set NODE_ENV for test environment
-    env: {
-      NODE_ENV: 'development'
-    },
     reporters: ['verbose', 'junit'],
     outputFile: {
       junit: './test-results/junit.xml',
@@ -80,10 +71,6 @@ export default defineConfig({
       // Web app configuration (React/Next.js)
       {
         name: 'web',
-        define: {
-          'process.env.NODE_ENV': '"development"',
-          __DEV__: true
-        },
         test: {
           root: './apps/web',
           include: [
@@ -97,10 +84,7 @@ export default defineConfig({
             '**/dist/**'
           ],
           environment: 'jsdom',
-          setupFiles: ['../../tests/setup/vitest.setup.ts'],
-          env: {
-            NODE_ENV: 'development'
-          }
+          setupFiles: ['../../tests/setup/vitest.setup.ts']
         },
         resolve: {
           alias: {

@@ -85,7 +85,7 @@ import {
   createTestCases,
   waitForHookAsync,
   act
-} from '../test-utils';
+} from '../test-utils/test-utils';
 import { useMatchFiltersApi } from '../../src/api/match-filters';
 
 describe('useMatchFiltersApi Hook', () => {
