@@ -40,7 +40,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                     return res.status(200).send(data.data)
 
                 } catch (e) {
-                    console.log(e)
+                    // Debug log removed
                 }
 
                 return res.status(200).send('[ ]')

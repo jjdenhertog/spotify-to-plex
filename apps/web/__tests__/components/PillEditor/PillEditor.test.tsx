@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, waitFor } from '../test-utils';
+import { render, screen, waitFor } from '../../test-utils';
 import userEvent from '@testing-library/user-event';
 import PillEditor from '../../../src/components/PillEditor';
 
@@ -20,6 +20,7 @@ jest.mock('../../../src/components/pills/FieldPill', () => {
   }) {
         return (
             <button
+                type="button"
                 data-testid={`field-pill-${field}`}
                 onClick={onClick}
                 disabled={disabled}
@@ -37,7 +38,7 @@ jest.mock('../../../src/components/pills/FieldPill', () => {
 jest.mock('../../../src/components/pills/AddPill', () => {
     return function AddPill({ onClick, disabled, label }: { readonly onClick: () => void; readonly disabled?: boolean; readonly label: string }) {
         return (
-            <button data-testid="add-pill" onClick={onClick} disabled={disabled} style={{ opacity: disabled ? 0.5 : 1 }}>
+            <button type="button" data-testid="add-pill" onClick={onClick} disabled={disabled} style={{ opacity: disabled ? 0.5 : 1 }}>
                 {label}
             </button>
         );
@@ -62,16 +63,16 @@ jest.mock('../../../src/components/popups/FieldSelectorPopup', () => {
     
         return (
             <div data-testid="field-selector-popup">
-                <button onClick={() => onFieldSelect('artist')} data-testid="select-artist">
+                <button type="button" onClick={() => onFieldSelect('artist')} data-testid="select-artist">
                     Artist
                 </button>
-                <button onClick={() => onFieldSelect('title')} data-testid="select-title">
+                <button type="button" onClick={() => onFieldSelect('title')} data-testid="select-title">
                     Title
                 </button>
-                <button onClick={() => onFieldSelect('album')} data-testid="select-album">
+                <button type="button" onClick={() => onFieldSelect('album')} data-testid="select-album">
                     Album
                 </button>
-                <button onClick={onClose} data-testid="close-field-selector">
+                <button type="button" onClick={onClose} data-testid="close-field-selector">
                     Close
                 </button>
             </div>
@@ -105,19 +106,19 @@ jest.mock('../../../src/components/popups/OperationSelectorPopup', () => {
             <div data-testid="operation-selector-popup">
                 <div data-testid="current-operation">{currentOperation || 'none'}</div>
                 <div data-testid="current-threshold">{currentThreshold || 'none'}</div>
-                <button onClick={() => onOperationSelect('match')} data-testid="select-match">
+                <button type="button" onClick={() => onOperationSelect('match')} data-testid="select-match">
                     Match
                 </button>
-                <button onClick={() => onOperationSelect('contains')} data-testid="select-contains">
+                <button type="button" onClick={() => onOperationSelect('contains')} data-testid="select-contains">
                     Contains
                 </button>
-                <button onClick={() => onOperationSelect('similarity', 80)} data-testid="select-similarity">
+                <button type="button" onClick={() => onOperationSelect('similarity', 80)} data-testid="select-similarity">
                     Similarity 80%
                 </button>
-                <button onClick={onDelete} data-testid="delete-pill">
+                <button type="button" onClick={onDelete} data-testid="delete-pill">
                     Delete
                 </button>
-                <button onClick={onClose} data-testid="close-operation-selector">
+                <button type="button" onClick={onClose} data-testid="close-operation-selector">
                     Close
                 </button>
             </div>

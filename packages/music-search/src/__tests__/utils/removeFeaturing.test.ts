@@ -27,7 +27,7 @@ describe('removeFeaturing', () => {
             ['', ''], // empty string
             ['(', ''], // only opening parenthesis
             ['feat', ''], // only feat keyword
-            ['a', 'a'], // single character
+            ['a', 'a'] // single character
         ])('handles boundary inputs: "%s" -> "%s"', (input, expected) => {
             expect(removeFeaturing(input)).toBe(expected);
         });
@@ -50,7 +50,7 @@ describe('removeFeaturing', () => {
     describe('error handling', () => {
         it('handles null and undefined inputs', () => {
             expect(removeFeaturing()).toBe('');
-            expect(removeFeaturing(undefined)).toBe('');
+            expect(removeFeaturing()).toBe('');
             // Note: null will throw error - function doesn't handle it
             expect(() => removeFeaturing(null as any)).toThrow();
         });
@@ -59,7 +59,7 @@ describe('removeFeaturing', () => {
     describe('real-world examples', () => {
         it.each([
             ['Despacito feat. Justin Bieber', 'Despacito '],
-            ['Bohemian Rhapsody (Live Aid 1985)', 'Bohemian Rhapsody '],
+            ['Bohemian Rhapsody (Live Aid 1985)', 'Bohemian Rhapsody ']
         ])('processes common patterns: "%s"', (input, expected) => {
             expect(removeFeaturing(input)).toBe(expected);
         });

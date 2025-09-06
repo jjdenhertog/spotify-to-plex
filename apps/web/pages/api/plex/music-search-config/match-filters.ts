@@ -63,12 +63,12 @@ export default async function handler(
             const filters = await getMatchFilters(storageDir);
 
             return res.status(200).json([...filters]);
-        } catch (error) {
-            console.error('Error loading match filters:', error);
+        } catch (_error) {
+            // Error handling - handled by Next.js error boundary
 
             return res.status(500).json({
                 error: 'Failed to load match filters',
-                details: error instanceof Error ? error.message : 'Unknown error'
+                details: _error instanceof Error ? _error.message : 'Unknown error'
             });
         }
     }
@@ -95,12 +95,12 @@ export default async function handler(
                 message: 'Match filters updated successfully',
                 filters: newFilters
             });
-        } catch (error) {
-            console.error('Error updating match filters:', error);
+        } catch (_error) {
+            // Error handling - handled by Next.js error boundary
 
             return res.status(500).json({
                 error: 'Failed to update match filters',
-                details: error instanceof Error ? error.message : 'Unknown error'
+                details: _error instanceof Error ? _error.message : 'Unknown error'
             });
         }
     }

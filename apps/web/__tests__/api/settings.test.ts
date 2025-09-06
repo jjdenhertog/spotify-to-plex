@@ -54,7 +54,7 @@ describe('/api/settings - Settings CRUD Operations', () => {
                 id: mockPlexResponses.settings.id
             });
       
-            expect(mockPlex.getSettings).toHaveBeenCalledOnce();
+            expect(mockPlex.getSettings).toHaveBeenCalledTimes(1);
         });
 
         it('should return not logged in when no token', async () => {
@@ -135,7 +135,7 @@ describe('/api/settings - Settings CRUD Operations', () => {
                 body: newSettings
             });
       
-            mockPlex.updateSettings.mockResolvedValue();
+            mockPlex.updateSettings.mockResolvedValue(null);
             mockPlex.getSettings.mockResolvedValue({
                 token: 'existing-token',
                 ...newSettings
@@ -155,7 +155,7 @@ describe('/api/settings - Settings CRUD Operations', () => {
             });
       
             expect(mockPlex.updateSettings).toHaveBeenCalledWith(newSettings);
-            expect(mockPlex.getSettings).toHaveBeenCalledOnce();
+            expect(mockPlex.getSettings).toHaveBeenCalledTimes(1);
         });
 
         it('should update only URI when ID is not provided', async () => {
@@ -169,7 +169,7 @@ describe('/api/settings - Settings CRUD Operations', () => {
                 body: partialSettings
             });
       
-            mockPlex.updateSettings.mockResolvedValue();
+            mockPlex.updateSettings.mockResolvedValue(null);
             mockPlex.getSettings.mockResolvedValue({
                 token: 'existing-token',
                 uri: partialSettings.uri,
@@ -206,7 +206,7 @@ describe('/api/settings - Settings CRUD Operations', () => {
             expect(res._getStatusCode()).toBe(200);
       
             expect(mockPlex.updateSettings).not.toHaveBeenCalled();
-            expect(mockPlex.getSettings).toHaveBeenCalledOnce();
+            expect(mockPlex.getSettings).toHaveBeenCalledTimes(1);
         });
 
         it('should handle empty POST body', async () => {
@@ -225,7 +225,7 @@ describe('/api/settings - Settings CRUD Operations', () => {
             expect(res._getStatusCode()).toBe(200);
       
             expect(mockPlex.updateSettings).not.toHaveBeenCalled();
-            expect(mockPlex.getSettings).toHaveBeenCalledOnce();
+            expect(mockPlex.getSettings).toHaveBeenCalledTimes(1);
         });
 
         it('should handle null/undefined body', async () => {
@@ -282,7 +282,7 @@ describe('/api/settings - Settings CRUD Operations', () => {
                 body: newSettings
             });
       
-            mockPlex.updateSettings.mockResolvedValue();
+            mockPlex.updateSettings.mockResolvedValue(null);
             mockPlex.getSettings.mockRejectedValue(new Error('Failed to read updated settings'));
 
             // Act
@@ -460,7 +460,7 @@ describe('/api/settings - Settings CRUD Operations', () => {
                     body: { uri: testCase.input }
                 });
         
-                mockPlex.updateSettings.mockResolvedValue();
+                mockPlex.updateSettings.mockResolvedValue(null);
                 mockPlex.getSettings.mockResolvedValue({
                     token: 'token',
                     uri: testCase.expected,
@@ -534,7 +534,7 @@ describe('/api/settings - Settings CRUD Operations', () => {
                 body: { uri: largeUri }
             });
       
-            mockPlex.updateSettings.mockResolvedValue();
+            mockPlex.updateSettings.mockResolvedValue(null);
             mockPlex.getSettings.mockResolvedValue({
                 token: 'token',
                 uri: largeUri,
@@ -585,7 +585,7 @@ describe('/api/settings - Settings CRUD Operations', () => {
                     .catch(() => res);
             });
 
-            mockPlex.updateSettings.mockResolvedValue();
+            mockPlex.updateSettings.mockResolvedValue(null);
             mockPlex.getSettings.mockResolvedValue(mockPlexResponses.settings);
 
             // Act

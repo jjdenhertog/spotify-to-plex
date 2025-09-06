@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, waitFor } from '../test-utils';
+import { render, screen, waitFor } from '../../test-utils';
 import userEvent from '@testing-library/user-event';
 import MatchFilterEditor from '../../../src/components/MatchFilterEditor';
 import { MatchFilterRule } from '../../../src/types/MatchFilterTypes';
@@ -223,7 +223,7 @@ describe('MatchFilterEditor', () => {
             // Check if the data is properly converted to JSON
             await waitFor(() => {
                 const textarea = screen.getByTestId('monaco-textarea');
-                expect(textarea.value).toContain('artist:match');
+                expect((textarea as HTMLTextAreaElement).value).toContain('artist:match');
             });
         });
     });

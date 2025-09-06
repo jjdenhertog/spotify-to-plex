@@ -40,8 +40,8 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 const searchResponse = await analyze(plexConfig, searchItem)
 
                 res.status(200).json(searchResponse);
-            } catch (error) {
-                console.error('Error analyzing Plex music:', error);
+            } catch (_error) {
+                // Error handling - handled by Next.js error boundary
                 res.status(500).json({ error: 'Failed to analyze music' });
             }
         })

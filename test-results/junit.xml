@@ -1,12 +1,1464 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuites name="vitest tests" tests="1" failures="1" errors="0" time="0">
-    <testsuite name="apps/web/__tests__/hooks/useMatchFiltersApi.test.ts" timestamp="2025-09-06T15:25:56.630Z" hostname="c82ba9db4d53" tests="1" failures="1" errors="0" skipped="0" time="0">
-        <testcase classname="apps/web/__tests__/hooks/useMatchFiltersApi.test.ts" name="__tests__/hooks/useMatchFiltersApi.test.ts" time="0">
+<testsuites name="vitest tests" tests="290" failures="43" errors="0" time="1.263598019">
+    <testsuite name="tests/api/auth-verify.test.ts" timestamp="2025-09-06T16:08:30.300Z" hostname="c82ba9db4d53" tests="19" failures="0" errors="0" skipped="0" time="0.1426646">
+        <testcase classname="tests/api/auth-verify.test.ts" name="/api/auth/verify - Plex Authentication Verification &gt; POST requests - Authentication verification &gt; should verify authentication successfully with valid pin" time="0.054646594">
+        </testcase>
+        <testcase classname="tests/api/auth-verify.test.ts" name="/api/auth/verify - Plex Authentication Verification &gt; POST requests - Authentication verification &gt; should return 400 when pin_id is missing" time="0.001878727">
+        </testcase>
+        <testcase classname="tests/api/auth-verify.test.ts" name="/api/auth/verify - Plex Authentication Verification &gt; POST requests - Authentication verification &gt; should return 400 when pin_code is missing" time="0.001617903">
+        </testcase>
+        <testcase classname="tests/api/auth-verify.test.ts" name="/api/auth/verify - Plex Authentication Verification &gt; POST requests - Authentication verification &gt; should return 400 when both pin_id and pin_code are missing" time="0.001102046">
+        </testcase>
+        <testcase classname="tests/api/auth-verify.test.ts" name="/api/auth/verify - Plex Authentication Verification &gt; POST requests - Authentication verification &gt; should handle empty string pins" time="0.001049185">
+        </testcase>
+        <testcase classname="tests/api/auth-verify.test.ts" name="/api/auth/verify - Plex Authentication Verification &gt; POST requests - Authentication verification &gt; should handle Plex TV API errors" time="0.022364746">
+            <system-err>
+Error verifying Plex authentication: Error: Invalid pin code
+    at Module.createMockAxiosError [90m(/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mapps/web/__tests__/api/api-test-helpers.ts:58:19[90m)[39m
+    at [90m/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mtests/api/auth-verify.test.ts:208:9
+    at [90mfile:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:155:11
+    at [90mfile:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:752:26
+    at [90mfile:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1897:20
+    at new Promise (&lt;anonymous&gt;)
+    at runWithTimeout [90m(file:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1863:10[90m)[39m
+    at runTest [90m(file:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1574:12[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:95:5)[39m
+    at runSuite [90m(file:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1729:8[90m)[39m {
+  response: {
+    status: [33m400[39m,
+    data: { error: [32m&apos;Invalid pin code&apos;[39m },
+    statusText: [32m&apos;Internal Server Error&apos;[39m
+  }
+}
+
+            </system-err>
+        </testcase>
+        <testcase classname="tests/api/auth-verify.test.ts" name="/api/auth/verify - Plex Authentication Verification &gt; POST requests - Authentication verification &gt; should handle Plex TV API unauthorized error" time="0.005960704">
+            <system-err>
+Error verifying Plex authentication: Error: Unauthorized
+    at Module.createMockAxiosError [90m(/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mapps/web/__tests__/api/api-test-helpers.ts:58:19[90m)[39m
+    at [90m/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mtests/api/auth-verify.test.ts:232:9
+    at [90mfile:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:155:11
+    at [90mfile:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:752:26
+    at [90mfile:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1897:20
+    at new Promise (&lt;anonymous&gt;)
+    at runWithTimeout [90m(file:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1863:10[90m)[39m
+    at runTest [90m(file:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1574:12[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:95:5)[39m
+    at runSuite [90m(file:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1729:8[90m)[39m {
+  response: {
+    status: [33m401[39m,
+    data: { error: [32m&apos;Unauthorized&apos;[39m },
+    statusText: [32m&apos;Internal Server Error&apos;[39m
+  }
+}
+
+            </system-err>
+        </testcase>
+        <testcase classname="tests/api/auth-verify.test.ts" name="/api/auth/verify - Plex Authentication Verification &gt; POST requests - Authentication verification &gt; should handle network timeout errors" time="0.003057684">
+            <system-err>
+Error verifying Plex authentication: Error: Network timeout
+    at [90m/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mtests/api/auth-verify.test.ts:256:28
+    at [90mfile:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:155:11
+    at [90mfile:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:752:26
+    at [90mfile:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1897:20
+    at new Promise (&lt;anonymous&gt;)
+    at runWithTimeout [90m(file:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1863:10[90m)[39m
+    at runTest [90m(file:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1574:12[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:95:5)[39m
+    at runSuite [90m(file:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1729:8[90m)[39m
+    at runSuite [90m(file:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1729:8[90m)[39m {
+  code: [32m&apos;ETIMEDOUT&apos;[39m
+}
+
+            </system-err>
+        </testcase>
+        <testcase classname="tests/api/auth-verify.test.ts" name="/api/auth/verify - Plex Authentication Verification &gt; POST requests - Authentication verification &gt; should handle malformed Plex TV response" time="0.002167311">
+        </testcase>
+        <testcase classname="tests/api/auth-verify.test.ts" name="/api/auth/verify - Plex Authentication Verification &gt; POST requests - Authentication verification &gt; should handle settings update failure" time="0.003372608">
+            <system-err>
+Error verifying Plex authentication: Error: Failed to save settings
+    at [90m/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mtests/api/auth-verify.test.ts:319:49
+    at [90mfile:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:155:11
+    at [90mfile:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:752:26
+    at [90mfile:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1897:20
+    at new Promise (&lt;anonymous&gt;)
+    at runWithTimeout [90m(file:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1863:10[90m)[39m
+    at runTest [90m(file:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1574:12[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:95:5)[39m
+    at runSuite [90m(file:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1729:8[90m)[39m
+    at runSuite [90m(file:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1729:8[90m)[39m
+
+            </system-err>
+        </testcase>
+        <testcase classname="tests/api/auth-verify.test.ts" name="/api/auth/verify - Plex Authentication Verification &gt; POST requests - Authentication verification &gt; should handle settings read failure" time="0.004596135">
+            <system-err>
+Error verifying Plex authentication: Error: Failed to read settings
+    at [90m/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mtests/api/auth-verify.test.ts:335:46
+    at [90mfile:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:155:11
+    at [90mfile:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:752:26
+    at [90mfile:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1897:20
+    at new Promise (&lt;anonymous&gt;)
+    at runWithTimeout [90m(file:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1863:10[90m)[39m
+    at runTest [90m(file:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1574:12[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:95:5)[39m
+    at runSuite [90m(file:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1729:8[90m)[39m
+    at runSuite [90m(file:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1729:8[90m)[39m
+
+            </system-err>
+        </testcase>
+        <testcase classname="tests/api/auth-verify.test.ts" name="/api/auth/verify - Plex Authentication Verification &gt; POST requests - Authentication verification &gt; should handle missing environment variables" time="0.01130544">
+        </testcase>
+        <testcase classname="tests/api/auth-verify.test.ts" name="/api/auth/verify - Plex Authentication Verification &gt; POST requests - Authentication verification &gt; should handle empty authToken in response" time="0.001582243">
+        </testcase>
+        <testcase classname="tests/api/auth-verify.test.ts" name="/api/auth/verify - Plex Authentication Verification &gt; Request validation and edge cases &gt; should only accept POST requests" time="0.014052619">
+        </testcase>
+        <testcase classname="tests/api/auth-verify.test.ts" name="/api/auth/verify - Plex Authentication Verification &gt; Request validation and edge cases &gt; should handle very long pin values" time="0.001597543">
+        </testcase>
+        <testcase classname="tests/api/auth-verify.test.ts" name="/api/auth/verify - Plex Authentication Verification &gt; Request validation and edge cases &gt; should handle special characters in pins" time="0.001626203">
+        </testcase>
+        <testcase classname="tests/api/auth-verify.test.ts" name="/api/auth/verify - Plex Authentication Verification &gt; Request validation and edge cases &gt; should handle concurrent verification requests" time="0.002613097">
+        </testcase>
+        <testcase classname="tests/api/auth-verify.test.ts" name="/api/auth/verify - Plex Authentication Verification &gt; Request validation and edge cases &gt; should handle Plex TV API rate limiting" time="0.002958432">
+            <system-err>
+Error verifying Plex authentication: Error: Too Many Requests
+    at Module.createMockAxiosError [90m(/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mapps/web/__tests__/api/api-test-helpers.ts:58:19[90m)[39m
+    at [90m/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mtests/api/auth-verify.test.ts:574:9
+    at [90mfile:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:155:11
+    at [90mfile:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:752:26
+    at [90mfile:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1897:20
+    at new Promise (&lt;anonymous&gt;)
+    at runWithTimeout [90m(file:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1863:10[90m)[39m
+    at runTest [90m(file:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1574:12[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:95:5)[39m
+    at runSuite [90m(file:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1729:8[90m)[39m {
+  response: {
+    status: [33m429[39m,
+    data: { error: [32m&apos;Too Many Requests&apos;[39m },
+    statusText: [32m&apos;Internal Server Error&apos;[39m
+  }
+}
+
+            </system-err>
+        </testcase>
+        <testcase classname="tests/api/auth-verify.test.ts" name="/api/auth/verify - Plex Authentication Verification &gt; Request validation and edge cases &gt; should preserve auth token format" time="0.001391609">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/api/combined-music-search-config.test.ts" timestamp="2025-09-06T16:08:30.312Z" hostname="c82ba9db4d53" tests="18" failures="0" errors="0" skipped="0" time="0.131257978">
+        <testcase classname="tests/api/combined-music-search-config.test.ts" name="/api/plex/music-search-config/combined - Combined Configuration Management &gt; GET requests - Fetch combined configuration &gt; should return combined text processing and search approaches configuration" time="0.011139608">
+        </testcase>
+        <testcase classname="tests/api/combined-music-search-config.test.ts" name="/api/plex/music-search-config/combined - Combined Configuration Management &gt; GET requests - Fetch combined configuration &gt; should handle first endpoint failure gracefully" time="0.037579832">
+            <system-err>
+Error in combined config API: Error: Text processing config not found
+    at Module.createMockAxiosError [90m(/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mapps/web/__tests__/api/api-test-helpers.ts:58:19[90m)[39m
+    at [90m/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mtests/api/combined-music-search-config.test.ts:86:32
+    at [90mfile:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:155:11
+    at [90mfile:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:752:26
+    at [90mfile:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1897:20
+    at new Promise (&lt;anonymous&gt;)
+    at runWithTimeout [90m(file:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1863:10[90m)[39m
+    at runTest [90m(file:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1574:12[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:95:5)[39m
+    at runSuite [90m(file:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1729:8[90m)[39m {
+  response: {
+    status: [33m404[39m,
+    data: { error: [32m&apos;Text processing config not found&apos;[39m },
+    statusText: [32m&apos;Not Found&apos;[39m
+  }
+}
+
+            </system-err>
+        </testcase>
+        <testcase classname="tests/api/combined-music-search-config.test.ts" name="/api/plex/music-search-config/combined - Combined Configuration Management &gt; GET requests - Fetch combined configuration &gt; should handle second endpoint failure gracefully" time="0.003236546">
+            <system-err>
+Error in combined config API: Error: Search approaches config not found
+    at Module.createMockAxiosError [90m(/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mapps/web/__tests__/api/api-test-helpers.ts:58:19[90m)[39m
+    at [90m/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mtests/api/combined-music-search-config.test.ts:108:32
+    at [90mfile:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:155:11
+    at [90mfile:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:752:26
+    at [90mfile:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1897:20
+    at new Promise (&lt;anonymous&gt;)
+    at runWithTimeout [90m(file:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1863:10[90m)[39m
+    at runTest [90m(file:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1574:12[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:95:5)[39m
+    at runSuite [90m(file:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1729:8[90m)[39m {
+  response: {
+    status: [33m404[39m,
+    data: { error: [32m&apos;Search approaches config not found&apos;[39m },
+    statusText: [32m&apos;Not Found&apos;[39m
+  }
+}
+
+            </system-err>
+        </testcase>
+        <testcase classname="tests/api/combined-music-search-config.test.ts" name="/api/plex/music-search-config/combined - Combined Configuration Management &gt; GET requests - Fetch combined configuration &gt; should handle both endpoints failure" time="0.002778699">
+            <system-err>
+Error in combined config API: Error: First endpoint failed
+    at Module.createMockAxiosError [90m(/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mapps/web/__tests__/api/api-test-helpers.ts:58:19[90m)[39m
+    at [90m/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mtests/api/combined-music-search-config.test.ts:128:32
+    at [90mfile:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:155:11
+    at [90mfile:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:752:26
+    at [90mfile:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1897:20
+    at new Promise (&lt;anonymous&gt;)
+    at runWithTimeout [90m(file:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1863:10[90m)[39m
+    at runTest [90m(file:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1574:12[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:95:5)[39m
+    at runSuite [90m(file:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1729:8[90m)[39m {
+  response: {
+    status: [33m500[39m,
+    data: { error: [32m&apos;First endpoint failed&apos;[39m },
+    statusText: [32m&apos;Internal Server Error&apos;[39m
+  }
+}
+
+            </system-err>
+        </testcase>
+        <testcase classname="tests/api/combined-music-search-config.test.ts" name="/api/plex/music-search-config/combined - Combined Configuration Management &gt; GET requests - Fetch combined configuration &gt; should handle network timeout errors" time="0.002697039">
+            <system-err>
+Error in combined config API: Error: Network timeout
+    at [90m/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mtests/api/combined-music-search-config.test.ts:148:28
+    at [90mfile:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:155:11
+    at [90mfile:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:752:26
+    at [90mfile:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1897:20
+    at new Promise (&lt;anonymous&gt;)
+    at runWithTimeout [90m(file:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1863:10[90m)[39m
+    at runTest [90m(file:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1574:12[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:95:5)[39m
+    at runSuite [90m(file:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1729:8[90m)[39m
+    at runSuite [90m(file:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1729:8[90m)[39m {
+  code: [32m&apos;ETIMEDOUT&apos;[39m
+}
+
+            </system-err>
+        </testcase>
+        <testcase classname="tests/api/combined-music-search-config.test.ts" name="/api/plex/music-search-config/combined - Combined Configuration Management &gt; GET requests - Fetch combined configuration &gt; should handle empty responses from both endpoints" time="0.00142895">
+        </testcase>
+        <testcase classname="tests/api/combined-music-search-config.test.ts" name="/api/plex/music-search-config/combined - Combined Configuration Management &gt; POST requests - Update combined configuration &gt; should update both configurations successfully" time="0.009110539">
+        </testcase>
+        <testcase classname="tests/api/combined-music-search-config.test.ts" name="/api/plex/music-search-config/combined - Combined Configuration Management &gt; POST requests - Update combined configuration &gt; should return 400 when textProcessing is missing from request body" time="0.001756565">
+        </testcase>
+        <testcase classname="tests/api/combined-music-search-config.test.ts" name="/api/plex/music-search-config/combined - Combined Configuration Management &gt; POST requests - Update combined configuration &gt; should return 400 when searchApproaches is missing from request body" time="0.001561182">
+        </testcase>
+        <testcase classname="tests/api/combined-music-search-config.test.ts" name="/api/plex/music-search-config/combined - Combined Configuration Management &gt; POST requests - Update combined configuration &gt; should return 400 when both configurations are missing" time="0.001248087">
+        </testcase>
+        <testcase classname="tests/api/combined-music-search-config.test.ts" name="/api/plex/music-search-config/combined - Combined Configuration Management &gt; POST requests - Update combined configuration &gt; should handle null/undefined request body" time="0.000833962">
+        </testcase>
+        <testcase classname="tests/api/combined-music-search-config.test.ts" name="/api/plex/music-search-config/combined - Combined Configuration Management &gt; POST requests - Update combined configuration &gt; should handle first endpoint update failure" time="0.002711868">
+            <system-err>
+Error in combined config API: Error: Failed to update text processing
+    at Module.createMockAxiosError [90m(/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mapps/web/__tests__/api/api-test-helpers.ts:58:19[90m)[39m
+    at [90m/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mtests/api/combined-music-search-config.test.ts:339:32
+    at [90mfile:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:155:11
+    at [90mfile:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:752:26
+    at [90mfile:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1897:20
+    at new Promise (&lt;anonymous&gt;)
+    at runWithTimeout [90m(file:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1863:10[90m)[39m
+    at runTest [90m(file:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1574:12[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:95:5)[39m
+    at runSuite [90m(file:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1729:8[90m)[39m {
+  response: {
+    status: [33m500[39m,
+    data: { error: [32m&apos;Failed to update text processing&apos;[39m },
+    statusText: [32m&apos;Internal Server Error&apos;[39m
+  }
+}
+
+            </system-err>
+        </testcase>
+        <testcase classname="tests/api/combined-music-search-config.test.ts" name="/api/plex/music-search-config/combined - Combined Configuration Management &gt; POST requests - Update combined configuration &gt; should handle second endpoint update failure" time="0.003959576">
+            <system-err>
+Error in combined config API: Error: Failed to update search approaches
+    at Module.createMockAxiosError [90m(/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mapps/web/__tests__/api/api-test-helpers.ts:58:19[90m)[39m
+    at [90m/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mtests/api/combined-music-search-config.test.ts:367:32
+    at [90mfile:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:155:11
+    at [90mfile:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:752:26
+    at [90mfile:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1897:20
+    at new Promise (&lt;anonymous&gt;)
+    at runWithTimeout [90m(file:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1863:10[90m)[39m
+    at runTest [90m(file:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1574:12[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:95:5)[39m
+    at runSuite [90m(file:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1729:8[90m)[39m {
+  response: {
+    status: [33m500[39m,
+    data: { error: [32m&apos;Failed to update search approaches&apos;[39m },
+    statusText: [32m&apos;Internal Server Error&apos;[39m
+  }
+}
+
+            </system-err>
+        </testcase>
+        <testcase classname="tests/api/combined-music-search-config.test.ts" name="/api/plex/music-search-config/combined - Combined Configuration Management &gt; POST requests - Update combined configuration &gt; should handle complex nested configuration objects" time="0.002025189">
+        </testcase>
+        <testcase classname="tests/api/combined-music-search-config.test.ts" name="/api/plex/music-search-config/combined - Combined Configuration Management &gt; Request validation and edge cases &gt; should return 405 for unsupported HTTP methods" time="0.001689574">
+        </testcase>
+        <testcase classname="tests/api/combined-music-search-config.test.ts" name="/api/plex/music-search-config/combined - Combined Configuration Management &gt; Request validation and edge cases &gt; should handle very large configuration objects" time="0.003492459">
+        </testcase>
+        <testcase classname="tests/api/combined-music-search-config.test.ts" name="/api/plex/music-search-config/combined - Combined Configuration Management &gt; Request validation and edge cases &gt; should handle concurrent requests to same endpoint" time="0.002253432">
+        </testcase>
+        <testcase classname="tests/api/combined-music-search-config.test.ts" name="/api/plex/music-search-config/combined - Combined Configuration Management &gt; Request validation and edge cases &gt; should handle partial success scenarios gracefully" time="0.037664343">
+            <system-err>
+Error in combined config API: Error: Database connection lost
+    at Module.createMockAxiosError [90m(/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mapps/web/__tests__/api/api-test-helpers.ts:58:19[90m)[39m
+    at [90m/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mtests/api/combined-music-search-config.test.ts:549:32
+    at [90mfile:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:155:11
+    at [90mfile:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:752:26
+    at [90mfile:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1897:20
+    at new Promise (&lt;anonymous&gt;)
+    at runWithTimeout [90m(file:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1863:10[90m)[39m
+    at runTest [90m(file:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1574:12[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:95:5)[39m
+    at runSuite [90m(file:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1729:8[90m)[39m {
+  response: {
+    status: [33m503[39m,
+    data: { error: [32m&apos;Database connection lost&apos;[39m },
+    statusText: [32m&apos;Internal Server Error&apos;[39m
+  }
+}
+
+            </system-err>
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/api/match-filters-config.test.ts" timestamp="2025-09-06T16:08:30.317Z" hostname="c82ba9db4d53" tests="1" failures="1" errors="0" skipped="0" time="0">
+        <testcase classname="tests/api/match-filters-config.test.ts" name="tests/api/match-filters-config.test.ts" time="0">
+            <failure message="[vitest] There was an error when mocking a module. If you are using &quot;vi.mock&quot; factory, make sure there are no top level variables inside, since this call is hoisted to top of the file. Read more: https://vitest.dev/api/vi.html#vi-mock" type="Error">
+Error: [vitest] There was an error when mocking a module. If you are using &quot;vi.mock&quot; factory, make sure there are no top level variables inside, since this call is hoisted to top of the file. Read more: https://vitest.dev/api/vi.html#vi-mock
+ ❯ apps/web/pages/api/plex/music-search-config/match-filters.ts:2:1
+
+Caused by: Caused by: ReferenceError: Cannot access &apos;mockGetMatchFilters&apos; before initialization
+ ❯ tests/api/match-filters-config.test.ts:29:20
+ ❯ apps/web/pages/api/plex/music-search-config/match-filters.ts:2:1
+            </failure>
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/api/settings-management.test.ts" timestamp="2025-09-06T16:08:30.319Z" hostname="c82ba9db4d53" tests="30" failures="1" errors="0" skipped="0" time="0.095066526">
+        <testcase classname="tests/api/settings-management.test.ts" name="/api/settings - Advanced Settings Management &gt; GET requests - Retrieve settings &gt; should return current settings when user is authenticated" time="0.00849099">
+        </testcase>
+        <testcase classname="tests/api/settings-management.test.ts" name="/api/settings - Advanced Settings Management &gt; GET requests - Retrieve settings &gt; should return not logged in when no token exists" time="0.001617263">
+        </testcase>
+        <testcase classname="tests/api/settings-management.test.ts" name="/api/settings - Advanced Settings Management &gt; GET requests - Retrieve settings &gt; should handle empty token (empty string)" time="0.001097425">
+        </testcase>
+        <testcase classname="tests/api/settings-management.test.ts" name="/api/settings - Advanced Settings Management &gt; GET requests - Retrieve settings &gt; should handle undefined token" time="0.000967014">
+        </testcase>
+        <testcase classname="tests/api/settings-management.test.ts" name="/api/settings - Advanced Settings Management &gt; GET requests - Retrieve settings &gt; should handle missing URI and ID gracefully" time="0.000923613">
+        </testcase>
+        <testcase classname="tests/api/settings-management.test.ts" name="/api/settings - Advanced Settings Management &gt; GET requests - Retrieve settings &gt; should handle settings read errors" time="0.022337606">
+            <system-err>
+Error getting Plex settings: Error: Settings file not found
+    at [90m/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mtests/api/settings-management.test.ts:179:46
+    at [90mfile:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:155:11
+    at [90mfile:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:752:26
+    at [90mfile:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1897:20
+    at new Promise (&lt;anonymous&gt;)
+    at runWithTimeout [90m(file:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1863:10[90m)[39m
+    at runTest [90m(file:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1574:12[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:95:5)[39m
+    at runSuite [90m(file:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1729:8[90m)[39m
+    at runSuite [90m(file:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1729:8[90m)[39m
+
+            </system-err>
+        </testcase>
+        <testcase classname="tests/api/settings-management.test.ts" name="/api/settings - Advanced Settings Management &gt; GET requests - Retrieve settings &gt; should handle file permission errors" time="0.005251434">
+            <system-err>
+Error getting Plex settings: Error: EACCES: permission denied
+    at [90m/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mtests/api/settings-management.test.ts:195:31
+    at [90mfile:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:155:11
+    at [90mfile:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:752:26
+    at [90mfile:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1897:20
+    at new Promise (&lt;anonymous&gt;)
+    at runWithTimeout [90m(file:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1863:10[90m)[39m
+    at runTest [90m(file:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1574:12[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:95:5)[39m
+    at runSuite [90m(file:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1729:8[90m)[39m
+    at runSuite [90m(file:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1729:8[90m)[39m {
+  code: [32m&apos;EACCES&apos;[39m
+}
+
+            </system-err>
+        </testcase>
+        <testcase classname="tests/api/settings-management.test.ts" name="/api/settings - Advanced Settings Management &gt; GET requests - Retrieve settings &gt; should handle corrupted settings file" time="0.00636009">
+            <system-err>
+Error getting Plex settings: Error: Unexpected token in JSON
+    at [90m/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mtests/api/settings-management.test.ts:213:46
+    at [90mfile:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:155:11
+    at [90mfile:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:752:26
+    at [90mfile:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1897:20
+    at new Promise (&lt;anonymous&gt;)
+    at runWithTimeout [90m(file:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1863:10[90m)[39m
+    at runTest [90m(file:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1574:12[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:95:5)[39m
+    at runSuite [90m(file:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1729:8[90m)[39m
+    at runSuite [90m(file:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1729:8[90m)[39m
+
+            </system-err>
+        </testcase>
+        <testcase classname="tests/api/settings-management.test.ts" name="/api/settings - Advanced Settings Management &gt; POST requests - Update settings &gt; should update settings successfully with valid URI and ID" time="0.003972466">
+        </testcase>
+        <testcase classname="tests/api/settings-management.test.ts" name="/api/settings - Advanced Settings Management &gt; POST requests - Update settings &gt; should update only URI when ID is not provided" time="0.001648384">
+        </testcase>
+        <testcase classname="tests/api/settings-management.test.ts" name="/api/settings - Advanced Settings Management &gt; POST requests - Update settings &gt; should handle empty URI update request" time="0.005409727">
+            <failure message="expected &quot;spy&quot; to be called with arguments: [ { uri: &apos;&apos;, id: undefined } ][90m
+
+Number of calls: [1m0[22m
+[39m" type="AssertionError">
+AssertionError: expected &quot;spy&quot; to be called with arguments: [ { uri: &apos;&apos;, id: undefined } ]
+
+Number of calls: 0
+
+ ❯ tests/api/settings-management.test.ts:316:39
+            </failure>
+        </testcase>
+        <testcase classname="tests/api/settings-management.test.ts" name="/api/settings - Advanced Settings Management &gt; POST requests - Update settings &gt; should skip update when no URI is provided in body" time="0.001130686">
+        </testcase>
+        <testcase classname="tests/api/settings-management.test.ts" name="/api/settings - Advanced Settings Management &gt; POST requests - Update settings &gt; should handle null/undefined request body" time="0.000804782">
+        </testcase>
+        <testcase classname="tests/api/settings-management.test.ts" name="/api/settings - Advanced Settings Management &gt; POST requests - Update settings &gt; should handle empty object request body" time="0.001242438">
+        </testcase>
+        <testcase classname="tests/api/settings-management.test.ts" name="/api/settings - Advanced Settings Management &gt; POST requests - Update settings &gt; should handle update settings errors" time="0.003003493">
+            <system-err>
+Error updating Plex settings: Error: Failed to write settings file
+    at [90m/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mtests/api/settings-management.test.ts:402:49
+    at [90mfile:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:155:11
+    at [90mfile:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:752:26
+    at [90mfile:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1897:20
+    at new Promise (&lt;anonymous&gt;)
+    at runWithTimeout [90m(file:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1863:10[90m)[39m
+    at runTest [90m(file:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1574:12[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:95:5)[39m
+    at runSuite [90m(file:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1729:8[90m)[39m
+    at runSuite [90m(file:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1729:8[90m)[39m
+
+            </system-err>
+        </testcase>
+        <testcase classname="tests/api/settings-management.test.ts" name="/api/settings - Advanced Settings Management &gt; POST requests - Update settings &gt; should handle disk space errors during update" time="0.003352207">
+            <system-err>
+Error updating Plex settings: Error: ENOSPC: no space left on device
+    at [90m/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mtests/api/settings-management.test.ts:426:29
+    at [90mfile:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:155:11
+    at [90mfile:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:752:26
+    at [90mfile:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1897:20
+    at new Promise (&lt;anonymous&gt;)
+    at runWithTimeout [90m(file:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1863:10[90m)[39m
+    at runTest [90m(file:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1574:12[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:95:5)[39m
+    at runSuite [90m(file:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1729:8[90m)[39m
+    at runSuite [90m(file:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1729:8[90m)[39m {
+  code: [32m&apos;ENOSPC&apos;[39m
+}
+
+            </system-err>
+        </testcase>
+        <testcase classname="tests/api/settings-management.test.ts" name="/api/settings - Advanced Settings Management &gt; POST requests - Update settings &gt; should handle settings read error after successful update" time="0.003079173">
+            <system-err>
+Error updating Plex settings: Error: Failed to read updated settings
+    at [90m/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mtests/api/settings-management.test.ts:453:46
+    at [90mfile:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:155:11
+    at [90mfile:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:752:26
+    at [90mfile:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1897:20
+    at new Promise (&lt;anonymous&gt;)
+    at runWithTimeout [90m(file:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1863:10[90m)[39m
+    at runTest [90m(file:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1574:12[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:95:5)[39m
+    at runSuite [90m(file:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1729:8[90m)[39m
+    at runSuite [90m(file:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1729:8[90m)[39m
+
+            </system-err>
+        </testcase>
+        <testcase classname="tests/api/settings-management.test.ts" name="/api/settings - Advanced Settings Management &gt; POST requests - Update settings &gt; should handle complex URI formats" time="0.00217906">
+        </testcase>
+        <testcase classname="tests/api/settings-management.test.ts" name="/api/settings - Advanced Settings Management &gt; POST requests - Update settings &gt; should handle very long URI and ID values" time="0.000865512">
+        </testcase>
+        <testcase classname="tests/api/settings-management.test.ts" name="/api/settings - Advanced Settings Management &gt; POST requests - Update settings &gt; should handle special characters in URI and ID" time="0.000784021">
+        </testcase>
+        <testcase classname="tests/api/settings-management.test.ts" name="/api/settings - Advanced Settings Management &gt; Advanced edge cases and error handling &gt; should handle settings with all null values" time="0.000788571">
+        </testcase>
+        <testcase classname="tests/api/settings-management.test.ts" name="/api/settings - Advanced Settings Management &gt; Advanced edge cases and error handling &gt; should handle concurrent settings read requests" time="0.003888355">
+        </testcase>
+        <testcase classname="tests/api/settings-management.test.ts" name="/api/settings - Advanced Settings Management &gt; Advanced edge cases and error handling &gt; should handle concurrent settings update requests" time="0.001888727">
+        </testcase>
+        <testcase classname="tests/api/settings-management.test.ts" name="/api/settings - Advanced Settings Management &gt; Advanced edge cases and error handling &gt; should handle race condition between update and read" time="0.000885892">
+        </testcase>
+        <testcase classname="tests/api/settings-management.test.ts" name="/api/settings - Advanced Settings Management &gt; Advanced edge cases and error handling &gt; should handle malformed JSON-like strings in settings" time="0.000778021">
+        </testcase>
+        <testcase classname="tests/api/settings-management.test.ts" name="/api/settings - Advanced Settings Management &gt; Advanced edge cases and error handling &gt; should handle mixed data types in request body" time="0.001296068">
+        </testcase>
+        <testcase classname="tests/api/settings-management.test.ts" name="/api/settings - Advanced Settings Management &gt; Advanced edge cases and error handling &gt; should maintain settings persistence across errors" time="0.003217275">
+            <system-err>
+Error updating Plex settings: Error: First update failed
+    at [90m/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mtests/api/settings-management.test.ts:764:32
+    at [90mfile:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:155:11
+    at [90mfile:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:752:26
+    at [90mfile:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1897:20
+    at new Promise (&lt;anonymous&gt;)
+    at runWithTimeout [90m(file:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1863:10[90m)[39m
+    at runTest [90m(file:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1574:12[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:95:5)[39m
+    at runSuite [90m(file:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1729:8[90m)[39m
+    at runSuite [90m(file:///var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.4/node_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:1729:8[90m)[39m
+
+            </system-err>
+        </testcase>
+        <testcase classname="tests/api/settings-management.test.ts" name="/api/settings - Advanced Settings Management &gt; Request validation &gt; should handle unsupported HTTP methods" time="0.001424051">
+        </testcase>
+        <testcase classname="tests/api/settings-management.test.ts" name="/api/settings - Advanced Settings Management &gt; Request validation &gt; should handle requests with custom headers" time="0.000895492">
+        </testcase>
+        <testcase classname="tests/api/settings-management.test.ts" name="/api/settings - Advanced Settings Management &gt; Request validation &gt; should handle very large request payloads" time="0.000640189">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/api/validation-endpoint.test.ts" timestamp="2025-09-06T16:08:30.326Z" hostname="c82ba9db4d53" tests="1" failures="1" errors="0" skipped="0" time="0">
+        <testcase classname="tests/api/validation-endpoint.test.ts" name="tests/api/validation-endpoint.test.ts" time="0">
+            <failure message="[vitest] There was an error when mocking a module. If you are using &quot;vi.mock&quot; factory, make sure there are no top level variables inside, since this call is hoisted to top of the file. Read more: https://vitest.dev/api/vi.html#vi-mock" type="Error">
+Error: [vitest] There was an error when mocking a module. If you are using &quot;vi.mock&quot; factory, make sure there are no top level variables inside, since this call is hoisted to top of the file. Read more: https://vitest.dev/api/vi.html#vi-mock
+ ❯ apps/web/pages/api/plex/music-search-config/validate.ts:2:1
+
+Caused by: Caused by: ReferenceError: Cannot access &apos;mockValidateExpression&apos; before initialization
+ ❯ tests/api/validation-endpoint.test.ts:29:23
+ ❯ apps/web/pages/api/plex/music-search-config/validate.ts:2:1
+            </failure>
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/e2e/home.spec.ts" timestamp="2025-09-06T16:08:30.327Z" hostname="c82ba9db4d53" tests="1" failures="1" errors="0" skipped="0" time="0">
+        <testcase classname="tests/e2e/home.spec.ts" name="tests/e2e/home.spec.ts" time="0">
+            <failure message="Playwright Test did not expect test.describe() to be called here.
+Most common reasons include:
+- You are calling test.describe() in a configuration file.
+- You are calling test.describe() in a file that is imported by the configuration file.
+- You have two different versions of @playwright/test. This usually happens
+  when one of the dependencies in your package.json depends on @playwright/test." type="Error">
+Error: Playwright Test did not expect test.describe() to be called here.
+Most common reasons include:
+- You are calling test.describe() in a configuration file.
+- You are calling test.describe() in a file that is imported by the configuration file.
+- You have two different versions of @playwright/test. This usually happens
+  when one of the dependencies in your package.json depends on @playwright/test.
+ ❯ TestTypeImpl._currentSuite node_modules/.pnpm/playwright@1.55.0/node_modules/playwright/lib/common/testType.js:74:13
+ ❯ TestTypeImpl._describe node_modules/.pnpm/playwright@1.55.0/node_modules/playwright/lib/common/testType.js:114:24
+ ❯ Function.describe node_modules/.pnpm/playwright@1.55.0/node_modules/playwright/lib/transform/transform.js:275:12
+ ❯ tests/e2e/home.spec.ts:3:6
+            </failure>
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/utils/matchFilters/matchFilters.test.ts" timestamp="2025-09-06T16:08:30.328Z" hostname="c82ba9db4d53" tests="1" failures="1" errors="0" skipped="0" time="0">
+        <testcase classname="tests/utils/matchFilters/matchFilters.test.ts" name="tests/utils/matchFilters/matchFilters.test.ts" time="0">
+            <system-out>
+=== Match Filter Conversion Tests ===
+
+Test 1: &quot;artist:match AND title:contains&quot;
+UI Config: {
+  &quot;rules&quot;: [
+    {
+      &quot;id&quot;: &quot;rule-0&quot;,
+      &quot;conditions&quot;: [
+        {
+          &quot;id&quot;: &quot;cond-0-0&quot;,
+          &quot;field&quot;: &quot;artist&quot;,
+          &quot;operation&quot;: &quot;match&quot;
+        },
+        {
+          &quot;id&quot;: &quot;cond-0-1&quot;,
+          &quot;field&quot;: &quot;title&quot;,
+          &quot;operation&quot;: &quot;contains&quot;
+        }
+      ],
+      &quot;combinator&quot;: &quot;AND&quot;,
+      &quot;name&quot;: &quot;Filter 1&quot;
+    }
+  ],
+  &quot;globalCombinator&quot;: &quot;OR&quot;
+}
+Validation: { isValid: [33mtrue[39m, errors: [] }
+Back to Expression: artist:match AND title:contains
+Round-trip consistent: [33mtrue[39m
+---
+
+Test 2: &quot;artist:similarity&gt;=0.8&quot;
+UI Config: {
+  &quot;rules&quot;: [
+    {
+      &quot;id&quot;: &quot;rule-0&quot;,
+      &quot;conditions&quot;: [
+        {
+          &quot;id&quot;: &quot;cond-0-0&quot;,
+          &quot;field&quot;: &quot;artist&quot;,
+          &quot;operation&quot;: &quot;similarity&quot;,
+          &quot;threshold&quot;: 0.8
+        }
+      ],
+      &quot;combinator&quot;: &quot;AND&quot;,
+      &quot;name&quot;: &quot;Filter 1&quot;
+    }
+  ],
+  &quot;globalCombinator&quot;: &quot;OR&quot;
+}
+Validation: { isValid: [33mtrue[39m, errors: [] }
+Back to Expression: artist:similarity&gt;=0.8
+Round-trip consistent: [33mtrue[39m
+---
+
+Test 3: &quot;artist:match OR title:match&quot;
+UI Config: {
+  &quot;rules&quot;: [
+    {
+      &quot;id&quot;: &quot;rule-0&quot;,
+      &quot;conditions&quot;: [
+        {
+          &quot;id&quot;: &quot;cond-0-0&quot;,
+          &quot;field&quot;: &quot;artist&quot;,
+          &quot;operation&quot;: &quot;match&quot;
+        }
+      ],
+      &quot;combinator&quot;: &quot;AND&quot;,
+      &quot;name&quot;: &quot;Filter 1&quot;
+    },
+    {
+      &quot;id&quot;: &quot;rule-1&quot;,
+      &quot;conditions&quot;: [
+        {
+          &quot;id&quot;: &quot;cond-1-0&quot;,
+          &quot;field&quot;: &quot;title&quot;,
+          &quot;operation&quot;: &quot;match&quot;
+        }
+      ],
+      &quot;combinator&quot;: &quot;AND&quot;,
+      &quot;name&quot;: &quot;Filter 2&quot;
+    }
+  ],
+  &quot;globalCombinator&quot;: &quot;OR&quot;
+}
+Validation: { isValid: [33mtrue[39m, errors: [] }
+Back to Expression: artist:match OR title:match
+Round-trip consistent: [33mtrue[39m
+---
+
+Test 4: &quot;artist:match AND title:contains OR album:similarity&gt;=0.9&quot;
+UI Config: {
+  &quot;rules&quot;: [
+    {
+      &quot;id&quot;: &quot;rule-0&quot;,
+      &quot;conditions&quot;: [
+        {
+          &quot;id&quot;: &quot;cond-0-0&quot;,
+          &quot;field&quot;: &quot;artist&quot;,
+          &quot;operation&quot;: &quot;match&quot;
+        },
+        {
+          &quot;id&quot;: &quot;cond-0-1&quot;,
+          &quot;field&quot;: &quot;title&quot;,
+          &quot;operation&quot;: &quot;contains&quot;
+        }
+      ],
+      &quot;combinator&quot;: &quot;AND&quot;,
+      &quot;name&quot;: &quot;Filter 1&quot;
+    },
+    {
+      &quot;id&quot;: &quot;rule-1&quot;,
+      &quot;conditions&quot;: [
+        {
+          &quot;id&quot;: &quot;cond-1-0&quot;,
+          &quot;field&quot;: &quot;album&quot;,
+          &quot;operation&quot;: &quot;similarity&quot;,
+          &quot;threshold&quot;: 0.9
+        }
+      ],
+      &quot;combinator&quot;: &quot;AND&quot;,
+      &quot;name&quot;: &quot;Filter 2&quot;
+    }
+  ],
+  &quot;globalCombinator&quot;: &quot;OR&quot;
+}
+Validation: { isValid: [33mtrue[39m, errors: [] }
+Back to Expression: artist:match AND title:contains OR album:similarity&gt;=0.9
+Round-trip consistent: [33mtrue[39m
+---
+
+Test 5: &quot;&quot;
+UI Config: {
+  &quot;rules&quot;: [],
+  &quot;globalCombinator&quot;: &quot;OR&quot;
+}
+Validation: { isValid: [33mfalse[39m, errors: [ [32m&apos;At least one rule is required&apos;[39m ] }
+Back to Expression: 
+Round-trip consistent: [33mtrue[39m
+---
+
+
+            </system-out>
+            <failure message="No test suite found in file /var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/tests/utils/matchFilters/matchFilters.test.ts" type="Error">
+Error: No test suite found in file /var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/tests/utils/matchFilters/matchFilters.test.ts
+            </failure>
+        </testcase>
+    </testsuite>
+    <testsuite name="packages/http-client/src/__tests__/AxiosRequest.test.ts" timestamp="2025-09-06T16:08:30.329Z" hostname="c82ba9db4d53" tests="1" failures="1" errors="0" skipped="0" time="0">
+        <testcase classname="packages/http-client/src/__tests__/AxiosRequest.test.ts" name="src/__tests__/AxiosRequest.test.ts" time="0">
+            <failure message="expect is not defined" type="ReferenceError">
+ReferenceError: expect is not defined
+ ❯ ../../node_modules/.pnpm/@testing-library+jest-dom@6.8.0/node_modules/@testing-library/jest-dom/dist/index.mjs:9:1
+ ❯ ../../tests/setup/vitest.setup.ts:1:1
+            </failure>
+        </testcase>
+    </testsuite>
+    <testsuite name="packages/http-client/src/__tests__/methods/axiosDelete.test.ts" timestamp="2025-09-06T16:08:30.330Z" hostname="c82ba9db4d53" tests="1" failures="1" errors="0" skipped="0" time="0">
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosDelete.test.ts" name="src/__tests__/methods/axiosDelete.test.ts" time="0">
+            <failure message="expect is not defined" type="ReferenceError">
+ReferenceError: expect is not defined
+ ❯ ../../node_modules/.pnpm/@testing-library+jest-dom@6.8.0/node_modules/@testing-library/jest-dom/dist/index.mjs:9:1
+ ❯ ../../tests/setup/vitest.setup.ts:1:1
+            </failure>
+        </testcase>
+    </testsuite>
+    <testsuite name="packages/http-client/src/__tests__/methods/axiosGet.test.ts" timestamp="2025-09-06T16:08:30.331Z" hostname="c82ba9db4d53" tests="1" failures="1" errors="0" skipped="0" time="0">
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosGet.test.ts" name="src/__tests__/methods/axiosGet.test.ts" time="0">
+            <failure message="expect is not defined" type="ReferenceError">
+ReferenceError: expect is not defined
+ ❯ ../../node_modules/.pnpm/@testing-library+jest-dom@6.8.0/node_modules/@testing-library/jest-dom/dist/index.mjs:9:1
+ ❯ ../../tests/setup/vitest.setup.ts:1:1
+            </failure>
+        </testcase>
+    </testsuite>
+    <testsuite name="packages/http-client/src/__tests__/methods/axiosPost.test.ts" timestamp="2025-09-06T16:08:30.332Z" hostname="c82ba9db4d53" tests="1" failures="1" errors="0" skipped="0" time="0">
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosPost.test.ts" name="src/__tests__/methods/axiosPost.test.ts" time="0">
+            <failure message="expect is not defined" type="ReferenceError">
+ReferenceError: expect is not defined
+ ❯ ../../node_modules/.pnpm/@testing-library+jest-dom@6.8.0/node_modules/@testing-library/jest-dom/dist/index.mjs:9:1
+ ❯ ../../tests/setup/vitest.setup.ts:1:1
+            </failure>
+        </testcase>
+    </testsuite>
+    <testsuite name="packages/http-client/src/__tests__/methods/axiosPut.test.ts" timestamp="2025-09-06T16:08:30.333Z" hostname="c82ba9db4d53" tests="1" failures="1" errors="0" skipped="0" time="0">
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosPut.test.ts" name="src/__tests__/methods/axiosPut.test.ts" time="0">
+            <failure message="expect is not defined" type="ReferenceError">
+ReferenceError: expect is not defined
+ ❯ ../../node_modules/.pnpm/@testing-library+jest-dom@6.8.0/node_modules/@testing-library/jest-dom/dist/index.mjs:9:1
+ ❯ ../../tests/setup/vitest.setup.ts:1:1
+            </failure>
+        </testcase>
+    </testsuite>
+    <testsuite name="packages/shared-utils/src/__tests__/array/filterUnique.test.ts" timestamp="2025-09-06T16:08:30.334Z" hostname="c82ba9db4d53" tests="14" failures="0" errors="0" skipped="0" time="0.022694511">
+        <testcase classname="packages/shared-utils/src/__tests__/array/filterUnique.test.ts" name="filterUnique &gt; basic functionality &gt; should filter out duplicate strings" time="0.003964947">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/array/filterUnique.test.ts" name="filterUnique &gt; basic functionality &gt; should filter out duplicate numbers" time="0.000572878">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/array/filterUnique.test.ts" name="filterUnique &gt; basic functionality &gt; should handle empty array" time="0.000631419">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/array/filterUnique.test.ts" name="filterUnique &gt; basic functionality &gt; should handle array with no duplicates" time="0.000670669">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/array/filterUnique.test.ts" name="filterUnique &gt; edge cases &gt; should handle single element array" time="0.000453146">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/array/filterUnique.test.ts" name="filterUnique &gt; edge cases &gt; should handle array with all same elements" time="0.000306665">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/array/filterUnique.test.ts" name="filterUnique &gt; edge cases &gt; should handle null and undefined values" time="0.000367365">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/array/filterUnique.test.ts" name="filterUnique &gt; edge cases &gt; should handle mixed data types" time="0.000518298">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/array/filterUnique.test.ts" name="filterUnique &gt; object references &gt; should compare object references, not values" time="0.002324073">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/array/filterUnique.test.ts" name="filterUnique &gt; object references &gt; should handle array of objects with same reference" time="0.000925534">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/array/filterUnique.test.ts" name="filterUnique &gt; performance considerations &gt; should handle large arrays efficiently" time="0.006049386">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/array/filterUnique.test.ts" name="filterUnique &gt; performance considerations &gt; should maintain original order of first occurrences" time="0.000533518">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/array/filterUnique.test.ts" name="filterUnique &gt; function signature verification &gt; should be compatible with Array.prototype.filter" time="0.000327674">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/array/filterUnique.test.ts" name="filterUnique &gt; function signature verification &gt; should receive correct parameters from filter" time="0.001559222">
+        </testcase>
+    </testsuite>
+    <testsuite name="packages/shared-utils/src/__tests__/utils/getAPIUrl.test.ts" timestamp="2025-09-06T16:08:30.337Z" hostname="c82ba9db4d53" tests="34" failures="4" errors="0" skipped="0" time="0.094776902">
+        <testcase classname="packages/shared-utils/src/__tests__/utils/getAPIUrl.test.ts" name="getAPIUrl &gt; basic functionality &gt; should construct API URL with protocol, host and path" time="0.003127164">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/utils/getAPIUrl.test.ts" name="getAPIUrl &gt; basic functionality &gt; should work with HTTPS URLs" time="0.000500477">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/utils/getAPIUrl.test.ts" name="getAPIUrl &gt; basic functionality &gt; should handle paths with query parameters" time="0.000520088">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/utils/getAPIUrl.test.ts" name="getAPIUrl &gt; basic functionality &gt; should handle root path" time="0.000507477">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/utils/getAPIUrl.test.ts" name="getAPIUrl &gt; port validation &gt; should throw error when port is missing" time="0.001898976">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/utils/getAPIUrl.test.ts" name="getAPIUrl &gt; port validation &gt; should throw error when URL has no port in hostname only format" time="0.000589328">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/utils/getAPIUrl.test.ts" name="getAPIUrl &gt; port validation &gt; should work with explicit port numbers" time="0.022370097">
+            <failure message="The link to the Roon extension seems invalid. The port number might be missing" type="Error">
+Error: The link to the Roon extension seems invalid. The port number might be missing
+ ❯ getAPIUrl src/utils/getAPIUrl.ts:5:15
+ ❯ src/__tests__/utils/getAPIUrl.test.ts:43:32
+ ❯ src/__tests__/utils/getAPIUrl.test.ts:42:19
+            </failure>
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/utils/getAPIUrl.test.ts" name="getAPIUrl &gt; port validation &gt; should work with default HTTPS port" time="0.001615183">
+            <failure message="The link to the Roon extension seems invalid. The port number might be missing" type="Error">
+Error: The link to the Roon extension seems invalid. The port number might be missing
+ ❯ getAPIUrl src/utils/getAPIUrl.ts:5:15
+ ❯ src/__tests__/utils/getAPIUrl.test.ts:49:28
+            </failure>
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/utils/getAPIUrl.test.ts" name="getAPIUrl &gt; port validation &gt; should work with default HTTP port" time="0.001180047">
+            <failure message="The link to the Roon extension seems invalid. The port number might be missing" type="Error">
+Error: The link to the Roon extension seems invalid. The port number might be missing
+ ❯ getAPIUrl src/utils/getAPIUrl.ts:5:15
+ ❯ src/__tests__/utils/getAPIUrl.test.ts:54:28
+            </failure>
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/utils/getAPIUrl.test.ts" name="getAPIUrl &gt; URL parsing &gt; should handle complex hostnames" time="0.001227097">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/utils/getAPIUrl.test.ts" name="getAPIUrl &gt; URL parsing &gt; should preserve protocol from original URL" time="0.000483796">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/utils/getAPIUrl.test.ts" name="getAPIUrl &gt; URL parsing &gt; should handle URLs with existing paths that get replaced" time="0.000317264">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/utils/getAPIUrl.test.ts" name="getAPIUrl &gt; URL parsing &gt; should handle URLs with query parameters that get replaced" time="0.000614808">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/utils/getAPIUrl.test.ts" name="getAPIUrl &gt; URL parsing &gt; should handle URLs with fragments that get replaced" time="0.000416066">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/utils/getAPIUrl.test.ts" name="getAPIUrl &gt; path handling &gt; should handle paths starting with slash" time="0.000362935">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/utils/getAPIUrl.test.ts" name="getAPIUrl &gt; path handling &gt; should handle paths not starting with slash" time="0.000450406">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/utils/getAPIUrl.test.ts" name="getAPIUrl &gt; path handling &gt; should handle empty paths" time="0.000436466">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/utils/getAPIUrl.test.ts" name="getAPIUrl &gt; path handling &gt; should handle complex paths" time="0.001021345">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/utils/getAPIUrl.test.ts" name="getAPIUrl &gt; path handling &gt; should handle paths with special characters" time="0.000595729">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/utils/getAPIUrl.test.ts" name="getAPIUrl &gt; error handling &gt; should throw specific error message about Roon extension" time="0.000608528">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/utils/getAPIUrl.test.ts" name="getAPIUrl &gt; error handling &gt; should handle malformed URLs gracefully" time="0.000563758">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/utils/getAPIUrl.test.ts" name="getAPIUrl &gt; error handling &gt; should handle invalid protocols" time="0.00066874">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/utils/getAPIUrl.test.ts" name="getAPIUrl &gt; real-world usage patterns &gt; should work with typical Plex server configurations" time="0.001241737">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/utils/getAPIUrl.test.ts" name="getAPIUrl &gt; real-world usage patterns &gt; should work with Plex API endpoints" time="0.000878232">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/utils/getAPIUrl.test.ts" name="getAPIUrl &gt; real-world usage patterns &gt; should handle dynamic port assignments" time="0.000660509">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/utils/getAPIUrl.test.ts" name="getAPIUrl &gt; URL component preservation &gt; should preserve protocol exactly" time="0.019923832">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/utils/getAPIUrl.test.ts" name="getAPIUrl &gt; URL component preservation &gt; should preserve hostname exactly" time="0.00071191">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/utils/getAPIUrl.test.ts" name="getAPIUrl &gt; URL component preservation &gt; should preserve port exactly" time="0.001096516">
+            <failure message="The link to the Roon extension seems invalid. The port number might be missing" type="Error">
+Error: The link to the Roon extension seems invalid. The port number might be missing
+ ❯ getAPIUrl src/utils/getAPIUrl.ts:5:15
+ ❯ src/__tests__/utils/getAPIUrl.test.ts:232:32
+ ❯ src/__tests__/utils/getAPIUrl.test.ts:231:19
+            </failure>
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/utils/getAPIUrl.test.ts" name="getAPIUrl &gt; edge cases &gt; should handle very long paths" time="0.000314885">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/utils/getAPIUrl.test.ts" name="getAPIUrl &gt; edge cases &gt; should handle paths with Unicode characters" time="0.000237293">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/utils/getAPIUrl.test.ts" name="getAPIUrl &gt; edge cases &gt; should handle IPv6 addresses with ports" time="0.000231504">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/utils/getAPIUrl.test.ts" name="getAPIUrl &gt; edge cases &gt; should handle unusual but valid port numbers" time="0.000443546">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/utils/getAPIUrl.test.ts" name="getAPIUrl &gt; performance &gt; should handle many URL constructions efficiently" time="0.003444669">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/utils/getAPIUrl.test.ts" name="getAPIUrl &gt; performance &gt; should handle complex URLs efficiently" time="0.020568892">
+        </testcase>
+    </testsuite>
+    <testsuite name="packages/shared-utils/src/__tests__/validation/validateExpression.test.ts" timestamp="2025-09-06T16:08:30.346Z" hostname="c82ba9db4d53" tests="39" failures="2" errors="0" skipped="0" time="0.143145977">
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.test.ts" name="validateExpression &gt; basic validation &gt; should return valid: false for empty expression" time="0.005320755">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.test.ts" name="validateExpression &gt; basic validation &gt; should return valid: false for whitespace-only expression" time="0.001004164">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.test.ts" name="validateExpression &gt; basic validation &gt; should return valid: true for single valid field" time="0.020387869">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.test.ts" name="validateExpression &gt; basic validation &gt; should return valid: true for field with operation" time="0.001704594">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.test.ts" name="validateExpression &gt; field validation &gt; should accept all valid fields as standalone" time="0.003005262">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.test.ts" name="validateExpression &gt; field validation &gt; should accept all valid fields with operations" time="0.001898387">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.test.ts" name="validateExpression &gt; field validation &gt; should reject invalid field names" time="0.001079435">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.test.ts" name="validateExpression &gt; field validation &gt; should reject multiple invalid fields" time="0.000806671">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.test.ts" name="validateExpression &gt; field validation &gt; should handle mixed valid and invalid fields" time="0.0007196">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.test.ts" name="validateExpression &gt; operation validation &gt; should accept all valid operations" time="0.001271118">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.test.ts" name="validateExpression &gt; operation validation &gt; should accept similarity operations with valid thresholds" time="0.001520782">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.test.ts" name="validateExpression &gt; operation validation &gt; should reject invalid operations" time="0.000435486">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.test.ts" name="validateExpression &gt; operation validation &gt; should reject similarity operations with invalid thresholds" time="0.001153926">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.test.ts" name="validateExpression &gt; operation validation &gt; should handle missing similarity threshold" time="0.000848262">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.test.ts" name="validateExpression &gt; boolean operator validation &gt; should accept AND operator" time="0.000650439">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.test.ts" name="validateExpression &gt; boolean operator validation &gt; should accept OR operator" time="0.000549438">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.test.ts" name="validateExpression &gt; boolean operator validation &gt; should reject invalid boolean operators" time="0.000606818">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.test.ts" name="validateExpression &gt; boolean operator validation &gt; should handle multiple boolean operators" time="0.000651739">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.test.ts" name="validateExpression &gt; boolean operator validation &gt; should be case sensitive for operators" time="0.000366765">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.test.ts" name="validateExpression &gt; expression structure validation &gt; should validate balanced expressions" time="0.006738745">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.test.ts" name="validateExpression &gt; expression structure validation &gt; should reject unbalanced expressions" time="0.000842592">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.test.ts" name="validateExpression &gt; expression structure validation &gt; should handle complex valid expressions" time="0.001163777">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.test.ts" name="validateExpression &gt; mixed field formats &gt; should handle expressions with both field:operation and standalone fields" time="0.000592559">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.test.ts" name="validateExpression &gt; mixed field formats &gt; should handle multiple standalone fields" time="0.000530988">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.test.ts" name="validateExpression &gt; mixed field formats &gt; should handle all standalone fields" time="0.000542668">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.test.ts" name="validateExpression &gt; error handling &gt; should handle parsing errors gracefully" time="0.000606218">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.test.ts" name="validateExpression &gt; error handling &gt; should return ValidationResult interface" time="0.00073838">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.test.ts" name="validateExpression &gt; error handling &gt; should handle very long expressions" time="0.000669559">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.test.ts" name="validateExpression &gt; whitespace handling &gt; should handle expressions with extra whitespace" time="0.000391685">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.test.ts" name="validateExpression &gt; whitespace handling &gt; should handle expressions with no spaces around operators" time="0.000365785">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.test.ts" name="validateExpression &gt; whitespace handling &gt; should handle tabs and other whitespace characters" time="0.000367275">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.test.ts" name="validateExpression &gt; edge cases &gt; should handle single character inputs" time="0.026874291">
+            <failure message="expected true to be false // Object.is equality" type="AssertionError">
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ src/__tests__/validation/validateExpression.test.ts:263:34
+            </failure>
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.test.ts" name="validateExpression &gt; edge cases &gt; should handle expressions with only operators" time="0.000450777">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.test.ts" name="validateExpression &gt; edge cases &gt; should handle expressions with only colons" time="0.000359545">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.test.ts" name="validateExpression &gt; edge cases &gt; should handle unicode characters" time="0.005204544">
+            <failure message="expected [ Array(1) ] to deep equally contain StringContaining &quot;Invalid field&quot;" type="AssertionError">
+AssertionError: expected [ Array(1) ] to deep equally contain StringContaining &quot;Invalid field&quot;
+
+- Expected: 
+StringContaining &quot;Invalid field&quot;
+
++ Received: 
+[
+  &quot;Invalid expression syntax. Expected format: \&quot;field[:operation] AND/OR field[:operation]\&quot;&quot;,
+]
+
+ ❯ src/__tests__/validation/validateExpression.test.ts:282:35
+            </failure>
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.test.ts" name="validateExpression &gt; performance &gt; should handle moderately complex expressions efficiently" time="0.000554928">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.test.ts" name="validateExpression &gt; performance &gt; should handle many validation calls efficiently" time="0.042924738">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.test.ts" name="validateExpression &gt; comprehensive integration &gt; should validate real-world music search expressions" time="0.001278368">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.test.ts" name="validateExpression &gt; comprehensive integration &gt; should provide helpful error messages" time="0.000518268">
+        </testcase>
+    </testsuite>
+    <testsuite name="packages/music-search/src/__tests__/utils/compareTitles.test.ts" timestamp="2025-09-06T16:08:30.354Z" hostname="c82ba9db4d53" tests="32" failures="3" errors="0" skipped="0" time="0.449019707">
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; basic functionality &gt; should return default result for undefined inputs" time="0.004153508">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; basic functionality &gt; should return default result when first parameter is undefined" time="0.000593509">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; basic functionality &gt; should return default result when second parameter is undefined" time="0.00071452">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; basic functionality &gt; should return default result for empty strings" time="0.000495877">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; exact matching &gt; should detect exact matches (case insensitive)" time="0.074717478">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; exact matching &gt; should detect exact matches with different cases" time="0.00073241">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; exact matching &gt; should not match different strings" time="0.00069322">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; exact matching &gt; should handle punctuation in matching" time="0.000478437">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; contains functionality &gt; one-way contains (default) &gt; should detect when second string contains in first (normalized)" time="0.0006674">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; contains functionality &gt; one-way contains (default) &gt; should not detect when first string contains in second" time="0.000581198">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; contains functionality &gt; one-way contains (default) &gt; should handle case insensitive contains" time="0.000401496">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; contains functionality &gt; two-way contains &gt; should detect contains in both directions when twoWayContain is true" time="0.000866132">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; contains functionality &gt; two-way contains &gt; should work with two-way contains for equal strings" time="0.000692039">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; contains functionality &gt; short title exclusion &gt; should not use contains for titles shorter than 5 characters" time="0.000789981">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; contains functionality &gt; short title exclusion &gt; should not use contains when second title is shorter than 5 characters" time="0.000472347">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; contains functionality &gt; short title exclusion &gt; should use contains when both titles are 5+ characters" time="0.013681654">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; contains functionality &gt; short title exclusion &gt; should handle exactly 5 character strings" time="0.063788703">
+            <failure message="expected false to be true // Object.is equality" type="AssertionError">
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/__tests__/utils/compareTitles.test.ts:115:41
+            </failure>
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; similarity scoring &gt; should return similarity score between 0 and 1" time="0.000779422">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; similarity scoring &gt; should return higher similarity for similar strings" time="0.000518297">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; similarity scoring &gt; should return perfect similarity for identical strings" time="0.000407446">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; createSearchString integration &gt; should call createSearchString for contains logic" time="0.003019983">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; createSearchString integration &gt; should call createSearchString twice for two-way contains" time="0.0006482">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; createSearchString integration &gt; should not call createSearchString for short titles" time="0.000868343">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; real-world examples &gt; should handle music track comparisons" time="0.001513742">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; real-world examples &gt; should handle partial track matches" time="0.000746571">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; real-world examples &gt; should handle remixes and versions" time="0.008938957">
+            <failure message="expected false to be true // Object.is equality" type="AssertionError">
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/__tests__/utils/compareTitles.test.ts:186:37
+            </failure>
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; real-world examples &gt; should handle abbreviations" time="0.00071481">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; edge cases &gt; should handle very long titles" time="0.001942037">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; edge cases &gt; should handle special characters" time="0.000423266">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; edge cases &gt; should handle unicode characters" time="0.000403525">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; edge cases &gt; should handle whitespace variations" time="0.001673323">
+            <failure message="expected false to be true // Object.is equality" type="AssertionError">
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/__tests__/utils/compareTitles.test.ts:218:34
+            </failure>
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; performance &gt; should handle many comparisons efficiently" time="0.2423223">
+        </testcase>
+    </testsuite>
+    <testsuite name="packages/music-search/src/__tests__/utils/createSearchString.test.ts" timestamp="2025-09-06T16:08:30.361Z" hostname="c82ba9db4d53" tests="24" failures="3" errors="0" skipped="0" time="0.055030779">
+        <testcase classname="packages/music-search/src/__tests__/utils/createSearchString.test.ts" name="createSearchString &gt; basic functionality &gt; should convert string to lowercase" time="0.003455999">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/createSearchString.test.ts" name="createSearchString &gt; basic functionality &gt; should trim whitespace" time="0.00072291">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/createSearchString.test.ts" name="createSearchString &gt; basic functionality &gt; should handle empty string" time="0.000657579">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/createSearchString.test.ts" name="createSearchString &gt; basic functionality &gt; should handle whitespace-only string" time="0.000520917">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/createSearchString.test.ts" name="createSearchString &gt; diacritic normalization &gt; a variants &gt; should normalize à, á, â, ã, ä, å to a" time="0.000784551">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/createSearchString.test.ts" name="createSearchString &gt; diacritic normalization &gt; e variants &gt; should normalize è, é, ê, ë to e" time="0.000763601">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/createSearchString.test.ts" name="createSearchString &gt; diacritic normalization &gt; i variants &gt; should normalize ì, í, î, ï to i" time="0.000425186">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/createSearchString.test.ts" name="createSearchString &gt; diacritic normalization &gt; o variants &gt; should normalize ò, ó, ô, õ, ö to o" time="0.000443586">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/createSearchString.test.ts" name="createSearchString &gt; diacritic normalization &gt; u variants &gt; should normalize ù, ú, û, ü to u" time="0.000638149">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/createSearchString.test.ts" name="createSearchString &gt; diacritic normalization &gt; y variants &gt; should normalize ý, ÿ to y" time="0.000382435">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/createSearchString.test.ts" name="createSearchString &gt; diacritic normalization &gt; special characters &gt; should normalize æ to ae" time="0.000377276">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/createSearchString.test.ts" name="createSearchString &gt; diacritic normalization &gt; special characters &gt; should normalize œ to oe" time="0.000783401">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/createSearchString.test.ts" name="createSearchString &gt; diacritic normalization &gt; special characters &gt; should normalize ç to c" time="0.000440706">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/createSearchString.test.ts" name="createSearchString &gt; diacritic normalization &gt; special characters &gt; should normalize ñ to n" time="0.000856662">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/createSearchString.test.ts" name="createSearchString &gt; real-world examples &gt; should normalize music artist names" time="0.00066944">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/createSearchString.test.ts" name="createSearchString &gt; real-world examples &gt; should normalize song titles" time="0.000656439">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/createSearchString.test.ts" name="createSearchString &gt; real-world examples &gt; should handle mixed content" time="0.000400296">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/createSearchString.test.ts" name="createSearchString &gt; edge cases &gt; should handle strings with only diacritics" time="0.022179874">
+            <failure message="expected &apos;aaaaaaaec&apos; to be &apos;aaaaaaeac&apos; // Object.is equality" type="AssertionError">
+AssertionError: expected &apos;aaaaaaaec&apos; to be &apos;aaaaaaeac&apos; // Object.is equality
+
+Expected: &quot;aaaaaaeac&quot;
+Received: &quot;aaaaaaaec&quot;
+
+ ❯ src/__tests__/utils/createSearchString.test.ts:115:52
+            </failure>
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/createSearchString.test.ts" name="createSearchString &gt; edge cases &gt; should handle mixed case with diacritics" time="0.000425466">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/createSearchString.test.ts" name="createSearchString &gt; edge cases &gt; should handle numbers and special characters" time="0.000410506">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/createSearchString.test.ts" name="createSearchString &gt; edge cases &gt; should handle very long strings" time="0.00070401">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/createSearchString.test.ts" name="createSearchString &gt; performance &gt; should handle large strings efficiently" time="0.011711336">
+            <failure message="expected &apos;bjork guðmundsdottir bjork guðmundsdo…&apos; to contain &apos;bjork gudmundsdottir&apos;" type="AssertionError">
+AssertionError: expected &apos;bjork guðmundsdottir bjork guðmundsdo…&apos; to contain &apos;bjork gudmundsdottir&apos;
+
+- Expected
++ Received
+
+- bjork gudmundsdottir
++ bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir bjork guðmundsdottir
+
+ ❯ src/__tests__/utils/createSearchString.test.ts:142:28
+            </failure>
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/createSearchString.test.ts" name="createSearchString &gt; consistency &gt; should be idempotent" time="0.000373385">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/createSearchString.test.ts" name="createSearchString &gt; consistency &gt; should handle null/undefined gracefully" time="0.001573903">
+            <failure message="Cannot read properties of undefined (reading &apos;toLowerCase&apos;)" type="TypeError">
+TypeError: Cannot read properties of undefined (reading &apos;toLowerCase&apos;)
+ ❯ createSearchString src/utils/createSearchString.ts:6:10
+ ❯ src/__tests__/utils/createSearchString.test.ts:157:20
+            </failure>
+        </testcase>
+    </testsuite>
+    <testsuite name="packages/music-search/src/__tests__/utils/filterOutWords.test.ts" timestamp="2025-09-06T16:08:30.367Z" hostname="c82ba9db4d53" tests="39" failures="3" errors="0" skipped="0" time="0.099573539">
+        <testcase classname="packages/music-search/src/__tests__/utils/filterOutWords.test.ts" name="filterOutWords &gt; basic functionality &gt; should convert input to lowercase" time="0.004042907">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/filterOutWords.test.ts" name="filterOutWords &gt; basic functionality &gt; should trim whitespace from result" time="0.000594929">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/filterOutWords.test.ts" name="filterOutWords &gt; basic functionality &gt; should handle empty string" time="0.00067777">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/filterOutWords.test.ts" name="filterOutWords &gt; basic functionality &gt; should handle whitespace-only string" time="0.00072642">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/filterOutWords.test.ts" name="filterOutWords &gt; word filtering &gt; should filter out words when filtered=true" time="0.001168516">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/filterOutWords.test.ts" name="filterOutWords &gt; word filtering &gt; should not filter out words when filtered=false" time="0.001073355">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/filterOutWords.test.ts" name="filterOutWords &gt; word filtering &gt; should filter multiple words" time="0.040488763">
+            <failure message="expected &apos;song  artist  someone&apos; to be &apos;song  artist  someone &apos; // Object.is equality" type="AssertionError">
+AssertionError: expected &apos;song  artist  someone&apos; to be &apos;song  artist  someone &apos; // Object.is equality
+
+Expected: &quot;song  artist  someone &quot;
+Received: &quot;song  artist  someone&quot;
+
+ ❯ src/__tests__/utils/filterOutWords.test.ts:67:28
+            </failure>
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/filterOutWords.test.ts" name="filterOutWords &gt; word filtering &gt; should handle case insensitive filtering" time="0.001158446">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/filterOutWords.test.ts" name="filterOutWords &gt; word filtering &gt; should handle words not in filter list" time="0.001358249">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/filterOutWords.test.ts" name="filterOutWords &gt; quote removal &gt; should remove quotes when removeQuotes=true" time="0.00142033">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/filterOutWords.test.ts" name="filterOutWords &gt; quote removal &gt; should not remove quotes when removeQuotes=false" time="0.001171027">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/filterOutWords.test.ts" name="filterOutWords &gt; quote removal &gt; should remove various quote types" time="0.001110886">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/filterOutWords.test.ts" name="filterOutWords &gt; quote removal &gt; should handle multiple quote characters" time="0.001269768">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/filterOutWords.test.ts" name="filterOutWords &gt; separator cut-off &gt; should cut off at separators when cutOffSeparators=true" time="0.00214654">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/filterOutWords.test.ts" name="filterOutWords &gt; separator cut-off &gt; should not cut off when cutOffSeparators=false" time="0.001121995">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/filterOutWords.test.ts" name="filterOutWords &gt; separator cut-off &gt; should cut off at last occurrence of separator" time="0.001081246">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/filterOutWords.test.ts" name="filterOutWords &gt; separator cut-off &gt; should handle multiple separator types" time="0.001538162">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/filterOutWords.test.ts" name="filterOutWords &gt; separator cut-off &gt; should not cut off if separator not found" time="0.004304551">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/filterOutWords.test.ts" name="filterOutWords &gt; empty brackets removal &gt; should remove empty brackets" time="0.000400836">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/filterOutWords.test.ts" name="filterOutWords &gt; empty brackets removal &gt; should remove multiple empty brackets" time="0.00703391">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/filterOutWords.test.ts" name="filterOutWords &gt; empty brackets removal &gt; should not remove non-empty brackets" time="0.000463647">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/filterOutWords.test.ts" name="filterOutWords &gt; trailing dash removal &gt; should remove trailing dashes" time="0.000349605">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/filterOutWords.test.ts" name="filterOutWords &gt; trailing dash removal &gt; should remove multiple trailing dashes" time="0.000632169">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/filterOutWords.test.ts" name="filterOutWords &gt; trailing dash removal &gt; should not remove dashes from short strings" time="0.000331335">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/filterOutWords.test.ts" name="filterOutWords &gt; trailing dash removal &gt; should handle starting dashes" time="0.000332985">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/filterOutWords.test.ts" name="filterOutWords &gt; trailing dash removal &gt; should not affect middle dashes" time="0.001772935">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/filterOutWords.test.ts" name="filterOutWords &gt; combined operations &gt; should apply all filters when all flags are true" time="0.000432566">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/filterOutWords.test.ts" name="filterOutWords &gt; combined operations &gt; should handle complex real-world examples" time="0.000334364">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/filterOutWords.test.ts" name="filterOutWords &gt; combined operations &gt; should preserve order of operations" time="0.000314514">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/filterOutWords.test.ts" name="filterOutWords &gt; edge cases &gt; should handle strings with only filtered content" time="0.000788191">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/filterOutWords.test.ts" name="filterOutWords &gt; edge cases &gt; should handle repeated separators" time="0.003865394">
+            <failure message="expected &apos;song&apos; to be &apos;song --&apos; // Object.is equality" type="AssertionError">
+AssertionError: expected &apos;song&apos; to be &apos;song --&apos; // Object.is equality
+
+Expected: &quot;song --&quot;
+Received: &quot;song&quot;
+
+ ❯ src/__tests__/utils/filterOutWords.test.ts:217:28
+            </failure>
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/filterOutWords.test.ts" name="filterOutWords &gt; edge cases &gt; should handle mixed whitespace" time="0.000373905">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/filterOutWords.test.ts" name="filterOutWords &gt; edge cases &gt; should handle very long strings" time="0.001840436">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/filterOutWords.test.ts" name="filterOutWords &gt; edge cases &gt; should handle strings with only separators" time="0.000406055">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/filterOutWords.test.ts" name="filterOutWords &gt; configuration dependency &gt; should call getCurrentMusicSearchConfig" time="0.00068048">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/filterOutWords.test.ts" name="filterOutWords &gt; configuration dependency &gt; should use configuration values" time="0.000448816">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/filterOutWords.test.ts" name="filterOutWords &gt; configuration dependency &gt; should handle empty configuration arrays" time="0.003270467">
+            <failure message="expected &apos;test feat. &quot;quote&quot; - extra&apos; to be &apos;test feat. quote - extra&apos; // Object.is equality" type="AssertionError">
+AssertionError: expected &apos;test feat. &quot;quote&quot; - extra&apos; to be &apos;test feat. quote - extra&apos; // Object.is equality
+
+Expected: &quot;test feat. quote - extra&quot;
+Received: &quot;test feat. &quot;quote&quot; - extra&quot;
+
+ ❯ src/__tests__/utils/filterOutWords.test.ts:269:28
+            </failure>
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/filterOutWords.test.ts" name="filterOutWords &gt; performance &gt; should handle many filter operations efficiently" time="0.000625299">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/filterOutWords.test.ts" name="filterOutWords &gt; performance &gt; should handle large filter arrays efficiently" time="0.001884737">
+        </testcase>
+    </testsuite>
+    <testsuite name="packages/music-search/src/__tests__/utils/removeFeaturing.test.ts" timestamp="2025-09-06T16:08:30.379Z" hostname="c82ba9db4d53" tests="14" failures="0" errors="0" skipped="0" time="0.0303675">
+        <testcase classname="packages/music-search/src/__tests__/utils/removeFeaturing.test.ts" name="removeFeaturing &gt; happy path &gt; returns clean song titles" time="0.00279163">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/removeFeaturing.test.ts" name="removeFeaturing &gt; happy path &gt; removes feat markers" time="0.000725991">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/removeFeaturing.test.ts" name="removeFeaturing &gt; happy path &gt; removes parentheses content" time="0.001099156">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/removeFeaturing.test.ts" name="removeFeaturing &gt; happy path &gt; prioritizes first occurrence" time="0.000601899">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/removeFeaturing.test.ts" name="removeFeaturing &gt; edge cases &gt; handles boundary inputs: &quot;&quot; -&gt; &quot;&quot;" time="0.000409076">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/removeFeaturing.test.ts" name="removeFeaturing &gt; edge cases &gt; handles boundary inputs: &quot;(&quot; -&gt; &quot;&quot;" time="0.000306015">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/removeFeaturing.test.ts" name="removeFeaturing &gt; edge cases &gt; handles boundary inputs: &quot;feat&quot; -&gt; &quot;&quot;" time="0.000420556">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/removeFeaturing.test.ts" name="removeFeaturing &gt; edge cases &gt; handles boundary inputs: &quot;a&quot; -&gt; &quot;a&quot;" time="0.000275344">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/removeFeaturing.test.ts" name="removeFeaturing &gt; edge cases &gt; removes from first &quot;feat&quot; occurrence" time="0.000593968">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/removeFeaturing.test.ts" name="removeFeaturing &gt; edge cases &gt; handles case sensitivity" time="0.000632929">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/removeFeaturing.test.ts" name="removeFeaturing &gt; edge cases &gt; ignores closing parenthesis only" time="0.000319284">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/removeFeaturing.test.ts" name="removeFeaturing &gt; error handling &gt; handles null and undefined inputs" time="0.011841347">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/removeFeaturing.test.ts" name="removeFeaturing &gt; real-world examples &gt; processes common patterns: &quot;Despacito feat. Justin Bieber&quot;" time="0.000341365">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/removeFeaturing.test.ts" name="removeFeaturing &gt; real-world examples &gt; processes common patterns: &quot;Bohemian Rhapsody (Live Aid 1985)&quot;" time="0.00067526">
+        </testcase>
+    </testsuite>
+    <testsuite name="apps/web/__tests__/api/index.test.ts" timestamp="2025-09-06T16:08:30.382Z" hostname="c82ba9db4d53" tests="1" failures="1" errors="0" skipped="0" time="0">
+        <testcase classname="apps/web/__tests__/api/index.test.ts" name="__tests__/api/index.test.ts" time="0">
             <failure message="Cannot find module &apos;/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/tests/setup/vitest.setup.ts&apos;" type="Error">
 Error: Cannot find module &apos;/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/tests/setup/vitest.setup.ts&apos;
 ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
 Serialized Error: { code: &apos;ERR_MODULE_NOT_FOUND&apos; }
 Caused by: Caused by: Error: Failed to load url /var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/tests/setup/vitest.setup.ts (resolved id: /var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/tests/setup/vitest.setup.ts). Does the file exist?
+ ❯ loadAndTransform ../../node_modules/.pnpm/vite@7.1.4_@types+node@20.19.11_sass@1.90.0/node_modules/vite/dist/node/chunks/dep-C6pp_iVS.js:26400:33
+            </failure>
+        </testcase>
+    </testsuite>
+    <testsuite name="apps/web/__tests__/api/plex-connection.test.ts" timestamp="2025-09-06T16:08:30.383Z" hostname="c82ba9db4d53" tests="1" failures="1" errors="0" skipped="0" time="0">
+        <testcase classname="apps/web/__tests__/api/plex-connection.test.ts" name="__tests__/api/plex-connection.test.ts" time="0">
+            <failure message="Cannot find module &apos;/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/tests/setup/vitest.setup.ts&apos;" type="Error">
+Error: Cannot find module &apos;/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/tests/setup/vitest.setup.ts&apos;
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { code: &apos;ERR_MODULE_NOT_FOUND&apos; }
+Caused by: Error: Failed to load url /var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/tests/setup/vitest.setup.ts (resolved id: /var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/tests/setup/vitest.setup.ts). Does the file exist?
+ ❯ loadAndTransform ../../node_modules/.pnpm/vite@7.1.4_@types+node@20.19.11_sass@1.90.0/node_modules/vite/dist/node/chunks/dep-C6pp_iVS.js:26400:33
+            </failure>
+        </testcase>
+    </testsuite>
+    <testsuite name="apps/web/__tests__/api/plex-tracks.test.ts" timestamp="2025-09-06T16:08:30.384Z" hostname="c82ba9db4d53" tests="1" failures="1" errors="0" skipped="0" time="0">
+        <testcase classname="apps/web/__tests__/api/plex-tracks.test.ts" name="__tests__/api/plex-tracks.test.ts" time="0">
+            <failure message="Cannot find module &apos;/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/tests/setup/vitest.setup.ts&apos;" type="Error">
+Error: Cannot find module &apos;/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/tests/setup/vitest.setup.ts&apos;
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { code: &apos;ERR_MODULE_NOT_FOUND&apos; }
+Caused by: Error: Failed to load url /var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/tests/setup/vitest.setup.ts (resolved id: /var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/tests/setup/vitest.setup.ts). Does the file exist?
+ ❯ loadAndTransform ../../node_modules/.pnpm/vite@7.1.4_@types+node@20.19.11_sass@1.90.0/node_modules/vite/dist/node/chunks/dep-C6pp_iVS.js:26400:33
+            </failure>
+        </testcase>
+    </testsuite>
+    <testsuite name="apps/web/__tests__/api/settings-create.test.ts" timestamp="2025-09-06T16:08:30.385Z" hostname="c82ba9db4d53" tests="1" failures="1" errors="0" skipped="0" time="0">
+        <testcase classname="apps/web/__tests__/api/settings-create.test.ts" name="__tests__/api/settings-create.test.ts" time="0">
+            <failure message="Cannot find module &apos;/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/tests/setup/vitest.setup.ts&apos;" type="Error">
+Error: Cannot find module &apos;/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/tests/setup/vitest.setup.ts&apos;
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { code: &apos;ERR_MODULE_NOT_FOUND&apos; }
+Caused by: Error: Failed to load url /var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/tests/setup/vitest.setup.ts (resolved id: /var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/tests/setup/vitest.setup.ts). Does the file exist?
+ ❯ loadAndTransform ../../node_modules/.pnpm/vite@7.1.4_@types+node@20.19.11_sass@1.90.0/node_modules/vite/dist/node/chunks/dep-C6pp_iVS.js:26400:33
+            </failure>
+        </testcase>
+    </testsuite>
+    <testsuite name="apps/web/__tests__/api/settings.test.ts" timestamp="2025-09-06T16:08:30.387Z" hostname="c82ba9db4d53" tests="1" failures="1" errors="0" skipped="0" time="0">
+        <testcase classname="apps/web/__tests__/api/settings.test.ts" name="__tests__/api/settings.test.ts" time="0">
+            <failure message="Cannot find module &apos;/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/tests/setup/vitest.setup.ts&apos;" type="Error">
+Error: Cannot find module &apos;/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/tests/setup/vitest.setup.ts&apos;
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { code: &apos;ERR_MODULE_NOT_FOUND&apos; }
+Caused by: Error: Failed to load url /var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/tests/setup/vitest.setup.ts (resolved id: /var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/tests/setup/vitest.setup.ts). Does the file exist?
+ ❯ loadAndTransform ../../node_modules/.pnpm/vite@7.1.4_@types+node@20.19.11_sass@1.90.0/node_modules/vite/dist/node/chunks/dep-C6pp_iVS.js:26400:33
+            </failure>
+        </testcase>
+    </testsuite>
+    <testsuite name="apps/web/__tests__/api/spotify-auth.test.ts" timestamp="2025-09-06T16:08:30.388Z" hostname="c82ba9db4d53" tests="1" failures="1" errors="0" skipped="0" time="0">
+        <testcase classname="apps/web/__tests__/api/spotify-auth.test.ts" name="__tests__/api/spotify-auth.test.ts" time="0">
+            <failure message="Cannot find module &apos;/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/tests/setup/vitest.setup.ts&apos;" type="Error">
+Error: Cannot find module &apos;/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/tests/setup/vitest.setup.ts&apos;
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { code: &apos;ERR_MODULE_NOT_FOUND&apos; }
+Caused by: Error: Failed to load url /var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/tests/setup/vitest.setup.ts (resolved id: /var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/tests/setup/vitest.setup.ts). Does the file exist?
+ ❯ loadAndTransform ../../node_modules/.pnpm/vite@7.1.4_@types+node@20.19.11_sass@1.90.0/node_modules/vite/dist/node/chunks/dep-C6pp_iVS.js:26400:33
+            </failure>
+        </testcase>
+    </testsuite>
+    <testsuite name="apps/web/__tests__/api/spotify-data-playlists.test.ts" timestamp="2025-09-06T16:08:30.389Z" hostname="c82ba9db4d53" tests="1" failures="1" errors="0" skipped="0" time="0">
+        <testcase classname="apps/web/__tests__/api/spotify-data-playlists.test.ts" name="__tests__/api/spotify-data-playlists.test.ts" time="0">
+            <failure message="Cannot find module &apos;/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/tests/setup/vitest.setup.ts&apos;" type="Error">
+Error: Cannot find module &apos;/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/tests/setup/vitest.setup.ts&apos;
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { code: &apos;ERR_MODULE_NOT_FOUND&apos; }
+Caused by: Error: Failed to load url /var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/tests/setup/vitest.setup.ts (resolved id: /var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/tests/setup/vitest.setup.ts). Does the file exist?
+ ❯ loadAndTransform ../../node_modules/.pnpm/vite@7.1.4_@types+node@20.19.11_sass@1.90.0/node_modules/vite/dist/node/chunks/dep-C6pp_iVS.js:26400:33
+            </failure>
+        </testcase>
+    </testsuite>
+    <testsuite name="apps/web/__tests__/api/spotify-data.test.ts" timestamp="2025-09-06T16:08:30.391Z" hostname="c82ba9db4d53" tests="1" failures="1" errors="0" skipped="0" time="0">
+        <testcase classname="apps/web/__tests__/api/spotify-data.test.ts" name="__tests__/api/spotify-data.test.ts" time="0">
+            <failure message="Cannot find module &apos;/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/tests/setup/vitest.setup.ts&apos;" type="Error">
+Error: Cannot find module &apos;/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/tests/setup/vitest.setup.ts&apos;
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { code: &apos;ERR_MODULE_NOT_FOUND&apos; }
+Caused by: Error: Failed to load url /var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/tests/setup/vitest.setup.ts (resolved id: /var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/tests/setup/vitest.setup.ts). Does the file exist?
+ ❯ loadAndTransform ../../node_modules/.pnpm/vite@7.1.4_@types+node@20.19.11_sass@1.90.0/node_modules/vite/dist/node/chunks/dep-C6pp_iVS.js:26400:33
+            </failure>
+        </testcase>
+    </testsuite>
+    <testsuite name="apps/web/__tests__/api/sync-operations.test.ts" timestamp="2025-09-06T16:08:30.392Z" hostname="c82ba9db4d53" tests="1" failures="1" errors="0" skipped="0" time="0">
+        <testcase classname="apps/web/__tests__/api/sync-operations.test.ts" name="__tests__/api/sync-operations.test.ts" time="0">
+            <failure message="Cannot find module &apos;/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/tests/setup/vitest.setup.ts&apos;" type="Error">
+Error: Cannot find module &apos;/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/tests/setup/vitest.setup.ts&apos;
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { code: &apos;ERR_MODULE_NOT_FOUND&apos; }
+Caused by: Error: Failed to load url /var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/tests/setup/vitest.setup.ts (resolved id: /var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/tests/setup/vitest.setup.ts). Does the file exist?
+ ❯ loadAndTransform ../../node_modules/.pnpm/vite@7.1.4_@types+node@20.19.11_sass@1.90.0/node_modules/vite/dist/node/chunks/dep-C6pp_iVS.js:26400:33
+            </failure>
+        </testcase>
+    </testsuite>
+    <testsuite name="apps/web/__tests__/hooks/useDualModeEditor.test.ts" timestamp="2025-09-06T16:08:30.393Z" hostname="c82ba9db4d53" tests="1" failures="1" errors="0" skipped="0" time="0">
+        <testcase classname="apps/web/__tests__/hooks/useDualModeEditor.test.ts" name="__tests__/hooks/useDualModeEditor.test.ts" time="0">
+            <failure message="Cannot find module &apos;/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/tests/setup/vitest.setup.ts&apos;" type="Error">
+Error: Cannot find module &apos;/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/tests/setup/vitest.setup.ts&apos;
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { code: &apos;ERR_MODULE_NOT_FOUND&apos; }
+Caused by: Error: Failed to load url /var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/tests/setup/vitest.setup.ts (resolved id: /var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/tests/setup/vitest.setup.ts). Does the file exist?
+ ❯ loadAndTransform ../../node_modules/.pnpm/vite@7.1.4_@types+node@20.19.11_sass@1.90.0/node_modules/vite/dist/node/chunks/dep-C6pp_iVS.js:26400:33
+            </failure>
+        </testcase>
+    </testsuite>
+    <testsuite name="apps/web/__tests__/pages/index.test.tsx" timestamp="2025-09-06T16:08:30.394Z" hostname="c82ba9db4d53" tests="1" failures="1" errors="0" skipped="0" time="0">
+        <testcase classname="apps/web/__tests__/pages/index.test.tsx" name="__tests__/pages/index.test.tsx" time="0">
+            <failure message="Cannot find module &apos;/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/tests/setup/vitest.setup.ts&apos;" type="Error">
+Error: Cannot find module &apos;/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/tests/setup/vitest.setup.ts&apos;
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { code: &apos;ERR_MODULE_NOT_FOUND&apos; }
+Caused by: Error: Failed to load url /var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/tests/setup/vitest.setup.ts (resolved id: /var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/tests/setup/vitest.setup.ts). Does the file exist?
+ ❯ loadAndTransform ../../node_modules/.pnpm/vite@7.1.4_@types+node@20.19.11_sass@1.90.0/node_modules/vite/dist/node/chunks/dep-C6pp_iVS.js:26400:33
+            </failure>
+        </testcase>
+    </testsuite>
+    <testsuite name="apps/web/__tests__/components/ConfirmProvider/ConfirmProvider.test.tsx" timestamp="2025-09-06T16:08:30.396Z" hostname="c82ba9db4d53" tests="1" failures="1" errors="0" skipped="0" time="0">
+        <testcase classname="apps/web/__tests__/components/ConfirmProvider/ConfirmProvider.test.tsx" name="__tests__/components/ConfirmProvider/ConfirmProvider.test.tsx" time="0">
+            <failure message="Cannot find module &apos;/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/tests/setup/vitest.setup.ts&apos;" type="Error">
+Error: Cannot find module &apos;/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/tests/setup/vitest.setup.ts&apos;
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { code: &apos;ERR_MODULE_NOT_FOUND&apos; }
+Caused by: Error: Failed to load url /var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/tests/setup/vitest.setup.ts (resolved id: /var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/tests/setup/vitest.setup.ts). Does the file exist?
+ ❯ loadAndTransform ../../node_modules/.pnpm/vite@7.1.4_@types+node@20.19.11_sass@1.90.0/node_modules/vite/dist/node/chunks/dep-C6pp_iVS.js:26400:33
+            </failure>
+        </testcase>
+    </testsuite>
+    <testsuite name="apps/web/__tests__/components/CustomPaper/CustomPaper.test.tsx" timestamp="2025-09-06T16:08:30.397Z" hostname="c82ba9db4d53" tests="1" failures="1" errors="0" skipped="0" time="0">
+        <testcase classname="apps/web/__tests__/components/CustomPaper/CustomPaper.test.tsx" name="__tests__/components/CustomPaper/CustomPaper.test.tsx" time="0">
+            <failure message="Cannot find module &apos;/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/tests/setup/vitest.setup.ts&apos;" type="Error">
+Error: Cannot find module &apos;/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/tests/setup/vitest.setup.ts&apos;
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { code: &apos;ERR_MODULE_NOT_FOUND&apos; }
+Caused by: Error: Failed to load url /var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/tests/setup/vitest.setup.ts (resolved id: /var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/tests/setup/vitest.setup.ts). Does the file exist?
+ ❯ loadAndTransform ../../node_modules/.pnpm/vite@7.1.4_@types+node@20.19.11_sass@1.90.0/node_modules/vite/dist/node/chunks/dep-C6pp_iVS.js:26400:33
+            </failure>
+        </testcase>
+    </testsuite>
+    <testsuite name="apps/web/__tests__/components/EditorHeader/EditorHeader.test.tsx" timestamp="2025-09-06T16:08:30.398Z" hostname="c82ba9db4d53" tests="1" failures="1" errors="0" skipped="0" time="0">
+        <testcase classname="apps/web/__tests__/components/EditorHeader/EditorHeader.test.tsx" name="__tests__/components/EditorHeader/EditorHeader.test.tsx" time="0">
+            <failure message="Cannot find module &apos;/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/tests/setup/vitest.setup.ts&apos;" type="Error">
+Error: Cannot find module &apos;/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/tests/setup/vitest.setup.ts&apos;
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { code: &apos;ERR_MODULE_NOT_FOUND&apos; }
+Caused by: Error: Failed to load url /var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/tests/setup/vitest.setup.ts (resolved id: /var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/tests/setup/vitest.setup.ts). Does the file exist?
+ ❯ loadAndTransform ../../node_modules/.pnpm/vite@7.1.4_@types+node@20.19.11_sass@1.90.0/node_modules/vite/dist/node/chunks/dep-C6pp_iVS.js:26400:33
+            </failure>
+        </testcase>
+    </testsuite>
+    <testsuite name="apps/web/__tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx" timestamp="2025-09-06T16:08:30.399Z" hostname="c82ba9db4d53" tests="1" failures="1" errors="0" skipped="0" time="0">
+        <testcase classname="apps/web/__tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx" name="__tests__/components/EnhancedMonacoJsonEditor/EnhancedMonacoJsonEditor.test.tsx" time="0">
+            <failure message="Cannot find module &apos;/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/tests/setup/vitest.setup.ts&apos;" type="Error">
+Error: Cannot find module &apos;/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/tests/setup/vitest.setup.ts&apos;
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { code: &apos;ERR_MODULE_NOT_FOUND&apos; }
+Caused by: Error: Failed to load url /var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/tests/setup/vitest.setup.ts (resolved id: /var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/tests/setup/vitest.setup.ts). Does the file exist?
+ ❯ loadAndTransform ../../node_modules/.pnpm/vite@7.1.4_@types+node@20.19.11_sass@1.90.0/node_modules/vite/dist/node/chunks/dep-C6pp_iVS.js:26400:33
+            </failure>
+        </testcase>
+    </testsuite>
+    <testsuite name="apps/web/__tests__/components/ErrorProvider/ErrorProvider.test.tsx" timestamp="2025-09-06T16:08:30.401Z" hostname="c82ba9db4d53" tests="1" failures="1" errors="0" skipped="0" time="0">
+        <testcase classname="apps/web/__tests__/components/ErrorProvider/ErrorProvider.test.tsx" name="__tests__/components/ErrorProvider/ErrorProvider.test.tsx" time="0">
+            <failure message="Cannot find module &apos;/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/tests/setup/vitest.setup.ts&apos;" type="Error">
+Error: Cannot find module &apos;/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/tests/setup/vitest.setup.ts&apos;
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { code: &apos;ERR_MODULE_NOT_FOUND&apos; }
+Caused by: Error: Failed to load url /var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/tests/setup/vitest.setup.ts (resolved id: /var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/tests/setup/vitest.setup.ts). Does the file exist?
+ ❯ loadAndTransform ../../node_modules/.pnpm/vite@7.1.4_@types+node@20.19.11_sass@1.90.0/node_modules/vite/dist/node/chunks/dep-C6pp_iVS.js:26400:33
+            </failure>
+        </testcase>
+    </testsuite>
+    <testsuite name="apps/web/__tests__/components/MatchFilterEditor/MatchFilterEditor.test.tsx" timestamp="2025-09-06T16:08:30.402Z" hostname="c82ba9db4d53" tests="1" failures="1" errors="0" skipped="0" time="0">
+        <testcase classname="apps/web/__tests__/components/MatchFilterEditor/MatchFilterEditor.test.tsx" name="__tests__/components/MatchFilterEditor/MatchFilterEditor.test.tsx" time="0">
+            <failure message="Cannot find module &apos;/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/tests/setup/vitest.setup.ts&apos;" type="Error">
+Error: Cannot find module &apos;/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/tests/setup/vitest.setup.ts&apos;
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { code: &apos;ERR_MODULE_NOT_FOUND&apos; }
+Caused by: Error: Failed to load url /var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/tests/setup/vitest.setup.ts (resolved id: /var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/tests/setup/vitest.setup.ts). Does the file exist?
+ ❯ loadAndTransform ../../node_modules/.pnpm/vite@7.1.4_@types+node@20.19.11_sass@1.90.0/node_modules/vite/dist/node/chunks/dep-C6pp_iVS.js:26400:33
+            </failure>
+        </testcase>
+    </testsuite>
+    <testsuite name="apps/web/__tests__/components/PillEditor/PillEditor.test.tsx" timestamp="2025-09-06T16:08:30.403Z" hostname="c82ba9db4d53" tests="1" failures="1" errors="0" skipped="0" time="0">
+        <testcase classname="apps/web/__tests__/components/PillEditor/PillEditor.test.tsx" name="__tests__/components/PillEditor/PillEditor.test.tsx" time="0">
+            <failure message="Cannot find module &apos;/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/tests/setup/vitest.setup.ts&apos;" type="Error">
+Error: Cannot find module &apos;/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/tests/setup/vitest.setup.ts&apos;
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { code: &apos;ERR_MODULE_NOT_FOUND&apos; }
+Caused by: Error: Failed to load url /var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/tests/setup/vitest.setup.ts (resolved id: /var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/tests/setup/vitest.setup.ts). Does the file exist?
  ❯ loadAndTransform ../../node_modules/.pnpm/vite@7.1.4_@types+node@20.19.11_sass@1.90.0/node_modules/vite/dist/node/chunks/dep-C6pp_iVS.js:26400:33
             </failure>
         </testcase>

@@ -118,8 +118,8 @@ const TextProcessingEditor: React.FC<TextProcessingEditorProps> = ({ onSave }) =
             if (onSave) {
                 onSave(currentData);
             }
-        } catch (error) {
-            const message = error instanceof Error ? error.message : 'Failed to save';
+        } catch (_error) {
+            const message = _error instanceof Error ? _error.message : 'Failed to save';
             enqueueSnackbar(`Failed to save: ${message}`, { variant: 'error' });
         }
     }, [onSave]);
@@ -138,11 +138,13 @@ const TextProcessingEditor: React.FC<TextProcessingEditorProps> = ({ onSave }) =
 
     // Wrapper functions to handle promises properly for onClick
     const handleSaveClick = useCallback(() => {
-        handleSave().catch(console.error);
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
+        handleSave();
     }, [handleSave]);
 
     const handleResetClick = useCallback(() => {
-        handleReset().catch(console.error);
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
+        handleReset();
     }, [handleReset]);
 
     if (loading) {

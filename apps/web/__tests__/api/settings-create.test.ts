@@ -4,11 +4,10 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import handler from '../../src/pages/api/settings';
+import handler from '../../pages/api/settings';
 import { 
     createMockRequestResponse, 
     expectResponse, 
-    mockEnvVars,
     mockPlexResponses 
 } from './api-test-helpers';
 

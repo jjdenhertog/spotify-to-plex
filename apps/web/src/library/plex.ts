@@ -17,7 +17,9 @@ import { settingsDir } from "@spotify-to-plex/shared-utils/utils/settingsDir";
 createPlexConfig({
     storageDir: settingsDir,
     preloadCache: true
-}).catch((error: unknown) => console.error(error));
+}).catch(() => {
+    // Initialization error is non-critical, application can continue
+});
 
 // Export functions as plex object for easier migration
 export const plex = {

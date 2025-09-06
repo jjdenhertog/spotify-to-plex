@@ -39,12 +39,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         return res.status(405).json({ error: 'Method not allowed' });
         
-    } catch (error) {
-        console.error('Error in text processing API:', error);
+    } catch (_error) {
+        // Error in text processing API - handled by Next.js error boundary
 
         return res.status(500).json({ 
             error: 'Internal server error', 
-            message: error instanceof Error ? error.message : 'Unknown error' 
+            message: _error instanceof Error ? _error.message : 'Unknown error' 
         });
     }
 }

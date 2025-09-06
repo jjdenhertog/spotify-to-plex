@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent } from '../test-utils';
+import { render, screen, fireEvent } from '../../test-utils';
 import { vi, describe, it, expect } from 'vitest';
 import CustomPaper from '../../../src/components/CustomPaper';
 
@@ -28,7 +28,7 @@ describe('CustomPaper', () => {
                 <CustomPaper>
                     <h1>Title</h1>
                     <p>Paragraph content</p>
-                    <button>Action Button</button>
+                    <button type="button">Action Button</button>
                 </CustomPaper>
             );
       

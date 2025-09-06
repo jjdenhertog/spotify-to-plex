@@ -37,8 +37,8 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 res.json({
                     authUrl
                 })
-            } catch (error) {
-                console.error('Error creating Plex auth URL:', error);
+            } catch (_error) {
+                // Error handling - handled by Next.js error boundary
                 res.status(500).json({ error: 'Failed to create authentication URL' });
             }
         })

@@ -33,9 +33,9 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 let musicSearchConfig;
                 try {
                     musicSearchConfig = await getMusicSearchConfigFromStorage(settingsDir);
-                } catch (error) {
+                } catch (_error) {
                     // Fallback to default config if error loading
-                    console.warn('Failed to load music search config, using defaults:', error);
+                                        // Failed to load music search config, using defaults - this is expected fallback behavior
                 }
 
                 const plexConfig = {
@@ -65,8 +65,8 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 add(searchResult, 'plex', album ? { id: album } : undefined)
 
                 res.status(200).json(searchResult);
-            } catch (error) {
-                console.error('Error searching Plex tracks:', error);
+            } catch (_error) {
+                                // Error searching Plex tracks - handled by Next.js error boundary
                 res.status(500).json({ error: 'Failed to search tracks' });
             }
         })

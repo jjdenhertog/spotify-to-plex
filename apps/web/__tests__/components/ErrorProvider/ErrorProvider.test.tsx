@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent, waitFor } from '../test-utils';
+import { render, screen, fireEvent, waitFor } from '../../test-utils';
 import userEvent from '@testing-library/user-event';
 import ErrorProvider, { showError } from '../../../src/components/ErrorProvider/ErrorProvider';
 import { useContext } from 'react';
@@ -12,18 +12,21 @@ const TestComponent = () => {
     return (
         <div>
             <button 
+                type="button"
                 onClick={() => contextShowError('Test error message')}
                 data-testid="trigger-error-context"
       >
                 Trigger Error via Context
             </button>
             <button 
+                type="button"
                 onClick={() => showError('Test error via export')}
                 data-testid="trigger-error-export"
       >
                 Trigger Error via Export
             </button>
             <button 
+                type="button"
                 onClick={() => contextShowError('Error with stack', 'Stack trace information')}
                 data-testid="trigger-error-with-stack"
       >
@@ -130,6 +133,7 @@ describe('ErrorProvider', () => {
                 <ErrorProvider>
                     <div>
                         <button 
+                            type="button"
                             onClick={() => showError('Same message', 'Same message')}
                             data-testid="trigger-same-message"
             >
@@ -222,6 +226,7 @@ describe('ErrorProvider', () => {
                 <ErrorProvider>
                     <div>
                         <button 
+                            type="button"
                             onClick={() => showError('')}
                             data-testid="trigger-empty-error"
             >
@@ -246,6 +251,7 @@ describe('ErrorProvider', () => {
                 <ErrorProvider>
                     <div>
                         <button 
+                            type="button"
                             onClick={() => showError(longMessage)}
                             data-testid="trigger-long-error"
             >
@@ -270,6 +276,7 @@ describe('ErrorProvider', () => {
                 <ErrorProvider>
                     <div>
                         <button 
+                            type="button"
                             onClick={() => showError(specialMessage)}
                             data-testid="trigger-special-error"
             >
@@ -379,6 +386,7 @@ describe('ErrorProvider', () => {
                 <ErrorProvider>
                     <div>
                         <button 
+                            type="button"
                             onClick={() => {
                                 showError('First error');
                                 showError('Second error');

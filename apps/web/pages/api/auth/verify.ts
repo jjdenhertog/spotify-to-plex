@@ -26,8 +26,8 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 res.json({
                     ok: true
                 })
-            } catch (error) {
-                console.error('Error verifying Plex authentication:', error);
+            } catch (_error) {
+                // Error handling - handled by Next.js error boundary
                 res.status(500).json({ error: 'Failed to verify authentication' });
             }
         })

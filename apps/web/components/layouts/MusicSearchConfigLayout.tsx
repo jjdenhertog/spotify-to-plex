@@ -143,9 +143,9 @@ const MusicSearchConfigLayout: React.FC<MusicSearchConfigLayoutProps> = ({
                 setImportDialog(false)
 
                 setTimeout(() => window.location.reload(), 500)
-            } catch (error) {
+            } catch (_error) {
                 enqueueSnackbar(
-                    `Failed to import configuration: ${error instanceof Error ? error.message : "Invalid JSON"}`,
+                    `Failed to import configuration: ${_error instanceof Error ? _error.message : "Invalid JSON"}`,
                     { variant: "error" }
                 )
             }

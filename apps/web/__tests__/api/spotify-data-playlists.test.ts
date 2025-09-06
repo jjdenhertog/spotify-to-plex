@@ -4,7 +4,7 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import handler from '../../src/pages/api/spotify/data';
+import handler from '../../pages/api/spotify/users/[id]/items';
 import { 
     createMockRequestResponse, 
     expectResponse, 

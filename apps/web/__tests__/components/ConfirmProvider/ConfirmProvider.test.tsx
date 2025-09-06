@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { render, screen, waitFor } from '../test-utils';
+import { render, screen, waitFor } from '../../test-utils';
 import userEvent from '@testing-library/user-event';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import ConfirmProvider, { confirm } from '../../../src/components/ConfirmProvider/ConfirmProvider';
@@ -12,18 +12,21 @@ const TestComponent = () => {
     return (
         <div>
             <button 
+                type="button"
                 onClick={() => contextConfirm({ title: 'Test Title', content: 'Test content' })}
                 data-testid="trigger-confirm-context"
       >
                 Trigger Confirm via Context
             </button>
             <button 
+                type="button"
                 onClick={() => confirm({ title: 'Exported Confirm', content: 'Exported content' })}
                 data-testid="trigger-confirm-export"
       >
                 Trigger Confirm via Export
             </button>
             <button 
+                type="button"
                 onClick={() => contextConfirm({ 
                     title: 'Custom Options', 
                     content: 'Custom content',
@@ -36,6 +39,7 @@ const TestComponent = () => {
                 Trigger Custom Confirm
             </button>
             <button
+                type="button"
                 onClick={() => contextConfirm({
                     title: 'No Cancel Button',
                     content: 'This dialog has no cancel button',

@@ -50,14 +50,14 @@ describe('/api/sync/[type] - Sync Operations', () => {
                 query: { type: 'albums' }
             });
 
-            mockSyncAlbums.mockResolvedValue();
+            mockSyncAlbums.mockResolvedValue(null);
 
             // Act
             await handler(req, res);
 
             // Assert
             expectResponse(res, 200, { ok: true });
-            expect(mockSyncAlbums).toHaveBeenCalledOnce();
+            expect(mockSyncAlbums).toHaveBeenCalledTimes(1);
             expect(mockSyncPlaylists).not.toHaveBeenCalled();
             expect(mockSyncUsers).not.toHaveBeenCalled();
         });
@@ -74,7 +74,7 @@ describe('/api/sync/[type] - Sync Operations', () => {
 
             // Act & Assert - Should throw error and be handled by error boundary
             await expect(handler(req, res)).rejects.toThrow('Failed to sync albums');
-            expect(mockSyncAlbums).toHaveBeenCalledOnce();
+            expect(mockSyncAlbums).toHaveBeenCalledTimes(1);
         });
 
         it('should handle long-running albums sync', async () => {
@@ -102,7 +102,7 @@ describe('/api/sync/[type] - Sync Operations', () => {
       
             expect(duration).toBeGreaterThanOrEqual(2000);
             expectResponse(res, 200, { ok: true });
-            expect(mockSyncAlbums).toHaveBeenCalledOnce();
+            expect(mockSyncAlbums).toHaveBeenCalledTimes(1);
         });
     });
 
@@ -114,14 +114,14 @@ describe('/api/sync/[type] - Sync Operations', () => {
                 query: { type: 'playlists' }
             });
 
-            mockSyncPlaylists.mockResolvedValue();
+            mockSyncPlaylists.mockResolvedValue(null);
 
             // Act
             await handler(req, res);
 
             // Assert
             expectResponse(res, 200, { ok: true });
-            expect(mockSyncPlaylists).toHaveBeenCalledOnce();
+            expect(mockSyncPlaylists).toHaveBeenCalledTimes(1);
             expect(mockSyncAlbums).not.toHaveBeenCalled();
             expect(mockSyncUsers).not.toHaveBeenCalled();
         });
@@ -138,7 +138,7 @@ describe('/api/sync/[type] - Sync Operations', () => {
 
             // Act & Assert
             await expect(handler(req, res)).rejects.toThrow('Database connection failed');
-            expect(mockSyncPlaylists).toHaveBeenCalledOnce();
+            expect(mockSyncPlaylists).toHaveBeenCalledTimes(1);
         });
 
         it('should handle empty playlists sync', async () => {
@@ -159,7 +159,7 @@ describe('/api/sync/[type] - Sync Operations', () => {
 
             // Assert
             expectResponse(res, 200, { ok: true });
-            expect(mockSyncPlaylists).toHaveBeenCalledOnce();
+            expect(mockSyncPlaylists).toHaveBeenCalledTimes(1);
         });
     });
 
@@ -171,14 +171,14 @@ describe('/api/sync/[type] - Sync Operations', () => {
                 query: { type: 'users' }
             });
 
-            mockSyncUsers.mockResolvedValue();
+            mockSyncUsers.mockResolvedValue(null);
 
             // Act
             await handler(req, res);
 
             // Assert
             expectResponse(res, 200, { ok: true });
-            expect(mockSyncUsers).toHaveBeenCalledOnce();
+            expect(mockSyncUsers).toHaveBeenCalledTimes(1);
             expect(mockSyncAlbums).not.toHaveBeenCalled();
             expect(mockSyncPlaylists).not.toHaveBeenCalled();
         });
@@ -195,7 +195,7 @@ describe('/api/sync/[type] - Sync Operations', () => {
 
             // Act & Assert
             await expect(handler(req, res)).rejects.toThrow('Authentication required');
-            expect(mockSyncUsers).toHaveBeenCalledOnce();
+            expect(mockSyncUsers).toHaveBeenCalledTimes(1);
         });
 
         it('should handle concurrent users sync operations', async () => {
@@ -349,7 +349,7 @@ describe('/api/sync/[type] - Sync Operations', () => {
 
             // Assert
             expectResponse(res, 200, { ok: true });
-            expect(mockSyncPlaylists).toHaveBeenCalledOnce();
+            expect(mockSyncPlaylists).toHaveBeenCalledTimes(1);
         });
 
         it('should handle partial sync failures gracefully', async () => {
@@ -371,7 +371,7 @@ describe('/api/sync/[type] - Sync Operations', () => {
 
             // Assert
             expectResponse(res, 200, { ok: true });
-            expect(mockSyncAlbums).toHaveBeenCalledOnce();
+            expect(mockSyncAlbums).toHaveBeenCalledTimes(1);
         });
     });
 
@@ -388,7 +388,7 @@ describe('/api/sync/[type] - Sync Operations', () => {
 
             // Act & Assert
             await expect(handler(req, res)).rejects.toThrow('Critical sync failure');
-            expect(mockSyncUsers).toHaveBeenCalledOnce();
+            expect(mockSyncUsers).toHaveBeenCalledTimes(1);
         });
 
         it('should handle unexpected sync function behavior', async () => {
@@ -405,7 +405,7 @@ describe('/api/sync/[type] - Sync Operations', () => {
 
             // Assert - Should still work and return ok: true
             expectResponse(res, 200, { ok: true });
-            expect(mockSyncAlbums).toHaveBeenCalledOnce();
+            expect(mockSyncAlbums).toHaveBeenCalledTimes(1);
         });
     });
 });

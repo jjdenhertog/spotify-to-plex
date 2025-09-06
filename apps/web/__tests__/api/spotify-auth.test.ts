@@ -33,6 +33,7 @@ describe('/api/spotify/login - Spotify OAuth Flow', () => {
 
         // Clean up environment variables
         for (const key of Object.keys(mockEnvVariables)) {
+            // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
             delete (process.env as any)[key];
         }
     });
