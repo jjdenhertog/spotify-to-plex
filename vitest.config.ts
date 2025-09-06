@@ -80,6 +80,9 @@ export default defineConfig({
       '@/hoc': resolve(__dirname, 'apps/web/src/hoc'),
       '@/hooks': resolve(__dirname, 'apps/web/src/hooks'),
       
+      // Test utilities alias
+      '@test-utils': resolve(__dirname, 'tests/test-utils'),
+      
       // Workspace package aliases
       '@spotify-to-plex/shared-types': resolve(__dirname, 'packages/shared-types/src'),
       '@spotify-to-plex/http-client': resolve(__dirname, 'packages/http-client/src'),

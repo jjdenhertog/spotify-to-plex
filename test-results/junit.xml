@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites name="vitest tests" tests="1" failures="1" errors="0" time="0">
+    <testsuite name="apps/web/__tests__/hooks/useMatchFiltersApi.test.ts" timestamp="2025-09-06T15:25:56.630Z" hostname="c82ba9db4d53" tests="1" failures="1" errors="0" skipped="0" time="0">
+        <testcase classname="apps/web/__tests__/hooks/useMatchFiltersApi.test.ts" name="__tests__/hooks/useMatchFiltersApi.test.ts" time="0">
+            <failure message="Cannot find module &apos;/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/tests/setup/vitest.setup.ts&apos;" type="Error">
+Error: Cannot find module &apos;/var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/tests/setup/vitest.setup.ts&apos;
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { code: &apos;ERR_MODULE_NOT_FOUND&apos; }
+Caused by: Caused by: Error: Failed to load url /var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/tests/setup/vitest.setup.ts (resolved id: /var/tmp/vibe-kanban/worktrees/vk-b25b-create-tes/apps/web/tests/setup/vitest.setup.ts). Does the file exist?
+ ❯ loadAndTransform ../../node_modules/.pnpm/vite@7.1.4_@types+node@20.19.11_sass@1.90.0/node_modules/vite/dist/node/chunks/dep-C6pp_iVS.js:26400:33
+            </failure>
+        </testcase>
+    </testsuite>
+</testsuites>
