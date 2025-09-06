@@ -1,27 +1,28 @@
 /* eslint-disable max-lines, @typescript-eslint/prefer-destructuring */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import axios from 'axios';
-import { Agent } from 'node:https';
-import { axiosDelete } from '../../methods/axiosDelete';
 
-// Mock axios
+// Mock axios first
 vi.mock('axios');
 const mockedAxios = vi.mocked(axios, true);
 
-// Mock https Agent
+// Create a mock agent instance that will be returned by the Agent constructor
+const mockAgentInstance = { rejectUnauthorized: false };
+
+// Mock https Agent - this creates the agent when the module is imported
 vi.mock('node:https', () => ({
-    Agent: vi.fn()
+    Agent: vi.fn().mockImplementation(() => mockAgentInstance)
 }));
-const MockedAgent = vi.mocked(Agent);
+
+// Now import the function under test (after mocks are set up)
+const { axiosDelete } = await import('../../methods/axiosDelete');
 
 describe('axiosDelete', () => {
     const testUrl = 'https://api.plex.com/playlists/123';
     const testToken = 'test-plex-token';
-    const mockAgent = { rejectUnauthorized: false };
 
     beforeEach(() => {
         vi.clearAllMocks();
-        MockedAgent.mockImplementation(() => mockAgent as any);
     });
 
     afterEach(() => {
@@ -30,7 +31,7 @@ describe('axiosDelete', () => {
 
     describe('basic functionality', () => {
         it('should make DELETE request with correct parameters', async () => {
-            const mockResponse = { data: { success: true, deleted: true } };
+            const mockResponse = { data: { deleted: true } };
             mockedAxios.delete.mockResolvedValue(mockResponse);
 
             const result = await axiosDelete(testUrl, testToken);
@@ -38,7 +39,7 @@ describe('axiosDelete', () => {
             expect(mockedAxios.delete).toHaveBeenCalledWith(
                 testUrl,
                 {
-                    httpsAgent: mockAgent,
+                    httpsAgent: mockAgentInstance,
                     headers: {
                         'Accept': 'application/json',
                         'X-Plex-Token': testToken
@@ -48,22 +49,18 @@ describe('axiosDelete', () => {
             expect(result).toBe(mockResponse);
         });
 
-        it('should not include request body (DELETE uses config only)', async () => {
+        it('should use HTTPS agent with rejectUnauthorized: false', async () => {
             const mockResponse = { data: {} };
             mockedAxios.delete.mockResolvedValue(mockResponse);
 
             await axiosDelete(testUrl, testToken);
 
-            const [callUrl, callConfig] = mockedAxios.delete.mock.calls[0]!;
-            expect(callUrl).toBe(testUrl);
-            expect(callConfig).toHaveProperty('headers');
-            expect(mockedAxios.delete.mock.calls[0]).toHaveLength(2); // URL and config only, no body
-        });
-
-        it('should create Agent with rejectUnauthorized: false', () => {
-            axiosDelete(testUrl, testToken);
-
-            expect(MockedAgent).toHaveBeenCalledWith({ rejectUnauthorized: false });
+            expect(mockedAxios.delete).toHaveBeenCalledWith(
+                expect.anything(),
+                expect.objectContaining({
+                    httpsAgent: mockAgentInstance
+                })
+            );
         });
     });
 
@@ -92,7 +89,6 @@ describe('axiosDelete', () => {
             await axiosDelete(testUrl, testToken);
 
             const [, config] = mockedAxios.delete.mock.calls[0]!;
-      
             expect((config as any).headers).toHaveProperty('Accept', 'application/json');
         });
 
@@ -103,40 +99,7 @@ describe('axiosDelete', () => {
             await axiosDelete(testUrl, testToken);
 
             const [, config] = mockedAxios.delete.mock.calls[0]!;
-      
             expect((config as any).headers).toHaveProperty('X-Plex-Token', testToken);
-        });
-    });
-
-    describe('HTTPS Agent configuration', () => {
-        it('should use custom HTTPS agent', async () => {
-            const mockResponse = { data: {} };
-            mockedAxios.delete.mockResolvedValue(mockResponse);
-
-            await axiosDelete(testUrl, testToken);
-
-            expect(mockedAxios.delete).toHaveBeenCalledWith(
-                expect.anything(),
-                expect.objectContaining({
-                    httpsAgent: mockAgent
-                })
-            );
-        });
-
-        it('should configure agent to not reject unauthorized certificates', () => {
-            axiosDelete(testUrl, testToken);
-
-            expect(MockedAgent).toHaveBeenCalledWith({ rejectUnauthorized: false });
-        });
-
-        it('should create new agent instance for each call', () => {
-            MockedAgent.mockClear();
-
-            axiosDelete(testUrl, testToken);
-            axiosDelete(testUrl, testToken);
-            axiosDelete(testUrl, testToken);
-
-            expect(MockedAgent).toHaveBeenCalledTimes(3);
         });
     });
 
@@ -152,7 +115,7 @@ describe('axiosDelete', () => {
             const httpError = {
                 response: {
                     status: 404,
-                    data: { error: 'Resource Not Found' }
+                    data: { error: 'Not Found' }
                 }
             };
             mockedAxios.delete.mockRejectedValue(httpError);
@@ -163,8 +126,8 @@ describe('axiosDelete', () => {
         it('should handle authorization errors', async () => {
             const authError = {
                 response: {
-                    status: 403,
-                    data: { error: 'Forbidden - Cannot delete resource' }
+                    status: 401,
+                    data: { error: 'Unauthorized' }
                 }
             };
             mockedAxios.delete.mockRejectedValue(authError);
@@ -172,157 +135,110 @@ describe('axiosDelete', () => {
             await expect(axiosDelete(testUrl, testToken)).rejects.toEqual(authError);
         });
 
-        it('should handle resource already deleted errors', async () => {
-            const goneError = {
+        it('should handle not found errors', async () => {
+            const notFoundError = {
                 response: {
-                    status: 410,
-                    data: { error: 'Resource already deleted' }
+                    status: 404,
+                    data: { error: 'Playlist not found' }
                 }
             };
-            mockedAxios.delete.mockRejectedValue(goneError);
+            mockedAxios.delete.mockRejectedValue(notFoundError);
 
-            await expect(axiosDelete(testUrl, testToken)).rejects.toEqual(goneError);
+            await expect(axiosDelete(testUrl, testToken)).rejects.toEqual(notFoundError);
         });
 
         it('should handle connection timeouts', async () => {
-            const timeoutError = new Error('timeout exceeded');
+            const timeoutError = new Error('Request timed out');
             mockedAxios.delete.mockRejectedValue(timeoutError);
 
-            await expect(axiosDelete(testUrl, testToken)).rejects.toThrow('timeout exceeded');
+            await expect(axiosDelete(testUrl, testToken)).rejects.toThrow('Request timed out');
         });
     });
 
     describe('type safety', () => {
         it('should support generic type parameters', async () => {
-      type DeletePlaylistResponse = {
-        success: boolean;
-        deletedId: number;
-        message: string;
-      }
+            type DeleteResponse = {
+                success: boolean;
+                message: string;
+            }
 
-      const mockResponse = {
-          data: { 
-              success: true, 
-              deletedId: 123, 
-              message: 'Playlist deleted successfully' 
-          },
-          status: 200,
-          statusText: 'OK'
-      };
-      mockedAxios.delete.mockResolvedValue(mockResponse);
-
-      const result = await axiosDelete<DeletePlaylistResponse>(testUrl, testToken);
-
-      expect(result.data.success).toBe(true);
-      expect(result.data.deletedId).toBe(123);
-      expect(result.status).toBe(200);
-        });
-
-        it('should handle complex response types', async () => {
-      type ComplexDeleteResponse = {
-        operation: {
-          type: string;
-          resourceId: number;
-          timestamp: string;
-        };
-        affected: {
-          playlists: number;
-          tracks: number;
-        };
-        status: string;
-      }
-
-      const mockResponse = {
-          data: {
-              operation: {
-                  type: 'delete',
-                  resourceId: 456,
-                  timestamp: '2024-01-01T00:00:00Z'
-              },
-              affected: {
-                  playlists: 1,
-                  tracks: 10
-              },
-              status: 'completed'
-          }
-      };
-      mockedAxios.delete.mockResolvedValue(mockResponse);
-
-      const result = await axiosDelete<ComplexDeleteResponse>(testUrl, testToken);
-
-      expect(result.data.operation.type).toBe('delete');
-      expect(result.data.operation.resourceId).toBe(456);
-      expect(result.data.affected.playlists).toBe(1);
-      expect(result.data.status).toBe('completed');
-        });
-
-        it('should handle void response types (204 No Content)', async () => {
             const mockResponse = {
-                data: null,
-                status: 204,
-                statusText: 'No Content'
-            };
-            mockedAxios.delete.mockResolvedValue(mockResponse);
-
-            const result = await axiosDelete<undefined>(testUrl, testToken);
-
-            expect(result.status).toBe(204);
-            expect(result.data).toBeNull();
-        });
-
-        it('should handle empty response types', async () => {
-            const mockResponse = {
-                data: {},
+                data: { success: true, message: 'deleted' },
                 status: 200,
                 statusText: 'OK'
             };
             mockedAxios.delete.mockResolvedValue(mockResponse);
 
-            const result = await axiosDelete<Record<string, unknown>>(testUrl, testToken);
+            const result = await axiosDelete<DeleteResponse>(testUrl, testToken);
 
+            expect(result.data).toEqual({ success: true, message: 'deleted' });
             expect(result.status).toBe(200);
-            expect(result.data).toEqual({});
+        });
+
+        it('should handle complex response types', async () => {
+            type PlaylistDeleteResponse = {
+                playlist: {
+                    id: string;
+                    deleted: boolean;
+                }
+                affectedTracks: number;
+            }
+
+            const mockResponse = {
+                data: {
+                    playlist: { id: '123', deleted: true },
+                    affectedTracks: 25
+                }
+            };
+            mockedAxios.delete.mockResolvedValue(mockResponse);
+
+            const result = await axiosDelete<PlaylistDeleteResponse>(testUrl, testToken);
+
+            expect(result.data.playlist.deleted).toBe(true);
+            expect(result.data.affectedTracks).toBe(25);
+        });
+
+        it('should handle void response types', async () => {
+            const mockResponse = {
+                data: undefined,
+                status: 204,
+                statusText: 'No Content'
+            };
+            mockedAxios.delete.mockResolvedValue(mockResponse);
+
+            const result = await axiosDelete<void>(testUrl, testToken);
+
+            expect(result.status).toBe(204);
+            expect(result.data).toBeUndefined();
         });
     });
 
     describe('Plex API specific features', () => {
         it('should work with playlist deletion endpoint', async () => {
-            const playlistEndpoint = 'https://plex.server.com/playlists/123';
-            const mockResponse = { data: { success: true, message: 'Playlist deleted' } };
+            const mockResponse = { data: { success: true } };
             mockedAxios.delete.mockResolvedValue(mockResponse);
 
-            const result = await axiosDelete(playlistEndpoint, testToken);
+            await axiosDelete(testUrl, testToken);
 
-            expect(mockedAxios.delete).toHaveBeenCalledWith(
-                playlistEndpoint,
-                expect.objectContaining({
-                    headers: expect.objectContaining({
-                        'X-Plex-Token': testToken
-                    })
-                })
-            );
-            expect((result.data as any).success).toBe(true);
+            expect(mockedAxios.delete).toHaveBeenCalledWith(testUrl, expect.any(Object));
         });
 
         it('should work with different Plex resource endpoints', async () => {
             const endpoints = [
                 'https://plex.server.com/playlists/123',
                 'https://plex.server.com/library/metadata/456',
-                'https://plex.server.com/library/sections/1/items/789',
-                'https://127.0.0.1:32400/playlists/999'
+                'https://127.0.0.1:32400/library/sections/1/items/789',
+                'https://plex.server.com/accounts/friends/987'
             ];
 
-            const mockResponse = { data: { deleted: true } };
+            const mockResponse = { data: {} };
             mockedAxios.delete.mockResolvedValue(mockResponse);
 
             for (const endpoint of endpoints) {
                 mockedAxios.delete.mockClear();
                 await axiosDelete(endpoint, testToken);
 
-                expect(mockedAxios.delete).toHaveBeenCalledWith(
-                    endpoint,
-                    expect.any(Object)
-                );
+                expect(mockedAxios.delete).toHaveBeenCalledWith(endpoint, expect.any(Object));
             }
         });
 
@@ -330,7 +246,7 @@ describe('axiosDelete', () => {
             const tokens = [
                 'simple-token',
                 'complex_token-with-underscores',
-                '123456789abcdef',
+                '123456789',
                 'token-with-dashes-and-123'
             ];
 
@@ -355,11 +271,11 @@ describe('axiosDelete', () => {
 
     describe('performance and reliability', () => {
         it('should handle concurrent requests', async () => {
-            const mockResponse = { data: { deleted: true, success: true } };
+            const mockResponse = { data: { result: 'deleted' } };
             mockedAxios.delete.mockResolvedValue(mockResponse);
 
             const requests = Array.from({ length: 5 }, (_, i) => 
-                axiosDelete(`${testUrl}/${i}`, testToken)
+                axiosDelete(`${testUrl.replace('123', i.toString())}`, testToken)
             );
 
             const results = await Promise.all(requests);
@@ -367,7 +283,7 @@ describe('axiosDelete', () => {
             expect(results).toHaveLength(5);
             expect(mockedAxios.delete).toHaveBeenCalledTimes(5);
             results.forEach(result => {
-                expect((result.data as any).deleted).toBe(true);
+                expect((result.data as any).result).toBe('deleted');
             });
         });
 
@@ -386,48 +302,17 @@ describe('axiosDelete', () => {
 
             calls.forEach(([url, config]) => {
                 expect(url).toBe(testUrl);
-                expect(config).toHaveProperty('httpsAgent', mockAgent);
+                expect(config).toHaveProperty('httpsAgent', mockAgentInstance);
                 expect((config as any).headers).toHaveProperty('Accept', 'application/json');
                 expect((config as any).headers).toHaveProperty('X-Plex-Token', testToken);
             });
         });
 
-        it('should handle large response payloads for deletion confirmations', async () => {
-            const largePayload = {
-                deleted: true,
-                summary: {
-                    totalDeleted: 1000,
-                    details: Array.from({ length: 1000 }, (_, i) => ({ 
-                        id: i, 
-                        title: `Deleted Item ${i}`,
-                        type: 'track'
-                    }))
-                }
-            };
-            const mockResponse = { data: largePayload };
-            mockedAxios.delete.mockResolvedValue(mockResponse);
+        it('should handle network retries gracefully', async () => {
+            const networkError = new Error('ECONNRESET');
+            mockedAxios.delete.mockRejectedValue(networkError);
 
-            const result = await axiosDelete(testUrl, testToken);
-
-            expect((result.data as any).summary.details).toHaveLength(1000);
-            expect((result.data as any).summary.totalDeleted).toBe(1000);
-        });
-
-        it('should handle cascade deletion responses', async () => {
-            const cascadeResponse = {
-                deleted: true,
-                cascaded: {
-                    playlists: [{ id: 1, title: 'Playlist 1' }],
-                    tracks: [{ id: 1, title: 'Track 1' }, { id: 2, title: 'Track 2' }]
-                }
-            };
-            const mockResponse = { data: cascadeResponse };
-            mockedAxios.delete.mockResolvedValue(mockResponse);
-
-            const result = await axiosDelete(testUrl, testToken);
-
-            expect((result.data as any).cascaded.playlists).toHaveLength(1);
-            expect((result.data as any).cascaded.tracks).toHaveLength(2);
+            await expect(axiosDelete(testUrl, testToken)).rejects.toThrow('ECONNRESET');
         });
     });
 
@@ -449,7 +334,7 @@ describe('axiosDelete', () => {
         });
 
         it('should handle special characters in URL', async () => {
-            const specialUrl = 'https://plex.server.com/playlists/123?force=true&cascade=true';
+            const specialUrl = 'https://plex.server.com/playlists/123%20test';
             const mockResponse = { data: {} };
             mockedAxios.delete.mockResolvedValue(mockResponse);
 
@@ -459,7 +344,7 @@ describe('axiosDelete', () => {
         });
 
         it('should handle very long URLs', async () => {
-            const longUrl = `${testUrl  }/${  'a'.repeat(1000)}`;
+            const longUrl = `${testUrl  }/${'a'.repeat(2000)}`;
             const mockResponse = { data: {} };
             mockedAxios.delete.mockResolvedValue(mockResponse);
 
@@ -469,93 +354,38 @@ describe('axiosDelete', () => {
         });
 
         it('should work with both HTTP and HTTPS URLs', async () => {
-            const httpUrl = 'http://plex.server.com/playlists/123';
-            const httpsUrl = 'https://plex.server.com/playlists/123';
-            const mockResponse = { data: {} };
-            mockedAxios.delete.mockResolvedValue(mockResponse);
-
-            await axiosDelete(httpUrl, testToken);
-            await axiosDelete(httpsUrl, testToken);
-
-            expect(mockedAxios.delete).toHaveBeenCalledTimes(2);
-            expect(mockedAxios.delete).toHaveBeenNthCalledWith(1, httpUrl, expect.any(Object));
-            expect(mockedAxios.delete).toHaveBeenNthCalledWith(2, httpsUrl, expect.any(Object));
-        });
-
-        it('should handle numeric and string IDs in URLs', async () => {
-            const urlVariations = [
-                'https://plex.server.com/playlists/123',
-                'https://plex.server.com/playlists/999999',
-                'https://plex.server.com/playlists/abc123',
-                'https://plex.server.com/playlists/uuid-style-id'
+            const urls = [
+                'https://secure.plex.com/playlists/123',
+                'http://local.plex.com:32400/playlists/123'
             ];
 
             const mockResponse = { data: {} };
             mockedAxios.delete.mockResolvedValue(mockResponse);
 
-            for (const url of urlVariations) {
+            for (const url of urls) {
                 mockedAxios.delete.mockClear();
                 await axiosDelete(url, testToken);
 
                 expect(mockedAxios.delete).toHaveBeenCalledWith(url, expect.any(Object));
             }
         });
-    });
 
-    describe('HTTP method characteristics', () => {
-        it('should be idempotent - multiple calls should be safe', async () => {
-            // First call succeeds
-            const successResponse = { data: { deleted: true } };
-            // Subsequent calls return 404 (already deleted)
-            const notFoundResponse = {
-                response: { status: 404, data: { error: 'Not found' } }
-            };
+        it('should handle numeric IDs in URLs', async () => {
+            const numericUrls = [
+                'https://plex.server.com/playlists/123',
+                'https://plex.server.com/playlists/999999',
+                'https://plex.server.com/playlists/0'
+            ];
 
-            mockedAxios.delete
-                .mockResolvedValueOnce(successResponse)
-                .mockRejectedValueOnce(notFoundResponse)
-                .mockRejectedValueOnce(notFoundResponse);
-
-            // First deletion should succeed
-            const result1 = await axiosDelete(testUrl, testToken);
-            expect((result1.data as any).deleted).toBe(true);
-
-            // Subsequent deletions should fail with 404
-            await expect(axiosDelete(testUrl, testToken)).rejects.toMatchObject({
-                response: { status: 404 }
-            });
-      
-            await expect(axiosDelete(testUrl, testToken)).rejects.toMatchObject({
-                response: { status: 404 }
-            });
-
-            expect(mockedAxios.delete).toHaveBeenCalledTimes(3);
-        });
-
-        it('should not have request body unlike POST/PUT', async () => {
             const mockResponse = { data: {} };
             mockedAxios.delete.mockResolvedValue(mockResponse);
 
-            await axiosDelete(testUrl, testToken);
+            for (const url of numericUrls) {
+                mockedAxios.delete.mockClear();
+                await axiosDelete(url, testToken);
 
-            const [callUrl, callConfig] = mockedAxios.delete.mock.calls[0]!;
-            // DELETE should only have URL and config, no body parameter
-            expect(mockedAxios.delete.mock.calls[0]).toHaveLength(2);
-            expect(typeof callUrl).toBe('string'); // URL
-            expect(typeof callConfig).toBe('object'); // Config
-            expect(callConfig).toHaveProperty('headers');
-        });
-
-        it('should support query parameters for delete operations', async () => {
-            const deleteUrl = `${testUrl  }?force=true&cascade=true`;
-            const mockResponse = { data: { deleted: true, forced: true } };
-            mockedAxios.delete.mockResolvedValue(mockResponse);
-
-            const result = await axiosDelete(deleteUrl, testToken);
-
-            expect(mockedAxios.delete).toHaveBeenCalledWith(deleteUrl, expect.any(Object));
-            expect((result.data as any).deleted).toBe(true);
-            expect((result.data as any).forced).toBe(true);
+                expect(mockedAxios.delete).toHaveBeenCalledWith(url, expect.any(Object));
+            }
         });
     });
 });

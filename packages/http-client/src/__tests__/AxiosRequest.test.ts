@@ -1,15 +1,17 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+
+// Mock all the method modules before importing anything
+vi.mock('../methods/axiosGet');
+vi.mock('../methods/axiosPost');
+vi.mock('../methods/axiosPut');
+vi.mock('../methods/axiosDelete');
+
+// Now import the modules and the main export
 import { AxiosRequest } from '../AxiosRequest';
 import * as axiosGetModule from '../methods/axiosGet';
 import * as axiosPostModule from '../methods/axiosPost';
 import * as axiosPutModule from '../methods/axiosPut';
 import * as axiosDeleteModule from '../methods/axiosDelete';
-
-// Mock all the method modules
-vi.mock('../methods/axiosGet');
-vi.mock('../methods/axiosPost');
-vi.mock('../methods/axiosPut');
-vi.mock('../methods/axiosDelete');
 
 const mockAxiosGet = vi.mocked(axiosGetModule.axiosGet);
 const mockAxiosPost = vi.mocked(axiosPostModule.axiosPost);

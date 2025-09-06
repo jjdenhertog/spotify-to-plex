@@ -11,7 +11,7 @@ export default defineConfig({
     test: {
         name: 'web',
         environment: 'jsdom',
-        setupFiles: ['./__tests__/test-utils/setup-tests.ts'],
+        setupFiles: ['./tests/setup/vitest.setup.ts'],
         include: ['**/__tests__/**/*.{test,spec}.{js,ts,tsx}'],
         exclude: [
             '**/node_modules/**',

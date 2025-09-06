@@ -1,6 +1,8 @@
-import '@testing-library/jest-dom'
-import { vi } from 'vitest'
+import { vi, beforeAll, afterAll, beforeEach, afterEach } from 'vitest'
 import { TextEncoder, TextDecoder } from 'util'
+
+// Don't import @testing-library/jest-dom here since it requires expect to be available globally
+// The vitest config should handle globals and jest-dom matchers
 
 // Polyfills for Node.js environment
 global.TextEncoder = TextEncoder
@@ -69,6 +71,9 @@ if (!global.fetch) {
 // Mock console methods in test environment to reduce noise
 const originalError = console.error
 const originalWarn = console.warn
+
+// Make vi (Vitest utilities) globally available
+global.vi = vi
 
 beforeAll(() => {
   console.error = (...args: any[]) => {

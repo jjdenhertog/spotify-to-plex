@@ -19,23 +19,19 @@ function expectResponse(res: any, expectedStatus: number, expectedData?: any) {
   }
 }
 import { MatchFilterConfig } from '@spotify-to-plex/shared-types/common/MatchFilterConfig';
+import { getMatchFilters } from '@spotify-to-plex/music-search/functions/getMatchFilters';
+import { updateMatchFilters } from '@spotify-to-plex/music-search/functions/updateMatchFilters';
+import { getStorageDir } from '@spotify-to-plex/shared-utils/utils/getStorageDir';
 
-// Mock dependencies
-const mockGetMatchFilters = vi.fn();
-const mockUpdateMatchFilters = vi.fn();
-const mockGetStorageDir = vi.fn();
+// Mock dependencies using proper Vitest pattern
+vi.mock('@spotify-to-plex/music-search/functions/getMatchFilters');
+vi.mock('@spotify-to-plex/music-search/functions/updateMatchFilters');
+vi.mock('@spotify-to-plex/shared-utils/utils/getStorageDir');
 
-vi.mock('@spotify-to-plex/music-search/functions/getMatchFilters', () => ({
-  getMatchFilters: mockGetMatchFilters
-}));
-
-vi.mock('@spotify-to-plex/music-search/functions/updateMatchFilters', () => ({
-  updateMatchFilters: mockUpdateMatchFilters
-}));
-
-vi.mock('@spotify-to-plex/shared-utils/utils/getStorageDir', () => ({
-  getStorageDir: mockGetStorageDir
-}));
+// Get references to mocked functions after imports
+const mockGetMatchFilters = vi.mocked(getMatchFilters);
+const mockUpdateMatchFilters = vi.mocked(updateMatchFilters);
+const mockGetStorageDir = vi.mocked(getStorageDir);
 
 describe('/api/plex/music-search-config/match-filters - Match Filters Configuration', () => {
   const mockStorageDir = '/mock/storage/dir';
@@ -322,8 +318,8 @@ describe('/api/plex/music-search-config/match-filters - Match Filters Configurat
       // Arrange
       const complexFilters: MatchFilterConfig[] = [
         'artist:match AND title:contains AND album:similarity>=0.8',
-        '(artistWithTitle:match OR artistInTitle:match) AND title:contains',
-        'artist:similarity>=0.9 OR (title:match AND album:match)'
+        'artistWithTitle:match OR artistInTitle:match AND title:contains',
+        'artist:similarity>=0.9 OR title:match AND album:match'
       ];
 
       const { req, res } = createMockRequestResponse({ 

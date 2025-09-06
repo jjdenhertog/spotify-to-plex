@@ -1,0 +1,16 @@
+<testsuites id="" name="" tests="3" failures="0" skipped="3" errors="0" time="0.12848099999999998">
+<testsuite name="home.spec.ts" timestamp="2025-09-06T19:06:55.017Z" hostname="chromium" tests="3" failures="0" skipped="3" time="0" errors="0">
+<testcase name="Home Page › should load the home page successfully" classname="home.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Home Page › should have working navigation" classname="home.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Home Page › should be responsive" classname="home.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+</testsuite>
+</testsuites>

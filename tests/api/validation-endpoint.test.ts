@@ -19,23 +19,19 @@ function expectResponse(res: any, expectedStatus: number, expectedData?: any) {
   }
 }
 import { MatchFilterConfig } from '@spotify-to-plex/shared-types/common/MatchFilterConfig';
+import { validateExpression } from '@spotify-to-plex/shared-utils/validation/validateExpression';
+import { getMatchFilterValidationErrors } from '@spotify-to-plex/shared-utils/validation/getMatchFilterValidationErrors';
+import { migrateLegacyFilter } from '@spotify-to-plex/music-search/functions/parseExpression';
 
-// Mock dependencies
-const mockValidateExpression = vi.fn();
-const mockGetMatchFilterValidationErrors = vi.fn();
-const mockMigrateLegacyFilter = vi.fn();
+// Mock dependencies using proper Vitest pattern
+vi.mock('@spotify-to-plex/shared-utils/validation/validateExpression');
+vi.mock('@spotify-to-plex/shared-utils/validation/getMatchFilterValidationErrors');
+vi.mock('@spotify-to-plex/music-search/functions/parseExpression');
 
-vi.mock('@spotify-to-plex/shared-utils/validation/validateExpression', () => ({
-  validateExpression: mockValidateExpression
-}));
-
-vi.mock('@spotify-to-plex/shared-utils/validation/getMatchFilterValidationErrors', () => ({
-  getMatchFilterValidationErrors: mockGetMatchFilterValidationErrors
-}));
-
-vi.mock('@spotify-to-plex/music-search/functions/parseExpression', () => ({
-  migrateLegacyFilter: mockMigrateLegacyFilter
-}));
+// Get references to mocked functions after imports
+const mockValidateExpression = vi.mocked(validateExpression);
+const mockGetMatchFilterValidationErrors = vi.mocked(getMatchFilterValidationErrors);
+const mockMigrateLegacyFilter = vi.mocked(migrateLegacyFilter);
 
 describe('/api/plex/music-search-config/validate - Validation Endpoint', () => {
   beforeEach(() => {

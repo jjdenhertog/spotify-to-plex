@@ -1,1 +1,3 @@
-Can you fix all failing tests. Keep in mind that if a test fails because it is a not yet existing feature. It should be removed! Only real tests!
+The failing test files appear to be configuration/environment issues rather than tests for non-existent features. All the actual test assertions pass when the files load properly.
+
+Please fix those failing tests or remove them.all together

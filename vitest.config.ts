@@ -47,6 +47,7 @@ export default defineConfig({
       '**/node_modules/**',
       '**/dist/**',
       '**/.next/**',
+      'tests/e2e/**', // Don't watch Playwright e2e tests
       'apps/sync-worker/**', // Don't watch sync-worker for test changes
       'apps/spotify-scraper/**'
     ],
@@ -59,6 +60,7 @@ export default defineConfig({
           include: ['tests/**/*.{test,spec}.{js,jsx,ts,tsx}'],
           exclude: [
             '**/node_modules/**',
+            'tests/e2e/**', // Exclude Playwright e2e tests
             'apps/sync-worker/**', // Explicitly exclude sync-worker
             'apps/spotify-scraper/**' // Exclude Python scraper
           ],
@@ -116,7 +118,7 @@ export default defineConfig({
           root: './packages/http-client',
           include: ['src/**/*.{test,spec}.{js,ts}'],
           environment: 'node',
-          setupFiles: ['../../tests/setup/vitest.setup.ts']
+          setupFiles: ['./vitest.setup.ts']
         }
       },
       
