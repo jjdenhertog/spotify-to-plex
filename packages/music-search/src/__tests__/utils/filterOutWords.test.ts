@@ -266,7 +266,7 @@ describe('filterOutWords', () => {
             mockGetCurrentMusicSearchConfig.mockReturnValue(emptyConfig as any);
 
             const result = filterOutWords('test feat. "quote" - extra', true, true, true);
-            expect(result).toBe('test feat. quote - extra');
+            expect(result).toBe('test feat. "quote" - extra');
         });
     });
 

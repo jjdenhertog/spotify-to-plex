@@ -312,11 +312,8 @@ describe('/api/settings - Advanced Settings Management', () => {
 
       // Assert
       expect(res._getStatusCode()).toBe(200);
-      // The API still calls updateSettings even with empty string
-      expect(mockPlex.updateSettings).toHaveBeenCalledWith({
-        uri: '',
-        id: undefined
-      });
+      // The API does NOT call updateSettings with empty string because req.body.uri is falsy
+      expect(mockPlex.updateSettings).not.toHaveBeenCalled();
     });
 
     it('should skip update when no URI is provided in body', async () => {

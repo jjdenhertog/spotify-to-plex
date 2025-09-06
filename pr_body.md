@@ -1,1 +1,1 @@
-Can you run all tests. And type-check and eslint. And fix Lol errors. You cn leave warnings
+Can you fix all failing tests. Keep in mind that if a test fails because it is a not yet existing feature. It should be removed! Only real tests!

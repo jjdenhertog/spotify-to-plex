@@ -112,7 +112,7 @@ describe('createSearchString', () => {
 
     describe('edge cases', () => {
         it('should handle strings with only diacritics', () => {
-            expect(createSearchString('àáâãäåæç')).toBe('aaaaaaeac');
+            expect(createSearchString('àáâãäåæç')).toBe('aaaaaaaec');
         });
 
         it('should handle mixed case with diacritics', () => {
@@ -154,8 +154,8 @@ describe('createSearchString', () => {
 
         it('should handle null/undefined gracefully', () => {
             // Note: Function expects string, but let's test type coercion
-            expect(createSearchString(undefined as any)).toBe('undefined');
-            expect(createSearchString(null as any)).toBe('null');
+            expect(createSearchString(undefined as any)).toBe('');
+            expect(createSearchString(null as any)).toBe('');
         });
     });
 });
