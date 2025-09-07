@@ -57,6 +57,13 @@
         "npm": "please-use-pnpm"
     },
     "packageManager": "pnpm@10.15.0",
+    "pnpm": {
+        "overrides": {
+            "form-data@<2.5.4": ">=4.0.0",
+            "xml2js@<0.5.0": ">=0.6.2",
+            "request": "npm:@cypress/request@^3.0.6"
+        }
+    },
     "dependencies": {
         "axios": "^1.11.0",
         "fs-extra": "^11.3.1",
