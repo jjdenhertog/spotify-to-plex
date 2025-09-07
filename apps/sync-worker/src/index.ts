@@ -11,7 +11,6 @@ import { syncAlbums } from './jobs/albums';
 import { refreshMQTT } from './jobs/mqtt';
 import { syncPlaylists } from './jobs/playlists';
 import { syncUsers } from './jobs/users';
-import { logger } from './utils/logger';
 
 const SYNC_JOBS = {
     albums: syncAlbums,
@@ -85,8 +84,8 @@ function _main() {
     const jobType = args[0] as SyncJobType;
   
     if (!Object.keys(SYNC_JOBS).includes(jobType)) {
-        logger.error(`Invalid job type: ${jobType}`);
-        logger.error(`Valid job types: ${Object.keys(SYNC_JOBS).join(', ')}`);
+        console.error(`Invalid job type: ${jobType}`);
+        console.error(`Valid job types: ${Object.keys(SYNC_JOBS).join(', ')}`);
         process.exit(1);
     }
 

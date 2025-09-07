@@ -1,4 +1,3 @@
-import { logger } from "../utils/logger";
 import { createPlexConfig } from "@spotify-to-plex/plex-config/functions/createPlexConfig";
 import { getSettings } from "@spotify-to-plex/plex-config/functions/getSettings";
 import { updateSettings } from "@spotify-to-plex/plex-config/functions/updateSettings";
@@ -19,7 +18,7 @@ createPlexConfig({
     storageDir: settingsDir,
     preloadCache: true
 // eslint-disable-next-line unicorn/prefer-top-level-await, no-console
-}).catch(logger.error);
+}).catch(console.error);
 
 // Export functions as plex object for easier migration
 export const plex = {

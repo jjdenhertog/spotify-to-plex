@@ -1,4 +1,3 @@
-import { logger } from "./logger";
 import { addItemsToPlaylist } from "@spotify-to-plex/plex-helpers/playlist/addItemsToPlaylist";
 import { putPlaylistPoster } from "@spotify-to-plex/plex-helpers/playlist/putPlaylistPoster";
 import { removeItemsFromPlaylist } from "@spotify-to-plex/plex-helpers/playlist/removeItemsFromPlaylist";
@@ -40,7 +39,7 @@ export async function putPlexPlaylist(id: string, plexPlaylist: Playlist | undef
         const settings = rawSettings as Required<typeof rawSettings>;
 
         if (plexPlaylist) {
-            logger.info(`Update existing playlist`);
+            console.log(`Update existing playlist`);
             // Clear items from playlist
             await removeItemsFromPlaylist(settings, getAPIUrl, plexPlaylist.ratingKey, []);
 
@@ -53,10 +52,10 @@ export async function putPlexPlaylist(id: string, plexPlaylist: Playlist | undef
             try {
                 await putPlaylistPoster(settings, getAPIUrl, plexPlaylist.ratingKey, thumb)
             } catch (_e) {
-                logger.info(`* Could not update poster image`)
+                console.log(`* Could not update poster image`)
             }
         } else {
-            logger.info(`Create new playlist`);
+            console.log(`Create new playlist`);
 
             const uri = getPlexUri(settings, firstItem.key, firstItem.source);
             const playlistId = await storePlaylist(settings, getAPIUrl, title, uri);
@@ -65,7 +64,7 @@ export async function putPlexPlaylist(id: string, plexPlaylist: Playlist | undef
             try {
                 await putPlaylistPoster(settings, getAPIUrl, playlistId, thumb)
             } catch (_e) {
-                logger.info(`* Could not update poster image`)
+                console.log(`* Could not update poster image`)
             }
             // Store new playlist
             await plex.addPlaylist(type(), id, playlistId);

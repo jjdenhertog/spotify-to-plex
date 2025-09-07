@@ -8,7 +8,6 @@
  */
 
 import { runMQTTService, MQTTServiceOptions } from './services/mqttService';
-import { logger } from './utils/logger';
 
 type CLIOptions = {
     continuous: boolean;
@@ -95,7 +94,7 @@ function parseArgs(): CLIOptions {
  * Display help information
  */
 function showHelp() {
-    logger.info(`
+    console.log(`
 MQTT Background Service - Spotify-to-Plex MQTT Publisher
 
 Usage: mqtt-service [options]
@@ -145,13 +144,13 @@ function validateEnvironment(): void {
     const missing = required.filter(key => !process.env[key]);
 
     if (missing.length > 0) {
-        logger.error('Error: Missing required environment variables:');
+        console.error('Error: Missing required environment variables:');
 
         for (const key of missing) {
-            logger.error(`  - ${key}`);
+            console.error(`  - ${key}`);
         }
 
-        logger.error('\nPlease set these environment variables before starting the service.');
+        console.error('\nPlease set these environment variables before starting the service.');
         process.exit(1);
     }
 }
@@ -171,8 +170,8 @@ async function main() {
     // Validate environment
     validateEnvironment();
 
-    logger.info('🎵 Starting MQTT Background Service for Spotify-to-Plex...');
-    logger.info(`Configuration:
+    console.log('🎵 Starting MQTT Background Service for Spotify-to-Plex...');
+    console.log(`Configuration:
   - Continuous mode: ${options.continuous}
   - File watching: ${options.watchFiles}
   - Update interval: ${options.updateInterval / 1000}s
@@ -195,36 +194,36 @@ async function main() {
 
         // If one-shot mode, wait for initial update and exit
         if (!options.continuous) {
-            logger.info('✅ One-shot mode: Initial MQTT update completed');
+            console.log('✅ One-shot mode: Initial MQTT update completed');
             await service.stop();
             process.exit(0);
         }
 
         // In continuous mode, keep running until interrupted
-        logger.info('✅ MQTT service is running in continuous mode...');
-        logger.info('   Press Ctrl+C to stop');
+        console.log('✅ MQTT service is running in continuous mode...');
+        console.log('   Press Ctrl+C to stop');
 
         // Keep the process alive in continuous mode
         return await new Promise<void>((resolve) => {
             service.on('stopped', () => {
-                logger.info('🛑 MQTT service stopped');
+                console.log('🛑 MQTT service stopped');
                 resolve();
             });
         });
     } catch (error) {
-        logger.error('❌ Failed to start MQTT service:', error);
+        console.error('❌ Failed to start MQTT service:', error);
         process.exit(1);
     }
 }
 
 // Handle uncaught errors gracefully
 process.on('unhandledRejection', (reason, promise) => {
-    logger.error('Unhandled Rejection at:', promise, 'reason:', reason);
+    console.error('Unhandled Rejection at:', promise, 'reason:', reason);
     process.exit(1);
 });
 
 process.on('uncaughtException', (error) => {
-    logger.error('Uncaught Exception:', error);
+    console.error('Uncaught Exception:', error);
     process.exit(1);
 });
 
@@ -233,7 +232,7 @@ process.on('uncaughtException', (error) => {
 // eslint-disable-next-line unicorn/prefer-module
 if (require.main === module) {
     // eslint-disable-next-line unicorn/prefer-top-level-await, no-console
-    main().catch(logger.error);
+    main().catch(console.error);
 }
 
 export { main as runMQTTServiceCLI };

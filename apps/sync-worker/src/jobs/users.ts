@@ -1,4 +1,3 @@
-import { logger } from "../utils/logger";
 import { getAccessToken } from "@spotify-to-plex/shared-utils/spotify/getAccessToken";
 import { refreshAccessTokens } from "@spotify-to-plex/shared-utils/spotify/refreshAccessTokens";
 import { settingsDir } from "@spotify-to-plex/shared-utils/utils/settingsDir";
@@ -79,9 +78,9 @@ export async function syncUsers() {
             // Store saved item
             savedItems.save()
 
-            logger.info("recentPlayedThings:", recentPlayedContexts)
+            console.log("recentPlayedThings:", recentPlayedContexts)
         } catch (e) {
-            logger.info(String(e))
+            console.log(String(e))
         }
     }
 
@@ -90,13 +89,13 @@ export async function syncUsers() {
 
 
 function run() {
-    logger.info(`Start syncing users`)
+    console.log(`Start syncing users`)
     syncUsers()
         .then(() => {
-            logger.info(`Sync complete`)
+            console.log(`Sync complete`)
         })
         .catch((e: unknown) => {
-            logger.info(String(e))
+            console.log(String(e))
         })
 }
 

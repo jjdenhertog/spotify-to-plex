@@ -1,4 +1,3 @@
-import { logger } from "../utils/logger";
 import { settingsDir } from '@spotify-to-plex/shared-utils/utils/settingsDir';
 import { plex } from '../library/plex';
 import { MQTTItem } from '@spotify-to-plex/shared-types/dashboard/MQTTItem';
@@ -73,7 +72,7 @@ export async function refreshMQTT(options: MQTTRefreshOptions = {}) {
             musicSearchConfig = await getMusicSearchConfigFromStorage(settingsDir);
         } catch (error) {
             // Fallback to default config if error loading
-            logger.warn('Failed to load music search config, using defaults:', error);
+            console.warn('Failed to load music search config, using defaults:', error);
         }
 
         let item: { id: string; category: string; name: string; media_content_id: string } | null = null;
@@ -161,10 +160,10 @@ function run() {
         return;
     }
 
-    logger.info('-- Publishing MQTT Items, for use with Home Assistant --');
+    console.log('-- Publishing MQTT Items, for use with Home Assistant --');
     refreshMQTT()
         .then(() => {
-            logger.info('Publish MQTT items completed');
+            console.log('Publish MQTT items completed');
         })
         .catch((_e: unknown) => {
             // Do nothing
