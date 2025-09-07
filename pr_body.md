@@ -1,1 +1,2 @@
-In this branch introduced logger. Instead of the console.logs. can you undo that? This branch focusses on creating the test suite. Not implementing this logger setup
+Can you remove the UI tests using playwright. And instead focus on testing the most complex utility functions instead
+. I don't want to test any Dom integration, like if error messages show up. I want to focus on the logic, like compare titles
