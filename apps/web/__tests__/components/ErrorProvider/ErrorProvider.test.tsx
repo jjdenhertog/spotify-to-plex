@@ -266,7 +266,9 @@ describe('ErrorProvider', () => {
             await user.click(screen.getByTestId('trigger-long-error'));
 
             expect(screen.getByRole('dialog')).toBeInTheDocument();
-            expect(screen.getByText(longMessage)).toBeInTheDocument();
+            expect(screen.getByText((_content, element) => {
+                return element?.tagName === 'P' && element?.textContent === longMessage;
+            })).toBeInTheDocument();
         });
 
         it('should handle special characters in error messages', async () => {

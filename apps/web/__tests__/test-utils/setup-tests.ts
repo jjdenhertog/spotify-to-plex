@@ -1,11 +1,21 @@
 // Force React development mode before importing anything else
-process.env.NODE_ENV = 'development'
-global.__DEV__ = true
+// Use Object.defineProperty to properly handle readonly property
+Object.defineProperty(process.env, 'NODE_ENV', {
+    value: 'development',
+    writable: true,
+    configurable: true
+});
+
+// Properly type global object extension
+declare global {
+    var __DEV__: boolean;
+}
+global.__DEV__ = true;
 
 // Import jest-dom matchers using the vitest-specific import
 import '@testing-library/jest-dom/vitest';
-import { setupMocks, cleanupMocks } from './mocks';
-import { vi, beforeAll, afterEach, beforeEach, afterAll } from 'vitest';
+import { cleanupMocks } from './mocks';
+import { vi, beforeAll, afterEach, afterAll } from 'vitest';
 
 // Setup mocks before all tests
 beforeAll(() => {
@@ -34,8 +44,12 @@ afterEach(() => {
     vi.useRealTimers();
     
     // Maintain React development mode
-    process.env.NODE_ENV = 'development'
-    global.__DEV__ = true
+    Object.defineProperty(process.env, 'NODE_ENV', {
+        value: 'development',
+        writable: true,
+        configurable: true
+    });
+    global.__DEV__ = true;
 });
 
 // Store original console methods
@@ -60,6 +74,7 @@ beforeAll(() => {
         )) {
             return; // Suppress these specific warnings
         }
+
         originalConsole.warn(...args);
     };
 
@@ -72,6 +87,7 @@ beforeAll(() => {
         )) {
             return; // Suppress React error boundary messages
         }
+
         originalConsole.error(...args);
     };
 });

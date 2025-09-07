@@ -11,6 +11,7 @@ import { syncAlbums } from './jobs/albums';
 import { refreshMQTT } from './jobs/mqtt';
 import { syncPlaylists } from './jobs/playlists';
 import { syncUsers } from './jobs/users';
+import { logger } from './utils/logger';
 
 const SYNC_JOBS = {
     albums: syncAlbums,
@@ -25,7 +26,7 @@ type SyncJobType = keyof typeof SYNC_JOBS;
  * Display help information
  */
 function showHelp() {
-    console.log(`
+    process.stdout.write(`
 Sync Worker - Spotify-to-Plex Background Synchronization
 
 Usage: sync-worker <job-type> [options]
@@ -54,18 +55,18 @@ Examples:
 async function runSyncJob(jobType: SyncJobType) {
     const job = SYNC_JOBS[jobType];
     if (!job) {
-        console.error(`Unknown job type: ${jobType}`);
+        process.stderr.write(`Unknown job type: ${jobType}\n`);
         process.exit(1);
     }
 
-    console.log(`Starting ${jobType} sync job...`);
+    process.stdout.write(`Starting ${jobType} sync job...\n`);
   
     try {
         await job();
-        console.log(`${jobType} sync job completed successfully`);
+        process.stdout.write(`${jobType} sync job completed successfully\n`);
         process.exit(0);
     } catch (error) {
-        console.error(`${jobType} sync job failed:`, error);
+        process.stderr.write(`${jobType} sync job failed: ${String(error)}\n`);
         process.exit(1);
     }
 }
@@ -84,8 +85,8 @@ function _main() {
     const jobType = args[0] as SyncJobType;
   
     if (!Object.keys(SYNC_JOBS).includes(jobType)) {
-        console.error(`Invalid job type: ${jobType}`);
-        console.error(`Valid job types: ${Object.keys(SYNC_JOBS).join(', ')}`);
+        logger.error(`Invalid job type: ${jobType}`);
+        logger.error(`Valid job types: ${Object.keys(SYNC_JOBS).join(', ')}`);
         process.exit(1);
     }
 

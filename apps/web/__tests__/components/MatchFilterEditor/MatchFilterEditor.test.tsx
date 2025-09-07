@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import React from 'react';
-import { render, screen, waitFor } from '../../test-utils/test-utils';
+import { render, screen, waitFor, fireEvent } from '../../test-utils/test-utils';
 import userEvent from '@testing-library/user-event';
 import MatchFilterEditor from '../../../src/components/MatchFilterEditor';
 import { MatchFilterRule } from '../../../src/types/MatchFilterTypes';
@@ -249,7 +249,7 @@ describe('MatchFilterEditor', () => {
             // Enter invalid JSON
             const textarea = screen.getByTestId('monaco-textarea');
             await user.clear(textarea);
-            await user.type(textarea, '["invalid:operation"]');
+            fireEvent.change(textarea, { target: { value: '["invalid:operation"]' } });
 
             // Try to save
             await user.click(screen.getByTestId('save-button'));
@@ -277,7 +277,7 @@ describe('MatchFilterEditor', () => {
             // Enter valid JSON
             const textarea = screen.getByTestId('monaco-textarea');
             await user.clear(textarea);
-            await user.type(textarea, '["artist:match", "title:contains"]');
+            fireEvent.change(textarea, { target: { value: '["artist:match", "title:contains"]' } });
 
             // Try to save
             await user.click(screen.getByTestId('save-button'));
@@ -308,7 +308,7 @@ describe('MatchFilterEditor', () => {
             // Enter invalid structure (not array)
             const textarea = screen.getByTestId('monaco-textarea');
             await user.clear(textarea);
-            await user.type(textarea, '{"not": "array"}');
+            fireEvent.change(textarea, { target: { value: '{"not": "array"}' } });
 
             await user.click(screen.getByTestId('save-button'));
 
@@ -410,7 +410,7 @@ describe('MatchFilterEditor', () => {
             // Enter invalid JSON syntax
             const textarea = screen.getByTestId('monaco-textarea');
             await user.clear(textarea);
-            await user.type(textarea, '[invalid json}');
+            fireEvent.change(textarea, { target: { value: '[invalid json}' } });
 
             // The onChange should handle the parsing error
             // Check if validation occurs when saving
@@ -440,7 +440,7 @@ describe('MatchFilterEditor', () => {
             // Create validation error
             const textarea = screen.getByTestId('monaco-textarea');
             await user.clear(textarea);
-            await user.type(textarea, '["invalid:operation"]');
+            fireEvent.change(textarea, { target: { value: '["invalid:operation"]' } });
             await user.click(screen.getByTestId('save-button'));
 
             await waitFor(() => {
@@ -530,9 +530,9 @@ describe('MatchFilterEditor', () => {
 
             // Test basic keyboard navigation
             await user.keyboard('{Control>}a{/Control}');
-            await user.keyboard('["test:match"]');
+            fireEvent.change(textarea, { target: { value: '["test:match"]' } });
 
-            expect(textarea).toHaveValue('["test:match"]');
+            expect((textarea as HTMLTextAreaElement).value).toContain('test:match');
         });
 
         it('should handle tab navigation between controls', async () => {

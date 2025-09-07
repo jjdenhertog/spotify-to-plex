@@ -104,16 +104,16 @@ export default defineConfig({
         },
         resolve: {
           alias: {
-            '@/components': './src/components',
-            '@/helpers': './src/helpers',
-            '@/styles': './src/styles',
-            '@/types': './src/types',
-            '@/pages': './pages',
-            '@/layouts': './src/layouts',
-            '@/library': './src/library',
-            '@/utils': './src/utils',
-            '@/hoc': './src/hoc',
-            '@/hooks': './src/hooks'
+            '@/components': resolve(__dirname, 'apps/web/src/components'),
+            '@/helpers': resolve(__dirname, 'apps/web/src/helpers'),
+            '@/styles': resolve(__dirname, 'apps/web/src/styles'),
+            '@/types': resolve(__dirname, 'apps/web/src/types'),
+            '@/pages': resolve(__dirname, 'apps/web/pages'),
+            '@/layouts': resolve(__dirname, 'apps/web/src/layouts'),
+            '@/library': resolve(__dirname, 'apps/web/src/library'),
+            '@/utils': resolve(__dirname, 'apps/web/src/utils'),
+            '@/hoc': resolve(__dirname, 'apps/web/src/hoc'),
+            '@/hooks': resolve(__dirname, 'apps/web/src/hooks')
           }
         }
       },

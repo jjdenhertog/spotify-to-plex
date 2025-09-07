@@ -39,7 +39,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
 
                     return res.status(200).send(data.data)
 
-                } catch (e) {
+                } catch (_e) {
                     // Debug log removed
                 }
 

@@ -6,22 +6,34 @@ import EnhancedMonacoJsonEditor from '../../../src/components/EnhancedMonacoJson
 // Simple Monaco Editor mock
 vi.mock('@monaco-editor/react', () => ({
     __esModule: true,
-    default: ({ value, onChange }: any) => (
-        <div data-testid="monaco-editor">
-            <textarea
-                data-testid="monaco-textarea"
-                value={typeof value === 'object' ? JSON.stringify(value, null, 2) : value || '{}'}
-                onChange={(e) => {
-                    try {
-                        const parsed = JSON.parse(e.target.value);
-                        onChange?.(parsed);
-                    } catch {
-                        // Invalid JSON, don't call onChange
-                    }
-                }}
-            />
-        </div>
-    ),
+    default: ({ value, onChange }: any) => {
+        const [currentValue, setCurrentValue] = React.useState(() => 
+            typeof value === 'object' ? JSON.stringify(value, null, 2) : value || '{}'
+        );
+
+        React.useEffect(() => {
+            const newValue = typeof value === 'object' ? JSON.stringify(value, null, 2) : value || '{}';
+            if (newValue !== currentValue) {
+                setCurrentValue(newValue);
+            }
+        }, [value, currentValue]);
+
+        return (
+            <div data-testid="monaco-editor">
+                <textarea
+                    data-testid="monaco-textarea"
+                    value={currentValue}
+                    onChange={(e) => {
+                        const newValue = e.target.value;
+                        setCurrentValue(newValue);
+                        // Simulate Monaco's onChange behavior by calling it with the string value
+                        // The real component handles JSON parsing and calls the prop onChange with parsed value
+                        onChange?.(newValue);
+                    }}
+                />
+            </div>
+        );
+    },
 }));
 
 describe('EnhancedMonacoJsonEditor', () => {

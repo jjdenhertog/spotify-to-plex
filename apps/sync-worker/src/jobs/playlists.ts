@@ -1,3 +1,4 @@
+import { logger } from "../utils/logger";
 import { AxiosRequest } from "@spotify-to-plex/http-client/AxiosRequest";
 import { getAPIUrl } from "@spotify-to-plex/shared-utils/utils/getAPIUrl";
 import { settingsDir } from "@spotify-to-plex/shared-utils/utils/settingsDir";
@@ -57,7 +58,7 @@ export async function syncPlaylists() {
 
             const nextSyncAfter = new Date((itemLog.end || 0) + (days * 24 * 60 * 60 * 1000));
             if (nextSyncAfter.getTime() > Date.now() && !force) {
-                console.log(`Next sync on: ${nextSyncAfter.toString()}`)
+                logger.info(`Next sync on: ${nextSyncAfter.toString()}`)
                 continue;
             }
 
@@ -70,7 +71,7 @@ export async function syncPlaylists() {
                 continue;
             }
 
-            console.log(`---- Syncing ${data.title} ----`)
+            logger.info(`---- Syncing ${data.title} ----`)
             //////////////////////////////////
             // Load Plex Playlists if it exists
             //////////////////////////////////
@@ -103,7 +104,7 @@ export async function syncPlaylists() {
                 musicSearchConfig = await getMusicSearchConfigFromStorage(settingsDir);
             } catch (error) {
                 // Fallback to default config if error loading
-                console.warn('Failed to load music search config, using defaults:', error);
+                logger.warn('Failed to load music search config, using defaults:', error);
             }
 
             const plexSearchConfig = {
@@ -119,7 +120,7 @@ export async function syncPlaylists() {
             // eslint-disable-next-line unicorn/consistent-destructuring
             const toSearchItems = data.tracks.filter(track => !result.some((item: SearchResponse) => item.id == track.id))
             if (toSearchItems.length > 0) {
-                console.log(`Searching for ${toSearchItems.length} tracks`)
+                logger.info(`Searching for ${toSearchItems.length} tracks`)
                 const searchResult = await plexMusicSearch(plexSearchConfig, toSearchItems)
                 result = result.concat(searchResult)
 
@@ -144,7 +145,7 @@ export async function syncPlaylists() {
                 continue;
             }
 
-            console.log(`Missing ${missingTracks.length} tracks`)
+            logger.info(`Missing ${missingTracks.length} tracks`)
             missingTracks.forEach(item => {
                 if (!missingSpotifyTracks.includes(item.id))
                     missingSpotifyTracks.push(item.id)
@@ -166,7 +167,7 @@ export async function syncPlaylists() {
             writeFileSync(join(settingsDir, 'missing_tracks_tidal.txt'), missingTidalTracks.map(id => `https://tidal.com/browse/track/${id}`).join('\n'))
 
         } catch (e) {
-            console.log(e);
+            logger.info(String(e));
             logError(itemLog, `Something went wrong while syncing`)
         }
 
@@ -176,13 +177,13 @@ export async function syncPlaylists() {
 
 
 function run() {
-    console.log(`Start syncing items`)
+    logger.info(`Start syncing items`)
     syncPlaylists()
         .then(() => {
-            console.log(`Sync complete`)
+            logger.info(`Sync complete`)
         })
         .catch((e: unknown) => {
-            console.log(e)
+            logger.info(String(e))
         })
 }
 

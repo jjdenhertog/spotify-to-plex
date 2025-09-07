@@ -206,7 +206,7 @@ describe('axiosDelete', () => {
             };
             mockedAxios.delete.mockResolvedValue(mockResponse);
 
-            const result = await axiosDelete<void>(testUrl, testToken);
+            const result = await axiosDelete<undefined>(testUrl, testToken);
 
             expect(result.status).toBe(204);
             expect(result.data).toBeUndefined();
@@ -275,7 +275,7 @@ describe('axiosDelete', () => {
             mockedAxios.delete.mockResolvedValue(mockResponse);
 
             const requests = Array.from({ length: 5 }, (_, i) => 
-                axiosDelete(`${testUrl.replace('123', i.toString())}`, testToken)
+                axiosDelete(testUrl.replace('123', i.toString()), testToken)
             );
 
             const results = await Promise.all(requests);

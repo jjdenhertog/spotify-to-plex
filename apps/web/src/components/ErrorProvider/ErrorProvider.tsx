@@ -38,15 +38,15 @@ const ErrorProviderComponent = ({ children }: ErrorProviderProps) => {
                 {children}
             </ErrorContext.Provider>
             {!!error &&
-                <Dialog open maxWidth="sm" fullWidth>
+                <Dialog open maxWidth="sm" fullWidth onClose={handleClose} aria-describedby="error-dialog-description">
                     <DialogTitle sx={{ paddingTop: 3, paddingBottom: .5 }}>
-                        <IconButton size="small" onClick={handleClose} sx={{ position: 'absolute', right: 8, top: 8 }}>
+                        <IconButton size="small" onClick={handleClose} sx={{ position: 'absolute', right: 8, top: 8 }} aria-label="Close">
                             <CloseOutlined fontSize="small" />
                         </IconButton>
                         Error
                     </DialogTitle>
                     <DialogContent>
-                        <Typography>
+                        <Typography id="error-dialog-description">
                             {error}
                         </Typography>
                         {!!stack && stack !== error ? <Box mt={2}>

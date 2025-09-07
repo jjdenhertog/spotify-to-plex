@@ -61,6 +61,16 @@ export default defineConfig({
     },
     resolve: {
         alias: {
+            '@/components': resolve(__dirname, 'src/components'),
+            '@/helpers': resolve(__dirname, 'src/helpers'),
+            '@/styles': resolve(__dirname, 'src/styles'),
+            '@/types': resolve(__dirname, 'src/types'),
+            '@/pages': resolve(__dirname, 'pages'),
+            '@/layouts': resolve(__dirname, 'src/layouts'),
+            '@/library': resolve(__dirname, 'src/library'),
+            '@/utils': resolve(__dirname, 'src/utils'),
+            '@/hoc': resolve(__dirname, 'src/hoc'),
+            '@/hooks': resolve(__dirname, 'src/hooks'),
             '@': resolve(__dirname, 'src'),
             '~': resolve(__dirname),
         },

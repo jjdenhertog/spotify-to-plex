@@ -21,8 +21,7 @@ export function validateMatchFilterConfig(filter: any): filter is MatchFilterCon
     if (hasExpression) {
         const validation = validateExpression(filter.expression);
         if (!validation.valid) {
-            // Log validation errors for debugging but still return false
-            console.warn('Expression validation failed:', validation.errors);
+            // Validation errors not logged to avoid console warnings
 
             return false;
         }

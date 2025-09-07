@@ -20,7 +20,7 @@ describe('API Test Utilities', () => {
     });
 
     it('should verify response helper works', () => {
-        const { req, res } = createMockRequestResponse({ method: 'GET' });
+        const { res } = createMockRequestResponse({ method: 'GET' });
         
         // Simulate setting a status and response
         res.status(200).json({ message: 'OK' });

@@ -114,7 +114,7 @@ describe('ConfirmProvider', () => {
                 expect(screen.getByRole('dialog')).toBeInTheDocument();
             });
 
-            await user.click(screen.getByText('Confirm'));
+            await user.click(screen.getByText('Yes, delete'));
 
             await waitFor(() => {
                 expect(screen.queryByRole('dialog')).not.toBeInTheDocument();

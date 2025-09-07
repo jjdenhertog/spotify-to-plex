@@ -1,26 +1,53 @@
-import { vi, beforeAll, afterAll, beforeEach, afterEach, expect } from 'vitest'
-import { TextEncoder, TextDecoder } from 'util'
+import { vi, beforeAll, afterAll, beforeEach, afterEach } from 'vitest'
 
-// Import jest-dom matchers - this must be done after vitest globals are available
-// We need to import it in a way that extends the expect object properly
+// Import jest-dom matchers
 import '@testing-library/jest-dom/vitest'
 
-// Ensure React runs in development mode for tests
-// This is crucial for act() warnings to be resolved
-process.env.NODE_ENV = 'development'
-global.__DEV__ = true
+// Set environment variables safely
+if (typeof process !== 'undefined' && process.env) {
+  try {
+    if (!process.env.NODE_ENV) {
+      Object.defineProperty(process.env, 'NODE_ENV', {
+        value: 'development',
+        writable: true,
+        configurable: true
+      });
+    }
+  } catch (error) {
+    // Ignore if NODE_ENV is already defined
+  }
+}
+
+// Type global extensions
+declare global {
+  var __DEV__: boolean;
+}
+global.__DEV__ = true;
 
 // Override any production mode React environment
 if (typeof globalThis !== 'undefined') {
-  globalThis.process = globalThis.process || {}
-  globalThis.process.env = globalThis.process.env || {}
-  globalThis.process.env.NODE_ENV = 'development'
-  globalThis.__DEV__ = true
+  globalThis.process = globalThis.process || {} as any;
+  globalThis.process.env = globalThis.process.env || {};
+  if (globalThis.process.env && !globalThis.process.env.NODE_ENV) {
+    try {
+      Object.defineProperty(globalThis.process.env, 'NODE_ENV', {
+        value: 'development',
+        writable: true,
+        configurable: true
+      });
+    } catch (error) {
+      // Ignore if NODE_ENV is already defined
+    }
+  }
+  globalThis.__DEV__ = true;
 }
 
 // Polyfills for Node.js environment
-global.TextEncoder = TextEncoder
-global.TextDecoder = TextDecoder as any
+if (typeof global.TextEncoder === 'undefined') {
+  const { TextEncoder, TextDecoder } = require('util');
+  (global as any).TextEncoder = TextEncoder;
+  (global as any).TextDecoder = TextDecoder;
+}
 
 // Mock IntersectionObserver
 const mockIntersectionObserver = vi.fn()
@@ -69,8 +96,8 @@ Object.defineProperty(window, 'matchMedia', {
     matches: false,
     media: query,
     onchange: null,
-    addListener: vi.fn(), // deprecated
-    removeListener: vi.fn(), // deprecated
+    addListener: vi.fn(),
+    removeListener: vi.fn(),
     addEventListener: vi.fn(),
     removeEventListener: vi.fn(),
     dispatchEvent: vi.fn()
@@ -82,31 +109,26 @@ if (!global.fetch) {
   global.fetch = vi.fn()
 }
 
-// Mock console methods in test environment to reduce noise
+// Mock console methods
 const originalError = console.error
 const originalWarn = console.warn
 
-// Make vi (Vitest utilities) globally available
-global.vi = vi
-
 beforeAll(() => {
   console.error = (...args: any[]) => {
-    // Still log actual errors, but filter out React dev warnings
     if (typeof args[0] === 'string' && args[0].includes('Warning:')) {
       return
     }
-    originalError.call(console, ...args)
+    originalError(...args)
   }
   
   console.warn = (...args: any[]) => {
-    // Filter out common warnings in test environment
     if (typeof args[0] === 'string' && (
       args[0].includes('Warning:') ||
       args[0].includes('deprecated')
     )) {
       return
     }
-    originalWarn.call(console, ...args)
+    originalWarn(...args)
   }
 })
 
@@ -131,10 +153,19 @@ afterEach(() => {
 
 // Global test environment setup
 beforeEach(() => {
-  // Reset any mocks that should be clean for each test
   vi.clearAllMocks()
   
-  // Ensure development mode is maintained throughout tests
-  process.env.NODE_ENV = 'development'
+  // Maintain development mode
+  if (typeof process !== 'undefined' && process.env && !process.env.NODE_ENV) {
+    try {
+      Object.defineProperty(process.env, 'NODE_ENV', {
+        value: 'development',
+        writable: true,
+        configurable: true
+      });
+    } catch (error) {
+      // Ignore if NODE_ENV is already defined
+    }
+  }
   global.__DEV__ = true
 })

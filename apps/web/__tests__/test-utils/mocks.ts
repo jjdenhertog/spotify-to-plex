@@ -66,17 +66,21 @@ export const mockRouter = {
 export const mockWindowConfirm = vi.fn(() => true);
 export const mockWindowAlert = vi.fn();
 
-// Mock fetch API to prevent real network calls
+// Mock fetch API to prevent real network calls - properly type the Response
 export const mockFetch = vi.fn(() =>
     Promise.resolve({
         json: () => Promise.resolve({ data: [], success: true }),
         text: () => Promise.resolve(''),
+        arrayBuffer: () => Promise.resolve(new ArrayBuffer(0)),
+        blob: () => Promise.resolve(new Blob()),
+        bytes: () => Promise.resolve(new Uint8Array(0)),
+        formData: () => Promise.resolve(new FormData()),
         status: 200,
         statusText: 'OK',
         ok: true,
         headers: new Headers(),
         url: '',
-        type: 'cors',
+        type: 'cors' as ResponseType,
         body: null,
         bodyUsed: false,
         clone: vi.fn(),
@@ -109,15 +113,13 @@ export const mockAnchorElement = {
     getAttribute: vi.fn(),
 };
 
-// Track if mocks have been set up to avoid conflicts
-let mocksInitialized = false;
-
 // Setup mocks function  
 export function setupMocks() {
     // Ensure document.body exists and is clean
     if (!document.body) {
-        document.documentElement.appendChild(document.createElement('body'));
+        document.documentElement.append(document.createElement('body'));
     }
+
     document.body.innerHTML = '';
     
     // Mock fetch globally
@@ -140,22 +142,23 @@ export function setupMocks() {
         if (typeof navigator.clipboard.writeText === 'function') {
             navigator.clipboard.writeText = mockClipboard.writeText;
         }
+
         if (typeof navigator.clipboard.readText === 'function') {
             navigator.clipboard.readText = mockClipboard.readText;
         }
     }
 
     // Mock URL
-    if (!global.URL) {
+    if (global.URL) {
+        // If URL already exists, replace its methods
+        global.URL.createObjectURL = mockURL.createObjectURL;
+        global.URL.revokeObjectURL = mockURL.revokeObjectURL;
+    } else {
         Object.defineProperty(global, 'URL', {
             writable: true,
             configurable: true,
             value: mockURL,
         });
-    } else {
-        // If URL already exists, replace its methods
-        global.URL.createObjectURL = mockURL.createObjectURL;
-        global.URL.revokeObjectURL = mockURL.revokeObjectURL;
     }
 
     // Mock document.createElement to avoid recursive calls
@@ -164,6 +167,7 @@ export function setupMocks() {
         if (tagName === 'a') {
             return mockAnchorElement as any;
         }
+
         return originalCreateElement(tagName);
     });
     
@@ -258,7 +262,7 @@ export function setupMocks() {
     global.XMLHttpRequest = vi.fn(() => mockXHR) as any;
 
     // Mock URL constructor if not available
-    if (typeof global.URL === 'undefined') {
+    if (global.URL === undefined) {
         global.URL = class URL {
             constructor(url: string) {
                 return {
@@ -283,7 +287,7 @@ export function cleanupMocks() {
     // Reset clipboard mocks
     mockClipboard.writeText.mockClear();
     mockClipboard.readText.mockClear();
-    mockClipboard.writeText.mockResolvedValue(undefined);
+    mockClipboard.writeText.mockResolvedValue();
     mockClipboard.readText.mockResolvedValue('{"test": "clipboard"}');
     
     // Reset URL mocks

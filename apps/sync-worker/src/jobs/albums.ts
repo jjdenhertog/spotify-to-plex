@@ -10,6 +10,7 @@ import { getCachedPlexTracks } from "../utils/getCachedPlexTracks";
 import { getSavedAlbums } from "../utils/getSavedAlbums";
 import { getSyncLogs } from "../utils/getSyncLogs";
 import { loadSpotifyData } from "../utils/loadSpotifyData";
+import { logger } from "../utils/logger";
 
 
 export async function syncAlbums() {
@@ -45,7 +46,7 @@ export async function syncAlbums() {
 
         const nextSyncAfter = new Date((itemLog.end || 0) + (days * 24 * 60 * 60 * 1000));
         if (nextSyncAfter.getTime() > Date.now() && !force) {
-            console.log(`Next sync on: ${nextSyncAfter.toDateString()}`)
+            logger.info(`Next sync on: ${nextSyncAfter.toDateString()}`)
             continue;
         }
 
@@ -66,7 +67,7 @@ export async function syncAlbums() {
             musicSearchConfig = await getMusicSearchConfigFromStorage(settingsDir);
         } catch (error) {
             // Fallback to default config if error loading
-            console.warn('Failed to load music search config, using defaults:', error);
+            logger.warn('Failed to load music search config, using defaults:', error);
         }
 
         const plexConfig = {
@@ -96,7 +97,7 @@ export async function syncAlbums() {
         if (!missingSpotifyAlbums.includes(data.id))
             missingSpotifyAlbums.push(data.id)
 
-        console.log(`Some tracks on the album seem to be missing ${data.tracks.length}/ ${missingTracks.length}: ${data.title}`)
+        logger.info(`Some tracks on the album seem to be missing ${data.tracks.length}/ ${missingTracks.length}: ${data.title}`)
         const tidalIds = await findMissingTidalAlbums(missingTracks)
         tidalIds.forEach(tidalId => {
             if (!missingTidalAlbums.includes(tidalId))
@@ -118,13 +119,13 @@ export async function syncAlbums() {
 
 
 function run() {
-    console.log(`Start syncing items`)
+    logger.info(`Start syncing items`)
     syncAlbums()
         .then(() => {
-            console.log(`Sync complete`)
+            logger.info(`Sync complete`)
         })
         .catch((e: unknown) => {
-            console.log(e)
+            logger.info(String(e))
         })
 }
 

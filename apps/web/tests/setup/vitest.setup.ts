@@ -1,18 +1,39 @@
 // Web app-specific test setup that extends the root setup
 import '../../../../tests/setup/vitest.setup';
-import { vi, expect } from 'vitest';
+import { vi } from 'vitest';
 import '@testing-library/jest-dom';
 
-// Force React development mode for web tests
-// This is critical to fix act() production build warnings
-process.env.NODE_ENV = 'development'
-global.__DEV__ = true
+// Set environment variables safely
+if (typeof process !== 'undefined' && process.env) {
+  Object.defineProperty(process.env, 'NODE_ENV', {
+    value: 'development',
+    writable: true,
+    configurable: true
+  });
+}
+
+// Type global extensions
+declare global {
+    var __DEV__: boolean;
+    interface Window {
+        process?: {
+            env?: Record<string, string>;
+        };
+    }
+}
+global.__DEV__ = true;
 
 // Override any production mode settings
 if (typeof window !== 'undefined') {
-  window.process = window.process || {} as any
-  window.process.env = window.process.env || {}
-  window.process.env.NODE_ENV = 'development'
+    window.process = window.process || {} as any;
+    window.process.env = window.process.env || {};
+    if (window.process.env) {
+        Object.defineProperty(window.process.env, 'NODE_ENV', {
+            value: 'development',
+            writable: true,
+            configurable: true
+        });
+    }
 }
 
 // Additional web-specific setup
@@ -115,7 +136,6 @@ vi.mock('notistack', () => ({
   }),
   enqueueSnackbar: vi.fn(),
   SnackbarProvider: ({ children }: { children: React.ReactNode }) => {
-    // Return only the children, not wrapped in any additional element
     return children;
   }
 }));
@@ -190,7 +210,7 @@ vi.mock('@monaco-editor/react', () => ({
   }
 }));
 
-// Mock web APIs that may not be available in test environment
+// Mock web APIs
 Object.defineProperty(window, 'scrollTo', {
   value: vi.fn(),
   writable: true
@@ -215,7 +235,7 @@ Object.defineProperty(navigator, 'clipboard', {
   writable: true
 });
 
-// Mock URL constructor for older environments
+// Mock URL constructor
 if (typeof global.URL === 'undefined') {
   global.URL = class URL {
     constructor(url: string) {
@@ -250,12 +270,11 @@ global.FileReader = class FileReader {
   removeEventListener = vi.fn();
 } as any;
 
-// Enhanced console filtering for cleaner test output
+// Enhanced console filtering
 const originalConsoleError = console.error;
 const originalConsoleWarn = console.warn;
 
 console.error = (...args: any[]) => {
-  // Filter out known React warnings and expected test errors
   if (typeof args[0] === 'string') {
     if (
       args[0].includes('Warning: ReactDOM.render is no longer supported') ||
@@ -268,11 +287,10 @@ console.error = (...args: any[]) => {
       return;
     }
   }
-  originalConsoleError.call(console, ...args);
+  originalConsoleError(...args);
 };
 
 console.warn = (...args: any[]) => {
-  // Filter out known warnings
   if (typeof args[0] === 'string') {
     if (
       args[0].includes('deprecated') ||
@@ -283,7 +301,7 @@ console.warn = (...args: any[]) => {
       return;
     }
   }
-  originalConsoleWarn.call(console, ...args);
+  originalConsoleWarn(...args);
 };
 
 // Restore console methods after tests
@@ -296,27 +314,30 @@ afterAll(() => {
 
 // Global test cleanup
 afterEach(() => {
-  // Clear all mocks
   vi.clearAllMocks();
-  
-  // Reset timers
   vi.clearAllTimers();
   
-  // Clear DOM completely - remove all children
+  // Clear DOM
   document.body.innerHTML = '';
   while (document.body.firstChild) {
     document.body.removeChild(document.body.firstChild);
   }
   
-  // Also clear any portal containers
+  // Clear portal containers
   document.querySelectorAll('[id^="mui-"], [class*="MuiPortal"]').forEach(el => el.remove());
   
-  // Reset any global state
+  // Reset global state
   (global as any).fetch?.mockClear?.();
   
   // Maintain development mode
-  process.env.NODE_ENV = 'development'
-  global.__DEV__ = true
+  if (typeof process !== 'undefined' && process.env) {
+    Object.defineProperty(process.env, 'NODE_ENV', {
+      value: 'development',
+      writable: true,
+      configurable: true
+    });
+  }
+  global.__DEV__ = true;
 });
 
 console.log('Web app test setup complete.');

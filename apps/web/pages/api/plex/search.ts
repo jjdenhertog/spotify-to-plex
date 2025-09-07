@@ -18,7 +18,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 // const response = await doHubSearch(req.body.query || req.query.query)
                 return res.json({ ok: true })
             } catch (_error) {
-                                // Error performing Plex search - handled by Next.js error boundary
+                // Error performing Plex search - handled by Next.js error boundary
 
                 return res.status(500).json({ message: "Something went wrong while connecting to this server." })
             }

@@ -57,7 +57,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
 
                 res.redirect('/');
             } catch (_error) {
-                                // Error exchanging code for token - handled by Next.js error boundary
+                // Error exchanging code for token - handled by Next.js error boundary
                 res.status(500).send('Authentication failed');
             }
         }

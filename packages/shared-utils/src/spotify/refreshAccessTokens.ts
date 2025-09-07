@@ -63,8 +63,8 @@ export async function refreshAccessTokens() {
                     },
                     expires_at: now + (expires_in * 1000)
                 })
-            } catch (e) {
-                console.log(e)
+            } catch (_e) {
+                // Error handling without logging
             }
         }
     }

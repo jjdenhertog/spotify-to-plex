@@ -1,3 +1,4 @@
+import { logger } from "../utils/logger";
 /* eslint-disable custom/no-export-only-files */
 /* eslint-disable unicorn/prefer-event-target */
 import { EventEmitter } from 'node:events';
@@ -292,12 +293,12 @@ export async function runMQTTService(options?: MQTTServiceOptions): Promise<MQTT
     const service = createMQTTService(options);
 
     // Setup event listeners for logging
-    service.on('info', (message) => console.log(`[INFO] ${message}`));
-    service.on('warn', (message) => console.warn(`[WARN] ${message}`));
-    service.on('error', (message) => console.error(`[ERROR] ${message}`));
+    service.on('info', (message) => logger.info(`[INFO] ${message}`));
+    service.on('warn', (message) => logger.warn(`[WARN] ${message}`));
+    service.on('error', (message) => logger.error(`[ERROR] ${message}`));
     service.on('debug', (message) => {
         if (process.env.DEBUG === 'mqtt' || process.env.NODE_ENV === 'development') {
-            console.debug(`[DEBUG] ${message}`);
+            logger.debug(`[DEBUG] ${message}`);
         }
     });
 

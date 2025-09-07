@@ -19,7 +19,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 const settings = await plex.getSettings();
                 res.json({ loggedin: !!settings.token, uri: settings.uri, id: settings.id })
             } catch (_error) {
-                                // Error updating Plex settings - handled by Next.js error boundary
+                // Error updating Plex settings - handled by Next.js error boundary
                 res.status(500).json({ error: 'Failed to update settings' });
             }
         })
@@ -29,7 +29,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 const settings = await plex.getSettings();
                 res.json({ loggedin: !!settings.token, uri: settings.uri, id: settings.id })
             } catch (_error) {
-                                // Error getting Plex settings - handled by Next.js error boundary
+                // Error getting Plex settings - handled by Next.js error boundary
                 res.status(500).json({ error: 'Failed to get settings' });
             }
         })
