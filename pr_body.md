@@ -1,2 +1,4 @@
+Check the last commit. After this tests are failing. My previous request was:
+
 Can you remove the UI tests using playwright. And instead focus on testing the most complex utility functions instead
 . I don't want to test any Dom integration, like if error messages show up. I want to focus on the logic, like compare titles
