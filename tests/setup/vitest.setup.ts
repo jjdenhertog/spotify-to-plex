@@ -27,14 +27,10 @@ global.__DEV__ = true;
 // Override any production mode React environment
 if (typeof globalThis !== 'undefined') {
   globalThis.process = globalThis.process || {} as any;
-  globalThis.process.env = globalThis.process.env || {};
+  globalThis.process.env = (globalThis.process.env || {}) as any;
   if (globalThis.process.env && !globalThis.process.env.NODE_ENV) {
     try {
-      Object.defineProperty(globalThis.process.env, 'NODE_ENV', {
-        value: 'development',
-        writable: true,
-        configurable: true
-      });
+      (globalThis.process.env as any).NODE_ENV = 'development';
     } catch (error) {
       // Ignore if NODE_ENV is already defined
     }

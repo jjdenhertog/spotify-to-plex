@@ -70,6 +70,7 @@ vi.mock('../../../src/components/popups/FieldSelectorPopup', () => ({
             };
             
             document.addEventListener('keydown', handleKeyDown);
+
             return () => document.removeEventListener('keydown', handleKeyDown);
         }, [onClose]);
     

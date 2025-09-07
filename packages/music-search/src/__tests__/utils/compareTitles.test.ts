@@ -201,7 +201,7 @@ describe('compareTitles', () => {
                 { a: 'Midnight', b: 'Midnight (Extended Mix)', expected: false }, // ratio 8/21 = 0.38 < 0.5
                 { a: 'Dance Track', b: 'Dance Track (Club Remix)', expected: false }, // ratio 11/25 = 0.44 < 0.5 
                 { a: 'Love Song', b: 'Love Song (Acoustic Version)', expected: false }, // ratio 9/26 = 0.35 < 0.5
-                { a: 'Beat', b: 'Beat (Ultra Extended Super Remix)', expected: false }, // ratio too low
+                { a: 'Beat', b: 'Beat (Ultra Extended Super Remix)', expected: false } // ratio too low
             ];
 
             testCases.forEach(({ a, b, expected }) => {
@@ -249,7 +249,7 @@ describe('compareTitles', () => {
                 [null, null],
                 [undefined, 'test'],
                 ['test', undefined],
-                [undefined, undefined],
+                [undefined, undefined]
             ];
 
             testCases.forEach(([a, b]) => {
@@ -265,7 +265,7 @@ describe('compareTitles', () => {
                 ['\t', '\n'],
                 ['   ', ''],
                 ['test', '   '],
-                ['   ', 'test'],
+                ['   ', 'test']
             ];
 
             testCases.forEach(([a, b], index) => {
@@ -303,7 +303,7 @@ describe('compareTitles', () => {
                 { a: 'abcd', b: 'efgh' }, // 4,4
                 { a: 'abcde', b: 'fghi' },  // 5,4 - special case
                 { a: 'abcde', b: 'fghij' }, // 5,5
-                { a: 'abcdef', b: 'ghijk' }, // 6,5
+                { a: 'abcdef', b: 'ghijk' } // 6,5
             ];
 
             testCases.forEach(({ a, b }) => {
@@ -320,7 +320,7 @@ describe('compareTitles', () => {
                 { a: 'Hello World!', b: 'Hello World?', expectMatch: false },
                 { a: 'Song (Remix)', b: 'Song(Remix)', expectMatch: false },
                 { a: 'Test—Title', b: 'Test-Title', expectMatch: false },
-                { a: '1234567890', b: '1234567890', expectMatch: true },
+                { a: '1234567890', b: '1234567890', expectMatch: true }
             ];
 
             testCases.forEach(({ a, b, expectMatch }) => {
@@ -344,7 +344,7 @@ describe('compareTitles', () => {
                 ['identical', 'identical'],
                 ['similar', 'similae'],
                 ['different', 'words'],
-                ['hello', 'goodbye'],
+                ['hello', 'goodbye']
             ];
 
             const similarities = pairs.map(([a, b]) => compareTitles(a, b).similarity);
@@ -366,7 +366,7 @@ describe('compareTitles', () => {
                 { a: 'World', b: 'Hello World', expected: true },
                 // "Song" is 4 chars, too short for two-way containment
                 { a: 'Test Song', b: 'Song', expected: false },
-                { a: 'Song', b: 'Test Song', expected: false },
+                { a: 'Song', b: 'Test Song', expected: false }
             ];
 
             testCases.forEach(({ a, b, expected }) => {
@@ -427,7 +427,7 @@ describe('compareTitles', () => {
                 // Different versions
                 { a: 'Song (Acoustic)', b: 'Song (Live)', expectContains: false },
                 // Featuring variations
-                { a: 'Song ft. Artist', b: 'Song feat. Artist', expectContains: false, minSimilarity: 0.8 },
+                { a: 'Song ft. Artist', b: 'Song feat. Artist', expectContains: false, minSimilarity: 0.8 }
             ];
 
             testCases.forEach(({ a, b, expectContains, minSimilarity }) => {
@@ -435,6 +435,7 @@ describe('compareTitles', () => {
                 if (expectContains !== undefined) {
                     expect(result.contains).toBe(expectContains);
                 }
+
                 if (minSimilarity !== undefined) {
                     expect(result.similarity).toBeGreaterThan(minSimilarity);
                 }

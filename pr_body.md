@@ -1,1 +1,1 @@
-The tests are passing. But it seems that GitHub is failing. Can you find out why and fix it?
+Can you run pnpm type-check and pnom run lint and fix all errors. Warnings are okay

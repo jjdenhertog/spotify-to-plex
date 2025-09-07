@@ -1,10 +1,8 @@
 // Force React development mode before importing anything else
-// Use Object.defineProperty to properly handle readonly property
-Object.defineProperty(process.env, 'NODE_ENV', {
-    value: 'development',
-    writable: true,
-    configurable: true
-});
+// Set NODE_ENV safely without using Object.defineProperty
+if (!process.env.NODE_ENV) {
+    (process.env as any).NODE_ENV = 'development';
+}
 
 // Properly type global object extension
 declare global {
@@ -44,11 +42,7 @@ afterEach(() => {
     vi.useRealTimers();
     
     // Maintain React development mode
-    Object.defineProperty(process.env, 'NODE_ENV', {
-        value: 'development',
-        writable: true,
-        configurable: true
-    });
+    (process.env as any).NODE_ENV = 'development';
     global.__DEV__ = true;
 });
 
