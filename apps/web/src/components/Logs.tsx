@@ -1,7 +1,7 @@
 import { errorBoundary } from "@/helpers/errors/errorBoundary";
 import { Box, CircularProgress, Paper, Typography } from "@mui/material";
 import axios from "axios";
-import { SyncLog } from "cronjob/albums";
+import { SyncLog } from "@spotify-to-plex/shared-types/common/sync";
 import { useEffect, useState } from "react";
 import BMoment from "./BMoment";
 
