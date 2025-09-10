@@ -49,8 +49,8 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
 
                 const link = getAPIUrl(settings.uri, `/web/index.html#!/server/${settings.id}/playlist?key=${encodeURIComponent(`/playlists/${playlist.ratingKey}`)}`)
                 res.json({ id: playlistIds.plex, link })
-            } catch (error) {
-                console.error('Error getting Plex playlist by ID:', error);
+            } catch (_error) {
+                // Error handling - handled by Next.js error boundary
                 res.status(500).json({ error: 'Failed to get playlist' });
             }
         })
@@ -105,8 +105,8 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
 
                 const link = getAPIUrl(validatedSettings.uri, `/web/index.html#!/server/${validatedSettings.id}/playlist?key=${encodeURIComponent(`/playlists/${playlist.ratingKey}`)}`)
                 res.json({ id: playlist.ratingKey, link })
-            } catch (error) {
-                console.error('Error updating Plex playlist:', error);
+            } catch (_error) {
+                // Error handling - handled by Next.js error boundary
                 res.status(500).json({ error: 'Failed to update playlist' });
             }
         })

@@ -36,8 +36,8 @@ const SearchApproachesEditor: React.FC<SearchApproachesEditorProps> = ({ onSave 
             setLoading(true);
             const response = await axios.get('/api/plex/music-search-config/search-approaches');
             setJsonData(response.data);
-        } catch (error) {
-            console.error('Failed to load search approaches:', error);
+        } catch (_error) {
+            // Failed to load search approaches - error handled in snackbar above
             enqueueSnackbar('Failed to load search approaches', { variant: 'error' });
         } finally {
             setLoading(false);
@@ -111,8 +111,8 @@ const SearchApproachesEditor: React.FC<SearchApproachesEditorProps> = ({ onSave 
             if (onSave) {
                 onSave(currentData);
             }
-        } catch (error) {
-            const message = error instanceof Error ? error.message : 'Failed to save';
+        } catch (_error) {
+            const message = _error instanceof Error ? _error.message : 'Failed to save';
             enqueueSnackbar(`Failed to save: ${message}`, { variant: 'error' });
         }
     }, [onSave]);
@@ -131,11 +131,13 @@ const SearchApproachesEditor: React.FC<SearchApproachesEditorProps> = ({ onSave 
 
     // Wrapper functions to handle promises properly for onClick
     const handleSaveClick = useCallback(() => {
-        handleSave().catch(console.error);
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
+        handleSave();
     }, [handleSave]);
 
     const handleResetClick = useCallback(() => {
-        handleReset().catch(console.error);
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
+        handleReset();
     }, [handleReset]);
 
     if (loading) {

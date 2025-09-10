@@ -49,9 +49,9 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
             let musicSearchConfig;
             try {
                 musicSearchConfig = await getMusicSearchConfigFromStorage(settingsDir);
-            } catch (error) {
+            } catch (_error) {
                 // Fallback to default config if error loading
-                console.warn('Failed to load music search config, using defaults:', error);
+                // Failed to load music search config, using defaults - this is expected fallback behavior
             }
 
             const tidalConfig = {

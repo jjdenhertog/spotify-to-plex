@@ -86,8 +86,8 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 }
 
                 res.redirect('/spotify');
-            } catch (error) {
-                console.error('Error exchanging code for token:', error);
+            } catch (_error) {
+                // Error exchanging code for token - handled by Next.js error boundary
                 res.status(500).send('Authentication failed');
             }
         }

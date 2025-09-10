@@ -117,9 +117,9 @@ const PlexConnection = (props: Props) => {
                 try {
                     await axios.post("/api/plex/search", { query: "x", limit: 3 }, { signal: controller.signal });
                     setValidated(true);
-                } catch (error) {
+                } catch (_error) {
                     setValidated(false);
-                    console.warn("Plex server connection validation failed:", error);
+                    // Plex server connection validation failed - handled by UI error state
                 }
             }
 

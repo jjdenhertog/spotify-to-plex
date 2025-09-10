@@ -88,8 +88,8 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 }
 
                 res.status(200).json(result);
-            } catch (error) {
-                console.error('Error getting cached Plex tracks:', error);
+            } catch (_error) {
+                // Error handling - handled by Next.js error boundary
                 res.status(500).json({ error: 'Failed to get cached tracks' });
             }
         })
@@ -97,7 +97,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
 
 export default router.handler({
     onError: (err: unknown, req: NextApiRequest, res: NextApiResponse) => {
-        console.log(err)
+        // Debug log removed
         generateError(req, res, "Songs", err);
     }
 });

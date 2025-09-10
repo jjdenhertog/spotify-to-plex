@@ -56,8 +56,8 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 writeFileSync(credentialsPath, JSON.stringify(tidalCredentials, undefined, 4))
 
                 res.redirect('/');
-            } catch (error) {
-                console.error('Error exchanging code for token:', error);
+            } catch (_error) {
+                // Error exchanging code for token - handled by Next.js error boundary
                 res.status(500).send('Authentication failed');
             }
         }

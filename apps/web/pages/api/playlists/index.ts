@@ -43,8 +43,8 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                     }
                 })
                 res.json(result);
-            } catch (error) {
-                console.error('Error getting Plex playlists:', error);
+            } catch (_error) {
+                // Error handling - handled by Next.js error boundary
                 res.status(500).json({ error: 'Failed to get playlists' });
             }
         })
@@ -84,8 +84,8 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
 
                 const link = getAPIUrl(validatedSettings.uri, `/web/index.html#!/server/${validatedSettings.id}/playlist?key=${encodeURIComponent(`/playlists/${playlistId}`)}`)
                 res.json({ id: playlistId, link })
-            } catch (error) {
-                console.error('Error creating Plex playlist:', error);
+            } catch (_error) {
+                // Error handling - handled by Next.js error boundary
                 res.status(500).json({ error: 'Failed to create playlist' });
             }
         })

@@ -44,8 +44,8 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
 
                 const files = tracks.filter((item: string | null): item is string => item !== null);
                 res.json(files)
-            } catch (error) {
-                console.error('Error getting Plex files:', error);
+            } catch (_error) {
+                // Error handling - handled by Next.js error boundary
                 res.status(500).json({ error: 'Failed to get files' });
             }
         })

@@ -27,7 +27,15 @@
         "type-check:build": "tsc --build --noEmit",
         "type-check:watch": "tsc --build --watch --noEmit",
         "watch:packages": "tsc --build packages/* --watch",
-        "test:packages": "npm run test --workspaces --if-present",
+        "test": "vitest",
+        "test:run": "vitest run",
+        "test:watch": "vitest watch",
+        "test:ui": "vitest --ui",
+        "test:coverage": "vitest run --coverage",
+        "test:packages": "vitest run --workspace packages",
+        "test:web": "vitest run --workspace web",
+        "test:packages-watch": "vitest watch --workspace packages",
+        "test:web-watch": "vitest watch --workspace web",
         "dev:web": "npm run dev --workspace=@spotify-to-plex/web",
         "deploy": "npm version patch --no-git-tag-version && npm run docker",
         "docker": "PACKAGE_VERSION=$(grep '\"version\"' package.json | cut -d '\"' -f 4 | head -n 1) && docker buildx build --platform=linux/amd64,linux/arm64 -t jjdenhertog/spotify-to-plex -t jjdenhertog/spotify-to-plex:$PACKAGE_VERSION --push .",
@@ -49,6 +57,13 @@
         "npm": "please-use-pnpm"
     },
     "packageManager": "pnpm@10.15.0",
+    "pnpm": {
+        "overrides": {
+            "form-data@<2.5.4": ">=4.0.0",
+            "xml2js@<0.5.0": ">=0.6.2",
+            "request": "npm:@cypress/request@^3.0.6"
+        }
+    },
     "dependencies": {
         "axios": "^1.11.0",
         "fs-extra": "^11.3.1",
@@ -61,17 +76,30 @@
         "tsconfig-paths": "^4.2.0"
     },
     "devDependencies": {
+        "@testing-library/jest-dom": "^6.8.0",
+        "@testing-library/react": "^16.3.0",
+        "@testing-library/user-event": "^14.6.1",
         "@types/fs-extra": "^11.0.4",
         "@types/node": "^20.19.11",
         "@types/qs": "^6.14.0",
         "@types/react": "^18.3.23",
         "@types/react-dom": "^18.3.7",
+        "@types/supertest": "^6.0.3",
         "@typescript-eslint/eslint-plugin": "^8.8.0",
         "@typescript-eslint/parser": "^8.8.0",
+        "@vitest/coverage-v8": "^3.2.4",
+        "@vitest/ui": "^3.2.4",
         "dotenv-cli": "^7.4.4",
         "eslint": "^8.57.0",
         "eslint-plugin-react": "^7.35.0",
         "eslint-plugin-react-hooks": "^5.0.0",
-        "eslint-plugin-unicorn": "^56.0.0"
+        "eslint-plugin-unicorn": "^56.0.0",
+        "happy-dom": "^18.0.1",
+        "jsdom": "^26.1.0",
+        "mock-fs": "^5.5.0",
+        "msw": "^2.11.1",
+        "node-mocks-http": "^1.17.2",
+        "supertest": "^7.1.4",
+        "vitest": "^3.2.4"
     }
 }

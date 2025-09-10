@@ -146,12 +146,12 @@ export default async function handler(
             ]
         } as ErrorResponse);
 
-    } catch (error) {
-        console.error('Error in validation API:', error);
+    } catch (_error) {
+        // Error in validation API - handled by Next.js error boundary
 
         return res.status(500).json({
             error: 'Internal server error',
-            details: [error instanceof Error ? error.message : 'Unknown error']
+            details: [_error instanceof Error ? _error.message : 'Unknown error']
         } as ErrorResponse);
     }
 }

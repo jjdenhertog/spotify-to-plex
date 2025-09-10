@@ -18,12 +18,12 @@ export function validateExpression(expression: string): ValidationResult {
         // Validate field names - check both standalone fields and fields with operations
         const validFields = ['artist', 'title', 'album', 'artistWithTitle', 'artistInTitle'];
         
-        // Extract fields with operations
-        const fieldWithOpRegex = /([A-Za-z]+):/g;
+        // Extract fields with operations (allow spaces around colon)
+        const fieldWithOpRegex = /([A-Za-z]+)\s*:/g;
         const fieldsWithOps = Array.from(expression.matchAll(fieldWithOpRegex), m => m[1]);
         
-        // Extract standalone fields (not followed by colon)
-        const standaloneFieldRegex = /\b(artist|title|album|artistWithTitle|artistInTitle)\b(?!:)/g;
+        // Extract standalone fields (not followed by colon, even with spaces)
+        const standaloneFieldRegex = /\b(artist|title|album|artistWithTitle|artistInTitle)\b(?!\s*:)/g;
         const standaloneFields = Array.from(expression.matchAll(standaloneFieldRegex), m => m[1]);
         
         // Combine and validate all fields
@@ -72,13 +72,16 @@ export function validateExpression(expression: string): ValidationResult {
             }
         }
         
-        // Validate boolean operators
+        // Validate boolean operators - also check for invalid words that look like operators
         const operatorRegex = /\s+(AND|OR)\s+/g;
         const operators = Array.from(expression.matchAll(operatorRegex), m => m[1]);
-        const invalidOperators = operators.filter(op => op !== 'AND' && op !== 'OR');
         
-        if (invalidOperators.length > 0) {
-            errors.push(`Invalid operators: ${invalidOperators.join(', ')}. Only AND, OR are supported`);
+        // Also check for words that might be intended as operators but aren't valid
+        const invalidOperatorRegex = /\s+(but|xor|nor|nand)\s+/gi;
+        const invalidOps = Array.from(expression.matchAll(invalidOperatorRegex), m => m[1]);
+        
+        if (invalidOps.length > 0) {
+            errors.push(`Invalid operators: ${invalidOps.join(', ')}. Only AND, OR are supported`);
         }
         
         // Check for balanced conditions and operators
@@ -92,7 +95,8 @@ export function validateExpression(expression: string): ValidationResult {
         }
         
         // Check for proper syntax structure - allow both complete (field:operation) and incomplete (field) conditions
-        const conditionPattern = String.raw`[A-Za-z]+(?::[\d.=>A-Za-z]+)?`; // Operation is optional
+        // Allow flexible whitespace around colons and operators
+        const conditionPattern = String.raw`[A-Za-z]+\s*(?::\s*[\d.=>A-Za-z]+)?`; // Operation is optional, with flexible spacing
         const conditionRegex = new RegExp(String.raw`^\s*${conditionPattern}(?:\s+(?:AND|OR)\s+${conditionPattern})*\s*$`);
         if (!conditionRegex.test(expression)) {
             errors.push('Invalid expression syntax. Expected format: "field[:operation] AND/OR field[:operation]"');

@@ -124,7 +124,7 @@ function run() {
             console.log(`Sync complete`)
         })
         .catch((e: unknown) => {
-            console.log(e)
+            console.log(String(e))
         })
 }
 

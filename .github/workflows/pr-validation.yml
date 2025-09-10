@@ -1,0 +1,197 @@
+name: PR Validation
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    branches: [main, develop]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate-pr:
+    name: Validate Pull Request
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: '10.15.0'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Validate PR title
+        uses: amannn/action-semantic-pull-request@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          types: |
+            feat
+            fix
+            docs
+            style
+            refactor
+            perf
+            test
+            build
+            ci
+            chore
+            revert
+          requireScope: false
+          ignoreLabels: |
+            ignore-semantic-pull-request
+
+      - name: Check for breaking changes
+        run: |
+          # Check if this PR might contain breaking changes
+          if git diff origin/main...HEAD --name-only | grep -E "(package\.json|tsconfig\.json|.*\.config\.(js|ts|mjs))" > /dev/null; then
+            echo "⚠️ This PR contains changes to configuration files that might be breaking changes."
+            echo "Please ensure backward compatibility or update the version accordingly."
+          fi
+
+      - name: Analyze changes
+        run: |
+          echo "## PR Analysis" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          # Count changed files
+          CHANGED_FILES=$(git diff --name-only origin/main...HEAD | wc -l)
+          echo "📁 **Files changed**: $CHANGED_FILES" >> $GITHUB_STEP_SUMMARY
+          
+          # Check for test files
+          TEST_FILES=$(git diff --name-only origin/main...HEAD | grep -E "\.(test|spec)\.(js|jsx|ts|tsx)$" | wc -l)
+          echo "🧪 **Test files modified**: $TEST_FILES" >> $GITHUB_STEP_SUMMARY
+          
+          # Check for documentation changes
+          DOC_FILES=$(git diff --name-only origin/main...HEAD | grep -E "\.(md|mdx)$" | wc -l)
+          echo "📚 **Documentation files modified**: $DOC_FILES" >> $GITHUB_STEP_SUMMARY
+          
+          # Check sync-worker exclusion
+          SYNC_WORKER_FILES=$(git diff --name-only origin/main...HEAD | grep "apps/sync-worker" | wc -l)
+          if [ $SYNC_WORKER_FILES -gt 0 ]; then
+            echo "⚠️ **sync-worker files modified**: $SYNC_WORKER_FILES (tests excluded as per requirements)" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Changed Files by Category" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          git diff --name-only origin/main...HEAD | head -20 >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+
+      - name: Quick smoke tests
+        run: |
+          # Run quick checks to ensure the build works
+          pnpm lint --max-warnings 0
+          pnpm type-check
+          pnpm build:packages
+
+  size-analysis:
+    name: Bundle Size Analysis
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: '10.15.0'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build and analyze bundle size
+        run: |
+          pnpm build:web
+          
+          # Analyze bundle size
+          echo "## Bundle Size Analysis" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [ -d "apps/web/.next" ]; then
+            echo "### Build Output" >> $GITHUB_STEP_SUMMARY
+            echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+            du -sh apps/web/.next >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            ls -lah apps/web/.next/static/chunks/*.js | head -10 >> $GITHUB_STEP_SUMMARY
+            echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          fi
+
+  comment-pr:
+    name: Comment on PR
+    runs-on: ubuntu-latest
+    needs: [validate-pr, size-analysis]
+    if: always() && github.event.pull_request.draft == false
+    
+    steps:
+      - name: Comment PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            const botComment = comments.find(comment => 
+              comment.user.type === 'Bot' && comment.body.includes('## PR Validation Results')
+            );
+
+            let status = '✅ Validation passed';
+            if ('${{ needs.validate-pr.result }}' === 'failure' || '${{ needs.size-analysis.result }}' === 'failure') {
+              status = '❌ Validation failed';
+            }
+
+            const body = `## PR Validation Results
+
+            ${status}
+
+            ### Validation Summary
+            - **PR Title Validation**: ${{ needs.validate-pr.result == 'success' && '✅ Passed' || '❌ Failed' }}
+            - **Bundle Size Analysis**: ${{ needs.size-analysis.result == 'success' && '✅ Completed' || '❌ Failed' }}
+
+            ### Important Notes
+            - sync-worker is excluded from all test suites as per project requirements
+            - All MQTT functionality testing is excluded
+            - Performance testing runs only on main branch
+
+            ---
+            *This comment is automatically updated by the PR validation workflow*`;
+
+            if (botComment) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: body
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: body
+              });
+            }

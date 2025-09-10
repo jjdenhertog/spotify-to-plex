@@ -1,0 +1,594 @@
+name: Test Suite CI/CD
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - '**/*.ts'
+      - '**/*.tsx' 
+      - '**/*.js'
+      - '**/*.jsx'
+      - '**/*.json'
+      - 'packages/**'
+      - 'apps/web/**'
+      - 'tests/**'
+      - '.github/workflows/**'
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - '**/*.ts'
+      - '**/*.tsx'
+      - '**/*.js'
+      - '**/*.jsx'
+      - '**/*.json'
+      - 'packages/**'
+      - 'apps/web/**'
+      - 'tests/**'
+      - '.github/workflows/**'
+
+env:
+  FORCE_COLOR: 1
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  changes:
+    name: Detect Changes
+    runs-on: ubuntu-latest
+    outputs:
+      web: ${{ steps.filter.outputs.web }}
+      packages: ${{ steps.filter.outputs.packages }}
+      tests: ${{ steps.filter.outputs.tests }}
+      config: ${{ steps.filter.outputs.config }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            web:
+              - 'apps/web/**'
+            packages:
+              - 'packages/**'
+            tests:
+              - 'tests/**'
+            config:
+              - '*.config.*'
+              - 'package.json'
+              - 'pnpm-lock.yaml'
+              - '.github/workflows/**'
+
+  setup:
+    name: Setup Environment
+    runs-on: ubuntu-latest
+    outputs:
+      pnpm-cache: ${{ steps.pnpm-cache.outputs.pnpm-cache-dir }}
+      node-cache: ${{ steps.cache-node.outputs.cache-hit }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          check-latest: true
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: '10.15.0'
+          run_install: false
+
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: |
+          echo "pnpm-cache-dir=$(pnpm store path --silent)" >> $GITHUB_OUTPUT
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.pnpm-cache.outputs.pnpm-cache-dir }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Cache node_modules
+        id: cache-node
+        uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+            apps/*/node_modules
+            packages/*/node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Install dependencies
+        if: steps.cache-node.outputs.cache-hit != 'true'
+        run: pnpm install --frozen-lockfile
+
+  lint-and-typecheck:
+    name: Code Quality
+    runs-on: ubuntu-latest
+    needs: [setup, changes]
+    if: ${{ needs.changes.outputs.web == 'true' || needs.changes.outputs.packages == 'true' || needs.changes.outputs.config == 'true' }}
+    strategy:
+      matrix:
+        check: [lint, type-check]
+        node-version: [18.x, 20.x]
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: '10.15.0'
+
+      - name: Restore node_modules cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+            apps/*/node_modules
+            packages/*/node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run ${{ matrix.check }}
+        run: pnpm run ${{ matrix.check }}
+
+      - name: Upload lint results
+        if: matrix.check == 'lint' && always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lint-results-${{ matrix.node-version }}
+          path: |
+            eslint-report.json
+            eslint-report.html
+          retention-days: 7
+          if-no-files-found: ignore
+
+  unit-tests:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    needs: [setup, changes]
+    if: ${{ needs.changes.outputs.web == 'true' || needs.changes.outputs.packages == 'true' || needs.changes.outputs.tests == 'true' || needs.changes.outputs.config == 'true' }}
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+        workspace: [web, packages-shared-types, packages-http-client, packages-shared-utils, packages-music-search, packages-plex-music-search, packages-tidal-music-search, packages-plex-config, packages-plex-helpers]
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: '10.15.0'
+
+      - name: Restore node_modules cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+            apps/*/node_modules
+            packages/*/node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/pnpm-lock.yaml') }}
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run unit tests for ${{ matrix.workspace }}
+        run: pnpm vitest run --project=${{ matrix.workspace }} --reporter=verbose --reporter=junit --outputFile=test-results-${{ matrix.workspace }}.xml
+        env:
+          NODE_ENV: test
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-${{ matrix.workspace }}-${{ matrix.node-version }}
+          path: test-results-${{ matrix.workspace }}.xml
+          retention-days: 7
+
+  integration-tests:
+    name: Integration Tests
+    runs-on: ubuntu-latest
+    needs: [setup, changes]
+    if: ${{ needs.changes.outputs.web == 'true' || needs.changes.outputs.packages == 'true' || needs.changes.outputs.tests == 'true' }}
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: '10.15.0'
+
+      - name: Restore node_modules cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+            apps/*/node_modules
+            packages/*/node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/pnpm-lock.yaml') }}
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run integration tests
+        run: pnpm vitest run --project=root --reporter=verbose --reporter=junit --outputFile=integration-test-results.xml
+        env:
+          NODE_ENV: test
+
+      - name: Upload integration test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: integration-test-results-${{ matrix.node-version }}
+          path: integration-test-results.xml
+          retention-days: 7
+
+  e2e-tests:
+    name: End-to-End Tests
+    runs-on: ubuntu-latest
+    needs: [setup, changes]
+    if: ${{ needs.changes.outputs.web == 'true' }}
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+    services:
+      # Mock Plex server for E2E testing
+      wiremock:
+        image: wiremock/wiremock:latest
+        ports:
+          - 8080:8080
+        options: --name wiremock
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: '10.15.0'
+
+      - name: Restore node_modules cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+            apps/*/node_modules
+            packages/*/node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/pnpm-lock.yaml') }}
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Build web application
+        run: pnpm build:web
+        env:
+          NODE_ENV: production
+
+      - name: Run E2E tests
+        run: pnpm exec playwright test
+        env:
+          PLAYWRIGHT_WORKERS: 2
+          NODE_ENV: test
+          MOCK_PLEX_URL: http://localhost:8080
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-${{ matrix.node-version }}
+          path: playwright-report/
+          retention-days: 30
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-test-results-${{ matrix.node-version }}
+          path: test-results/
+          retention-days: 7
+
+  coverage:
+    name: Coverage Report
+    runs-on: ubuntu-latest
+    needs: [setup, unit-tests]
+    if: always() && needs.unit-tests.result != 'skipped'
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: '10.15.0'
+
+      - name: Restore node_modules cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+            apps/*/node_modules
+            packages/*/node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/pnpm-lock.yaml') }}
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate coverage report
+        run: pnpm test:coverage
+        env:
+          NODE_ENV: test
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./coverage/coverage-final.json
+          flags: unittests
+          name: codecov-umbrella
+          fail_ci_if_error: false
+          verbose: true
+
+      - name: Upload coverage artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: |
+            coverage/
+          retention-days: 30
+
+      - name: Coverage Summary
+        run: |
+          echo "## Coverage Report" >> $GITHUB_STEP_SUMMARY
+          cat coverage/coverage-summary.txt >> $GITHUB_STEP_SUMMARY 2>/dev/null || echo "Coverage summary not available" >> $GITHUB_STEP_SUMMARY
+
+  performance-tests:
+    name: Performance Tests
+    runs-on: ubuntu-latest
+    needs: [setup, changes]
+    if: ${{ github.ref == 'refs/heads/main' && (needs.changes.outputs.web == 'true' || needs.changes.outputs.packages == 'true') }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: '10.15.0'
+
+      - name: Restore node_modules cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+            apps/*/node_modules
+            packages/*/node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/pnpm-lock.yaml') }}
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build for performance testing
+        run: pnpm build:web
+        env:
+          NODE_ENV: production
+
+      - name: Run performance benchmarks
+        run: |
+          # Memory usage and startup time tests
+          echo "## Performance Benchmarks" >> performance-results.md
+          echo "### Memory Usage" >> performance-results.md
+          
+          # Test build size
+          du -sh apps/web/.next >> performance-results.md
+          
+          # Test startup time (basic check)
+          timeout 30s pnpm start &
+          sleep 10
+          kill %1 || true
+          
+          echo "### Build Analysis" >> performance-results.md
+          ls -la apps/web/.next/static/chunks/*.js | head -10 >> performance-results.md
+
+      - name: Upload performance results
+        uses: actions/upload-artifact@v4
+        with:
+          name: performance-results
+          path: performance-results.md
+          retention-days: 7
+
+  security-scan:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    needs: setup
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: '10.15.0'
+
+      - name: Run security audit
+        run: pnpm audit --audit-level moderate
+        continue-on-error: true
+
+      - name: Upload security results
+        uses: actions/upload-artifact@v4
+        with:
+          name: security-audit
+          path: |
+            pnpm-audit.json
+          retention-days: 7
+          if-no-files-found: ignore
+
+  build-verification:
+    name: Build Verification
+    runs-on: ubuntu-latest
+    needs: [setup, changes]
+    if: ${{ needs.changes.outputs.web == 'true' || needs.changes.outputs.packages == 'true' }}
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: '10.15.0'
+
+      - name: Restore node_modules cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+            apps/*/node_modules
+            packages/*/node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/pnpm-lock.yaml') }}
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build packages
+        run: pnpm build:packages
+
+      - name: Build web application
+        run: pnpm build:web
+        env:
+          NODE_ENV: production
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts-${{ matrix.node-version }}
+          path: |
+            apps/web/.next/
+            packages/*/dist/
+          retention-days: 1
+
+  test-results:
+    name: Test Results Summary
+    runs-on: ubuntu-latest
+    needs: [lint-and-typecheck, unit-tests, integration-tests, e2e-tests, coverage, build-verification]
+    if: always()
+    steps:
+      - name: Download all test artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: test-artifacts
+
+      - name: Publish test results
+        uses: dorny/test-reporter@v2
+        if: success() || failure()
+        with:
+          name: Test Results
+          path: 'test-artifacts/**/*.xml'
+          reporter: java-junit
+          fail-on-error: false
+
+      - name: Create test summary
+        run: |
+          echo "# Test Suite Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [[ "${{ needs.lint-and-typecheck.result }}" == "success" ]]; then
+            echo "✅ Code Quality (Lint & Type Check): Passed" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Code Quality (Lint & Type Check): Failed" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          if [[ "${{ needs.unit-tests.result }}" == "success" ]]; then
+            echo "✅ Unit Tests: Passed" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Unit Tests: Failed" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          if [[ "${{ needs.integration-tests.result }}" == "success" ]]; then
+            echo "✅ Integration Tests: Passed" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Integration Tests: Failed" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          if [[ "${{ needs.e2e-tests.result }}" == "success" ]]; then
+            echo "✅ E2E Tests: Passed" >> $GITHUB_STEP_SUMMARY
+          elif [[ "${{ needs.e2e-tests.result }}" == "skipped" ]]; then
+            echo "⏭️ E2E Tests: Skipped" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ E2E Tests: Failed" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          if [[ "${{ needs.build-verification.result }}" == "success" ]]; then
+            echo "✅ Build Verification: Passed" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Build Verification: Failed" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Note**: sync-worker tests are excluded as per project requirements" >> $GITHUB_STEP_SUMMARY

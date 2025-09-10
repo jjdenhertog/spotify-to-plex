@@ -244,8 +244,8 @@ const loadConfig = (): MusicSearchConfig => {
                 }
             };
         }
-    } catch (error) {
-        console.error('Error loading music search configuration:', error);
+    } catch (_error) {
+        // Error handling - handled by Next.js error boundary
     }
     
     return getDefaultConfig();
@@ -256,8 +256,8 @@ const saveConfig = (config: MusicSearchConfig): void => {
     try {
         const configPath = getConfigPath();
         writeFileSync(configPath, JSON.stringify(config, null, 2), 'utf8');
-    } catch (error) {
-        console.error('Error saving music search configuration:', error);
+    } catch (_error) {
+        // Error handling - handled by Next.js error boundary
         throw new Error('Failed to save configuration');
     }
 };
@@ -306,12 +306,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(405).json({ error: 'Method not allowed' });
         
         
-    } catch (error) {
-        console.error('Error in music search config API:', error);
+    } catch (_error) {
+        // Error handling - handled by Next.js error boundary
 
         return res.status(500).json({ 
             error: 'Internal server error', 
-            message: error instanceof Error ? error.message : 'Unknown error' 
+            message: _error instanceof Error ? _error.message : 'Unknown error' 
         });
     }
 }

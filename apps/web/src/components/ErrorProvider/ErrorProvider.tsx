@@ -1,9 +1,9 @@
 "use client";
 
+import React, { memo, useCallback, useMemo, useState } from "react";
 import CloseOutlined from '@mui/icons-material/CloseOutlined';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import { Accordion, AccordionDetails, AccordionSummary, Box, Dialog, DialogContent, DialogTitle, IconButton, Paper, Typography } from "@mui/material";
-import { memo, useCallback, useMemo, useState } from "react";
 import { ErrorContext } from "./ErrorContext";
 import { ProviderContext } from "./types";
 
@@ -38,15 +38,15 @@ const ErrorProviderComponent = ({ children }: ErrorProviderProps) => {
                 {children}
             </ErrorContext.Provider>
             {!!error &&
-                <Dialog open maxWidth="sm" fullWidth>
+                <Dialog open maxWidth="sm" fullWidth onClose={handleClose} aria-describedby="error-dialog-description">
                     <DialogTitle sx={{ paddingTop: 3, paddingBottom: .5 }}>
-                        <IconButton size="small" onClick={handleClose} sx={{ position: 'absolute', right: 8, top: 8 }}>
+                        <IconButton size="small" onClick={handleClose} sx={{ position: 'absolute', right: 8, top: 8 }} aria-label="Close">
                             <CloseOutlined fontSize="small" />
                         </IconButton>
                         Error
                     </DialogTitle>
                     <DialogContent>
-                        <Typography>
+                        <Typography id="error-dialog-description">
                             {error}
                         </Typography>
                         {!!stack && stack !== error ? <Box mt={2}>

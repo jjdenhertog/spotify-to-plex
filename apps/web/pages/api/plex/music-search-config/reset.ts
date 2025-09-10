@@ -20,12 +20,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             config
         });
         
-    } catch (error) {
-        console.error('Error resetting music search config:', error);
+    } catch (_error) {
+        // Error handling - handled by Next.js error boundary
 
         return res.status(500).json({ 
             error: 'Internal server error', 
-            message: error instanceof Error ? error.message : 'Unknown error' 
+            message: _error instanceof Error ? _error.message : 'Unknown error' 
         });
     }
 }

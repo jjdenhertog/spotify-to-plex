@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import ConfirmationDialog from "./ConfirmationDialog";
 import { ConfirmContext } from "./ConfirmContext";
 import { ConfirmOptions, ProviderContext } from './types';
@@ -65,7 +65,7 @@ const buildOptions = (options: ConfirmOptions) => {
 
 
 export let confirm: ProviderContext['confirm'];
-export default function ConfirmProvider() {
+export default function ConfirmProvider({ children }: { readonly children?: React.ReactNode }) {
 
     const [options, setOptions] = useState<ConfirmOptions>({})
     const [resolveReject, setResolveReject] = useState<Function[]>([]);
@@ -118,7 +118,9 @@ export default function ConfirmProvider() {
 
     return (
         <>
-            <ConfirmContext.Provider value={context} />
+            <ConfirmContext.Provider value={context}>
+                {children}
+            </ConfirmContext.Provider>
             {!!(resolveReject.length === 2) &&
                 <ConfirmationDialog open={resolveReject.length === 2} options={buildOptions(options)} onClose={handleClose} onCancel={handleCancel} onConfirm={handleConfirm} />
             }
