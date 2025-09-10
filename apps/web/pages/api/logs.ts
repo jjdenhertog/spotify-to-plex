@@ -19,7 +19,15 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
             
             // Read and parse the logs file
             const logsContent = readFileSync(logsPath, 'utf8');
-            const logs: SyncLog[] = JSON.parse(logsContent);
+            let logs: SyncLog[] = JSON.parse(logsContent);
+            
+            // Apply same rotation logic as getSyncLogs for consistency
+            // Keep only last 100 entries and remove logs older than 30 days
+            const thirtyDaysAgo = Date.now() - (30 * 24 * 60 * 60 * 1000);
+            logs = logs
+                .filter(log => log.start > thirtyDaysAgo)
+                .slice(-100)
+                .reverse(); // Most recent first for better UX
             
             res.json(logs);
         } catch (error) {

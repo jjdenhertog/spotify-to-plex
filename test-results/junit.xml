@@ -1,0 +1,919 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites name="vitest tests" tests="433" failures="0" errors="0" time="1.023276515">
+    <testsuite name="packages/http-client/src/__tests__/AxiosRequest.test.ts" timestamp="2025-09-10T12:38:55.168Z" hostname="c82ba9db4d53" tests="21" failures="0" errors="0" skipped="0" time="0.041043786">
+        <testcase classname="packages/http-client/src/__tests__/AxiosRequest.test.ts" name="AxiosRequest &gt; structure &gt; should have all HTTP methods" time="0.005819938">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/AxiosRequest.test.ts" name="AxiosRequest &gt; structure &gt; should map to correct method functions" time="0.001044806">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/AxiosRequest.test.ts" name="AxiosRequest &gt; method delegation &gt; should delegate GET requests correctly" time="0.005485533">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/AxiosRequest.test.ts" name="AxiosRequest &gt; method delegation &gt; should delegate POST requests correctly" time="0.000857844">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/AxiosRequest.test.ts" name="AxiosRequest &gt; method delegation &gt; should delegate PUT requests correctly" time="0.000977135">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/AxiosRequest.test.ts" name="AxiosRequest &gt; method delegation &gt; should delegate DELETE requests correctly" time="0.000792442">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/AxiosRequest.test.ts" name="AxiosRequest &gt; error handling delegation &gt; should propagate GET errors" time="0.008466689">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/AxiosRequest.test.ts" name="AxiosRequest &gt; error handling delegation &gt; should propagate POST errors" time="0.000778472">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/AxiosRequest.test.ts" name="AxiosRequest &gt; error handling delegation &gt; should propagate PUT errors" time="0.00133231">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/AxiosRequest.test.ts" name="AxiosRequest &gt; error handling delegation &gt; should propagate DELETE errors" time="0.000880543">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/AxiosRequest.test.ts" name="AxiosRequest &gt; type safety &gt; should support generic type parameters for GET" time="0.000880324">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/AxiosRequest.test.ts" name="AxiosRequest &gt; type safety &gt; should support generic type parameters for POST" time="0.000749542">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/AxiosRequest.test.ts" name="AxiosRequest &gt; type safety &gt; should support generic type parameters for PUT" time="0.00069262">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/AxiosRequest.test.ts" name="AxiosRequest &gt; type safety &gt; should support generic type parameters for DELETE" time="0.000762801">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/AxiosRequest.test.ts" name="AxiosRequest &gt; usage patterns &gt; should support chaining and method calls" time="0.000915184">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/AxiosRequest.test.ts" name="AxiosRequest &gt; usage patterns &gt; should handle concurrent requests" time="0.001658525">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/AxiosRequest.test.ts" name="AxiosRequest &gt; interface consistency &gt; should provide consistent interface across all methods" time="0.000555419">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/AxiosRequest.test.ts" name="AxiosRequest &gt; interface consistency &gt; should maintain object structure" time="0.001863179">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/AxiosRequest.test.ts" name="AxiosRequest &gt; interface consistency &gt; should be extensible" time="0.000721421">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/AxiosRequest.test.ts" name="AxiosRequest &gt; module exports &gt; should be the default export of the module" time="0.000509578">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/AxiosRequest.test.ts" name="AxiosRequest &gt; module exports &gt; should not expose internal implementation details" time="0.000723061">
+        </testcase>
+    </testsuite>
+    <testsuite name="packages/http-client/src/__tests__/methods/axiosDelete.test.ts" timestamp="2025-09-10T12:38:55.183Z" hostname="c82ba9db4d53" tests="24" failures="0" errors="0" skipped="0" time="0.056777106">
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosDelete.test.ts" name="axiosDelete &gt; basic functionality &gt; should make DELETE request with correct parameters" time="0.008465319">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosDelete.test.ts" name="axiosDelete &gt; basic functionality &gt; should use HTTPS agent with rejectUnauthorized: false" time="0.00656192">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosDelete.test.ts" name="axiosDelete &gt; headers configuration &gt; should include required headers" time="0.001635805">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosDelete.test.ts" name="axiosDelete &gt; headers configuration &gt; should always include Accept header for JSON responses" time="0.001382691">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosDelete.test.ts" name="axiosDelete &gt; headers configuration &gt; should always include X-Plex-Token header" time="0.000881633">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosDelete.test.ts" name="axiosDelete &gt; error handling &gt; should propagate axios errors" time="0.008317997">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosDelete.test.ts" name="axiosDelete &gt; error handling &gt; should propagate HTTP error responses" time="0.000908094">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosDelete.test.ts" name="axiosDelete &gt; error handling &gt; should handle authorization errors" time="0.001006015">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosDelete.test.ts" name="axiosDelete &gt; error handling &gt; should handle not found errors" time="0.001057526">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosDelete.test.ts" name="axiosDelete &gt; error handling &gt; should handle connection timeouts" time="0.001196249">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosDelete.test.ts" name="axiosDelete &gt; type safety &gt; should support generic type parameters" time="0.000933964">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosDelete.test.ts" name="axiosDelete &gt; type safety &gt; should handle complex response types" time="0.000639359">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosDelete.test.ts" name="axiosDelete &gt; type safety &gt; should handle void response types" time="0.00065728">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosDelete.test.ts" name="axiosDelete &gt; Plex API specific features &gt; should work with playlist deletion endpoint" time="0.001601234">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosDelete.test.ts" name="axiosDelete &gt; Plex API specific features &gt; should work with different Plex resource endpoints" time="0.002474747">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosDelete.test.ts" name="axiosDelete &gt; Plex API specific features &gt; should handle different token formats" time="0.003121368">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosDelete.test.ts" name="axiosDelete &gt; performance and reliability &gt; should handle concurrent requests" time="0.002219014">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosDelete.test.ts" name="axiosDelete &gt; performance and reliability &gt; should maintain consistent configuration across calls" time="0.002233024">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosDelete.test.ts" name="axiosDelete &gt; performance and reliability &gt; should handle network retries gracefully" time="0.000925654">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosDelete.test.ts" name="axiosDelete &gt; edge cases &gt; should handle empty token" time="0.001113266">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosDelete.test.ts" name="axiosDelete &gt; edge cases &gt; should handle special characters in URL" time="0.001047896">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosDelete.test.ts" name="axiosDelete &gt; edge cases &gt; should handle very long URLs" time="0.000792883">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosDelete.test.ts" name="axiosDelete &gt; edge cases &gt; should work with both HTTP and HTTPS URLs" time="0.000968365">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosDelete.test.ts" name="axiosDelete &gt; edge cases &gt; should handle numeric IDs in URLs" time="0.001357911">
+        </testcase>
+    </testsuite>
+    <testsuite name="packages/http-client/src/__tests__/methods/axiosGet.test.ts" timestamp="2025-09-10T12:38:55.207Z" hostname="c82ba9db4d53" tests="22" failures="0" errors="0" skipped="0" time="0.055979133">
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosGet.test.ts" name="axiosGet &gt; basic functionality &gt; should make GET request with correct parameters" time="0.008613922">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosGet.test.ts" name="axiosGet &gt; basic functionality &gt; should use default timeout of 10 seconds" time="0.004541489">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosGet.test.ts" name="axiosGet &gt; basic functionality &gt; should use HTTPS agent with rejectUnauthorized: false" time="0.002099362">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosGet.test.ts" name="axiosGet &gt; configuration merging &gt; should merge custom config with defaults" time="0.001505882">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosGet.test.ts" name="axiosGet &gt; configuration merging &gt; should allow custom timeout to override default" time="0.001473242">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosGet.test.ts" name="axiosGet &gt; configuration merging &gt; should merge custom headers with Plex token header" time="0.001466612">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosGet.test.ts" name="axiosGet &gt; configuration merging &gt; should not allow custom headers to override Plex token" time="0.001406841">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosGet.test.ts" name="axiosGet &gt; configuration merging &gt; should preserve httpsAgent from default configuration" time="0.004485679">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosGet.test.ts" name="axiosGet &gt; error handling &gt; should propagate axios errors" time="0.003697807">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosGet.test.ts" name="axiosGet &gt; error handling &gt; should propagate HTTP error responses" time="0.000949954">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosGet.test.ts" name="axiosGet &gt; error handling &gt; should handle timeout errors" time="0.000859394">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosGet.test.ts" name="axiosGet &gt; type safety &gt; should support generic type parameters" time="0.000806142">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosGet.test.ts" name="axiosGet &gt; type safety &gt; should handle complex response types" time="0.001605485">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosGet.test.ts" name="axiosGet &gt; Plex API specific features &gt; should always include X-Plex-Token header" time="0.001380841">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosGet.test.ts" name="axiosGet &gt; Plex API specific features &gt; should handle different token formats" time="0.003346971">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosGet.test.ts" name="axiosGet &gt; Plex API specific features &gt; should work with different Plex API endpoints" time="0.001888498">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosGet.test.ts" name="axiosGet &gt; performance and reliability &gt; should handle concurrent requests" time="0.0019425">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosGet.test.ts" name="axiosGet &gt; performance and reliability &gt; should handle large response data" time="0.005405433">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosGet.test.ts" name="axiosGet &gt; performance and reliability &gt; should maintain consistent configuration across calls" time="0.002068661">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosGet.test.ts" name="axiosGet &gt; edge cases &gt; should handle empty token" time="0.000838743">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosGet.test.ts" name="axiosGet &gt; edge cases &gt; should handle very long URLs" time="0.000836553">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosGet.test.ts" name="axiosGet &gt; edge cases &gt; should handle special characters in URL" time="0.000877893">
+        </testcase>
+    </testsuite>
+    <testsuite name="packages/http-client/src/__tests__/methods/axiosPost.test.ts" timestamp="2025-09-10T12:38:55.219Z" hostname="c82ba9db4d53" tests="28" failures="0" errors="0" skipped="0" time="0.049522645">
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosPost.test.ts" name="axiosPost &gt; basic functionality &gt; should make POST request with correct parameters" time="0.005328012">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosPost.test.ts" name="axiosPost &gt; basic functionality &gt; should use empty object as request body" time="0.000979265">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosPost.test.ts" name="axiosPost &gt; basic functionality &gt; should create Agent with rejectUnauthorized: false" time="0.00064193">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosPost.test.ts" name="axiosPost &gt; headers configuration &gt; should include required headers" time="0.003102278">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosPost.test.ts" name="axiosPost &gt; headers configuration &gt; should always include Accept header for JSON responses" time="0.000897554">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosPost.test.ts" name="axiosPost &gt; headers configuration &gt; should always include X-Plex-Token header" time="0.000586619">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosPost.test.ts" name="axiosPost &gt; HTTPS Agent configuration &gt; should use custom HTTPS agent" time="0.001456892">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosPost.test.ts" name="axiosPost &gt; HTTPS Agent configuration &gt; should configure agent to not reject unauthorized certificates" time="0.003715626">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosPost.test.ts" name="axiosPost &gt; HTTPS Agent configuration &gt; should create new agent instance for each call" time="0.000900154">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosPost.test.ts" name="axiosPost &gt; error handling &gt; should propagate axios errors" time="0.003614526">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosPost.test.ts" name="axiosPost &gt; error handling &gt; should propagate HTTP error responses" time="0.001049786">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosPost.test.ts" name="axiosPost &gt; error handling &gt; should handle server errors" time="0.000888503">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosPost.test.ts" name="axiosPost &gt; error handling &gt; should handle connection timeouts" time="0.0013277">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosPost.test.ts" name="axiosPost &gt; type safety &gt; should support generic type parameters" time="0.001489093">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosPost.test.ts" name="axiosPost &gt; type safety &gt; should handle complex response types" time="0.000879994">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosPost.test.ts" name="axiosPost &gt; type safety &gt; should handle void response types" time="0.000867893">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosPost.test.ts" name="axiosPost &gt; Plex API specific features &gt; should work with playlist creation endpoint" time="0.001510703">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosPost.test.ts" name="axiosPost &gt; Plex API specific features &gt; should work with different Plex server URLs" time="0.001699566">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosPost.test.ts" name="axiosPost &gt; Plex API specific features &gt; should handle different token formats" time="0.002990355">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosPost.test.ts" name="axiosPost &gt; performance and reliability &gt; should handle concurrent requests" time="0.001787798">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosPost.test.ts" name="axiosPost &gt; performance and reliability &gt; should maintain consistent configuration across calls" time="0.002649041">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosPost.test.ts" name="axiosPost &gt; performance and reliability &gt; should handle large response payloads" time="0.001260549">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosPost.test.ts" name="axiosPost &gt; edge cases &gt; should handle empty token" time="0.001355451">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosPost.test.ts" name="axiosPost &gt; edge cases &gt; should handle special characters in URL" time="0.001724177">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosPost.test.ts" name="axiosPost &gt; edge cases &gt; should handle very long URLs" time="0.000761342">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosPost.test.ts" name="axiosPost &gt; edge cases &gt; should work with HTTP and HTTPS URLs" time="0.000857213">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosPost.test.ts" name="axiosPost &gt; request body consistency &gt; should always send empty object as body" time="0.000592819">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosPost.test.ts" name="axiosPost &gt; request body consistency &gt; should send same body structure across multiple calls" time="0.000574478">
+        </testcase>
+    </testsuite>
+    <testsuite name="packages/http-client/src/__tests__/methods/axiosPut.test.ts" timestamp="2025-09-10T12:38:55.231Z" hostname="c82ba9db4d53" tests="32" failures="0" errors="0" skipped="0" time="0.062787418">
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosPut.test.ts" name="axiosPut &gt; basic functionality &gt; should make PUT request with correct parameters" time="0.007520485">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosPut.test.ts" name="axiosPut &gt; basic functionality &gt; should use empty object as request body" time="0.00130047">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosPut.test.ts" name="axiosPut &gt; basic functionality &gt; should create Agent with rejectUnauthorized: false" time="0.000996035">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosPut.test.ts" name="axiosPut &gt; headers configuration &gt; should include required headers" time="0.004914885">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosPut.test.ts" name="axiosPut &gt; headers configuration &gt; should always include Accept header for JSON responses" time="0.001424951">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosPut.test.ts" name="axiosPut &gt; headers configuration &gt; should always include X-Plex-Token header" time="0.005423803">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosPut.test.ts" name="axiosPut &gt; HTTPS Agent configuration &gt; should use custom HTTPS agent" time="0.001588834">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosPut.test.ts" name="axiosPut &gt; HTTPS Agent configuration &gt; should configure agent to not reject unauthorized certificates" time="0.000598089">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosPut.test.ts" name="axiosPut &gt; HTTPS Agent configuration &gt; should create new agent instance for each call" time="0.000672261">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosPut.test.ts" name="axiosPut &gt; error handling &gt; should propagate axios errors" time="0.003862668">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosPut.test.ts" name="axiosPut &gt; error handling &gt; should propagate HTTP error responses" time="0.001124897">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosPut.test.ts" name="axiosPut &gt; error handling &gt; should handle authorization errors" time="0.000956794">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosPut.test.ts" name="axiosPut &gt; error handling &gt; should handle conflict errors" time="0.003161688">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosPut.test.ts" name="axiosPut &gt; error handling &gt; should handle connection timeouts" time="0.001216319">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosPut.test.ts" name="axiosPut &gt; type safety &gt; should support generic type parameters" time="0.000894163">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosPut.test.ts" name="axiosPut &gt; type safety &gt; should handle complex response types" time="0.001701416">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosPut.test.ts" name="axiosPut &gt; type safety &gt; should handle void response types" time="0.000870473">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosPut.test.ts" name="axiosPut &gt; Plex API specific features &gt; should work with playlist update endpoint" time="0.001130877">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosPut.test.ts" name="axiosPut &gt; Plex API specific features &gt; should work with different Plex resource endpoints" time="0.001585704">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosPut.test.ts" name="axiosPut &gt; Plex API specific features &gt; should handle different token formats" time="0.003653186">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosPut.test.ts" name="axiosPut &gt; performance and reliability &gt; should handle concurrent requests" time="0.002163173">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosPut.test.ts" name="axiosPut &gt; performance and reliability &gt; should maintain consistent configuration across calls" time="0.002503148">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosPut.test.ts" name="axiosPut &gt; performance and reliability &gt; should handle large response payloads" time="0.001267159">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosPut.test.ts" name="axiosPut &gt; performance and reliability &gt; should handle network retries gracefully" time="0.001184598">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosPut.test.ts" name="axiosPut &gt; edge cases &gt; should handle empty token" time="0.000932004">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosPut.test.ts" name="axiosPut &gt; edge cases &gt; should handle special characters in URL" time="0.00065158">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosPut.test.ts" name="axiosPut &gt; edge cases &gt; should handle very long URLs" time="0.000766412">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosPut.test.ts" name="axiosPut &gt; edge cases &gt; should work with both HTTP and HTTPS URLs" time="0.000859163">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosPut.test.ts" name="axiosPut &gt; edge cases &gt; should handle numeric IDs in URLs" time="0.000695191">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosPut.test.ts" name="axiosPut &gt; request body consistency &gt; should always send empty object as body" time="0.000886404">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosPut.test.ts" name="axiosPut &gt; request body consistency &gt; should send same body structure across multiple calls" time="0.001041256">
+        </testcase>
+        <testcase classname="packages/http-client/src/__tests__/methods/axiosPut.test.ts" name="axiosPut &gt; idempotency characteristics &gt; should be idempotent - multiple calls with same parameters" time="0.000772102">
+        </testcase>
+    </testsuite>
+    <testsuite name="packages/shared-utils/src/__tests__/utils/getAPIUrl.test.ts" timestamp="2025-09-10T12:38:55.254Z" hostname="c82ba9db4d53" tests="34" failures="0" errors="0" skipped="0" time="0.033165296">
+        <testcase classname="packages/shared-utils/src/__tests__/utils/getAPIUrl.test.ts" name="getAPIUrl &gt; basic functionality &gt; should construct API URL with protocol, host and path" time="0.002858064">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/utils/getAPIUrl.test.ts" name="getAPIUrl &gt; basic functionality &gt; should work with HTTPS URLs" time="0.000427136">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/utils/getAPIUrl.test.ts" name="getAPIUrl &gt; basic functionality &gt; should handle paths with query parameters" time="0.000652039">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/utils/getAPIUrl.test.ts" name="getAPIUrl &gt; basic functionality &gt; should handle root path" time="0.000505098">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/utils/getAPIUrl.test.ts" name="getAPIUrl &gt; port validation &gt; should throw error when port is missing" time="0.001831808">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/utils/getAPIUrl.test.ts" name="getAPIUrl &gt; port validation &gt; should throw error when URL has no port in hostname only format" time="0.000543238">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/utils/getAPIUrl.test.ts" name="getAPIUrl &gt; port validation &gt; should work with explicit port numbers" time="0.000798092">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/utils/getAPIUrl.test.ts" name="getAPIUrl &gt; port validation &gt; should work with default HTTPS port" time="0.000488487">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/utils/getAPIUrl.test.ts" name="getAPIUrl &gt; port validation &gt; should work with default HTTP port" time="0.000481157">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/utils/getAPIUrl.test.ts" name="getAPIUrl &gt; URL parsing &gt; should handle complex hostnames" time="0.000951494">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/utils/getAPIUrl.test.ts" name="getAPIUrl &gt; URL parsing &gt; should preserve protocol from original URL" time="0.000789832">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/utils/getAPIUrl.test.ts" name="getAPIUrl &gt; URL parsing &gt; should handle URLs with existing paths that get replaced" time="0.000861893">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/utils/getAPIUrl.test.ts" name="getAPIUrl &gt; URL parsing &gt; should handle URLs with query parameters that get replaced" time="0.000371386">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/utils/getAPIUrl.test.ts" name="getAPIUrl &gt; URL parsing &gt; should handle URLs with fragments that get replaced" time="0.00062795">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/utils/getAPIUrl.test.ts" name="getAPIUrl &gt; path handling &gt; should handle paths starting with slash" time="0.000365045">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/utils/getAPIUrl.test.ts" name="getAPIUrl &gt; path handling &gt; should handle paths not starting with slash" time="0.000396366">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/utils/getAPIUrl.test.ts" name="getAPIUrl &gt; path handling &gt; should handle empty paths" time="0.000292664">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/utils/getAPIUrl.test.ts" name="getAPIUrl &gt; path handling &gt; should handle complex paths" time="0.000792972">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/utils/getAPIUrl.test.ts" name="getAPIUrl &gt; path handling &gt; should handle paths with special characters" time="0.000436196">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/utils/getAPIUrl.test.ts" name="getAPIUrl &gt; error handling &gt; should throw specific error message about Roon extension" time="0.000487938">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/utils/getAPIUrl.test.ts" name="getAPIUrl &gt; error handling &gt; should handle malformed URLs gracefully" time="0.000464837">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/utils/getAPIUrl.test.ts" name="getAPIUrl &gt; error handling &gt; should handle invalid protocols" time="0.000593529">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/utils/getAPIUrl.test.ts" name="getAPIUrl &gt; real-world usage patterns &gt; should work with typical Plex server configurations" time="0.001084847">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/utils/getAPIUrl.test.ts" name="getAPIUrl &gt; real-world usage patterns &gt; should work with Plex API endpoints" time="0.000809483">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/utils/getAPIUrl.test.ts" name="getAPIUrl &gt; real-world usage patterns &gt; should handle dynamic port assignments" time="0.000612019">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/utils/getAPIUrl.test.ts" name="getAPIUrl &gt; URL component preservation &gt; should preserve protocol exactly" time="0.000370775">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/utils/getAPIUrl.test.ts" name="getAPIUrl &gt; URL component preservation &gt; should preserve hostname exactly" time="0.00064387">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/utils/getAPIUrl.test.ts" name="getAPIUrl &gt; URL component preservation &gt; should preserve port exactly" time="0.000537418">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/utils/getAPIUrl.test.ts" name="getAPIUrl &gt; edge cases &gt; should handle very long paths" time="0.000317585">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/utils/getAPIUrl.test.ts" name="getAPIUrl &gt; edge cases &gt; should handle paths with Unicode characters" time="0.000234454">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/utils/getAPIUrl.test.ts" name="getAPIUrl &gt; edge cases &gt; should handle IPv6 addresses with ports" time="0.000225903">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/utils/getAPIUrl.test.ts" name="getAPIUrl &gt; edge cases &gt; should handle unusual but valid port numbers" time="0.000429446">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/utils/getAPIUrl.test.ts" name="getAPIUrl &gt; performance &gt; should handle many URL constructions efficiently" time="0.006838744">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/utils/getAPIUrl.test.ts" name="getAPIUrl &gt; performance &gt; should handle complex URLs efficiently" time="0.000410326">
+        </testcase>
+    </testsuite>
+    <testsuite name="packages/shared-utils/src/__tests__/array/filterUnique.test.ts" timestamp="2025-09-10T12:38:55.268Z" hostname="c82ba9db4d53" tests="14" failures="0" errors="0" skipped="0" time="0.022145708">
+        <testcase classname="packages/shared-utils/src/__tests__/array/filterUnique.test.ts" name="filterUnique &gt; basic functionality &gt; should filter out duplicate strings" time="0.003769007">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/array/filterUnique.test.ts" name="filterUnique &gt; basic functionality &gt; should filter out duplicate numbers" time="0.000558198">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/array/filterUnique.test.ts" name="filterUnique &gt; basic functionality &gt; should handle empty array" time="0.000608519">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/array/filterUnique.test.ts" name="filterUnique &gt; basic functionality &gt; should handle array with no duplicates" time="0.00062291">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/array/filterUnique.test.ts" name="filterUnique &gt; edge cases &gt; should handle single element array" time="0.000482067">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/array/filterUnique.test.ts" name="filterUnique &gt; edge cases &gt; should handle array with all same elements" time="0.000362805">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/array/filterUnique.test.ts" name="filterUnique &gt; edge cases &gt; should handle null and undefined values" time="0.000404796">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/array/filterUnique.test.ts" name="filterUnique &gt; edge cases &gt; should handle mixed data types" time="0.000561479">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/array/filterUnique.test.ts" name="filterUnique &gt; object references &gt; should compare object references, not values" time="0.002215224">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/array/filterUnique.test.ts" name="filterUnique &gt; object references &gt; should handle array of objects with same reference" time="0.000926874">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/array/filterUnique.test.ts" name="filterUnique &gt; performance considerations &gt; should handle large arrays efficiently" time="0.005677487">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/array/filterUnique.test.ts" name="filterUnique &gt; performance considerations &gt; should maintain original order of first occurrences" time="0.000517748">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/array/filterUnique.test.ts" name="filterUnique &gt; function signature verification &gt; should be compatible with Array.prototype.filter" time="0.000330625">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/array/filterUnique.test.ts" name="filterUnique &gt; function signature verification &gt; should receive correct parameters from filter" time="0.001367131">
+        </testcase>
+    </testsuite>
+    <testsuite name="packages/shared-utils/src/__tests__/validation/validateExpression.basic.test.ts" timestamp="2025-09-10T12:38:55.274Z" hostname="c82ba9db4d53" tests="12" failures="0" errors="0" skipped="0" time="0.023985956">
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.basic.test.ts" name="validateExpression - Basic Validation &gt; basic validation &gt; should return valid: false for empty expression" time="0.004965606">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.basic.test.ts" name="validateExpression - Basic Validation &gt; basic validation &gt; should return valid: false for whitespace-only expression" time="0.000874624">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.basic.test.ts" name="validateExpression - Basic Validation &gt; basic validation &gt; should return valid: true for single valid field" time="0.002451417">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.basic.test.ts" name="validateExpression - Basic Validation &gt; basic validation &gt; should return valid: true for field with operation" time="0.001415272">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.basic.test.ts" name="validateExpression - Basic Validation &gt; field validation &gt; should accept all valid fields as standalone" time="0.002461747">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.basic.test.ts" name="validateExpression - Basic Validation &gt; field validation &gt; should accept all valid fields with operations" time="0.00260891">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.basic.test.ts" name="validateExpression - Basic Validation &gt; field validation &gt; should reject invalid field names" time="0.001595405">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.basic.test.ts" name="validateExpression - Basic Validation &gt; field validation &gt; should reject multiple invalid fields" time="0.000822883">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.basic.test.ts" name="validateExpression - Basic Validation &gt; field validation &gt; should handle mixed valid and invalid fields" time="0.000708691">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.basic.test.ts" name="validateExpression - Basic Validation &gt; mixed field formats &gt; should handle expressions with both field:operation and standalone fields" time="0.000771301">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.basic.test.ts" name="validateExpression - Basic Validation &gt; mixed field formats &gt; should handle multiple standalone fields" time="0.00062882">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.basic.test.ts" name="validateExpression - Basic Validation &gt; mixed field formats &gt; should handle all standalone fields" time="0.00063057">
+        </testcase>
+    </testsuite>
+    <testsuite name="packages/shared-utils/src/__tests__/validation/validateExpression.boolean.test.ts" timestamp="2025-09-10T12:38:55.279Z" hostname="c82ba9db4d53" tests="8" failures="0" errors="0" skipped="0" time="0.017515237">
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.boolean.test.ts" name="validateExpression - Boolean Operators &gt; boolean operator validation &gt; should accept AND operator" time="0.006303246">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.boolean.test.ts" name="validateExpression - Boolean Operators &gt; boolean operator validation &gt; should accept OR operator" time="0.001211069">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.boolean.test.ts" name="validateExpression - Boolean Operators &gt; boolean operator validation &gt; should reject invalid boolean operators" time="0.001613485">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.boolean.test.ts" name="validateExpression - Boolean Operators &gt; boolean operator validation &gt; should reject all invalid boolean operators comprehensively" time="0.002407337">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.boolean.test.ts" name="validateExpression - Boolean Operators &gt; boolean operator validation &gt; should handle mixed case invalid operators" time="0.000856203">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.boolean.test.ts" name="validateExpression - Boolean Operators &gt; boolean operator validation &gt; should detect multiple invalid operators in single expression" time="0.000535359">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.boolean.test.ts" name="validateExpression - Boolean Operators &gt; boolean operator validation &gt; should handle multiple boolean operators" time="0.000694931">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.boolean.test.ts" name="validateExpression - Boolean Operators &gt; boolean operator validation &gt; should be case sensitive for operators" time="0.000491237">
+        </testcase>
+    </testsuite>
+    <testsuite name="packages/shared-utils/src/__tests__/validation/validateExpression.edge-cases.test.ts" timestamp="2025-09-10T12:38:55.282Z" hostname="c82ba9db4d53" tests="12" failures="0" errors="0" skipped="0" time="0.027911655">
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.edge-cases.test.ts" name="validateExpression - Edge Cases &gt; edge cases &gt; should handle single character inputs" time="0.006633341">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.edge-cases.test.ts" name="validateExpression - Edge Cases &gt; edge cases &gt; should handle field extraction edge cases" time="0.001862719">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.edge-cases.test.ts" name="validateExpression - Edge Cases &gt; edge cases &gt; should handle regex special characters in field context" time="0.001793697">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.edge-cases.test.ts" name="validateExpression - Edge Cases &gt; edge cases &gt; should validate exact syntax pattern matching" time="0.000779782">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.edge-cases.test.ts" name="validateExpression - Edge Cases &gt; edge cases &gt; should handle expressions with only operators" time="0.000403476">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.edge-cases.test.ts" name="validateExpression - Edge Cases &gt; edge cases &gt; should handle expressions with only colons" time="0.000518898">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.edge-cases.test.ts" name="validateExpression - Edge Cases &gt; edge cases &gt; should handle unicode characters" time="0.001652015">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.edge-cases.test.ts" name="validateExpression - Edge Cases &gt; edge cases &gt; should handle extremely malformed expressions" time="0.002544339">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.edge-cases.test.ts" name="validateExpression - Edge Cases &gt; edge cases &gt; should maintain consistent validation result structure" time="0.004465708">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.edge-cases.test.ts" name="validateExpression - Edge Cases &gt; error handling &gt; should handle parsing errors gracefully" time="0.000907673">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.edge-cases.test.ts" name="validateExpression - Edge Cases &gt; error handling &gt; should return ValidationResult interface" time="0.000733531">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.edge-cases.test.ts" name="validateExpression - Edge Cases &gt; error handling &gt; should handle very long expressions" time="0.000965254">
+        </testcase>
+    </testsuite>
+    <testsuite name="packages/shared-utils/src/__tests__/validation/validateExpression.integration.test.ts" timestamp="2025-09-10T12:38:55.287Z" hostname="c82ba9db4d53" tests="10" failures="0" errors="0" skipped="0" time="0.044565699">
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.integration.test.ts" name="validateExpression - Integration &amp; Error Messages &gt; comprehensive integration &gt; should validate real-world music search expressions" time="0.007728278">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.integration.test.ts" name="validateExpression - Integration &amp; Error Messages &gt; comprehensive integration &gt; should handle all valid field combinations with all operations" time="0.004919075">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.integration.test.ts" name="validateExpression - Integration &amp; Error Messages &gt; comprehensive integration &gt; should provide specific error messages for each validation failure" time="0.007997392">
+            <system-out>
+Expression &quot;artist:match AND&quot; failed validation with errors: [
+  [32m&apos;Invalid expression syntax. Expected format: &quot;field[:operation] AND/OR field[:operation]&quot;&apos;[39m
+]
+
+            </system-out>
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.integration.test.ts" name="validateExpression - Integration &amp; Error Messages &gt; comprehensive integration &gt; should provide helpful error messages" time="0.000802732">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.integration.test.ts" name="validateExpression - Integration &amp; Error Messages &gt; error message quality and specificity &gt; should provide clear and actionable error messages" time="0.000963195">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.integration.test.ts" name="validateExpression - Integration &amp; Error Messages &gt; error message quality and specificity &gt; should provide multiple specific errors for expressions with multiple issues" time="0.000967255">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.integration.test.ts" name="validateExpression - Integration &amp; Error Messages &gt; error message quality and specificity &gt; should prioritize validation errors appropriately" time="0.000630669">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.integration.test.ts" name="validateExpression - Integration &amp; Error Messages &gt; consistency and determinism &gt; should return identical results for identical inputs" time="0.003859869">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.integration.test.ts" name="validateExpression - Integration &amp; Error Messages &gt; consistency and determinism &gt; should handle concurrent validations consistently" time="0.011885951">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.integration.test.ts" name="validateExpression - Integration &amp; Error Messages &gt; consistency and determinism &gt; should maintain validation behavior across different input encodings" time="0.001365301">
+        </testcase>
+    </testsuite>
+    <testsuite name="packages/shared-utils/src/__tests__/validation/validateExpression.operations.test.ts" timestamp="2025-09-10T12:38:55.292Z" hostname="c82ba9db4d53" tests="10" failures="0" errors="0" skipped="0" time="0.029181515">
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.operations.test.ts" name="validateExpression - Operations Validation &gt; operation validation &gt; should accept all valid operations" time="0.008206026">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.operations.test.ts" name="validateExpression - Operations Validation &gt; operation validation &gt; should handle operation regex pattern with special characters" time="0.002390846">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.operations.test.ts" name="validateExpression - Operations Validation &gt; operation validation &gt; should reject operations with invalid characters" time="0.0026746">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.operations.test.ts" name="validateExpression - Operations Validation &gt; operation validation &gt; should accept similarity operations with valid thresholds" time="0.002499338">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.operations.test.ts" name="validateExpression - Operations Validation &gt; operation validation &gt; should handle boundary values for similarity thresholds" time="0.001545943">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.operations.test.ts" name="validateExpression - Operations Validation &gt; operation validation &gt; should validate exact similarity threshold error messages" time="0.000511628">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.operations.test.ts" name="validateExpression - Operations Validation &gt; operation validation &gt; should handle similarity operations with malformed syntax" time="0.001357561">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.operations.test.ts" name="validateExpression - Operations Validation &gt; operation validation &gt; should reject invalid operations" time="0.001035046">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.operations.test.ts" name="validateExpression - Operations Validation &gt; operation validation &gt; should reject similarity operations with invalid thresholds" time="0.002352056">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.operations.test.ts" name="validateExpression - Operations Validation &gt; operation validation &gt; should handle missing similarity threshold" time="0.002810823">
+        </testcase>
+    </testsuite>
+    <testsuite name="packages/shared-utils/src/__tests__/validation/validateExpression.performance.test.ts" timestamp="2025-09-10T12:38:55.299Z" hostname="c82ba9db4d53" tests="6" failures="0" errors="0" skipped="0" time="0.08982581">
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.performance.test.ts" name="validateExpression - Performance &amp; Security &gt; performance &gt; should handle moderately complex expressions efficiently" time="0.004360287">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.performance.test.ts" name="validateExpression - Performance &amp; Security &gt; performance &gt; should handle many validation calls efficiently" time="0.04918165">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.performance.test.ts" name="validateExpression - Performance &amp; Security &gt; performance &gt; should handle deeply nested validation without performance degradation" time="0.006759503">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.performance.test.ts" name="validateExpression - Performance &amp; Security &gt; security and robustness &gt; should handle potential ReDoS (Regular Expression Denial of Service) patterns" time="0.016515642">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.performance.test.ts" name="validateExpression - Performance &amp; Security &gt; security and robustness &gt; should sanitize and handle injection-like patterns safely" time="0.001622095">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.performance.test.ts" name="validateExpression - Performance &amp; Security &gt; security and robustness &gt; should handle extremely large expressions without memory issues" time="0.003678776">
+        </testcase>
+    </testsuite>
+    <testsuite name="packages/shared-utils/src/__tests__/validation/validateExpression.structure.test.ts" timestamp="2025-09-10T12:38:55.306Z" hostname="c82ba9db4d53" tests="8" failures="0" errors="0" skipped="0" time="0.022500574">
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.structure.test.ts" name="validateExpression - Expression Structure &gt; expression structure validation &gt; should validate balanced expressions" time="0.009680187">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.structure.test.ts" name="validateExpression - Expression Structure &gt; expression structure validation &gt; should validate operator-to-condition ratio precisely" time="0.00332966">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.structure.test.ts" name="validateExpression - Expression Structure &gt; expression structure validation &gt; should handle complex nested logical patterns" time="0.001846538">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.structure.test.ts" name="validateExpression - Expression Structure &gt; expression structure validation &gt; should reject unbalanced expressions" time="0.001044335">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.structure.test.ts" name="validateExpression - Expression Structure &gt; expression structure validation &gt; should handle complex valid expressions" time="0.001450872">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.structure.test.ts" name="validateExpression - Expression Structure &gt; whitespace handling &gt; should handle expressions with extra whitespace" time="0.00068455">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.structure.test.ts" name="validateExpression - Expression Structure &gt; whitespace handling &gt; should handle expressions with no spaces around operators" time="0.000612119">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.structure.test.ts" name="validateExpression - Expression Structure &gt; whitespace handling &gt; should handle tabs and other whitespace characters" time="0.000632269">
+        </testcase>
+    </testsuite>
+    <testsuite name="packages/shared-utils/src/__tests__/validation/validateExpression.test.ts" timestamp="2025-09-10T12:38:55.309Z" hostname="c82ba9db4d53" tests="3" failures="0" errors="0" skipped="0" time="0.010342068">
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.test.ts" name="validateExpression - Smoke Tests &gt; should validate a basic expression" time="0.005989801">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.test.ts" name="validateExpression - Smoke Tests &gt; should reject an invalid expression" time="0.001013365">
+        </testcase>
+        <testcase classname="packages/shared-utils/src/__tests__/validation/validateExpression.test.ts" name="validateExpression - Smoke Tests &gt; should handle empty input" time="0.000832903">
+        </testcase>
+    </testsuite>
+    <testsuite name="packages/music-search/src/__tests__/functions/parseExpression.basic.test.ts" timestamp="2025-09-10T12:38:55.310Z" hostname="c82ba9db4d53" tests="31" failures="0" errors="0" skipped="0" time="0.041419422">
+        <testcase classname="packages/music-search/src/__tests__/functions/parseExpression.basic.test.ts" name="parseExpression - Basic Functionality &gt; basic functionality &gt; should return a function when given a valid expression" time="0.002799753">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/functions/parseExpression.basic.test.ts" name="parseExpression - Basic Functionality &gt; basic functionality &gt; should return a function that always returns false for invalid expressions" time="0.001211429">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/functions/parseExpression.basic.test.ts" name="parseExpression - Basic Functionality &gt; basic functionality &gt; should handle empty expressions gracefully" time="0.000528458">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/functions/parseExpression.basic.test.ts" name="parseExpression - Basic Functionality &gt; simple field expressions &gt; match operation &gt; should filter by artist match" time="0.000740061">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/functions/parseExpression.basic.test.ts" name="parseExpression - Basic Functionality &gt; simple field expressions &gt; match operation &gt; should filter by title match" time="0.000824163">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/functions/parseExpression.basic.test.ts" name="parseExpression - Basic Functionality &gt; simple field expressions &gt; match operation &gt; should filter by album match" time="0.000850943">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/functions/parseExpression.basic.test.ts" name="parseExpression - Basic Functionality &gt; simple field expressions &gt; match operation &gt; should filter by artistWithTitle match" time="0.000423586">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/functions/parseExpression.basic.test.ts" name="parseExpression - Basic Functionality &gt; simple field expressions &gt; match operation &gt; should filter by artistInTitle match" time="0.00060966">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/functions/parseExpression.basic.test.ts" name="parseExpression - Basic Functionality &gt; simple field expressions &gt; contains operation &gt; should filter by artist contains" time="0.000679331">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/functions/parseExpression.basic.test.ts" name="parseExpression - Basic Functionality &gt; simple field expressions &gt; contains operation &gt; should filter by title contains" time="0.000418136">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/functions/parseExpression.basic.test.ts" name="parseExpression - Basic Functionality &gt; simple field expressions &gt; is operation (exact match) &gt; should filter by exact match (both match and contains)" time="0.000548809">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/functions/parseExpression.basic.test.ts" name="parseExpression - Basic Functionality &gt; simple field expressions &gt; not operation (negation) &gt; should filter by negated match" time="0.000299404">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/functions/parseExpression.basic.test.ts" name="parseExpression - Basic Functionality &gt; simple field expressions &gt; similarity operations &gt; should filter by similarity threshold" time="0.0006379">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/functions/parseExpression.basic.test.ts" name="parseExpression - Basic Functionality &gt; simple field expressions &gt; similarity operations &gt; should handle different similarity thresholds" time="0.000759792">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/functions/parseExpression.basic.test.ts" name="parseExpression - Basic Functionality &gt; simple field expressions &gt; similarity operations &gt; should handle missing similarity values" time="0.000373666">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/functions/parseExpression.basic.test.ts" name="parseExpression - Basic Functionality &gt; invalid expressions and error handling &gt; should handle invalid field names" time="0.006135533">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/functions/parseExpression.basic.test.ts" name="parseExpression - Basic Functionality &gt; invalid expressions and error handling &gt; should handle invalid operations" time="0.000933604">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/functions/parseExpression.basic.test.ts" name="parseExpression - Basic Functionality &gt; invalid expressions and error handling &gt; should handle invalid similarity thresholds" time="0.001330971">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/functions/parseExpression.basic.test.ts" name="parseExpression - Basic Functionality &gt; invalid expressions and error handling &gt; should handle malformed condition format" time="0.001759417">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/functions/parseExpression.basic.test.ts" name="parseExpression - Basic Functionality &gt; invalid expressions and error handling &gt; should handle invalid operators" time="0.00069604">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/functions/parseExpression.basic.test.ts" name="parseExpression - Basic Functionality &gt; invalid expressions and error handling &gt; should handle expressions with only operators" time="0.000532388">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/functions/parseExpression.basic.test.ts" name="parseExpression - Basic Functionality &gt; edge cases and malformed input &gt; should handle expressions with extra whitespace" time="0.000448837">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/functions/parseExpression.basic.test.ts" name="parseExpression - Basic Functionality &gt; edge cases and malformed input &gt; should handle case sensitivity in operators" time="0.000431267">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/functions/parseExpression.basic.test.ts" name="parseExpression - Basic Functionality &gt; edge cases and malformed input &gt; should handle expressions with missing fields" time="0.000285414">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/functions/parseExpression.basic.test.ts" name="parseExpression - Basic Functionality &gt; edge cases and malformed input &gt; should handle boundary similarity values" time="0.000516468">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/functions/parseExpression.basic.test.ts" name="parseExpression - Basic Functionality &gt; edge cases and malformed input &gt; should handle expressions with no valid conditions" time="0.000391446">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/functions/parseExpression.basic.test.ts" name="parseExpression - Basic Functionality &gt; edge cases and malformed input &gt; should handle extremely long expressions" time="0.003113878">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/functions/parseExpression.basic.test.ts" name="parseExpression - Basic Functionality &gt; edge cases and malformed input &gt; should handle decimal precision in similarity thresholds" time="0.000481177">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/functions/parseExpression.basic.test.ts" name="parseExpression - Basic Functionality &gt; real-world scenarios &gt; should handle typical music search patterns" time="0.001398041">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/functions/parseExpression.basic.test.ts" name="parseExpression - Basic Functionality &gt; real-world scenarios &gt; should handle high-precision matching requirements" time="0.000440627">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/functions/parseExpression.basic.test.ts" name="parseExpression - Basic Functionality &gt; performance &gt; should handle many evaluations efficiently" time="0.006428308">
+        </testcase>
+    </testsuite>
+    <testsuite name="packages/music-search/src/__tests__/functions/parseExpression.complex.test.ts" timestamp="2025-09-10T12:38:55.320Z" hostname="c82ba9db4d53" tests="7" failures="0" errors="0" skipped="0" time="0.013987943">
+        <testcase classname="packages/music-search/src/__tests__/functions/parseExpression.complex.test.ts" name="parseExpression - Complex Boolean Expressions &gt; AND operations &gt; should handle simple AND expressions" time="0.005007506">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/functions/parseExpression.complex.test.ts" name="parseExpression - Complex Boolean Expressions &gt; AND operations &gt; should handle multiple AND operations" time="0.000960085">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/functions/parseExpression.complex.test.ts" name="parseExpression - Complex Boolean Expressions &gt; AND operations &gt; should handle mixed operations with AND" time="0.000943495">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/functions/parseExpression.complex.test.ts" name="parseExpression - Complex Boolean Expressions &gt; OR operations &gt; should handle simple OR expressions" time="0.001111097">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/functions/parseExpression.complex.test.ts" name="parseExpression - Complex Boolean Expressions &gt; OR operations &gt; should handle multiple OR operations" time="0.000889273">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/functions/parseExpression.complex.test.ts" name="parseExpression - Complex Boolean Expressions &gt; mixed AND/OR operations &gt; should handle combined AND/OR expressions (left-to-right evaluation)" time="0.000878433">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/functions/parseExpression.complex.test.ts" name="parseExpression - Complex Boolean Expressions &gt; mixed AND/OR operations &gt; should handle complex mixed expressions" time="0.00066458">
+        </testcase>
+    </testsuite>
+    <testsuite name="packages/music-search/src/__tests__/functions/parseExpression.migration.test.ts" timestamp="2025-09-10T12:38:55.329Z" hostname="c82ba9db4d53" tests="22" failures="0" errors="0" skipped="0" time="0.023774892">
+        <testcase classname="packages/music-search/src/__tests__/functions/parseExpression.migration.test.ts" name="parseExpression - Migration Functionality &gt; basic patterns &gt; should migrate artist match AND title match" time="0.004092602">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/functions/parseExpression.migration.test.ts" name="parseExpression - Migration Functionality &gt; basic patterns &gt; should migrate artist match AND title contains" time="0.001249709">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/functions/parseExpression.migration.test.ts" name="parseExpression - Migration Functionality &gt; basic patterns &gt; should migrate artist contains AND title match" time="0.001064086">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/functions/parseExpression.migration.test.ts" name="parseExpression - Migration Functionality &gt; similarity patterns &gt; should migrate artist similarity with threshold" time="0.001413262">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/functions/parseExpression.migration.test.ts" name="parseExpression - Migration Functionality &gt; similarity patterns &gt; should migrate artist match AND title similarity" time="0.000633489">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/functions/parseExpression.migration.test.ts" name="parseExpression - Migration Functionality &gt; similarity patterns &gt; should migrate artist contains AND title similarity" time="0.000842793">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/functions/parseExpression.migration.test.ts" name="parseExpression - Migration Functionality &gt; similarity patterns &gt; should migrate dual similarity thresholds" time="0.000827993">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/functions/parseExpression.migration.test.ts" name="parseExpression - Migration Functionality &gt; complex patterns &gt; should migrate triple condition with album" time="0.00063118">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/functions/parseExpression.migration.test.ts" name="parseExpression - Migration Functionality &gt; complex patterns &gt; should migrate complex similarity with match pattern" time="0.000995276">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/functions/parseExpression.migration.test.ts" name="parseExpression - Migration Functionality &gt; exact match patterns (is operation) &gt; should migrate artist exact match" time="0.000783132">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/functions/parseExpression.migration.test.ts" name="parseExpression - Migration Functionality &gt; exact match patterns (is operation) &gt; should migrate title exact match" time="0.000576939">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/functions/parseExpression.migration.test.ts" name="parseExpression - Migration Functionality &gt; negation patterns (not operation) &gt; should migrate artist not match" time="0.000458307">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/functions/parseExpression.migration.test.ts" name="parseExpression - Migration Functionality &gt; negation patterns (not operation) &gt; should migrate title not match" time="0.000499688">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/functions/parseExpression.migration.test.ts" name="parseExpression - Migration Functionality &gt; negation patterns (not operation) &gt; should handle complex negation patterns (current implementation behavior)" time="0.000689391">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/functions/parseExpression.migration.test.ts" name="parseExpression - Migration Functionality &gt; format variations &gt; should handle different function wrapper formats" time="0.000668151">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/functions/parseExpression.migration.test.ts" name="parseExpression - Migration Functionality &gt; format variations &gt; should handle extra whitespace" time="0.000327535">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/functions/parseExpression.migration.test.ts" name="parseExpression - Migration Functionality &gt; decimal precision in legacy filters &gt; should migrate artistWithTitle similarity patterns" time="0.000325555">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/functions/parseExpression.migration.test.ts" name="parseExpression - Migration Functionality &gt; decimal precision in legacy filters &gt; should handle integer thresholds" time="0.000295734">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/functions/parseExpression.migration.test.ts" name="parseExpression - Migration Functionality &gt; unmigrateable patterns &gt; should return null for unrecognized patterns" time="0.000473658">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/functions/parseExpression.migration.test.ts" name="parseExpression - Migration Functionality &gt; unmigrateable patterns &gt; should return null for malformed input" time="0.000821553">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/functions/parseExpression.migration.test.ts" name="parseExpression - Migration Functionality &gt; unmigrateable patterns &gt; should handle errors gracefully" time="0.000362506">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/functions/parseExpression.migration.test.ts" name="parseExpression - Migration Functionality &gt; comprehensive migration test &gt; should migrate all supported patterns correctly" time="0.000791202">
+        </testcase>
+    </testsuite>
+    <testsuite name="packages/music-search/src/__tests__/utils/compareTitles.test.ts" timestamp="2025-09-10T12:38:55.336Z" hostname="c82ba9db4d53" tests="52" failures="0" errors="0" skipped="0" time="0.290726464">
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; basic functionality &gt; should return default result for undefined inputs" time="0.00723564">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; basic functionality &gt; should return default result when first parameter is undefined" time="0.000755522">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; basic functionality &gt; should return default result when second parameter is undefined" time="0.000806823">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; basic functionality &gt; should return default result for empty strings" time="0.000725261">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; exact matching &gt; should detect exact matches (case insensitive)" time="0.027964996">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; exact matching &gt; should detect exact matches with different cases" time="0.000727101">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; exact matching &gt; should not match different strings" time="0.000473808">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; exact matching &gt; should handle punctuation in matching" time="0.000458077">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; contains functionality &gt; one-way contains (default) &gt; should detect when second string contains in first (normalized)" time="0.001041076">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; contains functionality &gt; one-way contains (default) &gt; should not detect when first string contains in second" time="0.00067212">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; contains functionality &gt; one-way contains (default) &gt; should handle case insensitive contains" time="0.000509647">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; contains functionality &gt; two-way contains &gt; should detect contains in both directions when twoWayContain is true" time="0.000822733">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; contains functionality &gt; two-way contains &gt; should work with two-way contains for equal strings" time="0.00065565">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; contains functionality &gt; short title exclusion &gt; should not use contains for titles shorter than 5 characters" time="0.01241424">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; contains functionality &gt; short title exclusion &gt; should not use contains when second title is shorter than 5 characters" time="0.000735621">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; contains functionality &gt; short title exclusion &gt; should use contains when both titles are 5+ characters" time="0.00062003">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; contains functionality &gt; short title exclusion &gt; should handle exactly 5 character strings" time="0.000518328">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; similarity scoring &gt; should return similarity score between 0 and 1" time="0.000867383">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; similarity scoring &gt; should return higher similarity for similar strings" time="0.000542339">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; similarity scoring &gt; should return perfect similarity for identical strings" time="0.000684691">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; createSearchString integration &gt; should call createSearchString for contains logic" time="0.002443967">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; createSearchString integration &gt; should call createSearchString twice for two-way contains" time="0.00064158">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; createSearchString integration &gt; should not call createSearchString for short titles" time="0.000764632">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; remix and ratio-based reverse containment &gt; should detect reverse containment when shorter string is &gt;=50% of longer string length" time="0.00064973">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; remix and ratio-based reverse containment &gt; should handle exact 50% ratio boundary" time="0.000582409">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; remix and ratio-based reverse containment &gt; should only apply reverse containment when first string is shorter" time="0.000424667">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; remix and ratio-based reverse containment &gt; should not apply reverse containment when standard containment already found" time="0.000434107">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; remix and ratio-based reverse containment &gt; should handle complex remix scenarios" time="0.005049187">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; boundary case: 5-char first, 4-char second &gt; should handle exactly 5-char first string with 4-char second string" time="0.000384626">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; boundary case: 5-char first, 4-char second &gt; should handle exactly 5-char first string with 4-char second string that does not match" time="0.000307195">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; boundary case: 5-char first, 4-char second &gt; should not apply boundary case when first string is not exactly 5 chars" time="0.000428287">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; boundary case: 5-char first, 4-char second &gt; should not apply boundary case when second string is not exactly 4 chars" time="0.000443077">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; comprehensive edge cases and boundary conditions &gt; should handle null and undefined mixed scenarios" time="0.001419662">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; comprehensive edge cases and boundary conditions &gt; should handle empty and whitespace-only strings" time="0.001227959">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; comprehensive edge cases and boundary conditions &gt; should handle strings with only punctuation" time="0.00063251">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; comprehensive edge cases and boundary conditions &gt; should handle mixed case with whitespace trimming" time="0.000480398">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; comprehensive edge cases and boundary conditions &gt; should handle boundary lengths around 5-character threshold" time="0.000854833">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; advanced similarity and matching edge cases &gt; should handle strings that are similar but not exact matches" time="0.000987605">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; advanced similarity and matching edge cases &gt; should handle international characters correctly" time="0.001724156">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; advanced similarity and matching edge cases &gt; should calculate different similarity scores for different inputs" time="0.000866134">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; two-way containment comprehensive testing &gt; should work bidirectionally for all valid combinations" time="0.000930364">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; two-way containment comprehensive testing &gt; should respect 5-character minimum in two-way mode" time="0.000698001">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; real-world examples &gt; should handle music track comparisons" time="0.000958685">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; real-world examples &gt; should handle partial track matches" time="0.000816982">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; real-world examples &gt; should handle remixes and versions" time="0.000759161">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; real-world examples &gt; should handle abbreviations" time="0.00067576">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; real-world examples &gt; should handle common music industry patterns" time="0.001448152">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; edge cases &gt; should handle very long titles" time="0.002216574">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; edge cases &gt; should handle special characters" time="0.000457817">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; edge cases &gt; should handle unicode characters" time="0.000397036">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; edge cases &gt; should handle whitespace variations" time="0.000356076">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/compareTitles.test.ts" name="compareTitles &gt; performance &gt; should handle many comparisons efficiently" time="0.179102592">
+        </testcase>
+    </testsuite>
+    <testsuite name="packages/music-search/src/__tests__/utils/createSearchString.test.ts" timestamp="2025-09-10T12:38:55.349Z" hostname="c82ba9db4d53" tests="24" failures="0" errors="0" skipped="0" time="0.021799552">
+        <testcase classname="packages/music-search/src/__tests__/utils/createSearchString.test.ts" name="createSearchString &gt; basic functionality &gt; should convert string to lowercase" time="0.003488863">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/createSearchString.test.ts" name="createSearchString &gt; basic functionality &gt; should trim whitespace" time="0.000725821">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/createSearchString.test.ts" name="createSearchString &gt; basic functionality &gt; should handle empty string" time="0.00064008">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/createSearchString.test.ts" name="createSearchString &gt; basic functionality &gt; should handle whitespace-only string" time="0.000499438">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/createSearchString.test.ts" name="createSearchString &gt; diacritic normalization &gt; a variants &gt; should normalize à, á, â, ã, ä, å to a" time="0.000797092">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/createSearchString.test.ts" name="createSearchString &gt; diacritic normalization &gt; e variants &gt; should normalize è, é, ê, ë to e" time="0.000526598">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/createSearchString.test.ts" name="createSearchString &gt; diacritic normalization &gt; i variants &gt; should normalize ì, í, î, ï to i" time="0.000386606">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/createSearchString.test.ts" name="createSearchString &gt; diacritic normalization &gt; o variants &gt; should normalize ò, ó, ô, õ, ö to o" time="0.000377226">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/createSearchString.test.ts" name="createSearchString &gt; diacritic normalization &gt; u variants &gt; should normalize ù, ú, û, ü to u" time="0.000523378">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/createSearchString.test.ts" name="createSearchString &gt; diacritic normalization &gt; y variants &gt; should normalize ý, ÿ to y" time="0.000519358">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/createSearchString.test.ts" name="createSearchString &gt; diacritic normalization &gt; special characters &gt; should normalize æ to ae" time="0.000380856">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/createSearchString.test.ts" name="createSearchString &gt; diacritic normalization &gt; special characters &gt; should normalize œ to oe" time="0.000806632">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/createSearchString.test.ts" name="createSearchString &gt; diacritic normalization &gt; special characters &gt; should normalize ç to c" time="0.000507947">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/createSearchString.test.ts" name="createSearchString &gt; diacritic normalization &gt; special characters &gt; should normalize ñ to n" time="0.000819862">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/createSearchString.test.ts" name="createSearchString &gt; real-world examples &gt; should normalize music artist names" time="0.00067157">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/createSearchString.test.ts" name="createSearchString &gt; real-world examples &gt; should normalize song titles" time="0.000664981">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/createSearchString.test.ts" name="createSearchString &gt; real-world examples &gt; should handle mixed content" time="0.000393256">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/createSearchString.test.ts" name="createSearchString &gt; edge cases &gt; should handle strings with only diacritics" time="0.000280704">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/createSearchString.test.ts" name="createSearchString &gt; edge cases &gt; should handle mixed case with diacritics" time="0.000336975">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/createSearchString.test.ts" name="createSearchString &gt; edge cases &gt; should handle numbers and special characters" time="0.000348405">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/createSearchString.test.ts" name="createSearchString &gt; edge cases &gt; should handle very long strings" time="0.000578258">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/createSearchString.test.ts" name="createSearchString &gt; performance &gt; should handle large strings efficiently" time="0.001904569">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/createSearchString.test.ts" name="createSearchString &gt; consistency &gt; should be idempotent" time="0.000318435">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/createSearchString.test.ts" name="createSearchString &gt; consistency &gt; should handle null/undefined gracefully" time="0.000284814">
+        </testcase>
+    </testsuite>
+    <testsuite name="packages/music-search/src/__tests__/utils/filterOutWords.test.ts" timestamp="2025-09-10T12:38:55.359Z" hostname="c82ba9db4d53" tests="39" failures="0" errors="0" skipped="0" time="0.030968932">
+        <testcase classname="packages/music-search/src/__tests__/utils/filterOutWords.test.ts" name="filterOutWords &gt; basic functionality &gt; should convert input to lowercase" time="0.003472803">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/filterOutWords.test.ts" name="filterOutWords &gt; basic functionality &gt; should trim whitespace from result" time="0.000895374">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/filterOutWords.test.ts" name="filterOutWords &gt; basic functionality &gt; should handle empty string" time="0.00066345">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/filterOutWords.test.ts" name="filterOutWords &gt; basic functionality &gt; should handle whitespace-only string" time="0.00070199">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/filterOutWords.test.ts" name="filterOutWords &gt; word filtering &gt; should filter out words when filtered=true" time="0.000465167">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/filterOutWords.test.ts" name="filterOutWords &gt; word filtering &gt; should not filter out words when filtered=false" time="0.000717651">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/filterOutWords.test.ts" name="filterOutWords &gt; word filtering &gt; should filter multiple words" time="0.000474808">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/filterOutWords.test.ts" name="filterOutWords &gt; word filtering &gt; should handle case insensitive filtering" time="0.000548838">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/filterOutWords.test.ts" name="filterOutWords &gt; word filtering &gt; should handle words not in filter list" time="0.00066399">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/filterOutWords.test.ts" name="filterOutWords &gt; quote removal &gt; should remove quotes when removeQuotes=true" time="0.000523668">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/filterOutWords.test.ts" name="filterOutWords &gt; quote removal &gt; should not remove quotes when removeQuotes=false" time="0.000397146">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/filterOutWords.test.ts" name="filterOutWords &gt; quote removal &gt; should remove various quote types" time="0.000402506">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/filterOutWords.test.ts" name="filterOutWords &gt; quote removal &gt; should handle multiple quote characters" time="0.000533198">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/filterOutWords.test.ts" name="filterOutWords &gt; separator cut-off &gt; should cut off at separators when cutOffSeparators=true" time="0.000739061">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/filterOutWords.test.ts" name="filterOutWords &gt; separator cut-off &gt; should not cut off when cutOffSeparators=false" time="0.000527268">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/filterOutWords.test.ts" name="filterOutWords &gt; separator cut-off &gt; should cut off at last occurrence of separator" time="0.000363535">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/filterOutWords.test.ts" name="filterOutWords &gt; separator cut-off &gt; should handle multiple separator types" time="0.000565068">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/filterOutWords.test.ts" name="filterOutWords &gt; separator cut-off &gt; should not cut off if separator not found" time="0.000443987">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/filterOutWords.test.ts" name="filterOutWords &gt; empty brackets removal &gt; should remove empty brackets" time="0.000334995">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/filterOutWords.test.ts" name="filterOutWords &gt; empty brackets removal &gt; should remove multiple empty brackets" time="0.000299594">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/filterOutWords.test.ts" name="filterOutWords &gt; empty brackets removal &gt; should not remove non-empty brackets" time="0.000293044">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/filterOutWords.test.ts" name="filterOutWords &gt; trailing dash removal &gt; should remove trailing dashes" time="0.000465317">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/filterOutWords.test.ts" name="filterOutWords &gt; trailing dash removal &gt; should remove multiple trailing dashes" time="0.000306655">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/filterOutWords.test.ts" name="filterOutWords &gt; trailing dash removal &gt; should not remove dashes from short strings" time="0.000275644">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/filterOutWords.test.ts" name="filterOutWords &gt; trailing dash removal &gt; should handle starting dashes" time="0.000297995">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/filterOutWords.test.ts" name="filterOutWords &gt; trailing dash removal &gt; should not affect middle dashes" time="0.000298625">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/filterOutWords.test.ts" name="filterOutWords &gt; combined operations &gt; should apply all filters when all flags are true" time="0.000335945">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/filterOutWords.test.ts" name="filterOutWords &gt; combined operations &gt; should handle complex real-world examples" time="0.000307314">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/filterOutWords.test.ts" name="filterOutWords &gt; combined operations &gt; should preserve order of operations" time="0.000470118">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/filterOutWords.test.ts" name="filterOutWords &gt; edge cases &gt; should handle strings with only filtered content" time="0.000352995">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/filterOutWords.test.ts" name="filterOutWords &gt; edge cases &gt; should handle repeated separators" time="0.000290404">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/filterOutWords.test.ts" name="filterOutWords &gt; edge cases &gt; should handle mixed whitespace" time="0.003610905">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/filterOutWords.test.ts" name="filterOutWords &gt; edge cases &gt; should handle very long strings" time="0.000781191">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/filterOutWords.test.ts" name="filterOutWords &gt; edge cases &gt; should handle strings with only separators" time="0.000296914">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/filterOutWords.test.ts" name="filterOutWords &gt; configuration dependency &gt; should call getCurrentMusicSearchConfig" time="0.000647439">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/filterOutWords.test.ts" name="filterOutWords &gt; configuration dependency &gt; should use configuration values" time="0.000335635">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/filterOutWords.test.ts" name="filterOutWords &gt; configuration dependency &gt; should handle empty configuration arrays" time="0.000307765">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/filterOutWords.test.ts" name="filterOutWords &gt; performance &gt; should handle many filter operations efficiently" time="0.000489187">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/filterOutWords.test.ts" name="filterOutWords &gt; performance &gt; should handle large filter arrays efficiently" time="0.001864098">
+        </testcase>
+    </testsuite>
+    <testsuite name="packages/music-search/src/__tests__/utils/removeFeaturing.test.ts" timestamp="2025-09-10T12:38:55.366Z" hostname="c82ba9db4d53" tests="14" failures="0" errors="0" skipped="0" time="0.013349704">
+        <testcase classname="packages/music-search/src/__tests__/utils/removeFeaturing.test.ts" name="removeFeaturing &gt; happy path &gt; returns clean song titles" time="0.002468218">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/removeFeaturing.test.ts" name="removeFeaturing &gt; happy path &gt; removes feat markers" time="0.000727861">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/removeFeaturing.test.ts" name="removeFeaturing &gt; happy path &gt; removes parentheses content" time="0.000575648">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/removeFeaturing.test.ts" name="removeFeaturing &gt; happy path &gt; prioritizes first occurrence" time="0.000503347">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/removeFeaturing.test.ts" name="removeFeaturing &gt; edge cases &gt; handles boundary inputs: &quot;&quot; -&gt; &quot;&quot;" time="0.000347535">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/removeFeaturing.test.ts" name="removeFeaturing &gt; edge cases &gt; handles boundary inputs: &quot;(&quot; -&gt; &quot;&quot;" time="0.000246824">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/removeFeaturing.test.ts" name="removeFeaturing &gt; edge cases &gt; handles boundary inputs: &quot;feat&quot; -&gt; &quot;&quot;" time="0.000389526">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/removeFeaturing.test.ts" name="removeFeaturing &gt; edge cases &gt; handles boundary inputs: &quot;a&quot; -&gt; &quot;a&quot;" time="0.000262854">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/removeFeaturing.test.ts" name="removeFeaturing &gt; edge cases &gt; removes from first &quot;feat&quot; occurrence" time="0.000507518">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/removeFeaturing.test.ts" name="removeFeaturing &gt; edge cases &gt; handles case sensitivity" time="0.000679271">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/removeFeaturing.test.ts" name="removeFeaturing &gt; edge cases &gt; ignores closing parenthesis only" time="0.000290884">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/removeFeaturing.test.ts" name="removeFeaturing &gt; error handling &gt; handles null and undefined inputs" time="0.002228764">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/removeFeaturing.test.ts" name="removeFeaturing &gt; real-world examples &gt; processes common patterns: &quot;Despacito feat. Justin Bieber&quot;" time="0.000347115">
+        </testcase>
+        <testcase classname="packages/music-search/src/__tests__/utils/removeFeaturing.test.ts" name="removeFeaturing &gt; real-world examples &gt; processes common patterns: &quot;Bohemian Rhapsody (Live Aid 1985)&quot;" time="0.0006095">
+        </testcase>
+    </testsuite>
+</testsuites>

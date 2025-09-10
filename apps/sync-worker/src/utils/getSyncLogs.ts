@@ -9,6 +9,12 @@ export function getSyncLogs() {
     let logs: SyncLog[] = [];
     if (existsSync(logsPath))
         logs = JSON.parse(readFileSync(logsPath, 'utf8'));
+    
+    // Log rotation: Keep only last 100 entries and remove logs older than 30 days
+    const thirtyDaysAgo = Date.now() - (30 * 24 * 60 * 60 * 1000);
+    logs = logs
+        .filter(log => log.start > thirtyDaysAgo) // Remove logs older than 30 days
+        .slice(-100); // Keep only last 100 entries
 
     const putLog = (id: string, title: string) => {
         let itemLog = logs.find(log => log.id == id);
@@ -37,6 +43,12 @@ export function getSyncLogs() {
         saveLogs();
     };
     const saveLogs = () => {
+        // Apply rotation before saving
+        const thirtyDaysAgo = Date.now() - (30 * 24 * 60 * 60 * 1000);
+        logs = logs
+            .filter(log => log.start > thirtyDaysAgo) // Remove logs older than 30 days
+            .slice(-100); // Keep only last 100 entries
+        
         writeFileSync(logsPath, JSON.stringify(logs, undefined, 4));
     };
 

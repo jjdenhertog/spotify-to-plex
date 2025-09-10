@@ -1,31 +1,61 @@
 import { errorBoundary } from "@/helpers/errors/errorBoundary";
-import { Box, CircularProgress, Paper, Typography } from "@mui/material";
+import { Box, Button, CircularProgress, Paper, Typography } from "@mui/material";
 import axios from "axios";
 import { SyncLog } from "@spotify-to-plex/shared-types/common/sync";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import BMoment from "./BMoment";
+import RefreshIcon from '@mui/icons-material/Refresh';
 
 
 export default function Logs() {
 
     const [loading, setLoading] = useState(true)
     const [logs, setLogs] = useState<SyncLog[]>([])
+    const [error, setError] = useState<string | null>(null)
 
-    useEffect(() => {
-
+    const fetchLogs = useCallback(() => {
+        setLoading(true);
+        setError(null);
+        
         errorBoundary(async () => {
             const result = await axios.get<SyncLog[]>('/api/logs')
             setLogs(result.data)
             setLoading(false)
-        })
-    }, [])
+        }, (_err: unknown) => {
+            // Handle error gracefully
+            setError('Failed to load logs. Please try again later.');
+            setLoading(false);
+        });
+    }, []);
+    
+    useEffect(() => {
+        fetchLogs();
+    }, [fetchLogs])
+    
+    const onRefreshClick = useCallback(() => {
+        fetchLogs();
+    }, [fetchLogs])
 
     return (<Paper sx={{ p: 2 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+            <Typography variant="h5">Sync Logs</Typography>
+            <Button startIcon={<RefreshIcon />} onClick={onRefreshClick} disabled={!!loading} variant="outlined" size="small">
+                Refresh
+            </Button>
+        </Box>
+        
         {!!loading && <Box textAlign="center">
-            <CircularProgress  />
+            <CircularProgress />
+        </Box>}
+        
+        {!!error && <Box>
+            <Typography color="error" variant="body1">{error}</Typography>
+            <Button onClick={onRefreshClick} variant="contained" size="small" sx={{ mt: 1 }}>
+                Try Again
+            </Button>
         </Box>}
 
-        {!loading &&
+        {!loading && !error &&
             <>
                 {logs.length === 0 && <>
                     <Typography variant="h6">No logs found</Typography>
