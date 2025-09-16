@@ -1,13 +1,11 @@
 import { decrypt } from '@spotify-to-plex/shared-utils/security/decrypt';
-// MIGRATED: Updated to use shared utils package
 import { generateError } from '@/helpers/errors/generateError';
 import { refreshAccessTokens } from '@spotify-to-plex/shared-utils/spotify/refreshAccessTokens';
-import { settingsDir } from '@spotify-to-plex/shared-utils/utils/settingsDir';
+import { getStorageDir } from '@spotify-to-plex/shared-utils/utils/getStorageDir';
 import { GetSpotifyAlbum } from '@spotify-to-plex/shared-types/spotify/GetSpotifyAlbum';
 import { GetSpotifyPlaylist } from '@spotify-to-plex/shared-types/spotify/GetSpotifyPlaylist';
 import { SavedItem } from '@spotify-to-plex/shared-types/spotify/SavedItem';
 import { SpotifyCredentials } from '@spotify-to-plex/shared-types/spotify/SpotifyCredentials';
-// MIGRATED: Updated to use shared types package
 import { SavedAlbum, SimplifiedPlaylist, SpotifyApi } from '@spotify/web-api-ts-sdk';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createRouter } from 'next-connect';
@@ -17,7 +15,7 @@ import { join } from 'node:path';
 const router = createRouter<NextApiRequest, NextApiResponse>()
     .get(
         async (_req, res) => {
-            const credentialsPath = join(settingsDir, 'spotify.json')
+            const credentialsPath = join(getStorageDir(), 'spotify.json')
             if (!existsSync(credentialsPath))
                 throw new Error("No users are currently connected.")
 
@@ -51,7 +49,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
             ///////////////////////////////////
             // Get Saved items
             ///////////////////////////////////
-            const savedItemsPath = join(settingsDir, 'spotify_saved_items.json')
+            const savedItemsPath = join(getStorageDir(), 'spotify_saved_items.json')
             let savedItems: SavedItem[] = []
             if (existsSync(savedItemsPath))
                 savedItems = JSON.parse(readFileSync(savedItemsPath, 'utf8'))

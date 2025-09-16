@@ -1,13 +1,12 @@
 import { AxiosRequest } from "@spotify-to-plex/http-client/AxiosRequest";
 import { getAPIUrl } from "@spotify-to-plex/shared-utils/utils/getAPIUrl";
-import { settingsDir } from "@spotify-to-plex/shared-utils/utils/settingsDir";
+import { getStorageDir } from "@spotify-to-plex/shared-utils/utils/getStorageDir";
 import { handleOneRetryAttempt } from "@spotify-to-plex/plex-helpers/retry";
 import { plex } from "../library/plex";
 import { Playlist } from "@spotify-to-plex/shared-types/plex/Playlist";
 import { GetPlaylistResponse } from "@spotify-to-plex/shared-types/plex/GetPlaylistResponse";
 import { SearchResponse } from "@spotify-to-plex/plex-music-search/types/SearchResponse";
 import { search as plexMusicSearch } from "@spotify-to-plex/plex-music-search/functions/search";
-import { createPlexConfig } from "@spotify-to-plex/plex-config/functions/createPlexConfig";
 import { getMusicSearchConfigFromStorage } from "@spotify-to-plex/music-search/functions/getMusicSearchConfigFromStorage";
 import { writeFileSync } from "node:fs";
 import { join } from "node:path";
@@ -89,27 +88,29 @@ export async function syncPlaylists() {
             }
 
             //////////////////////////////////////
-            // Initiate the plexMusicSearch config
-            //////////////////////////////////////
-            // Initialize plex config
-            await createPlexConfig({ 
-                storageDir: settingsDir, 
-                preloadCache: true 
-            });
-            
             // Load music search configuration
+            //////////////////////////////////////
             let musicSearchConfig;
             try {
-                musicSearchConfig = await getMusicSearchConfigFromStorage(settingsDir);
+                musicSearchConfig = await getMusicSearchConfigFromStorage(getStorageDir());
             } catch (error) {
                 // Fallback to default config if error loading
                 console.warn('Failed to load music search config, using defaults:', error);
             }
 
+            // Ensure search approaches are provided - convert to PlexMusicSearchApproach format
+            const searchApproaches = (musicSearchConfig?.searchApproaches?.plex || [
+                { id: 'normal', filtered: false, trim: false },
+                { id: 'filtered', filtered: true, trim: false, removeQuotes: true },
+                { id: 'trimmed', filtered: false, trim: true },
+                { id: 'filtered_trimmed', filtered: true, trim: true, removeQuotes: true }
+            ]).map(approach => ({ ...approach }));
+
             const plexSearchConfig = {
                 uri: settings.uri,
                 token: settings.token,
                 musicSearchConfig,
+                searchApproaches
             };
 
             // @ts-ignore
@@ -162,8 +163,8 @@ export async function syncPlaylists() {
             logComplete(itemLog)
 
             // Store missing tracks
-            writeFileSync(join(settingsDir, 'missing_tracks_spotify.txt'), missingSpotifyTracks.map(id => `https://open.spotify.com/track/${id}`).join('\n'))
-            writeFileSync(join(settingsDir, 'missing_tracks_tidal.txt'), missingTidalTracks.map(id => `https://tidal.com/browse/track/${id}`).join('\n'))
+            writeFileSync(join(getStorageDir(), 'missing_tracks_spotify.txt'), missingSpotifyTracks.map(id => `https://open.spotify.com/track/${id}`).join('\n'))
+            writeFileSync(join(getStorageDir(), 'missing_tracks_tidal.txt'), missingTidalTracks.map(id => `https://tidal.com/browse/track/${id}`).join('\n'))
 
         } catch (e) {
             console.log(e);

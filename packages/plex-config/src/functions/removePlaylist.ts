@@ -1,14 +1,11 @@
-import { setState } from './state';
-import { writeAtomicJSON } from './writeAtomicJSON';
 import { getPlaylists } from './getPlaylists';
+import { writeJSON } from '../utils/fileUtils';
 
 export async function removePlaylist(id: string): Promise<void> {
-    const current = await getPlaylists();
-    
+    const playlists = await getPlaylists();
     const updated = {
-        data: (current.data || []).filter(playlist => playlist.id !== id)
+        data: (playlists.data || []).filter(item => item.id !== id)
     };
-    
-    await writeAtomicJSON('playlists.json', updated);
-    setState({ playlistsCache: updated });
+
+    await writeJSON('playlists.json', updated);
 }

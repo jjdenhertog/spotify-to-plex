@@ -1,6 +1,6 @@
 import { getAccessToken } from "@spotify-to-plex/shared-utils/spotify/getAccessToken";
 import { refreshAccessTokens } from "@spotify-to-plex/shared-utils/spotify/refreshAccessTokens";
-import { settingsDir } from "@spotify-to-plex/shared-utils/utils/settingsDir";
+import { getStorageDir } from "@spotify-to-plex/shared-utils/utils/getStorageDir";
 import { RecentPlayedContext } from "@spotify-to-plex/shared-types/spotify/RecentPlayedContext";
 import { SavedItem } from "@spotify-to-plex/shared-types/spotify/SavedItem";
 import { SpotifyCredentials } from "@spotify-to-plex/shared-types/spotify/SpotifyCredentials";
@@ -12,7 +12,7 @@ import { loadSpotifyData } from "../utils/loadSpotifyData";
 
 
 export async function syncUsers() {
-    const credentialsPath = join(settingsDir, 'spotify.json')
+    const credentialsPath = join(getStorageDir(), 'spotify.json')
     if (!existsSync(credentialsPath))
         throw new Error("No users are currently connected.")
 

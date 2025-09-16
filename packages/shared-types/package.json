@@ -1,51 +1,31 @@
 {
-  "name": "@spotify-to-plex/shared-types",
-  "version": "1.0.0",
-  "description": "Shared TypeScript type definitions for Spotify-to-Plex applications",
-  "exports": {
-    "./common/MatchFilterConfig": {
-      "types": "./dist/common/MatchFilterConfig.d.ts",
-      "default": "./dist/common/MatchFilterConfig.js"
+    "name": "@spotify-to-plex/shared-types",
+    "version": "1.0.0",
+    "description": "Shared TypeScript type definitions for Spotify-to-Plex applications",
+    "exports": {
+        "./*": {
+            "types": "./dist/*.d.ts",
+            "default": "./dist/*.js"
+        }
     },
-    "./common/*": {
-      "types": "./dist/common/*.d.ts",
-      "default": "./dist/common/*.js"
+    "scripts": {
+        "build": "tsc",
+        "build:watch": "tsc --watch",
+        "clean": "rm -rf dist",
+        "type-check": "tsc --noEmit",
+        "lint": "eslint src",
+        "lint:fix": "eslint src --fix"
     },
-    "./dashboard/*": {
-      "types": "./dist/dashboard/*.d.ts",
-      "default": "./dist/dashboard/*.js"
+    "files": [
+        "dist"
+    ],
+    "publishConfig": {
+        "access": "restricted"
     },
-    "./plex/*": {
-      "types": "./dist/plex/*.d.ts",
-      "default": "./dist/plex/*.js"
+    "devDependencies": {
+        "typescript": "^5.3.3"
     },
-    "./spotify/*": {
-      "types": "./dist/spotify/*.d.ts",
-      "default": "./dist/spotify/*.js"
-    },
-    "./tidal/*": {
-      "types": "./dist/tidal/*.d.ts",
-      "default": "./dist/tidal/*.js"
+    "peerDependencies": {
+        "typescript": ">=5.0.0"
     }
-  },
-  "scripts": {
-    "build": "tsc",
-    "build:watch": "tsc --watch",
-    "clean": "rm -rf dist",
-    "type-check": "tsc --noEmit",
-    "lint": "eslint src",
-    "lint:fix": "eslint src --fix"
-  },
-  "files": [
-    "dist"
-  ],
-  "publishConfig": {
-    "access": "restricted"
-  },
-  "devDependencies": {
-    "typescript": "^5.3.3"
-  },
-  "peerDependencies": {
-    "typescript": ">=5.0.0"
-  }
 }

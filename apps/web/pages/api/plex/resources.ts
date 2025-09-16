@@ -1,5 +1,5 @@
 import { generateError } from '@/helpers/errors/generateError';
-import { plex } from '@/library/plex';
+import { getSettings } from '@spotify-to-plex/plex-config/functions/getSettings';
 import axios from 'axios';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createRouter } from 'next-connect';
@@ -20,7 +20,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
 
             try {
 
-                const settings = await plex.getSettings();
+                const settings = await getSettings();
 
                 if (!settings?.token)
                     return res.status(400).json({ message: "No Plex connection found" });
@@ -33,6 +33,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                     }
                 })
 
+                console.log(result.data)
 
                 const servers: GetPlexResourcesResponse[] = [];
                 result.data.forEach((item: { product: string; name: string; clientIdentifier: string; connections: { local: boolean; uri: string }[]; httpsRequired?: boolean }) => {

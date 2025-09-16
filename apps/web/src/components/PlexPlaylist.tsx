@@ -424,7 +424,7 @@ export default function PlexPlaylist(props: PlexPlaylistProps) {
             </Box>
         }
 
-        <Paper elevation={1} sx={{ p: 2, bgcolor: 'primary.light' }}>
+        <Paper elevation={1} sx={{ p: 2 }}>
             <Box textAlign="center">
                 <Box sx={{ display: 'flex', gap: .5, transform: 'translateX(20px)', justifyContent: 'center', alignItems: 'center' }}>
                     <Typography variant="h6" sx={{ m: 0, p: 0 }}>{playlistName}</Typography>

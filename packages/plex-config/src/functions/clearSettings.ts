@@ -1,7 +1,5 @@
-import { setState } from './state';
-import { deleteFile } from './deleteFile';
+import { deleteJSON } from '../utils/fileUtils';
 
 export async function clearSettings(): Promise<void> {
-    await deleteFile('settings.json');
-    setState({ settingsCache: null });
+    await deleteJSON('plex.json');
 }

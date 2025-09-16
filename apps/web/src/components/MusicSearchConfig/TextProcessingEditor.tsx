@@ -7,7 +7,7 @@ import { enqueueSnackbar } from 'notistack';
 /* eslint-disable no-alert */
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 
-import MonacoJsonEditor, { MonacoJsonEditorHandle } from './MonacoJsonEditor';
+import MonacoJsonEditor, { MonacoJsonEditorHandle } from '../MonacoJsonEditor';
 
 type TextProcessingConfig = {
     filterOutWords: string[];
@@ -93,7 +93,7 @@ const TextProcessingEditor: React.FC<TextProcessingEditorProps> = ({ onSave }) =
     const handleSave = useCallback(async () => {
         // Get current content directly from Monaco editor
         const currentData = editorRef.current?.getCurrentValue();
-        
+
         if (!currentData) {
             enqueueSnackbar('No valid JSON data to save', { variant: 'error' });
 
@@ -112,9 +112,16 @@ const TextProcessingEditor: React.FC<TextProcessingEditorProps> = ({ onSave }) =
         setValidationError('');
 
         try {
-            await axios.post('/api/plex/music-search-config/text-processing', currentData);
-            enqueueSnackbar('Text processing configuration saved successfully', { variant: 'success' });
-            
+            // Save both configurations
+            const searchApproachesResponse = await axios.get('/api/plex/music-search-config/search-approaches');
+
+            await Promise.all([
+                axios.post('/api/plex/music-search-config/text-processing', currentData),
+                axios.post('/api/plex/music-search-config/search-approaches', searchApproachesResponse.data)
+            ]);
+
+            enqueueSnackbar('All configurations saved successfully', { variant: 'success' });
+
             if (onSave) {
                 onSave(currentData);
             }
@@ -123,6 +130,8 @@ const TextProcessingEditor: React.FC<TextProcessingEditorProps> = ({ onSave }) =
             enqueueSnackbar(`Failed to save: ${message}`, { variant: 'error' });
         }
     }, [onSave]);
+
+    
 
     const handleReset = useCallback(async () => {
         if (confirm('Reset to default text processing configuration? This will overwrite your current settings.')) {

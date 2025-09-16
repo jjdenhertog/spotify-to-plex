@@ -13,7 +13,7 @@ services:
       - .:/app
       - /app/__pycache__
     working_dir: /app
-    command: gunicorn --bind 0.0.0.0:3020 --workers 1 app:app
+    command: gunicorn --bind 0.0.0.0:3020 --workers 1 --timeout 300 app:app
     restart: unless-stopped
 
 networks:

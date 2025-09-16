@@ -1,4 +1,4 @@
-import { settingsDir } from '@spotify-to-plex/shared-utils/utils/settingsDir';
+import { getStorageDir } from '@spotify-to-plex/shared-utils/utils/getStorageDir';
 import { MQTTItem } from '@spotify-to-plex/shared-types/dashboard/MQTTItem';
 import mqtt, { MqttClient } from 'mqtt';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
@@ -6,7 +6,7 @@ import { join } from 'node:path';
 
 export function mqttHelpers() {
 
-    const publishedItemsPath = join(settingsDir, 'mqtt_published_items.json');
+    const publishedItemsPath = join(getStorageDir(), 'mqtt_published_items.json');
     const categoryTopic = `spotify-to-plex/categories`;
     const itemTopicBase = `spotify-to-plex/items`;
 

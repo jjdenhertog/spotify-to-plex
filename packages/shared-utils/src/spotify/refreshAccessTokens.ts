@@ -1,4 +1,4 @@
-import { settingsDir } from "../utils/settingsDir"
+import { getStorageDir } from "../utils/getStorageDir"
 import { SpotifyCredentials } from "@spotify-to-plex/shared-types/spotify/SpotifyCredentials"
 import axios from "axios"
 import { existsSync, readFileSync, writeFileSync } from "node:fs"
@@ -7,7 +7,7 @@ import { decrypt } from "../security/decrypt";
 import { encrypt } from "../security/encrypt"
 
 export async function refreshAccessTokens() {
-    const credentialsPath = join(settingsDir, 'spotify.json')
+    const credentialsPath = join(getStorageDir(), 'spotify.json')
     if (!existsSync(credentialsPath))
         throw new Error("No users are currently connected.");
 

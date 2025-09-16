@@ -1,4 +1,4 @@
-import { settingsDir } from '@spotify-to-plex/shared-utils/utils/settingsDir';
+import { getStorageDir } from '@spotify-to-plex/shared-utils/utils/getStorageDir';
 import { plex } from "../library/plex";
 import { searchAlbum } from "@spotify-to-plex/plex-music-search/functions/searchAlbum";
 import { SearchResponse } from "@spotify-to-plex/plex-music-search/types/SearchResponse";
@@ -63,7 +63,7 @@ export async function syncAlbums() {
         //////////////////////////////////////
         let musicSearchConfig;
         try {
-            musicSearchConfig = await getMusicSearchConfigFromStorage(settingsDir);
+            musicSearchConfig = await getMusicSearchConfigFromStorage(getStorageDir());
         } catch (error) {
             // Fallback to default config if error loading
             console.warn('Failed to load music search config, using defaults:', error);
@@ -109,8 +109,8 @@ export async function syncAlbums() {
         logComplete(itemLog)
 
         // Store the missing albums
-        writeFileSync(join(settingsDir, 'missing_albums_spotify.txt'), missingSpotifyAlbums.map(id => `https://open.spotify.com/album/${id}`).join('\n'))
-        writeFileSync(join(settingsDir, 'missing_albums_tidal.txt'), missingTidalAlbums.map(id => `https://tidal.com/browse/album/${id}`).join('\n'))
+        writeFileSync(join(getStorageDir(), 'missing_albums_spotify.txt'), missingSpotifyAlbums.map(id => `https://open.spotify.com/album/${id}`).join('\n'))
+        writeFileSync(join(getStorageDir(), 'missing_albums_tidal.txt'), missingTidalAlbums.map(id => `https://tidal.com/browse/album/${id}`).join('\n'))
     }
 
 

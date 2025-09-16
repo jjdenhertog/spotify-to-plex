@@ -1,50 +1,40 @@
 {
-  "name": "@spotify-to-plex/shared-utils",
-  "version": "1.0.0",
-  "description": "Shared utility functions for Spotify-to-Plex applications",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "exports": {
-    ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+    "name": "@spotify-to-plex/shared-utils",
+    "version": "1.0.0",
+    "description": "Shared utility functions for Spotify-to-Plex applications",
+    "exports": {
+        "./*": {
+            "types": "./dist/*.d.ts",
+            "default": "./dist/*.js"
+        }
     },
-    "./server": {
-      "import": "./dist/server.js",
-      "types": "./dist/server.d.ts"
+    "scripts": {
+        "build": "tsc",
+        "build:watch": "tsc --watch",
+        "clean": "rm -rf dist",
+        "type-check": "tsc --noEmit",
+        "lint": "eslint src",
+        "lint:fix": "eslint src --fix"
     },
-    "./*": {
-      "types": "./dist/*.d.ts",
-      "default": "./dist/*.js"
+    "files": [
+        "dist"
+    ],
+    "publishConfig": {
+        "access": "restricted"
+    },
+    "dependencies": {
+        "@spotify-to-plex/shared-types": "workspace:*",
+        "@spotify-to-plex/plex-helpers": "workspace:*",
+        "@spotify/web-api-ts-sdk": "^1.2.0",
+        "axios": "^1.11.0",
+        "fs-extra": "^11.3.1"
+    },
+    "devDependencies": {
+        "@types/node": "^20.19.11",
+        "@types/fs-extra": "^11.0.4",
+        "typescript": "^5.3.3"
+    },
+    "peerDependencies": {
+        "typescript": ">=5.0.0"
     }
-  },
-  "scripts": {
-    "build": "tsc",
-    "build:watch": "tsc --watch",
-    "clean": "rm -rf dist",
-    "type-check": "tsc --noEmit",
-    "lint": "eslint src",
-    "lint:fix": "eslint src --fix"
-  },
-  "files": [
-    "dist"
-  ],
-  "publishConfig": {
-    "access": "restricted"
-  },
-  "dependencies": {
-    "@spotify-to-plex/shared-types": "workspace:*",
-    "@spotify-to-plex/plex-helpers": "workspace:*",
-    "@spotify/web-api-ts-sdk": "^1.2.0",
-    "axios": "^1.11.0",
-    "fs-extra": "^11.3.1"
-  },
-  "devDependencies": {
-    "@types/node": "^20.19.11",
-    "@types/fs-extra": "^11.0.4",
-    "typescript": "^5.3.3"
-  },
-  "peerDependencies": {
-    "typescript": ">=5.0.0"
-  }
 }

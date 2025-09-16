@@ -1,11 +1,7 @@
 import { Card, CardContent } from "@mui/material"
 import { NextPage } from "next"
-import dynamic from "next/dynamic"
-import MusicSearchConfigLayout from "../../../components/layouts/MusicSearchConfigLayout"
-
-const TestConfigurationTab = dynamic(() => import("../../../src/components/TestConfigurationTab"), {
-    ssr: false
-})
+import MusicSearchConfigLayout from "@/components/layouts/MusicSearchConfigLayout"
+import TestConfigurationTab from "@/components/TestConfigurationTab"
 
 const TestConfigPage: NextPage = () => {
     return (

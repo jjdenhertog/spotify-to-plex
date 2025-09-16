@@ -1,8 +1,7 @@
 import { generateError } from '@/helpers/errors/generateError';
-import { settingsDir } from "@spotify-to-plex/shared-utils/utils/settingsDir";
+import { getStorageDir } from "@spotify-to-plex/shared-utils/utils/getStorageDir";
 import { SpotifyCredentials } from '@spotify-to-plex/shared-types/spotify/SpotifyCredentials';
 import { SpotifyUser } from '@spotify-to-plex/shared-types/spotify/SpotifyUser';
-// MIGRATED: Updated to use shared types package
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createRouter } from 'next-connect';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
@@ -13,7 +12,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
     .get(
         async (_req, res) => {
 
-            const credentialsPath = join(settingsDir, 'spotify.json')
+            const credentialsPath = join(getStorageDir(), 'spotify.json')
             if (!existsSync(credentialsPath))
                 return res.status(400).json({ error: "No users are currently connected." })
 
@@ -25,7 +24,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
     .put(
         async (req, res) => {
 
-            const credentialsPath = join(settingsDir, 'spotify.json')
+            const credentialsPath = join(getStorageDir(), 'spotify.json')
             if (!existsSync(credentialsPath))
                 return res.status(400).json({ error: "No users are currently connected." })
 
@@ -56,7 +55,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
     .delete(
         async (req, res) => {
 
-            const credentialsPath = join(settingsDir, 'spotify.json')
+            const credentialsPath = join(getStorageDir(), 'spotify.json')
             if (!existsSync(credentialsPath))
                 return res.status(400).json({ error: `No users are currently connected.` })
 

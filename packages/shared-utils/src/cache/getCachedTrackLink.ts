@@ -1,6 +1,7 @@
 import { existsSync, readFileSync, writeFileSync } from "node:fs"
 import { join } from "node:path"
 import { filterUnique } from "../array/filterUnique"
+import { getStorageDir } from "../utils/getStorageDir"
 
 import type { TrackLink } from "@spotify-to-plex/shared-types/common/track";
 
@@ -17,14 +18,13 @@ type TidalMusicSearchTrack = {
 }
 
 export function getCachedTrackLinks(
-    searchItems: (PlexMusicSearchTrack | TidalMusicSearchTrack)[], 
-    type: 'plex' | 'tidal',
-    settingsDir: string
+    searchItems: (PlexMusicSearchTrack | TidalMusicSearchTrack)[],
+    type: 'plex' | 'tidal'
 ) {
     //////////////////////////////////////
     // Handeling cached links
     //////////////////////////////////////
-    const path = join(settingsDir, 'track_links.json')
+    const path = join(getStorageDir(), 'track_links.json')
     let all: TrackLink[] = []
 
     if (existsSync(path))

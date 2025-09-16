@@ -1,18 +1,17 @@
-import { Card, CardContent } from "@mui/material"
+import { Card, CardContent, Divider } from "@mui/material"
 import { NextPage } from "next"
-import dynamic from "next/dynamic"
-import MusicSearchConfigLayout from "../../../components/layouts/MusicSearchConfigLayout"
-
-const TextProcessingAndSearchEditor = dynamic(() => import("../../../src/components/TextProcessingAndSearchEditor"), {
-    ssr: false
-})
+import MusicSearchConfigLayout from "@/components/layouts/MusicSearchConfigLayout"
+import TextProcessingEditor from "@/components/MusicSearchConfig/TextProcessingEditor"
+import SearchApproachesEditor from "@/components/MusicSearchConfig/SearchApproachesEditor"
 
 const TextProcessingPage: NextPage = () => {
     return (
         <MusicSearchConfigLayout activeTab="text-processing" title="Text Processing & Search Approaches">
             <Card>
                 <CardContent>
-                    <TextProcessingAndSearchEditor />
+                    <TextProcessingEditor />
+                    <Divider sx={{ my: 4 }} />
+                    <SearchApproachesEditor />
                 </CardContent>
             </Card>
         </MusicSearchConfigLayout>

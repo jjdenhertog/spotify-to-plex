@@ -1,7 +1,5 @@
-import { setState } from './state';
-import { deleteFile } from './deleteFile';
+import { deleteJSON } from '../utils/fileUtils';
 
 export async function clearPlaylists(): Promise<void> {
-    await deleteFile('playlists.json');
-    setState({ playlistsCache: null });
+    await deleteJSON('playlists.json');
 }

@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/no-redundant-type-constituents */
 import { generateError } from '@/helpers/errors/generateError';
-import { plex } from '@/library/plex';
 import { getSpotifyData } from '@spotify-to-plex/shared-utils/spotify/getSpotifyData';
-import { settingsDir } from '@spotify-to-plex/shared-utils/utils/settingsDir';
+import { getStorageDir } from '@spotify-to-plex/shared-utils/utils/getStorageDir';
 
 import type { SavedItem } from '@spotify-to-plex/shared-types/spotify/SavedItem';
 import { getById } from '@spotify-to-plex/plex-music-search/functions/getById';
@@ -13,12 +12,13 @@ import { createRouter } from 'next-connect';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { parse } from 'node:url';
+import { getSettings } from '@spotify-to-plex/plex-config/functions/getSettings';
 
 const router = createRouter<NextApiRequest, NextApiResponse>()
     .get(
         async (req, res) => {
 
-            const savedItemsPath = join(settingsDir, 'spotify_saved_items.json')
+            const savedItemsPath = join(getStorageDir(), 'spotify_saved_items.json')
             if (!existsSync(savedItemsPath))
                 return res.status(200).json([])
 
@@ -50,12 +50,12 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 if (typeof search === 'string' && search.trim().startsWith('/library')) {
                     const plexMediaId = search.trim();
 
-                    const settings = await plex.getSettings();
+                    const settings = await getSettings();
 
                     if (!settings.token || !settings.uri)
                         return res.status(400).json({ msg: "Plex not configured" });
 
-                    const musicSearchConfig = await getMusicSearchConfigFromStorage(settingsDir);
+                    const musicSearchConfig = await getMusicSearchConfigFromStorage(getStorageDir());
 
                     const plexConfig = {
                         uri: settings.uri,
@@ -106,7 +106,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 if (!savedItem)
                     return res.status(400).json({ error: "Could not find data to save" })
 
-                const savedItemsPath = join(settingsDir, 'spotify_saved_items.json')
+                const savedItemsPath = join(getStorageDir(), 'spotify_saved_items.json')
                 if (existsSync(savedItemsPath)) {
 
                     const savedItems: SavedItem[] = JSON.parse(readFileSync(savedItemsPath, 'utf8'))
@@ -122,14 +122,14 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 const savedItems: SavedItem[] = JSON.parse(readFileSync(savedItemsPath, 'utf8'))
 
                 return res.status(200).json(savedItems.reverse())
-            } catch {
+            } catch(_error) {
                 res.status(500).json({ error: 'Failed to save items' });
             }
         })
     .delete(
         async (req, res) => {
 
-            const savedItemsPath = join(settingsDir, 'spotify_saved_items.json')
+            const savedItemsPath = join(getStorageDir(), 'spotify_saved_items.json')
             if (!existsSync(savedItemsPath))
                 return res.status(400).json({ error: `No items found` })
 
@@ -152,7 +152,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
     .put(
         async (req, res) => {
 
-            const savedItemsPath = join(settingsDir, 'spotify_saved_items.json')
+            const savedItemsPath = join(getStorageDir(), 'spotify_saved_items.json')
             if (!existsSync(savedItemsPath))
                 return res.status(400).json({ error: `No items found` })
 

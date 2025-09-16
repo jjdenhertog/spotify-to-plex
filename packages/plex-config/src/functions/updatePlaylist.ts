@@ -1,19 +1,14 @@
 import { PlaylistItem } from '../types/PlaylistItem';
-import { setState } from './state';
-import { writeAtomicJSON } from './writeAtomicJSON';
 import { getPlaylists } from './getPlaylists';
+import { writeJSON } from '../utils/fileUtils';
 
 export async function updatePlaylist(id: string, updates: Partial<PlaylistItem>): Promise<void> {
-    const current = await getPlaylists();
-    
+    const playlists = await getPlaylists();
     const updated = {
-        data: (current.data || []).map(playlist => 
-            playlist.id === id 
-                ? { ...playlist, ...updates }
-                : playlist
+        data: (playlists.data || []).map(item =>
+            item.id === id ? { ...item, ...updates } : item
         )
     };
-    
-    await writeAtomicJSON('playlists.json', updated);
-    setState({ playlistsCache: updated });
+
+    await writeJSON('playlists.json', updated);
 }

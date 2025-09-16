@@ -1,15 +1,12 @@
-import { setState } from './state';
-import { writeAtomicJSON } from './writeAtomicJSON';
+import { PlaylistItem } from '../types/PlaylistItem';
 import { getPlaylists } from './getPlaylists';
+import { writeJSON } from '../utils/fileUtils';
 
-export async function addPlaylist(type: string, id: string, plexId: string): Promise<void> {
-    const current = await getPlaylists();
-    const newPlaylist = { type, id, plex: plexId };
-    
+export async function addPlaylist(playlist: PlaylistItem): Promise<void> {
+    const playlists = await getPlaylists();
     const updated = {
-        data: [...(current.data || []), newPlaylist]
+        data: [...(playlists.data || []), playlist]
     };
-    
-    await writeAtomicJSON('playlists.json', updated);
-    setState({ playlistsCache: updated });
+
+    await writeJSON('playlists.json', updated);
 }

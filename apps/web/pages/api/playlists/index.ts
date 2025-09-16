@@ -1,17 +1,16 @@
 import { AxiosRequest } from '@spotify-to-plex/http-client/AxiosRequest';
-// MIGRATED: Updated to use http-client package
 import { generateError } from '@/helpers/errors/generateError';
 import { getAPIUrl } from '@spotify-to-plex/shared-utils/utils/getAPIUrl';
 import { putPlaylistPoster } from '@spotify-to-plex/plex-helpers/playlist/putPlaylistPoster';
 import { addItemsToPlaylist } from '@spotify-to-plex/plex-helpers/playlist/addItemsToPlaylist';
 import { storePlaylist } from '@spotify-to-plex/plex-helpers/playlist/storePlaylist';
 import { getPlexUri } from '@spotify-to-plex/plex-helpers/utils/getPlexUri';
-import { plex } from '@/library/plex';
 import { GetPlaylistResponse } from '@spotify-to-plex/shared-types/plex/GetPlaylistResponse';
 import { Playlist } from '@spotify-to-plex/shared-types/plex/Playlist';
-// MIGRATED: Updated to use shared types package
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createRouter } from 'next-connect';
+import { addPlaylist } from '@spotify-to-plex/plex-config/functions/addPlaylist';
+import { getSettings } from '@spotify-to-plex/plex-config/functions/getSettings';
 
 export type GetPlexPlaylistResponse = {
     key: Playlist["key"],
@@ -23,7 +22,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
     .get(
         async (_req, res, _next) => {
             try {
-                const settings = await plex.getSettings();
+                const settings = await getSettings();
 
                 if (!settings.uri || !settings.token)
                     return res.status(400).json({ msg: "No plex connection found" });
@@ -56,14 +55,13 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 if (!items || items.length === 0 || typeof name !== 'string' || typeof id !== 'string' || typeof type !== 'string')
                     return res.status(400).json({ msg: "Invalid data given" });
 
-                const settings = await plex.getSettings();
+                const settings = await getSettings();
 
                 if (!settings.uri || !settings.token || !settings.id)
                     return res.status(400).json({ msg: "No plex connection found" });
 
                 // Cast settings to required type since we've validated the fields
                 const validatedSettings = settings as Required<typeof settings>;
-
                 const firstItem = items.shift();
                 if (!firstItem)
                     return res.status(400).json({ msg: "No items given" });
@@ -80,7 +78,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                     }
                 }
 
-                await plex.addPlaylist(type, id, playlistId)
+                await addPlaylist({ type, id, plex: playlistId })
 
                 const link = getAPIUrl(validatedSettings.uri, `/web/index.html#!/server/${validatedSettings.id}/playlist?key=${encodeURIComponent(`/playlists/${playlistId}`)}`)
                 res.json({ id: playlistId, link })

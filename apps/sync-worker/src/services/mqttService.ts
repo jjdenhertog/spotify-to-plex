@@ -3,7 +3,7 @@
 import { EventEmitter } from 'node:events';
 import { watch } from 'node:fs';
 import { join } from 'node:path';
-import { settingsDir } from '@spotify-to-plex/shared-utils/utils/settingsDir';
+import { getStorageDir } from '@spotify-to-plex/shared-utils/utils/getStorageDir';
 import { refreshMQTT } from '../jobs/mqtt';
 
 export type MQTTServiceConfig = {
@@ -191,9 +191,9 @@ export class MQTTService extends EventEmitter {
         }
 
         const watchPaths = [
-            join(settingsDir, 'playlists.json'),
-            join(settingsDir, 'track_links.json'),
-            join(settingsDir, 'saved_items.json') // Assuming this exists based on savedItemsHelpers
+            join(getStorageDir(), 'playlists.json'),
+            join(getStorageDir(), 'track_links.json'),
+            join(getStorageDir(), 'saved_items.json') // Assuming this exists based on savedItemsHelpers
         ];
 
         this.emit('debug', `Setting up file watchers for: ${watchPaths.join(', ')}`);

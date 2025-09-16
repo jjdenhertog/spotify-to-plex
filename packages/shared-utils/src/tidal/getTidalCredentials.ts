@@ -1,4 +1,4 @@
-import { settingsDir } from "../utils/settingsDir";
+import { getStorageDir } from "../utils/getStorageDir";
 import { TidalCredentials } from "@spotify-to-plex/shared-types/tidal/api";
 import axios from "axios";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
@@ -7,7 +7,7 @@ import { decrypt } from '../security/decrypt';
 import { encrypt } from '../security/encrypt';
 
 export async function getTidalCredentials(): Promise<TidalCredentials | undefined> {
-    const credentialsPath = join(settingsDir, 'tidal.json')
+    const credentialsPath = join(getStorageDir(), 'tidal.json')
     if (!existsSync(credentialsPath))
         return;
 

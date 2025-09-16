@@ -1,33 +1,27 @@
 {
-  "name": "@spotify-to-plex/plex-helpers",
-  "version": "1.0.0",
-  "description": "Shared Plex helper functions for Spotify to Plex sync",
-  "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch",
-    "clean": "rm -rf dist",
-    "type-check": "tsc --noEmit",
-    "lint": "eslint src",
-    "lint:fix": "eslint src --fix"
-  },
-  "dependencies": {
-    "@spotify-to-plex/http-client": "workspace:*",
-    "@spotify-to-plex/shared-types": "workspace:*",
-    "axios": "^1.0.0"
-  },
-  "devDependencies": {
-    "typescript": "^5.0.0"
-  },
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "exports": {
-    ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+    "name": "@spotify-to-plex/plex-helpers",
+    "version": "1.0.0",
+    "description": "Shared Plex helper functions for Spotify to Plex sync",
+    "scripts": {
+        "build": "tsc",
+        "dev": "tsc --watch",
+        "clean": "rm -rf dist",
+        "type-check": "tsc --noEmit",
+        "lint": "eslint src",
+        "lint:fix": "eslint src --fix"
     },
-    "./*": {
-      "types": "./dist/*.d.ts",
-      "default": "./dist/*.js"
+    "dependencies": {
+        "@spotify-to-plex/http-client": "workspace:*",
+        "@spotify-to-plex/shared-types": "workspace:*",
+        "axios": "^1.0.0"
+    },
+    "devDependencies": {
+        "typescript": "^5.0.0"
+    },
+    "exports": {
+        "./*": {
+            "types": "./dist/*.d.ts",
+            "default": "./dist/*.js"
+        }
     }
-  }
 }

@@ -1,37 +1,20 @@
-import Logo from "../../src/components/Logo"
-import MainLayout from "../../src/layouts/MainLayout"
+import Logo from "@/components/Logo"
+import MainLayout from "@/layouts/MainLayout"
 import { ChevronLeft, Download, Restore, Upload } from "@mui/icons-material"
 import { LoadingButton } from "@mui/lab"
-import { 
-    Box, 
-    Breadcrumbs, 
-    Button, 
-    Container, 
-    Dialog, 
-    DialogActions, 
-    DialogContent, 
-    DialogTitle, 
-    Link, 
-    Paper, 
-    Tab, 
-    Tabs, 
-    TextField, 
-    Typography 
-} from "@mui/material"
+import { Box, Breadcrumbs, Button, Container, Dialog, DialogActions, DialogContent, DialogTitle, Link, Paper, Tab, Tabs, TextField, Typography } from "@mui/material"
 import axios from "axios"
 import Head from "next/head"
 import { useRouter } from "next/router"
 import { enqueueSnackbar } from "notistack"
 import { ReactNode, useCallback, useRef, useState } from "react"
-import { errorBoundary } from "../../src/helpers/errors/errorBoundary"
+import { errorBoundary } from "@/helpers/errors/errorBoundary"
 
 type MusicSearchConfigLayoutProps = {
-    children: ReactNode
-    title?: string
-    activeTab: string
+    readonly children: ReactNode
+    readonly title?: string
+    readonly activeTab: string
 }
-
-// type TabKey = 'how-it-works' | 'text-processing' | 'match-filters' | 'test'
 
 const TAB_CONFIG = [
     { key: 'how-it-works', label: 'How It Works', path: '/plex/music-search-config' },
@@ -40,14 +23,10 @@ const TAB_CONFIG = [
     { key: 'test', label: 'Test Configuration', path: '/plex/music-search-config/test' }
 ]
 
-const MusicSearchConfigLayout: React.FC<MusicSearchConfigLayoutProps> = ({
-    // eslint-disable-next-line react/prop-types  
-    children,
-    // eslint-disable-next-line react/prop-types
-    title = "Music Search Configuration",
-    // eslint-disable-next-line react/prop-types
-    activeTab 
-}) => {
+const MusicSearchConfigLayout = (props: MusicSearchConfigLayoutProps) => {
+
+    const { children, title = "Music Search Configuration", activeTab } = props
+
     const router = useRouter()
     const [resetting, setResetting] = useState(false)
     const [importDialog, setImportDialog] = useState(false)
@@ -61,7 +40,6 @@ const MusicSearchConfigLayout: React.FC<MusicSearchConfigLayoutProps> = ({
                 await axios.post("/api/plex/music-search-config/reset")
                 enqueueSnackbar("Configuration reset to defaults", { variant: "info" })
                 setResetting(false)
-                // Refresh the page to reload all components
                 window.location.reload()
             },
             () => {
@@ -127,17 +105,14 @@ const MusicSearchConfigLayout: React.FC<MusicSearchConfigLayoutProps> = ({
             try {
                 const config = JSON.parse(importJson)
 
-                if (config.matchFilters) {
+                if (config.matchFilters) 
                     await axios.post("/api/plex/music-search-config/match-filters", config.matchFilters)
-                }
 
-                if (config.textProcessing) {
+                if (config.textProcessing) 
                     await axios.post("/api/plex/music-search-config/text-processing", config.textProcessing)
-                }
 
-                if (config.searchApproaches) {
+                if (config.searchApproaches) 
                     await axios.post("/api/plex/music-search-config/search-approaches", config.searchApproaches)
-                }
 
                 enqueueSnackbar("Configuration imported successfully", { variant: "success" })
                 setImportDialog(false)
@@ -170,7 +145,7 @@ const MusicSearchConfigLayout: React.FC<MusicSearchConfigLayoutProps> = ({
     return (
         <>
             <Head>
-                <title>{title} - Spotify to Plex</title>
+                <title>{`${String(title)} - Spotify to Plex`}</title>
             </Head>
             <MainLayout maxWidth="1200px">
                 <Container>
@@ -191,7 +166,7 @@ const MusicSearchConfigLayout: React.FC<MusicSearchConfigLayoutProps> = ({
                             Music Search Configuration
                         </Typography>
                         <Typography variant="body1" sx={{ mb: 2, maxWidth: 600 }}>
-                            Configure how the system matches songs between Spotify and Plex. Use the &ldquo;How It Works&rdquo; tab 
+                            Configure how the system matches songs between Spotify and Plex. Use the &ldquo;How It Works&rdquo; tab
                             to understand the system, then configure your settings and test them immediately.
                         </Typography>
 
@@ -213,7 +188,7 @@ const MusicSearchConfigLayout: React.FC<MusicSearchConfigLayoutProps> = ({
                     </Paper>
 
                     <Box>
-                        <Tabs value={activeTabIndex >=0 ? activeTabIndex : 0} onChange={handleTabChange} sx={{ mb: 3 }} variant="scrollable" scrollButtons="auto">
+                        <Tabs value={activeTabIndex >= 0 ? activeTabIndex : 0} onChange={handleTabChange} sx={{ mb: 3 }} variant="scrollable" scrollButtons="auto">
                             {TAB_CONFIG.map((tab) => (
                                 <Tab key={tab.key} label={tab.label} />
                             ))}

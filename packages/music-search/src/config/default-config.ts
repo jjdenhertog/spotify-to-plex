@@ -66,11 +66,10 @@ export const DEFAULT_TEXT_PROCESSING: TextProcessingConfig = {
 // Default search approaches - unified list without platform split
 export const DEFAULT_SEARCH_APPROACHES: readonly SearchApproachConfig[] = [
     { id: 'normal', filtered: false, trim: false },
+    { id: 'basic_filtered', filtered: true, trim: false },
     { id: 'filtered', filtered: true, trim: false, removeQuotes: true },
     { id: 'trimmed', filtered: false, trim: true },
-    { id: 'filtered_trimmed', filtered: true, trim: true, removeQuotes: true },
-    { id: 'basic_filtered', filtered: true, trim: false },
-    { id: 'unfiltered', filtered: false, trim: false }
+    { id: 'filtered_trimmed', filtered: true, trim: true, removeQuotes: true }
 ];
 
 export const DEFAULT_MUSIC_SEARCH_CONFIG = {

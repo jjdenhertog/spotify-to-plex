@@ -1,18 +1,6 @@
 import { PlexSettings } from '../types/PlexSettings';
-import { getState } from './state';
-import { initialize } from './initialize';
-import { loadSettingsCache } from './loadSettingsCache';
+import { readJSON } from '../utils/fileUtils';
 
 export async function getSettings(): Promise<PlexSettings> {
-    const state = getState();
-    
-    if (!state.initialized) {
-        await initialize();
-    }
-
-    if (state.settingsCache === null) {
-        await loadSettingsCache();
-    }
-
-    return state.settingsCache ?? {};
+    return await readJSON<PlexSettings>('plex.json') ?? {};
 }

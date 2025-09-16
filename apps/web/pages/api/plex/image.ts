@@ -1,9 +1,9 @@
 import { AxiosRequest } from '@spotify-to-plex/http-client/AxiosRequest';
 // MIGRATED: Updated to use http-client package
 import { generateError } from '@/helpers/errors/generateError';
-import { plex } from '@/library/plex';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createRouter } from 'next-connect';
+import { getSettings } from '@spotify-to-plex/plex-config/functions/getSettings';
 
 export const config = {
     api: {
@@ -19,7 +19,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
             if (!path || Array.isArray(path))
                 return res.status(400).end();
 
-            const settings = await plex.getSettings();
+            const settings = await getSettings();
 
             if (!settings.token)
                 return res.status(400).end();

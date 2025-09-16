@@ -11,7 +11,7 @@ import os
 from spotify_scraper_service import SpotifyScraperService
 
 # Configure logging
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 app = Flask(__name__)

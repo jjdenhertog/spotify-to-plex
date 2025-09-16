@@ -1,7 +1,7 @@
 import { generateError } from '@/helpers/errors/generateError';
 import { getAccessToken } from '@spotify-to-plex/shared-utils/spotify/getAccessToken';
 import { getSpotifyData } from '@spotify-to-plex/shared-utils/spotify/getSpotifyData';
-import { settingsDir } from '@spotify-to-plex/shared-utils/utils/settingsDir';
+import { getStorageDir } from '@spotify-to-plex/shared-utils/utils/getStorageDir';
 import { SavedItem } from '@spotify-to-plex/shared-types/spotify/SavedItem';
 import { SpotifyApi } from '@spotify/web-api-ts-sdk';
 import type { NextApiRequest, NextApiResponse } from 'next';
@@ -13,14 +13,14 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
     .get(
         async (req, res) => {
 
-            const { id } = req.query
+            const { id, full } = req.query
             if (typeof id !== 'string')
                 return res.status(400).json({ error: "ID missing" })
 
             if (!process.env.SPOTIFY_API_CLIENT_ID || !process.env.SPOTIFY_API_CLIENT_SECRET)
                 return res.status(400).json({ error: "Spotify Credentials missing. Please add the environment variables to use this feature." })
 
-            const savedItemsPath = join(settingsDir, 'spotify_saved_items.json')
+            const savedItemsPath = join(getStorageDir(), 'spotify_saved_items.json')
             if (!existsSync(savedItemsPath))
                 return res.status(200).json([])
 
@@ -35,7 +35,12 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
             if (accessToken)
                 api = SpotifyApi.withAccessToken(process.env.SPOTIFY_API_CLIENT_ID, accessToken)
 
-            const data = await getSpotifyData(api, savedItem.uri)
+
+            const isFull = parseFloat(typeof full == 'string' ? full : "");
+            const simplified = isFull != 1;
+            const scrapeIncludeAlbumData = isFull == 1;
+
+            const data = await getSpotifyData(api, savedItem.uri, simplified, scrapeIncludeAlbumData)
             if (!data)
                 return res.status(400).json({ error: `No data found for Spotify URI ${savedItem.uri}, it might be a private playlist` })
 

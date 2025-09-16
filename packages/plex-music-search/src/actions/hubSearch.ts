@@ -15,10 +15,12 @@ export default function hubSearch(uri: string, token: string, query: string, lim
 
         for (let i = 0; i < forbiddenCharacters.length; i++) {
             const element = forbiddenCharacters[i];
-            if (element) {
+            if (element) 
                 query = query.split(element).join('')
-            }
         }
+
+        if(!query.trim()) 
+            throw new Error("Query is empty");
 
         const url = getAPIUrl(uri, `/hubs/search?query=${fixedEncodeURIComponent(query.trim())}&limit=${limit}`);
         AxiosRequest.get<HubSearchResponse>(url, token)
@@ -36,19 +38,17 @@ export default function hubSearch(uri: string, token: string, query: string, lim
                     if (!hub?.Metadata)
                         continue;
                     
-                    if (hub.type === "album") {
+                    if (hub.type === "album") 
                         processAlbumMetadata(hub.Metadata, response);
-                    }
 
-                    if (hub.type === "track") {
+                    if (hub.type === "track") 
                         processTrackMetadata(hub.Metadata, response);
-                    }
                 }
 
                 resolve(response)
-
             })
             .catch((_error: unknown) => {
+
                 // eslint-disable-next-line no-console
                 console.error(`Plex API Request failed:\n${url}`)
                 reject("Could not connect to server");

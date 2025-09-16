@@ -1,6 +1,6 @@
 import { generateError } from '@/helpers/errors/generateError';
 import { TrackLink } from '@spotify-to-plex/shared-types/common/track';
-import { settingsDir } from "@spotify-to-plex/shared-utils/utils/settingsDir";
+import { getStorageDir } from "@spotify-to-plex/shared-utils/utils/getStorageDir";
 
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createRouter } from 'next-connect';
@@ -22,9 +22,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 throw new Error(`Tracks were submitted, but had a length of zero.`)
 
             const getPrettyNumber = (value: number) => {
-                return value
-                    .toString()
-                    .padStart(2, '0')
+                return value.toString().padStart(2, '0')
             }
 
             const today = new Date()
@@ -37,7 +35,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
 
             switch (type) {
                 case "tidal":
-                    const path = join(settingsDir, 'track_links.json')
+                    const path = join(getStorageDir(), 'track_links.json')
 
                     if (!existsSync(path))
                         throw new Error(`No Tidal links found`)

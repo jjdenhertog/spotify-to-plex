@@ -1,4 +1,4 @@
-import { settingsDir } from '@spotify-to-plex/shared-utils/utils/settingsDir';
+import { getStorageDir } from '@spotify-to-plex/shared-utils/utils/getStorageDir';
 import { plex } from '../library/plex';
 import { MQTTItem } from '@spotify-to-plex/shared-types/dashboard/MQTTItem';
 import { PlaylistData } from '@spotify-to-plex/shared-types/dashboard/PlaylistData';
@@ -24,12 +24,12 @@ export async function refreshMQTT(options: MQTTRefreshOptions = {}) {
         throw new Error('Missing spotify saved items');
     }
 
-    const playlistPath = join(settingsDir, 'playlists.json');
+    const playlistPath = join(getStorageDir(), 'playlists.json');
     if (!existsSync(playlistPath) && !options.skipValidation) {
         throw new Error('Missing playlists');
     }
 
-    const trackLinksPath = join(settingsDir, 'track_links.json');
+    const trackLinksPath = join(getStorageDir(), 'track_links.json');
     if (!existsSync(trackLinksPath) && !options.skipValidation) {
         throw new Error('Track links missing');
     }
@@ -69,7 +69,7 @@ export async function refreshMQTT(options: MQTTRefreshOptions = {}) {
         // Load music search configuration
         let musicSearchConfig;
         try {
-            musicSearchConfig = await getMusicSearchConfigFromStorage(settingsDir);
+            musicSearchConfig = await getMusicSearchConfigFromStorage(getStorageDir());
         } catch (error) {
             // Fallback to default config if error loading
             console.warn('Failed to load music search config, using defaults:', error);

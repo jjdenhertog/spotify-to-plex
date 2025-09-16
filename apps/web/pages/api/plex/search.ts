@@ -1,5 +1,5 @@
 import { generateError } from '@/helpers/errors/generateError';
-import { plex } from '@/library/plex';
+import { getSettings } from '@spotify-to-plex/plex-config/functions/getSettings';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createRouter } from 'next-connect';
 
@@ -10,7 +10,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 if (!req.body.query && !req.query.query)
                     return res.status(400).json({ message: "Please add a search query" });
 
-                const settings = await plex.getSettings();
+                const settings = await getSettings();
 
                 if (!settings.uri || !settings.token)
                     return res.status(400).json({ message: "No Plex connection found" });

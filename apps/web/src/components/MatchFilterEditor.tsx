@@ -1,17 +1,22 @@
 /* eslint-disable no-alert */
-import { 
-    Box, 
-    Typography, 
-    Paper
+import {
+    Box,
+    Typography,
+    Paper,
+    ToggleButtonGroup,
+    ToggleButton,
+    Button
 } from '@mui/material';
 /* eslint-disable no-console */
-import React, { useCallback, useEffect, useMemo } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
+import { Save, Refresh } from '@mui/icons-material';
+import axios from 'axios';
+import { enqueueSnackbar } from 'notistack';
 
-import EditorHeader from './EditorHeader';
 import MonacoJsonEditor from './MonacoJsonEditor';
 import TableEditor from './TableEditor';
 import { MatchFilterRule } from '../types/MatchFilterTypes';
-import { useDualModeEditor } from '../hooks/useDualModeEditor';
+import { errorBoundary } from '../helpers/errors/errorBoundary';
 
 type MatchFilterConfig = {
     reason: string;
@@ -22,30 +27,26 @@ type MatchFilterEditorProps = {
     readonly onSave?: (filters: MatchFilterConfig[]) => void;
 }
 
+type ViewMode = 'ui' | 'json';
+
 const MatchFilterEditor: React.FC<MatchFilterEditorProps> = ({ onSave }) => {
-    // Define conversion functions for the useDualModeEditor hook
-    const jsonToUI = useCallback((data: MatchFilterRule[]): MatchFilterRule[] => {
-        if (!Array.isArray(data)) return [];
-
-        return data.map((filter) => typeof filter === 'string' ? filter : (filter as any).expression || 'artist:match');
-    }, []);
-
-    const uiToJSON = useCallback((data: MatchFilterRule[]): MatchFilterRule[] => {
-        return data;
-    }, []);
+    const [data, setData] = useState<MatchFilterRule[]>([]);
+    const [loading, setLoading] = useState(false);
+    const [validationError, setValidationError] = useState<string>('');
+    const [viewMode, setViewMode] = useState<ViewMode>('ui');
 
     // Validation function
     const validateFilters = useCallback((data: any): string | null => {
         if (!Array.isArray(data)) {
             return 'Configuration must be an array';
         }
-        
+
         for (let i = 0; i < data.length; i++) {
             const filter = data[i];
             if (!filter) {
                 return `Filter at index ${i} is null or undefined`;
             }
-            
+
             if (typeof filter !== 'string') {
                 return `Filter at index ${i} must be a string expression`;
             }
@@ -56,58 +57,75 @@ const MatchFilterEditor: React.FC<MatchFilterEditorProps> = ({ onSave }) => {
                 return `Filter at index ${i}: invalid expression format`;
             }
         }
-        
+
         return null; // Valid
     }, []);
 
-    // Configuration object defined outside component to prevent recreation
-    const editorConfig = useMemo(() => ({
-        loadEndpoint: '/api/plex/music-search-config/match-filters',
-        saveEndpoint: '/api/plex/music-search-config/match-filters',
-        validator: validateFilters,
-        jsonToUI,
-        uiToJSON,
-        initialData: [] as MatchFilterRule[]
-    }), [validateFilters, jsonToUI, uiToJSON]);
+    const loadData = useCallback(async () => {
+        errorBoundary(async () => {
+            setLoading(true);
+            const response = await axios.get('/api/plex/music-search-config/match-filters');
+            setData(response.data);
+            setLoading(false);
+        }, () => {
+            setLoading(false);
+        });
+    }, []);
 
-    // Use the dual mode editor hook
-    const {
-        viewMode,
-        jsonData,
-        uiData,
-        loading,
-        validationError,
-        editorRef,
-        loadData,
-        handleSave,
-        handleReset,
-        handleViewModeChange,
-        handleUIDataChange,
-        handleJSONDataChange
-    } = useDualModeEditor<MatchFilterRule[], MatchFilterRule[]>(editorConfig);
+    const saveData = useCallback(async () => {
+        errorBoundary(async () => {
+            const validationErrorMsg = validateFilters(data);
+            if (validationErrorMsg) {
+                setValidationError(validationErrorMsg);
+                enqueueSnackbar(`Validation Error: ${validationErrorMsg}`, { variant: 'error' });
+
+                return;
+            }
+
+            setValidationError('');
+            await axios.post('/api/plex/music-search-config/match-filters', data);
+            enqueueSnackbar('Match filters saved successfully', { variant: 'success' });
+
+            if (onSave) {
+                onSave(data as unknown as MatchFilterConfig[]);
+            }
+        });
+    }, [data, validateFilters, onSave]);
+
+    const handleReset = useCallback(async () => {
+        // eslint-disable-next-line no-alert
+        if (confirm('Reset match filters to defaults? This will overwrite your current configuration.')) {
+            await loadData();
+            setValidationError('');
+        }
+    }, [loadData]);
+
+    const handleResetClick = useCallback(() => {
+        handleReset().catch(console.error);
+    }, [handleReset]);
+
+    const handleSaveClick = useCallback(() => {
+        saveData().catch(console.error);
+    }, [saveData]);
+
+    const handleViewModeChange = useCallback((
+        _event: React.MouseEvent<HTMLElement>,
+        newMode: ViewMode | null
+    ) => {
+        if (newMode) {
+            setViewMode(newMode);
+        }
+    }, []);
+
+    const handleDataChange = useCallback((newValue: MatchFilterRule[]) => {
+        setData(newValue);
+        setValidationError('');
+    }, []);
 
     // Load data on component mount
     useEffect(() => {
         loadData();
     }, [loadData]);
-
-    // Custom save handler that includes onSave callback
-    const handleSaveWithCallback = useCallback(() => {
-        handleSave();
-        if (onSave) {
-            const currentData = viewMode === 'json' ? jsonData : uiData;
-            onSave(currentData as unknown as MatchFilterConfig[]);
-        }
-    }, [handleSave, onSave, viewMode, jsonData, uiData]);
-
-    // Wrapper functions to handle promises properly for onClick
-    const handleSaveClick = useCallback(() => {
-        handleSaveWithCallback();
-    }, [handleSaveWithCallback]);
-
-    const handleResetClick = useCallback(() => {
-        handleReset();
-    }, [handleReset]);
 
     if (loading) {
         return (
@@ -132,31 +150,46 @@ const MatchFilterEditor: React.FC<MatchFilterEditorProps> = ({ onSave }) => {
     return (
         <Box>
             {/* Header */}
-            <EditorHeader title="Match Filters Configuration" viewMode={viewMode} onViewModeChange={handleViewModeChange} onSave={handleSaveClick} onReset={handleResetClick} disabled={loading} />
-            
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
+                <Typography variant="h6">
+                    Match Filters Configuration
+                </Typography>
+                <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+                    <ToggleButtonGroup value={viewMode} exclusive onChange={handleViewModeChange} size="small">
+                        <ToggleButton value="ui">UI</ToggleButton>
+                        <ToggleButton value="json">JSON</ToggleButton>
+                    </ToggleButtonGroup>
+                    <Button onClick={handleResetClick} variant="outlined" size="small" startIcon={<Refresh />}>
+                        Reset to Defaults
+                    </Button>
+                    <Button onClick={handleSaveClick} variant="contained" size="small" startIcon={<Save />}>
+                        Save Configuration
+                    </Button>
+                </Box>
+            </Box>
+
             {/* Mode-specific descriptions */}
-            {!!viewMode && viewMode === 'ui' ? (
+            {viewMode === 'ui' ? (
                 <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
                     Add filter expressions to match tracks. Filters are evaluated in order - the first matching filter wins.
                 </Typography>
             ) : (
                 <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-                    Edit raw JSON for advanced configurations. Each filter should have a &apos;reason&apos; and &apos;expression&apos; property. 
+                    Edit raw JSON for advanced configurations. Each filter should be a string expression.
                     Filters are evaluated in order - the first matching filter wins.
                 </Typography>
             )}
 
             {/* Content based on view mode */}
             <Paper variant="outlined" sx={{ p: 0 }}>
-                {!!viewMode && viewMode === 'ui' ? (
+                {viewMode === 'ui' ? (
                     <Box sx={{ p: 2 }}>
-                        <TableEditor filters={uiData} onChange={handleUIDataChange} />
+                        <TableEditor filters={data} onChange={setData} />
                     </Box>
                 ) : (
-                    <MonacoJsonEditor ref={editorRef} value={jsonData} onChange={handleJSONDataChange} schema={matchFilterSchema} height={500} error={validationError} />
+                    <MonacoJsonEditor value={data} onChange={handleDataChange} schema={matchFilterSchema} height={500} error={validationError} />
                 )}
             </Paper>
-
         </Box>
     );
 };

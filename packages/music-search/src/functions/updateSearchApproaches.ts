@@ -1,4 +1,4 @@
-import fs from 'fs-extra';
+import fs, { renameSync } from 'fs-extra';
 const { ensureDir, writeFile } = fs;
 import { join } from 'node:path';
 import { SearchApproachConfig } from '../types/SearchApproachConfig';
@@ -14,8 +14,7 @@ async function writeJSON(filePath: string, data: unknown): Promise<void> {
         await writeFile(tempPath, JSON.stringify(data, null, 2), 'utf8');
         
         // Atomic rename
-        const nodeFs = await import('node:fs');
-        await nodeFs.promises.rename(tempPath, filePath);
+        renameSync(tempPath, filePath);
     } catch (error) {
         throw new Error(`Failed to write ${filePath}: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }

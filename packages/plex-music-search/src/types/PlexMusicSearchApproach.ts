@@ -4,5 +4,6 @@ export type PlexMusicSearchApproach = {
     filtered?: boolean;
     trim?: boolean;
     ignoreQuotes?: boolean;
+    removeQuotes?: boolean;
     force?: boolean;
 };

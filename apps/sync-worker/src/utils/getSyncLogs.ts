@@ -1,11 +1,11 @@
-import { settingsDir } from '@spotify-to-plex/shared-utils/utils/settingsDir';
+import { getStorageDir } from '@spotify-to-plex/shared-utils/utils/getStorageDir';
 import { SyncLog } from "@spotify-to-plex/shared-types/common/sync";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
 export function getSyncLogs() {
     // Get the logs
-    const logsPath = join(settingsDir, 'sync_log.json');
+    const logsPath = join(getStorageDir(), 'sync_log.json');
     let logs: SyncLog[] = [];
     if (existsSync(logsPath))
         logs = JSON.parse(readFileSync(logsPath, 'utf8'));

@@ -67,7 +67,7 @@ export async function putPlexPlaylist(id: string, plexPlaylist: Playlist | undef
                 console.log(`* Could not update poster image`)
             }
             // Store new playlist
-            await plex.addPlaylist(type(), id, playlistId);
+            await plex.addPlaylist({ type: type(), id, plex: playlistId });
         }
     }
 }

@@ -1,11 +1,8 @@
 import { Card, CardContent } from "@mui/material"
 import { NextPage } from "next"
-import dynamic from "next/dynamic"
-import MusicSearchConfigLayout from "../../../components/layouts/MusicSearchConfigLayout"
+import MusicSearchConfigLayout from "@/components/layouts/MusicSearchConfigLayout"
+import MatchFilterEditor from "@/components/MatchFilterEditor"
 
-const MatchFilterEditor = dynamic(() => import("../../../src/components/MatchFilterEditor"), {
-    ssr: false
-})
 
 const MatchFiltersPage: NextPage = () => {
     return (

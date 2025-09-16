@@ -7,14 +7,10 @@ import { setConfig as setStateConfig, resetCache } from "./state";
 import { newTrackSearch } from "./newTrackSearch";
 
 export async function search(config: PlexMusicSearchConfig, tracks: PlexMusicSearchTrack[]): Promise<SearchResponse[]> {
-    const {
-        searchApproaches: approaches = [
-            { id: 'normal', filtered: false, trim: false },
-            { id: 'filtered', filtered: true, trim: false, removeQuotes: true },
-            { id: 'trimmed', filtered: false, trim: true },
-            { id: 'filtered_trimmed', filtered: true, trim: true, removeQuotes: true }
-        ]
-    } = config;
+    if (!config.searchApproaches || config.searchApproaches.length === 0) 
+        throw new Error('No search approaches provided. Configuration must include explicit searchApproaches.');
+
+    const approaches = config.searchApproaches;
 
     // Set configuration
     setStateConfig(config);
@@ -22,9 +18,8 @@ export async function search(config: PlexMusicSearchConfig, tracks: PlexMusicSea
     
     // Set music search configuration if available
     const { musicSearchConfig } = config;
-    if (musicSearchConfig) {
+    if (musicSearchConfig) 
         setMusicSearchConfig(musicSearchConfig);
-    }
 
     // Reset cache
     resetCache();

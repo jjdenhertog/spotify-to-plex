@@ -52,6 +52,7 @@ class SpotifyScraperService:
             # If album data not needed, return basic data
             if not include_album_data:
                 logger.info("Returning basic playlist data (no album info)")
+                logger.debug(f"Raw basic SpotifyScraper response: {raw_data}")
                 return raw_data
             
             # Check if tracks exist in the playlist
@@ -98,7 +99,10 @@ class SpotifyScraperService:
             
             # Log enrichment summary
             logger.info(f"Track enrichment complete - Success: {enriched_count}, Failed: {failed_count}, Total: {len(tracks)}")
-            
+
+            # Debug log to see the actual SpotifyScraper response structure
+            logger.debug(f"Raw SpotifyScraper response structure: {raw_data}")
+
             # Return the enhanced playlist data
             return raw_data
             

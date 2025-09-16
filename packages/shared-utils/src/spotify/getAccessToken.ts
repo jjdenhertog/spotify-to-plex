@@ -1,4 +1,4 @@
-import { settingsDir } from "../utils/settingsDir"
+import { getStorageDir } from "../utils/getStorageDir"
 import { SpotifyCredentials } from "@spotify-to-plex/shared-types/spotify/SpotifyCredentials"
 import { existsSync, readFileSync } from "node:fs"
 import { join } from "node:path"
@@ -9,7 +9,7 @@ export async function getAccessToken(
     userId?: string
 ): Promise<{ access_token: string; refresh_token: string; expires_in: number; token_type: string } | undefined> {
     try {
-        const credentialsPath = join(settingsDir, "spotify.json")
+        const credentialsPath = join(getStorageDir(), "spotify.json")
         if (!existsSync(credentialsPath))
             throw new Error("No users are currently connected.")
 

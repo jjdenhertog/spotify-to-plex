@@ -1,11 +1,11 @@
 import { generateError } from '@/helpers/errors/generateError';
-import { plex } from '@/library/plex';
 import { analyze } from '@spotify-to-plex/plex-music-search/functions/analyze';
 import { PlexMusicSearchTrack } from '@spotify-to-plex/plex-music-search/types/PlexMusicSearchTrack';
 import { getMusicSearchConfigFromStorage } from "@spotify-to-plex/music-search/functions/getMusicSearchConfigFromStorage";
-import { settingsDir } from '@spotify-to-plex/shared-utils/utils/settingsDir';
+import { getStorageDir } from '@spotify-to-plex/shared-utils/utils/getStorageDir';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createRouter } from 'next-connect';
+import { getSettings } from '@spotify-to-plex/plex-config/functions/getSettings';
 
 
 const router = createRouter<NextApiRequest, NextApiResponse>()
@@ -18,7 +18,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 if (!searchItem?.id)
                     return res.status(400).json({ msg: "No items given" });
 
-                const settings = await plex.getSettings();
+                const settings = await getSettings();
 
                 if (!settings.token || !settings.uri)
                     return res.status(400).json({ msg: "Plex not configured" });
@@ -26,8 +26,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 //////////////////////////////////////
                 // Load music search configuration and analyze
                 //////////////////////////////////////
-                const musicSearchConfig = await getMusicSearchConfigFromStorage(settingsDir);
-
+                const musicSearchConfig = await getMusicSearchConfigFromStorage(getStorageDir());
                 const plexConfig = {
                     uri: settings.uri,
                     token: settings.token,

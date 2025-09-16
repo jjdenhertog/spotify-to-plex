@@ -22,7 +22,7 @@ RUN npm install -g pnpm@10.15.0
 RUN pnpm install
 
 # Configure git for public repositories and install Python dependencies for SpotifyScraper
-RUN cd apps/spotify-scraper && git config --global url."https://github.com/".insteadOf "git@github.com:" && pip3 install -r requirements.txt
+RUN cd apps/spotify-scraper && git config --global url."https://github.com/".insteadOf "git@github.com:" && pip3 install --break-system-packages -r requirements.txt
 
 # Rebuild the source code only when needed
 FROM base AS builder
@@ -71,7 +71,7 @@ RUN npm install -g pnpm@10.15.0
 RUN pnpm install --prod --frozen-lockfile
 
 # Configure git for public repositories and install Python dependencies for SpotifyScraper in production
-RUN cd apps/spotify-scraper && git config --global url."https://github.com/".insteadOf "git@github.com:" && pip3 install -r requirements.txt
+RUN cd apps/spotify-scraper && git config --global url."https://github.com/".insteadOf "git@github.com:" && pip3 install --break-system-packages -r requirements.txt
 
 # EXPOSE both ports
 EXPOSE 9030 3020

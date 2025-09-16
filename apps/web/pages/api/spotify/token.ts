@@ -1,9 +1,7 @@
 import { encrypt } from '@spotify-to-plex/shared-utils/security/encrypt';
-// MIGRATED: Updated to use shared utils package
 import { generateError } from '@/helpers/errors/generateError';
-import { settingsDir } from "@spotify-to-plex/shared-utils/utils/settingsDir";
+import { getStorageDir } from "@spotify-to-plex/shared-utils/utils/getStorageDir";
 import { SpotifyCredentials } from '@spotify-to-plex/shared-types/spotify/SpotifyCredentials';
-// MIGRATED: Updated to use shared types package
 import { SpotifyApi } from '@spotify/web-api-ts-sdk';
 import axios from 'axios';
 import type { NextApiRequest, NextApiResponse } from 'next';
@@ -72,7 +70,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                     expires_at: Date.now() + expires_in
                 }
 
-                const credentialsPath = join(settingsDir, 'spotify.json')
+                const credentialsPath = join(getStorageDir(), 'spotify.json')
 
                 if (existsSync(credentialsPath)) {
                     // Update

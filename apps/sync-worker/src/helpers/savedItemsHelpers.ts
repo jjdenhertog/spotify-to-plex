@@ -1,4 +1,4 @@
-import { settingsDir } from '@spotify-to-plex/shared-utils/utils/settingsDir';
+import { getStorageDir } from '@spotify-to-plex/shared-utils/utils/getStorageDir';
 import { SavedItem } from "@spotify-to-plex/shared-types/spotify/SavedItem";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
@@ -6,7 +6,7 @@ import { join } from "node:path";
 export function savedItemsHelpers() {
 
     // Get all saved items
-    const savedItemsPath = join(settingsDir, 'spotify_saved_items.json');
+    const savedItemsPath = join(getStorageDir(), 'spotify_saved_items.json');
 
     let items: SavedItem[] = []
     if (existsSync(savedItemsPath))
