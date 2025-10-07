@@ -1,19 +1,19 @@
 import { TidalTrack } from "../../types/TidalTrack";
 import { TidalComponents, operations } from "../../types/TidalAPI";
 import tidalApiRequest from "../tidalApiRequest";
-import { getState } from "./state";
+import { getCredentials } from "../../session/credentials";
 
 export async function getTrackByIds(ids: string[], countryCode: string): Promise<TidalTrack[]> {
-    const state = getState();
-    
+    const state = getCredentials();
+
     if (!state.accessToken) {
         return [];
     }
 
     const result: TidalTrack[] = [];
     const searchResult = await tidalApiRequest<operations['getTracksByFilters']>(
-        state.accessToken, 
-        `https://openapi.tidal.com/v2/tracks`, 
+        state.accessToken,
+        `https://openapi.tidal.com/v2/tracks`,
         {
             countryCode,
             include: ['artists', 'tracks', 'albums'],
@@ -51,7 +51,14 @@ export async function getTrackByIds(ids: string[], countryCode: string): Promise
             if (id && title && link && artists && albums && artists.length > 0 && albums.length > 0) {
                 const [album] = albums;
                 if (album) {
-                    result.push({ id, title, link, artists, album });
+                    result.push({
+                        id,
+                        title,
+                        link,
+                        artists,
+                        artist: { title: artists[0]?.name || '' },
+                        album
+                    });
                 }
             }
         }

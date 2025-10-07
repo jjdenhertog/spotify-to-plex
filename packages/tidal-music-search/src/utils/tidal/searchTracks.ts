@@ -1,26 +1,34 @@
 import { TidalTrack } from "../../types/TidalTrack";
 import { operations } from "../../types/TidalAPI";
 import tidalApiRequest from "../tidalApiRequest";
-import { getState } from "./state";
-import { authenticate } from "./authenticate";
+import { getCredentials, authenticate } from "../../session/credentials";
 import { getTrackByIds } from "./getTrackByIds";
 
 export async function searchTracks(query: string, countryCode: string = 'NL'): Promise<TidalTrack[]> {
-    const state = getState();
-    
-    // Authenticate again if the token is expired
-    if (!state.expiresAt || Date.now() > state.expiresAt) {
-        await authenticate();
-    }
+    const state = getCredentials();
 
-    const updatedState = getState();
+    // Authenticate again if the token is expired
+    if (!state.expiresAt || Date.now() > state.expiresAt)
+        await authenticate();
+
+    const updatedState = getCredentials();
     let tidalTracks: TidalTrack[] = [];
+
+    // Fix forbidden characters
+    const forbiddenCharacters = ['(', ')', '/', "...", "..", '"']
+
+    for (let i = 0; i < forbiddenCharacters.length; i++) {
+        const element = forbiddenCharacters[i];
+        if (element)
+            query = query.split(element).join('')
+    }
 
     if (updatedState.accessToken) {
         // Search for tracks
+        const url = `https://openapi.tidal.com/v2/searchResults/${encodeURIComponent(query)}`;
         const result = await tidalApiRequest<operations['getSearchResultsByQuery']>(
-            updatedState.accessToken, 
-            `https://openapi.tidal.com/v2/searchresults/${encodeURIComponent(query)}`, 
+            updatedState.accessToken,
+            url,
             {
                 countryCode,
                 include: 'tracks'

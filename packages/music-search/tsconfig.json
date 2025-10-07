@@ -11,7 +11,8 @@
         "tsBuildInfoFile": "./dist/.tsbuildinfo"
     },
     "references": [
-        { "path": "../shared-types" }
+        { "path": "../shared-types" },
+        { "path": "../shared-utils" }
     ],
     "include": ["src/**/*"],
     "exclude": ["node_modules", "dist"]

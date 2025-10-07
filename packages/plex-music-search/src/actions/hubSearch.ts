@@ -11,7 +11,7 @@ export default function hubSearch(uri: string, token: string, query: string, lim
     return new Promise<HubSearchResult[]>((resolve, reject) => {
 
         // Fix forbidden characters
-        const forbiddenCharacters = ['(', ')']
+        const forbiddenCharacters = ['(', ')', '/', "...","..", '"']
 
         for (let i = 0; i < forbiddenCharacters.length; i++) {
             const element = forbiddenCharacters[i];

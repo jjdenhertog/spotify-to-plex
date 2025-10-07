@@ -2,20 +2,14 @@ import { AxiosRequest } from '@spotify-to-plex/http-client/AxiosRequest';
 import { PlexSettings } from '../PlexSettings';
 import { PlaylistItem } from '../PlaylistItem';
 import { RetryConfig } from '../RetryConfig';
-import { GetAPIUrlFn } from '../GetAPIUrlFn';
 import { validatePlexSettings } from '../utils/validatePlexSettings';
 import { getPlexUri } from '../utils/getPlexUri';
+import { getAPIUrl } from '@spotify-to-plex/shared-utils/utils/getAPIUrl';
 
 /**
  * Adds items to a Plex playlist
  */
-export async function addItemsToPlaylist(
-    settings: PlexSettings,
-    getAPIUrl: GetAPIUrlFn,
-    playlistId: string,
-    items: PlaylistItem[],
-    config: RetryConfig = {}
-): Promise<void> {
+export async function addItemsToPlaylist(settings: PlexSettings, playlistId: string, items: PlaylistItem[], config: RetryConfig = {}): Promise<void> {
     validatePlexSettings(settings);
 
     const url = getAPIUrl(settings.uri, `/playlists/${playlistId}/items`);

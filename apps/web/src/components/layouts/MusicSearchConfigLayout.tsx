@@ -17,10 +17,11 @@ type MusicSearchConfigLayoutProps = {
 }
 
 const TAB_CONFIG = [
-    { key: 'how-it-works', label: 'How It Works', path: '/plex/music-search-config' },
-    { key: 'text-processing', label: 'Text Processing & Search Approaches', path: '/plex/music-search-config/text-processing' },
-    { key: 'match-filters', label: 'Match Filters', path: '/plex/music-search-config/match-filters' },
-    { key: 'test', label: 'Test Configuration', path: '/plex/music-search-config/test' }
+    { key: 'how-it-works', label: 'How It Works', path: '/advanced/music-search-config' },
+    { key: 'text-processing', label: 'Text Processing', path: '/advanced/music-search-config/text-processing' },
+    { key: 'match-filters', label: 'Match Filters', path: '/advanced/music-search-config/match-filters' },
+    { key: 'search-approaches', label: 'Search Approaches', path: '/advanced/music-search-config/search-approaches' },
+    { key: 'test', label: 'Test Configuration', path: '/advanced/music-search-config/test' }
 ]
 
 const MusicSearchConfigLayout = (props: MusicSearchConfigLayoutProps) => {
@@ -153,14 +154,11 @@ const MusicSearchConfigLayout = (props: MusicSearchConfigLayoutProps) => {
                     <Paper elevation={0} sx={{ p: 2, bgcolor: "action.hover", mb: 3 }}>
                         <Breadcrumbs sx={{ mb: 2 }}>
                             <Link href="/" underline="hover" color="inherit">Home</Link>
+                            <Link href="/advanced" underline="hover" color="inherit">Advanced</Link>
                             <Typography color="text.primary">
                                 Music Search Configuration
                             </Typography>
                         </Breadcrumbs>
-
-                        <Button component="a" href="/" variant="outlined" color="inherit" size="small" startIcon={<ChevronLeft />}>
-                            Back to Home
-                        </Button>
 
                         <Typography variant="h4" sx={{ mt: 2, mb: 0.5 }}>
                             Music Search Configuration

@@ -67,9 +67,6 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 if (!settings.uri || !settings.token || !settings.id)
                     return res.status(400).json({ msg: "No plex connection found" });
 
-                // Cast settings to required type since we've validated the fields
-                const validatedSettings = settings as Required<typeof settings>;
-
                 const playlistsData = await getPlaylists();
                 const playlists: PlexPlaylists["data"] = playlistsData.data || [];
                 if (!playlists)
@@ -80,30 +77,30 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                     return res.status(404).json({ error: `Playlist not found connected to ${id}` })
 
                 // Check the existence
-                const url = getAPIUrl(validatedSettings.uri, `/playlists`);
-                const result = await AxiosRequest.get<GetPlaylistResponse>(url, validatedSettings.token);
+                const url = getAPIUrl(settings.uri, `/playlists`);
+                const result = await AxiosRequest.get<GetPlaylistResponse>(url, settings.token);
                 const playlist = result.data.MediaContainer.Metadata.find(item => item.ratingKey === playlistIds.plex);
                 if (!playlist)
                     return res.status(404).json({ error: `Playlist not found with id ${playlistIds.plex}` })
 
                 // Clear items from playlist
-                await removeItemsFromPlaylist(validatedSettings, getAPIUrl, playlist.ratingKey, []);
+                await removeItemsFromPlaylist(settings, playlist.ratingKey, []);
 
                 // Add all items
-                await addItemsToPlaylist(validatedSettings, getAPIUrl, playlist.ratingKey, items)
+                await addItemsToPlaylist(settings, playlist.ratingKey, items)
 
                 if (playlist.title !== name && name)
-                    await updatePlaylist(validatedSettings, getAPIUrl, playlist.ratingKey, { title: name })
+                    await updatePlaylist(settings, playlist.ratingKey, { title: name })
 
                 // Update thumbnail of playlist
                 if (typeof thumb === 'string') {
                     try {
-                        await putPlaylistPoster(validatedSettings, getAPIUrl, playlist.ratingKey, thumb)
+                        await putPlaylistPoster(playlist.ratingKey, thumb)
                     } catch (_e) {
                     }
                 }
 
-                const link = getAPIUrl(validatedSettings.uri, `/web/index.html#!/server/${validatedSettings.id}/playlist?key=${encodeURIComponent(`/playlists/${playlist.ratingKey}`)}`)
+                const link = getAPIUrl(settings.uri, `/web/index.html#!/server/${settings.id}/playlist?key=${encodeURIComponent(`/playlists/${playlist.ratingKey}`)}`)
                 res.json({ id: playlist.ratingKey, link })
             } catch (error) {
                 console.error('Error updating Plex playlist:', error);

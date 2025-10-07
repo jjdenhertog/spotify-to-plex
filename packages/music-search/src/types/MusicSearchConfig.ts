@@ -1,17 +1,17 @@
 import { MatchFilterConfig } from '@spotify-to-plex/shared-types/common/MatchFilterConfig';
 import { TextProcessingConfig } from './TextProcessingConfig';
-import { PlatformSearchConfig } from './PlatformSearchConfig';
+import { SearchApproachConfig } from './SearchApproachConfig';
 
 /**
  * Complete music search configuration - simplified
  */
 export type MusicSearchConfig = {
-  readonly matchFilters: readonly MatchFilterConfig[];
-  readonly textProcessing: TextProcessingConfig;
-  readonly searchApproaches: PlatformSearchConfig;
-  readonly options: {
-    readonly enableCaching: boolean;
-    readonly maxCacheSize: number;
-    readonly debugMode: boolean;
-  };
+    matchFilters: MatchFilterConfig[];
+    textProcessing: TextProcessingConfig;
+    searchApproaches: SearchApproachConfig[];
+    options: {
+        enableCaching: boolean;
+        maxCacheSize: number;
+        debugMode: boolean;
+    };
 }

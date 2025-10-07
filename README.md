@@ -1,8 +1,6 @@
 <p align="center"><img src="misc/logo.png" width="90"></p>
 <p align="center" color="red">Spotify to Plex</p>
 
-> **⚠️ This project has been migrated to a monorepo structure. See [Migration Complete](docs/MIGRATION_COMPLETE.md) for details.**
-
 ------------
 
 A beautiful web application that you can use to sync your Spotify playlists with [Plex](https://plex.tv/). This application uses the data from Spotify (playlists or albums) and tries to find all the matching songs in Plex. With every playlists it gives you an overview of the songs that have been matched and how they have been matched.
@@ -16,93 +14,6 @@ This project started because I'm using Home Assistant together with Plex and Son
 * Imported automated personal playlists (e.g. Daylist)
 * Update thumbnail in Plex to the Spotify Thumbnail
 * Export your missing songs (which could be used in [Tidal Media Downloader](https://github.com/yaronzz/Tidal-Media-Downloader))
-  
-#### Coming soon
-* Automatically synchronize playlists or recent songs
-* API route for dashboarding
-* Showing and filtering on song quality
-
-#### Coming later
-* Add albums / playlist by searching Spotify
-
-# Table of Contents
-* [Monorepo Structure](#monorepo-structure)
-* [Installation](#installation)
-  * [Encryption key](#encryption-key)
-  * [Spotify credentials](#spotify-credentials)
-  * [Tidal credentials](#tidal-credentials)
-  * [Binding volume](#binding-volume)
-  * [Docker installation](#docker-installation)
-  * [Portainer installation](#portainer-installation)
-* [Matching songs](#matching-songs)
-  * [Missing songs](#missing-songs)
-* [Creating Plex Playlists](#creating-plex-playlists)
-  * [Changing the playlist name](#changing-the-playlist-name)
-* [Speeding things up](#speeding-things-up)
-  * [Removing cache](#removing-cache)
-  * [Large playlists](#large-playlists)
-* [Spotify](#spotify)
-  * [Multiple users](#multiple-users)
-  * [Security](#security)
-* [Synchronization](#synchronization)
-  * [How it works](#how-it-works)
-  * [What happens during synchronization](#what-happens-during-synchronization)
-  * [Setup](#setup)
-  * [Logs](#logs)
-  * [Syncing albums](#syncing-albums)
-  * [Missing songs](#missing-songs-1)
-* [Dashboarding](#dashboarding)
-* [Support This Open-Source Project ❤️](#support-this-open-source-project-️)
-
-------------
-
-## Monorepo Structure
-
-This project uses a monorepo architecture with pnpm workspaces for better code organization and dependency management:
-
-```
-├── apps/                          # Application packages
-│   ├── web/                      # Next.js web application (@spotify-to-plex/web)
-│   ├── sync-worker/              # Background sync worker (@spotify-to-plex/sync-worker)
-│   └── spotify-scraper/          # Spotify playlist scraper service (uses SpotifyScraper)
-├── packages/                      # Shared library packages
-│   ├── music-search/             # Core music search utilities
-│   ├── plex-music-search/        # Plex-specific search functionality
-│   └── tidal-music-search/       # Tidal-specific search functionality
-├── config/                        # Shared configuration files
-└── docs/                         # Documentation
-```
-
-### Development Commands
-
-```bash
-# Install dependencies
-pnpm install
-
-# Build all packages
-npm run build
-
-# Build only packages (libraries)
-npm run build:packages
-
-# Build specific workspaces
-npm run build:web
-npm run build:sync-worker
-
-# Development mode
-npm run dev:web
-
-# Run tests
-npm run test --workspaces --if-present
-
-# Lint code
-npm run lint --workspaces --if-present
-
-# Type checking
-npm run type-check
-```
-
-For detailed migration information, see [Migration Complete](docs/MIGRATION_COMPLETE.md).
 
 ------------
 
@@ -209,6 +120,16 @@ When the matched song is indeed totally wrong, you can find more info by clickin
 ### Missing songs
 
 You can view all songs that cannot be matched and download it as a text file containing all song links. It is also possible to match it up with Tidal, for this you need to setup [Tidal credentials](#tidal-credentials) as well.
+
+### Spotify API Limitations
+
+Due to recent changes to Spotify's Web API (November 2024), many public Spotify-owned playlists can no longer be accessed through the official API. To work around these limitations, this project leverages [SpotifyScraper](https://github.com/AliAkhtari78/SpotifyScraper) for extracting playlist data without requiring API authentication.
+
+While SpotifyScraper provides reliable access to playlist information, it does have some limitations:
+* **Track limit**: Playlists scraped through SpotifyScraper are limited to 100 tracks
+* **Rate limiting**: Large numbers of requests may be throttled by Spotify's servers
+
+For Spotify-owned playlists with more than 100 tracks, you can copy that entire playlist to a private playlist and use that URL instead.
 
 ------------
 
@@ -321,19 +242,6 @@ The only thing that the syncing service for albums does is create a `missing_alb
 
 The cronjob will automatically update all missing songs in two text files `missing_tracks_spotify.txt` and `missing_tracks_tidal.txt`. You can do this to easily see which songs are not in your Plex environment. The Tidal songs are also structured in such a way that it could be used in [Tidal Media Downloader](https://github.com/yaronzz/Tidal-Media-Downloader). [Disclaimer](https://github.com/yaronzz/Tidal-Media-Downloader?tab=readme-ov-file#-disclaimer). Or it can be used with the [Spotify to Plex Tidal Downloader](https://github.com/jjdenhertog/spotify-to-plex-tidal-downloader)
 
-------------
-
-## Dashboarding
-
-⚠️ ⚠️ This is not yet included, [I'm working on this](#coming-soon) ⚠️ ⚠️
-
-Originally I started this project for a Home Assistant dashboard. For this dashboard to work I needed to somehow list and categorize my playlists and albums. This dashboarding support impacts `Spotify to Plex` in two ways.
-
-**API Route**
-The api route `/api/dashboard` returns all the playlists including its tracks with all Plex media content id references. This can be used to categorize and play tracks.
-
-**Managing Playlists & Albums**
-While adding a Playlist or Album there is also an option to add it as Plex Media Content ID. This is solely used for dashboarding purpose, it doesn't do anything with the sync features.
 
 ------------
 

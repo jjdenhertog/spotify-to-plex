@@ -2,14 +2,12 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { createRouter } from 'next-connect';
 import { generateError } from '@/helpers/errors/generateError';
 import { resetToDefaults } from '@spotify-to-plex/music-search/functions/resetToDefaults';
-import { getStorageDir } from '@spotify-to-plex/shared-utils/utils/getStorageDir';
 
 const router = createRouter<NextApiRequest, NextApiResponse>()
     .post(
         async (_req, res) => {
             try {
-                const storageDir = getStorageDir();
-                const config = await resetToDefaults(storageDir);
+                const config = await resetToDefaults();
 
                 return res.status(200).json({
                     success: true,

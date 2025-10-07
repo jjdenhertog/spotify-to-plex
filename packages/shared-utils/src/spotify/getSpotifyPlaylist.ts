@@ -17,20 +17,22 @@ export async function getSpotifyPlaylist(api: SpotifyApi, id: string, simplified
         }
         const validTracks = result.tracks.items
             .map(item => {
-                if (!item.track) return null;
+                if (!item.track) 
+                    return null;
+
+                const artists = item.track.artists?.flatMap(artist => artist.name.split(',').map(name => name.trim()));
 
                 return {
                     id: item.track.id,
                     title: item.track.name,
                     artist: item.track.artists?.[0]?.name || 'Unknown',
                     album: item.track.album?.name || 'Unknown',
-                    artists: item.track.artists?.map(artist => artist.name) || [],
+                    artists: artists || [],
                 }
             })
-            .filter((track): track is NonNullable<typeof track> => track !== null);
+            .filter((track)=>!!track);
         
         playlist.tracks = playlist.tracks.concat(validTracks);
-
         if (simplified)
             return playlist;
 
@@ -53,7 +55,7 @@ export async function getSpotifyPlaylist(api: SpotifyApi, id: string, simplified
                             artists: item.track.artists?.map(artist => artist.name) || [],
                         }
                     })
-                    .filter((track): track is NonNullable<typeof track> => track !== null);
+                    .filter((track)=>!!track);
                 
                 playlist.tracks = playlist.tracks.concat(validLoadMoreTracks);
 

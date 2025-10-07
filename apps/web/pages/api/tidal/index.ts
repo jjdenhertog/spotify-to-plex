@@ -1,14 +1,13 @@
 import { generateError } from '@/helpers/errors/generateError';
 import { getCachedTrackLinks } from '@spotify-to-plex/shared-utils/cache/getCachedTrackLink';
 import { getTidalCredentials } from '@spotify-to-plex/shared-utils/tidal/getTidalCredentials';
-import { getStorageDir } from '@spotify-to-plex/shared-utils/utils/getStorageDir';
 import { Album } from '@spotify-to-plex/shared-types/spotify/Album';
 import { Track } from '@spotify-to-plex/shared-types/spotify/Track';
 import { search as tidalMusicSearch } from '@spotify-to-plex/tidal-music-search/functions/search';
 import { searchAlbum } from '@spotify-to-plex/tidal-music-search/functions/searchAlbum';
-import { setUser } from '@spotify-to-plex/tidal-music-search/functions/setUser';
-import type { SearchResponse } from '@spotify-to-plex/tidal-music-search/functions/search';
-import { getMusicSearchConfigFromStorage } from "@spotify-to-plex/music-search/functions/getMusicSearchConfigFromStorage";
+import { setUser } from '@spotify-to-plex/tidal-music-search/session/credentials';
+import { SearchResponse } from '@spotify-to-plex/tidal-music-search/types/SearchResponse';
+import { getMusicSearchConfig } from "@spotify-to-plex/music-search/functions/getMusicSearchConfig";
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createRouter } from 'next-connect';
 
@@ -41,21 +40,25 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
             // Tidal authentication and configuration
             ///////////////////////////////////////
             const tidalUser = await getTidalCredentials();
+            if(!tidalUser)
+                throw new Error(`Tidal credentials not found`)
+            
             setUser(tidalUser);
             
             // Load music search configuration
-            let musicSearchConfig;
-            try {
-                musicSearchConfig = await getMusicSearchConfigFromStorage(getStorageDir());
-            } catch (error) {
-                // Fallback to default config if error loading
-                console.warn('Failed to load music search config, using defaults:', error);
-            }
+            const musicSearchConfig= await getMusicSearchConfig();
+            if(!musicSearchConfig)
+                throw new Error(`Music search config not found`)
+
+            const {searchApproaches} = musicSearchConfig;
+            if(!searchApproaches || searchApproaches.length === 0)
+                throw new Error(`Search approaches not found`)
 
             const tidalConfig = {
                 clientId: process.env.TIDAL_API_CLIENT_ID,
                 clientSecret: process.env.TIDAL_API_CLIENT_SECRET,
                 musicSearchConfig,
+                searchApproaches
             };
 
             //////////////////////////////////////
@@ -72,6 +75,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                     break;
             }
 
+            
             ///////////////////////////
             // Store caching
             ///////////////////////////

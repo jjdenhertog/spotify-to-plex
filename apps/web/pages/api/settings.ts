@@ -30,7 +30,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 res.json({ loggedin: !!settings.token, uri: settings.uri, id: settings.id })
             } catch (error) {
                 console.error('Error getting Plex settings:', error);
-                res.status(500).json({ error: 'Failed to get settings' });
+                res.json({ loggedin: false })
             }
         })
 

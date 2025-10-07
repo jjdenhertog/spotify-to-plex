@@ -1,9 +1,9 @@
+/* eslint-disable max-lines */
 import { errorBoundary } from "@/helpers/errors/errorBoundary";
 import { GetPlexPlaylistIdResponse } from "@/pages/api/playlists/[id]";
 import { GetSpotifyAlbum } from "@spotify-to-plex/shared-types/spotify/GetSpotifyAlbum";
 import { GetSpotifyPlaylist } from "@spotify-to-plex/shared-types/spotify/GetSpotifyPlaylist";
 import { Track } from "@spotify-to-plex/shared-types/spotify/Track";
-// MIGRATED: Updated to use shared types package
 import type { SearchResponse } from "@spotify-to-plex/plex-music-search/types/SearchResponse";
 import { Edit, Refresh } from "@mui/icons-material";
 import CloseIcon from '@mui/icons-material/Close';
@@ -13,6 +13,7 @@ import { enqueueSnackbar } from "notistack";
 import { ChangeEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import ExportMissingTracks from "./ExportMissingTracks";
 import PlexTrack from "./PlexTrack";
+import { getErrorMessage } from "@/helpers/errors/getErrorMessage";
 
 export type PlexPlaylistProps = {
     readonly playlist: GetSpotifyAlbum | GetSpotifyPlaylist
@@ -33,6 +34,7 @@ export default function PlexPlaylist(props: PlexPlaylistProps) {
     ///////////////////////////////////////////////
     const pageSize = 30;
     const [page, setPage] = useState<number>(0);
+    const [error, setError] = useState('')
     const [totalPages, setTotalPages] = useState<number>(0);
     const prevPageClick = useCallback(() => {
         setPage(prev => prev - 1)
@@ -130,12 +132,15 @@ export default function PlexPlaylist(props: PlexPlaylistProps) {
                 case "spotify-playlist":
 
                     // Load cached tracks
+                    let cachedTracks: SearchResponse[] = [];
                     const cachedResult = await axios.post<SearchResponse[]>('/api/plex/cached', {
                         items: tracks,
                     }, { signal: abortController.current.signal })
-                    const cachedTracks = cachedResult.data;
+                    cachedTracks = cachedResult.data;
+
                     if (cachedTracks && cachedTracks.length > 0)
                         setTracks(prev => prev.concat(cachedTracks));
+
 
                     setTracksToLoad(tracks.length);
                     const toLoadTracks = cachedTracks ? tracks.filter(item => !cachedTracks.some(cachedItem => cachedItem.id === item.id)) : tracks;
@@ -145,8 +150,10 @@ export default function PlexPlaylist(props: PlexPlaylistProps) {
                     break;
             }
             setLoadingTracks(false);
-        }, () => {
+        }, (e: Error) => {
 
+            const message = getErrorMessage(e)
+            setError(message)
             setLoadingTracks(false);
         }, true)
 
@@ -212,7 +219,9 @@ export default function PlexPlaylist(props: PlexPlaylistProps) {
     // Set selected track index
     ///////////////////////////////////
     const onSetSongIndex = useCallback((artist: string, track: string, idx: number) => {
+        console.log('onSetSongIndex', artist, track, idx)
         if (trackSelections.some(item => item.artist === artist && item.title === track)) {
+
             setTrackSelections(items => items.map(item => {
                 if (item.artist === artist && item.title === track)
                     return { ...item, idx }
@@ -276,6 +285,7 @@ export default function PlexPlaylist(props: PlexPlaylistProps) {
 
             const trackSelectIdx = trackSelections.find(selectionItem => selectionItem.artist === item?.artist && selectionItem.title === item?.title)
             const song = item.result?.[trackSelectIdx ? trackSelectIdx.idx : 0];
+
             if (song)
                 data.items.push({ key: song.id, source: song.source })
         }
@@ -320,6 +330,18 @@ export default function PlexPlaylist(props: PlexPlaylistProps) {
             })
 
     }, [playlist, tracks])
+
+    if (error) {
+        return (
+            <Box sx={{ mt: 2 }}>
+                <Alert variant="outlined" color="error">
+                    <Typography variant="body1">
+                        {error}
+                    </Typography>
+                </Alert>
+            </Box>
+        )
+    }
 
     return (<>
 
@@ -446,20 +468,20 @@ export default function PlexPlaylist(props: PlexPlaylistProps) {
                     </Box>
                 }
                 {visibleTracks.map(track => {
-                    const data = tracks.find(item => track.artists.indexOf(item.artist) > -1 && track.title === item.title)
+                    const data = tracks.find(item => {
+
+                        const mergedArtistsMatch = track.artists.join(',') == item.artist && track.title === item.title
+                        if (mergedArtistsMatch)
+                            return true;
+
+                        return track.artists.indexOf(item.artist) > -1 && track.title === item.title
+
+                    })
                     const trackSelectIdx = trackSelections.find(item => track.artists.indexOf(item.artist) > -1 && item.title === track.title)
                     const songIdx = trackSelectIdx ? trackSelectIdx.idx : 0;
                     const loading = loadingTracks && !(tracksLoaded.some(item => item === track.id))
 
-                    return <PlexTrack
-                        key={`${playlist.id}-plex-${track.title}-${track.id}}`}
-                        loading={loading}
-                        track={track}
-                        setSongIdx={onSetSongIndex}
-                        songIdx={songIdx}
-                        data={data}
-                        fast={fast}
-                    />
+                    return <PlexTrack key={`${playlist.id}-plex-${track.title}-${track.id}}`} loading={loading} track={track} setSongIdx={onSetSongIndex} songIdx={songIdx} data={data} />
                 })}
             </Stack>
         </Paper>

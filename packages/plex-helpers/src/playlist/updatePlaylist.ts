@@ -3,20 +3,14 @@ import { GetPlaylistResponse } from '@spotify-to-plex/shared-types/plex/GetPlayl
 import { PlexSettings } from '../PlexSettings';
 import { PlaylistUpdateData } from '../PlaylistUpdateData';
 import { RetryConfig } from '../RetryConfig';
-import { GetAPIUrlFn } from '../GetAPIUrlFn';
 import { validatePlexSettings } from '../utils/validatePlexSettings';
 import { handleOneRetryAttempt } from '../retry';
+import { getAPIUrl } from '@spotify-to-plex/shared-utils/utils/getAPIUrl';
 
 /**
  * Updates a Plex playlist
  */
-export async function updatePlaylist(
-    settings: PlexSettings,
-    getAPIUrl: GetAPIUrlFn,
-    playlistId: string,
-    data: PlaylistUpdateData,
-    config: RetryConfig = {}
-): Promise<void> {
+export async function updatePlaylist(settings: PlexSettings, playlistId: string, data: PlaylistUpdateData, config: RetryConfig = {}): Promise<void> {
     validatePlexSettings(settings);
 
     const url = getAPIUrl(settings.uri, `/playlists/${playlistId}`);

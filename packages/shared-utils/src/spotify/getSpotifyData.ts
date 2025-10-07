@@ -8,7 +8,7 @@ import { getSpotifyPlaylist } from "./getSpotifyPlaylist";
 import { Track } from "@spotify-to-plex/shared-types/spotify/Track";
 
 
-export async function getSpotifyData(api: SpotifyApi, id: string, simplified: boolean = false, scrapeIncludeAlbumData: boolean = false) {
+export async function getSpotifyData(api: SpotifyApi, id: string, simplified: boolean = false) {
 
     ////////////////////////////////////////
     // Albums
@@ -42,13 +42,14 @@ export async function getSpotifyData(api: SpotifyApi, id: string, simplified: bo
 
     const playlistId = id.slice(Math.max(0, id.indexOf('spotify:playlist:') + 'spotify:playlist:'.length)).trim();
     const playlist = await getSpotifyPlaylist(api, playlistId, simplified)
+
     if (playlist)
         return playlist;
 
     const spotifyUrl = `https://open.spotify.com/playlist/${playlistId}`;
     const response = await axios.post<GetSpotifyScraperData>(`${process.env.SPOTIFY_SCRAPER_URL}/playlist`, {
         url: spotifyUrl,
-        include_album_data: scrapeIncludeAlbumData
+        include_album_data: false
     });
 
     if (!response.data)
@@ -68,35 +69,50 @@ export async function getSpotifyData(api: SpotifyApi, id: string, simplified: bo
             return a.width - b.width;
         });
 
-    const tracks = scraperData.tracks?.map((track) => ({
-        id: track.id || track.uri,
-        title: track.name || '',
-        album: track.album?.name || '',
-        artists: track.artists.map(artist => artist.name)
-    })) || []
+    const tracks = scraperData.tracks?.map((track) => {
+
+        const { artists, album, name, id, uri } = track;
+        const splitArtists = artists.flatMap(artist =>
+            artist.name.split(',').map(name => name.trim())
+        );
+
+        return {
+            id: id || uri,
+            title: name || '',
+            album: album?.name || '',
+            artists: splitArtists
+        }
+    }) || []
 
     if (tracks.length == 0)
         return null;
 
-    console.log(`Enriching ${tracks.length} tracks with Spotify API for album data`);
 
+    if(simplified) {
+        return {
+            type: "spotify-playlist",
+            id: scraperData.id || playlistId,
+            title: scraperData.name || '',
+            image: image?.url || '',
+            owner: scraperData.owner?.name || '',
+            tracks
+        }
+    }
+    
     const BATCH_SIZE = 10;
     const BATCH_DELAY = 1000;
     const RETRY_DELAY = 5000;
 
     for (let i = 0; i < tracks.length; i += BATCH_SIZE) {
         const batch = tracks.slice(i, i + BATCH_SIZE);
-
         try {
             // Process batch in parallel
             const promises: Promise<Track>[] = batch.map(async (track) => {
 
-                if (!track.id?.startsWith('spotify:track:'))
-                    return track;
-
                 return new Promise((resolve) => {
 
                     const trackId = track.id.replace('spotify:track:', '');
+                    
                     api.tracks.get(trackId)
                         .then(enrichedTrack => {
                             resolve({
@@ -119,27 +135,31 @@ export async function getSpotifyData(api: SpotifyApi, id: string, simplified: bo
                 await new Promise(resolve => { setTimeout(resolve, BATCH_DELAY) });
 
         } catch (batchError: any) {
-            console.error(`Batch enrichment failed for batch starting at ${i}:`, batchError);
 
             // If rate limited (429), wait longer
             if (batchError.status === 429) {
-                console.log(`Rate limited, waiting ${RETRY_DELAY}ms before continuing`);
                 await new Promise(resolve => { setTimeout(resolve, RETRY_DELAY) });
             }
         }
     }
 
-    console.log(`Completed track enrichment for ${tracks.length} tracks`);
+    try {
+        const result: GetSpotifyPlaylist = {
+            type: "spotify-playlist",
+            id: scraperData.id || playlistId,
+            title: scraperData.name || '',
+            image: image?.url || '',
+            owner: scraperData.owner?.name || '',
+            tracks
+        }
+        
+        return result;
 
-    const result: GetSpotifyPlaylist = {
-        type: "spotify-playlist",
-        id: scraperData.id || playlistId,
-        title: scraperData.name || '',
-        image: image?.url || '',
-        owner: scraperData.owner?.name || '',
-        tracks
+    } catch (e) {
+        console.log(e)
     }
 
-    return result
+
+    return null
 
 }

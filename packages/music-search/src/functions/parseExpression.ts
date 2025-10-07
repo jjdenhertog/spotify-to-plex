@@ -1,4 +1,4 @@
-import { TrackWithMatching } from "../types/TrackWithMatching";
+import { Track } from "../types/Track";
 
 /**
  * Parsed condition represents a single matching condition
@@ -25,11 +25,11 @@ type ParsedExpression = {
  * Supported operations: :match, :contains, :is, :not, :similarity>=threshold
  * Supported combinators: AND, OR
  */
-export function parseExpression(expression: string): (item: TrackWithMatching) => boolean {
+export function parseExpression(expression: string): (item: Track) => boolean {
     try {
         const parsed = parseExpressionString(expression);
 
-        return (item: TrackWithMatching) => evaluateExpression(item, parsed);
+        return (item: Track) => evaluateExpression(item, parsed);
     } catch (error) {
         // Return a filter that never matches on parse error
         // eslint-disable-next-line no-console
@@ -129,7 +129,7 @@ function parseCondition(conditionStr: string): ParsedCondition {
 /**
  * Evaluate parsed expression against track item
  */
-function evaluateExpression(item: TrackWithMatching, parsed: ParsedExpression): boolean {
+function evaluateExpression(item: Track, parsed: ParsedExpression): boolean {
     const { conditions, operators } = parsed;
     
     if (conditions.length === 0) {
@@ -169,7 +169,7 @@ function evaluateExpression(item: TrackWithMatching, parsed: ParsedExpression): 
 /**
  * Evaluate single condition against track item
  */
-function evaluateCondition(item: TrackWithMatching, condition: ParsedCondition): boolean {
+function evaluateCondition(item: Track, condition: ParsedCondition): boolean {
     const { field, operation, threshold } = condition;
     
     // Get the matching field from the item
@@ -202,7 +202,10 @@ function evaluateCondition(item: TrackWithMatching, condition: ParsedCondition):
 /**
  * Get matching field from track item
  */
-function getMatchingField(item: TrackWithMatching, field: string) {
+function getMatchingField(item: Track, field: string) {
+    if(!item.matching)
+        return null;
+
     switch (field) {
         case 'artist':
             return item.matching.artist;

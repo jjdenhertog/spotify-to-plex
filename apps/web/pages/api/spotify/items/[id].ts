@@ -38,9 +38,8 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
 
             const isFull = parseFloat(typeof full == 'string' ? full : "");
             const simplified = isFull != 1;
-            const scrapeIncludeAlbumData = isFull == 1;
 
-            const data = await getSpotifyData(api, savedItem.uri, simplified, scrapeIncludeAlbumData)
+            const data = await getSpotifyData(api, savedItem.uri, simplified)
             if (!data)
                 return res.status(400).json({ error: `No data found for Spotify URI ${savedItem.uri}, it might be a private playlist` })
 

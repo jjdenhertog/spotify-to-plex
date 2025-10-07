@@ -9,26 +9,26 @@ import { TextProcessingConfig } from '../types/TextProcessingConfig';
 import { SearchApproachConfig } from '../types/SearchApproachConfig';
 
 // Default match filters using expression format (8 streamlined rules)
-export const DEFAULT_MATCH_FILTERS: readonly MatchFilterConfig[] = [
+export const DEFAULT_MATCH_FILTERS: MatchFilterConfig[] = [
     // Tier 1: Exact matches (highest confidence)
     'artist:match AND title:match',
-    
+
     // Tier 2: Strong artist match with partial title
     'artist:match AND title:contains',
     'artist:match AND title:similarity>=0.8',
-    
+
     // Tier 3: Partial artist with strong title
     'artist:contains AND title:match',
-    
+
     // Tier 4: High similarity scores
     'artist:similarity>=0.85 AND title:similarity>=0.85',
-    
+
     // Tier 5: Multiple partial matches with album context
     'artist:contains AND title:contains AND album:contains',
-    
+
     // Tier 6: Combined field high similarity
     'artistWithTitle:similarity>=0.9',
-    
+
     // Tier 7: Album context helps with similarity
     'artist:similarity>=0.7 AND album:match AND title:similarity>=0.85'
 ];
@@ -38,7 +38,7 @@ export const DEFAULT_MATCH_FILTERS: readonly MatchFilterConfig[] = [
 export const DEFAULT_TEXT_PROCESSING: TextProcessingConfig = {
     filterOutWords: [
         "original mix",
-        "radio edit", 
+        "radio edit",
         "single edit",
         "alternate mix",
         "remastered",
@@ -52,19 +52,14 @@ export const DEFAULT_TEXT_PROCESSING: TextProcessingConfig = {
     ],
     cutOffSeparators: [
         "(",
-        "[", 
+        "[",
         "{",
         "-"
-    ],
-    processing: {
-        filtered: false,
-        cutOffSeperators: false, // Preserves typo from current code
-        removeQuotes: false
-    }
+    ]
 };
 
 // Default search approaches - unified list without platform split
-export const DEFAULT_SEARCH_APPROACHES: readonly SearchApproachConfig[] = [
+export const DEFAULT_SEARCH_APPROACHES: SearchApproachConfig[] = [
     { id: 'normal', filtered: false, trim: false },
     { id: 'basic_filtered', filtered: true, trim: false },
     { id: 'filtered', filtered: true, trim: false, removeQuotes: true },

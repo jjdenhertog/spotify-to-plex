@@ -1,9 +1,9 @@
+/* eslint-disable custom/jsx-single-line-props */
 import type { SearchResponse } from "@spotify-to-plex/plex-music-search/types/SearchResponse";
 import type { PlexTrack } from "@spotify-to-plex/plex-music-search/types/PlexTrack";
 import { Check, LibraryMusicSharp, Warning } from "@mui/icons-material";
 import { Box, CircularProgress, Divider, FormControlLabel, IconButton, ListItem, Paper, Radio, RadioGroup, Tooltip, Typography } from "@mui/material";
 import { ChangeEvent, useCallback, useMemo, useState } from "react";
-import TrackAnalyzer from "./TrackAnalyzer";
 type Props = {
     readonly loading: boolean
     readonly track: {
@@ -12,14 +12,13 @@ type Props = {
         title: string;
         reason?: string;
     }
-    readonly fast: boolean
     readonly data?: SearchResponse
     readonly songIdx: number
     readonly setSongIdx?: (artist: string, name: string, idx: number) => void
 }
 export default function PlexTrack(props: Props) {
 
-    const { loading, track, data, songIdx, setSongIdx, fast = false } = props;
+    const { loading, track, data, songIdx, setSongIdx } = props;
 
     const songs = useMemo(() => {
 
@@ -66,6 +65,8 @@ export default function PlexTrack(props: Props) {
         setShowSongs(prev => !prev)
     }, [])
     const onChangeSongIdx = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+        console.log('onChangeSongIdx', e.currentTarget.value)
+
         const songIdx = Number(e.currentTarget.value)
         if (setSongIdx && artistNames[0])
             setSongIdx(artistNames[0], trackTitle, songIdx)
@@ -75,10 +76,13 @@ export default function PlexTrack(props: Props) {
     ////////////////////////////////////
     // Handle not perfect songs
     ////////////////////////////////////
-    const [showMatchAnalyser, setShowMatchAnalyser] = useState(false)
     const onNotPerfectMatchClick = useCallback(() => {
-        setShowMatchAnalyser(prev => !prev)
-    }, [])
+        // Save track ID to localStorage for the test page to pick up
+        localStorage.setItem('spotify-test-track-id', id);
+        // Navigate to test page in new tab
+        const url = `/plex/music-search-config/test`;
+        window.open(url, '_blank');
+    }, [id])
 
     return (<Box>
         <Paper elevation={0} sx={{ p: 1, mb: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 1, bgcolor: 'action.hover' }}>
@@ -113,10 +117,10 @@ export default function PlexTrack(props: Props) {
         </Paper>
 
         {!!showSongs && <Box>
-            <RadioGroup value={songIdx.toString()} onChange={onChangeSongIdx} sx={{ gap: 2 }}>
+            <RadioGroup value={`${songIdx}-list`} onChange={onChangeSongIdx} sx={{ gap: 2 }}>
                 {songs.map((song: { trackTitle: string; artistName: string; thumb: string; album?: { title: string; thumb: string } }, index: number) => {
                     return <ListItem
-                        key={`${id}-${song.trackTitle}`}
+                        key={`${id}-${song.trackTitle}-${index}`}
                         sx={{
                             border: '1px solid',
                             borderColor: 'divider',
@@ -125,14 +129,35 @@ export default function PlexTrack(props: Props) {
                             py: 1
                         }}
                     >
-                        <FormControlLabel value={`${index}`} control={<Radio />} label={ <Box display="flex" gap={1}> <Box width={thumbSize} height={thumbSize} position="relative"> {!!song.thumb && <img src={song.thumb} alt={song.trackTitle} width={thumbSize} height={thumbSize} />} </Box> <Box> <Typography display="block" variant="body1">{song.trackTitle}</Typography> <Typography display="block" variant="body2">{song.artistName}</Typography> {!!song.album && <Typography display="block" variant="body2">{song.album.title}</Typography>} </Box> </Box> } />
+                        
+                        <FormControlLabel
+                            value={`${index}`}
+                            control={<Radio checked={songIdx === index} />}
+                            label={<Box display="flex" gap={1}>
+                                <Box
+                                    width={thumbSize}
+                                    height={thumbSize}
+                                    position="relative">
+                                    {!!song.thumb &&
+                                        <img
+                                            src={song.thumb}
+                                            alt={song.trackTitle}
+                                            width={thumbSize}
+                                            height={thumbSize}
+                                        />}
+                                </Box>
+                                <Box>
+                                    <Typography display="block" variant="body1">{song.trackTitle}</Typography>
+                                    <Typography display="block" variant="body2">{song.artistName}</Typography>
+                                    {!!song.album && <Typography display="block" variant="body2">{song.album.title}</Typography>}
+                                </Box>
+                            </Box>
+                            }
+                        />
                     </ListItem>
                 })}
             </RadioGroup>
         </Box>}
         <Divider sx={{ mt: 1, mb: 1 }} />
-        {!!showMatchAnalyser &&
-            <TrackAnalyzer track={track} onClose={onNotPerfectMatchClick} fast={fast} />
-        }
     </Box>)
 }

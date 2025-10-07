@@ -1,25 +1,24 @@
 import { TidalAlbum } from "../../types/TidalAlbum";
 import { operations } from "../../types/TidalAPI";
 import tidalApiRequest from "../tidalApiRequest";
-import { getState } from "./state";
-import { authenticate } from "./authenticate";
+import { getCredentials, authenticate } from "../../session/credentials";
 
 export async function searchAlbum(query: string, countryCode: string = 'NL'): Promise<TidalAlbum[]> {
-    const state = getState();
+    const state = getCredentials();
     
     // Authenticate again if the token is expired
     if (!state.expiresAt || Date.now() > state.expiresAt) {
         await authenticate();
     }
 
-    const updatedState = getState();
+    const updatedState = getCredentials();
     const tidalAlbums: TidalAlbum[] = [];
 
     if (updatedState.accessToken) {
         // Search for albums
         const result = await tidalApiRequest<operations['getSearchResultsAlbumsRelationship']>(
             updatedState.accessToken, 
-            `https://openapi.tidal.com/v2/searchresults/${encodeURIComponent(query)}/relationships/albums`, 
+            `https://openapi.tidal.com/v2/searchResults/${encodeURIComponent(query)}/relationships/albums`, 
             {
                 countryCode,
                 include: 'albums'

@@ -2,38 +2,48 @@ import { search as musicSearch } from "@spotify-to-plex/music-search/functions/s
 import { Track } from "@spotify-to-plex/music-search/types/Track";
 import { TidalMusicSearchConfig } from "../types/TidalMusicSearchConfig";
 import { TidalMusicSearchTrack } from "../types/TidalMusicSearchTrack";
+import { SearchResponse } from "../types/SearchResponse";
 import { searchForAlbum } from "../utils/searchForAlbum";
 import { getAlbumTracks } from "../utils/getAlbumTracks";
 import searchResultToTracks from "../utils/searchResultToTracks";
+import { authenticate } from "../session/credentials";
+import { setCredentials } from "../session/credentials";
+import { setMusicSearchConfig, resetCache} from "../session/state";
 
-export type SearchResponse = {
-    id: string;
-    artist: string;
-    title: string;
-    album: string;
-    result: any[];
-};
+export async function searchAlbum(config: TidalMusicSearchConfig, tracks: TidalMusicSearchTrack[]): Promise<SearchResponse[]> {
 
-export async function searchAlbum(_config: TidalMusicSearchConfig, tracks: TidalMusicSearchTrack[]): Promise<SearchResponse[]> {
+    // Set configuration
+    setMusicSearchConfig(config);
+
+    // Set the Tidal credentials
+    const { clientId, clientSecret } = config;
+    setCredentials(clientId, clientSecret);
+
+    // Initialize tidal search
+    await authenticate();
+
+    // Reset cache
+    resetCache();
+
     const firstValidAlbum = tracks.find(item => !!item.album);
     if (!firstValidAlbum) {
-        return tracks.map(item => ({ 
-            id: item.id, 
-            title: item.title, 
-            artist: item.artists[0] || "", 
-            album: item.album || "", 
-            result: [] 
+        return tracks.map(item => ({
+            id: item.id,
+            title: item.title,
+            artist: item.artists[0] || "",
+            album: item.album || "",
+            result: []
         }));
     }
 
     const { album, artists } = firstValidAlbum;
     if (!album) {
-        return tracks.map(item => ({ 
-            id: item.id, 
-            title: item.title, 
-            artist: item.artists[0] || "", 
-            album: item.album || "", 
-            result: [] 
+        return tracks.map(item => ({
+            id: item.id,
+            title: item.title,
+            artist: item.artists[0] || "",
+            album: item.album || "",
+            result: []
         }));
     }
 
@@ -77,6 +87,7 @@ export async function searchAlbum(_config: TidalMusicSearchConfig, tracks: Tidal
                             ...item,
                             artist: artists[0] || "",
                             album: foundAlbum.title || "",
+                            albumId: foundAlbum.id,
                             result: tidalTracks
                         };
                     });
@@ -87,11 +98,11 @@ export async function searchAlbum(_config: TidalMusicSearchConfig, tracks: Tidal
         }
     }
 
-    return tracks.map(item => ({ 
-        id: item.id, 
-        title: item.title, 
-        artist: item.artists[0] || "", 
-        album: item.album || "", 
-        result: [] 
+    return tracks.map(item => ({
+        id: item.id,
+        title: item.title,
+        artist: item.artists[0] || "",
+        album: item.album || "",
+        result: []
     }));
 }

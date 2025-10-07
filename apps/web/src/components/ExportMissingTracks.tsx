@@ -1,9 +1,8 @@
 import { errorBoundary } from "@/helpers/errors/errorBoundary";
 import { GetTidalTracksResponse } from "@/pages/api/tidal";
 import { Track } from "@spotify-to-plex/shared-types/spotify/Track";
-// MIGRATED: Updated to use shared types package
 import CloseIcon from '@mui/icons-material/Close';
-import { Alert, Box, Button, CircularProgress, Divider, IconButton, Modal, Typography } from "@mui/material";
+import { Alert, Box, Button, CircularProgress, Dialog, Divider, IconButton, Modal, Typography } from "@mui/material";
 import axios from "axios";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { PlexPlaylistProps } from "./PlexPlaylist";
@@ -170,146 +169,148 @@ export default function ExportMissingTracks(props: Props) {
     const hasTidalTracks = tidalTracks.some(item => item.tidal_ids && item.tidal_ids.length > 0)
 
     return (<Modal open onClose={onClose}>
-        <Box sx={{ maxWidth: 600, p: 2, position: 'relative' }}>
-            <IconButton size="small" onClick={onClose} sx={{ position: 'absolute', right: 8, top: 8 }}>
-                <CloseIcon fontSize="small" />
-            </IconButton>
-            {!!loading && <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', p: 5 }}>
-                <CircularProgress  />
-            </Box>}
+        <Dialog open onClose={onClose}>
+            <Box sx={{ maxWidth: 600, p: 2, position: 'relative' }}>
+                <IconButton size="small" onClick={onClose} sx={{ position: 'absolute', right: 8, top: 8 }}>
+                    <CloseIcon fontSize="small" />
+                </IconButton>
+                {!!loading && <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', p: 5 }}>
+                    <CircularProgress />
+                </Box>}
 
-            {!loading &&
-                <>
-                    <Typography variant="h6">Missing tracks</Typography>
-                    <Typography variant="body2">
-                        Below you find an overview of all missing tracks of the current selection.
-                    </Typography>
-                    <Box sx={{ display: 'flex', gap: 1 }}>
-                        {!!(tracks.length > 0) &&
-                            <>
-                                <form method="POST" action="/api/download" target="_blank" >
-                                    <input type="hidden" name="type" value="spotify" />
-                                    <input type="hidden" name="tracks" value={tracks.map(item => item.id)} />
-                                    <Button variant="outlined" type="submit">
-                                        Download Spotify links
-                                    </Button>
-                                </form>
-                                {!!((missingTidalTracks.length > 0) && !hasLoadedTidalTracks) &&
-                                    <Button disabled={loadingTracks || !canUseTidal} onClick={onLoadTidalLinksClick} variant="outlined">Load Tidal links</Button>
-                                }
-
-                                {((!!hasTidalTracks && !!hasLoadedTidalTracks) || missingTidalTracks.length === 0) &&
+                {!loading &&
+                    <>
+                        <Typography variant="h6">Missing tracks</Typography>
+                        <Typography variant="body2">
+                            Below you find an overview of all missing tracks of the current selection.
+                        </Typography>
+                        <Box sx={{ display: 'flex', gap: 1, mt: 1 }}>
+                            {!!(tracks.length > 0) &&
+                                <>
                                     <form method="POST" action="/api/download" target="_blank" >
-                                        <input type="hidden" name="type" value="tidal" />
+                                        <input type="hidden" name="type" value="spotify" />
                                         <input type="hidden" name="tracks" value={tracks.map(item => item.id)} />
                                         <Button variant="outlined" type="submit">
-                                            Download Tidal links
+                                            Download Spotify links
                                         </Button>
                                     </form>
-                                }
-                            </>
+                                    {!!((missingTidalTracks.length > 0) && !hasLoadedTidalTracks) &&
+                                        <Button disabled={loadingTracks || !canUseTidal} onClick={onLoadTidalLinksClick} variant="outlined">Load Tidal links</Button>
+                                    }
+
+                                    {((!!hasTidalTracks && !!hasLoadedTidalTracks) || missingTidalTracks.length === 0) &&
+                                        <form method="POST" action="/api/download" target="_blank" >
+                                            <input type="hidden" name="type" value="tidal" />
+                                            <input type="hidden" name="tracks" value={tracks.map(item => item.id)} />
+                                            <Button variant="outlined" type="submit">
+                                                Download Tidal links
+                                            </Button>
+                                        </form>
+                                    }
+                                </>
+                            }
+                        </Box>
+                        {!canUseTidal &&
+                            <Alert severity="warning" sx={{ fontWeight: 'normal',  mt:1 }}>
+                                You have not added Tidal credentials. Visit Github for more info.
+                            </Alert>
                         }
-                    </Box>
-                    {!canUseTidal &&
-                        <Alert severity="warning" sx={{ fontWeight: 'normal' }}>
-                            You have not added Tidal credentials. Visit Github for more info.
-                        </Alert>
-                    }
-                    <Divider sx={{ mt: 1, mb: 2 }} />
-                    {!!loadingTracks &&
-                        <Box >
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, border: '2px solid rgba(255,255,255,0.5)', borderRadius: '4px', p: 2, textAlign: 'center' }}>
-                                <Box sx={{ alignItems: 'center' }}>
-                                    <CircularProgress color="inherit" size="small" />
-                                </Box>
-                                <Box sx={{ flexGrow: 1, display: 'flex', gap: 1, justifyContent: 'space-between' }}>
-                                    <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.7)' }}>Processed {tracksLoaded.length} of {tracksToLoad} Tidal tracks</Typography>
-                                    <Typography onClick={onCancelClick} variant="body2" sx={{ textDecoration: 'underline', textUnderlineOffset: '2px', textDecorationThickness: '1px', cursor: 'pointer', color: 'primary.main' }}>cancel</Typography>
+                        <Divider sx={{ mt: 1, mb: 2 }} />
+                        {!!loadingTracks &&
+                            <Box >
+                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, border: '2px solid rgba(255,255,255,0.5)', borderRadius: '4px', p: 2, textAlign: 'center' }}>
+                                    <Box sx={{ alignItems: 'center' }}>
+                                        <CircularProgress color="inherit" size="small" />
+                                    </Box>
+                                    <Box sx={{ flexGrow: 1, display: 'flex', gap: 1, justifyContent: 'space-between' }}>
+                                        <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.7)' }}>Processed {tracksLoaded.length} of {tracksToLoad} Tidal tracks</Typography>
+                                        <Typography onClick={onCancelClick} variant="body2" sx={{ textDecoration: 'underline', textUnderlineOffset: '2px', textDecorationThickness: '1px', cursor: 'pointer', color: 'primary.main' }}>cancel</Typography>
+                                    </Box>
                                 </Box>
                             </Box>
-                        </Box>
-                    }
+                        }
 
-                    {!loadingTracks && tidalTracks.length > 0 && missingTidalTracks.length > 0 &&
-                        <Box sx={{ mt: 1, mb: 1 }}>
-                            <Alert variant="outlined" severity="warning">
-                                <Box sx={{ p: 1 }}>
-                                    <Typography mb={.5} variant="h6" color="warning">{missingTidalTracks.length} Tidal tracks not found</Typography>
-                                    <Typography mb={1} variant="body2">
-                                        Not all Tidal tracks could be found.
-                                    </Typography>
-                                </Box>
-                            </Alert>
-                        </Box>
-                    }
-
-                    <Box>
-
-                        {visibleTracks.map(item => {
-
-                            const tidalTrack = tidalTracks.find(tidalTrack => tidalTrack.id === item.id)
-
-                            return <>
-                                <Box
-                                    key={item.id}
-                                    sx={{
-                                        display: 'flex',
-                                        justifyContent: 'space-between',
-                                        '& .btn': { visibility: 'hidden' },
-                                        '&:hover .btn': { visibility: 'visible' },
-                                        gap: 1,
-                                        mb: 1
-                                    }}>
-
-                                    <Box>
-                                        <Typography variant="body2" color={!!tidalTrack && !!tidalTrack.tidal_ids && tidalTrack.tidal_ids.length === 0 ? 'warning' : undefined}>
-                                            {item.title}
+                        {!loadingTracks && tidalTracks.length > 0 && missingTidalTracks.length > 0 &&
+                            <Box sx={{ mt: 1, mb: 1 }}>
+                                <Alert variant="outlined" severity="warning">
+                                    <Box sx={{ p: 1 }}>
+                                        <Typography mb={.5} variant="h6" color="warning">{missingTidalTracks.length} Tidal tracks not found</Typography>
+                                        <Typography mb={1} variant="body2">
+                                            Not all Tidal tracks could be found.
                                         </Typography>
-                                        <Typography variant="caption">{item.artists.join(', ')}</Typography>
                                     </Box>
-                                    <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end' }}>
+                                </Alert>
+                            </Box>
+                        }
+
+                        <Box>
+
+                            {visibleTracks.map(item => {
+
+                                const tidalTrack = tidalTracks.find(tidalTrack => tidalTrack.id === item.id)
+
+                                return <>
+                                    <Box
+                                        key={item.id}
+                                        sx={{
+                                            display: 'flex',
+                                            justifyContent: 'space-between',
+                                            '& .btn': { visibility: 'hidden' },
+                                            '&:hover .btn': { visibility: 'visible' },
+                                            gap: 1,
+                                            mb: 1
+                                        }}>
+
                                         <Box>
-                                            {!!tidalTrack && !!tidalTrack.tidal_ids && tidalTrack.tidal_ids.length > 0 &&
+                                            <Typography variant="body2" color={!!tidalTrack && !!tidalTrack.tidal_ids && tidalTrack.tidal_ids.length === 0 ? 'warning' : undefined}>
+                                                {item.title}
+                                            </Typography>
+                                            <Typography variant="caption">{item.artists.join(', ')}</Typography>
+                                        </Box>
+                                        <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end' }}>
+                                            <Box>
+                                                {!!tidalTrack && !!tidalTrack.tidal_ids && tidalTrack.tidal_ids.length > 0 &&
+                                                    <Button
+                                                        component="a"
+                                                        href={`https://tidal.com/browse/track/${tidalTrack.tidal_ids[0]}`}
+                                                        target="_blank"
+                                                        className="btn"
+                                                        color="inherit"
+                                                        variant="outlined"
+                                                        size="small"
+                                                        sx={{ fontSize: '.8em' }}>Tidal</Button>
+                                                }
+                                            </Box>
+                                            <Box>
                                                 <Button
                                                     component="a"
-                                                    href={`https://tidal.com/browse/track/${tidalTrack.tidal_ids[0]}`}
+                                                    href={`https://open.spotify.com/track/${item.id}`}
                                                     target="_blank"
                                                     className="btn"
                                                     color="inherit"
                                                     variant="outlined"
                                                     size="small"
-                                                    sx={{ fontSize: '.8em' }}>Tidal</Button>
-                                            }
-                                        </Box>
-                                        <Box>
-                                            <Button
-                                                component="a"
-                                                href={`https://open.spotify.com/track/${item.id}`}
-                                                target="_blank"
-                                                className="btn"
-                                                color="inherit"
-                                                variant="outlined"
-                                                size="small"
-                                                sx={{ fontSize: '.8em' }}>Spotify</Button>
+                                                    sx={{ fontSize: '.8em' }}>Spotify</Button>
+                                            </Box>
                                         </Box>
                                     </Box>
+                                    <Divider sx={{ mt: 1, mb: 1 }} />
+                                </>
+
+                            })}
+
+                            {totalPages > 1 &&
+                                <Box mt={1} display="flex" justifyContent="space-between">
+                                    <Button size="small" variant="outlined" color="inherit" disabled={page <= 0} onClick={prevPageClick}>Previous</Button>
+                                    <Button size="small" variant="outlined" color="inherit" disabled={page >= totalPages-1} onClick={nextPageClick}>Next</Button>
                                 </Box>
-                                <Divider sx={{ mt: 1, mb: 1 }} />
-                            </>
-
-                        })}
-
-                        {totalPages > 1 &&
-                            <Box mt={1} display="flex" justifyContent="space-between">
-                                <Button size="small" variant="outlined" color="inherit" disabled={page <= 0} onClick={prevPageClick}>Previous</Button>
-                                <Button size="small" variant="outlined" color="inherit" disabled={page>= totalPages} onClick={nextPageClick}>Next</Button>
-                            </Box>
-                        }
+                            }
 
 
-                    </Box>
-                </>
-            }
-        </Box>
+                        </Box>
+                    </>
+                }
+            </Box>
+        </Dialog>
     </Modal>)
 }

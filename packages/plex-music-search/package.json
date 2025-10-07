@@ -25,8 +25,7 @@
         "node": ">=18.0.0"
     },
     "dependencies": {
-        "@spotify-to-plex/music-search": "workspace:*",
-        "plex-api": "^5.3.2"
+        "@spotify-to-plex/music-search": "workspace:*"
     },
     "devDependencies": {
         "@types/node": "^20.3.0",

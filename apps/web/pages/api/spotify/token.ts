@@ -83,7 +83,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                     writeFileSync(credentialsPath, JSON.stringify([spotifyCredentials], undefined, 4))
                 }
 
-                res.redirect('/spotify');
+                res.redirect('/manage-users');
             } catch (error) {
                 console.error('Error exchanging code for token:', error);
                 res.status(500).send('Authentication failed');

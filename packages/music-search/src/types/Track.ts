@@ -11,5 +11,6 @@ export type Track = {
         artist: { match: boolean; contains: boolean; similarity: number; };
         artistInTitle: { match: boolean; contains: boolean; similarity: number; };
         artistWithTitle: { match: boolean; contains: boolean; similarity: number; };
-    }
+        isMatchingApproach?:boolean;
+    };
 };

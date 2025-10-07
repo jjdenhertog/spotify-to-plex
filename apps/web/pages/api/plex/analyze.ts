@@ -1,8 +1,7 @@
 import { generateError } from '@/helpers/errors/generateError';
 import { analyze } from '@spotify-to-plex/plex-music-search/functions/analyze';
 import { PlexMusicSearchTrack } from '@spotify-to-plex/plex-music-search/types/PlexMusicSearchTrack';
-import { getMusicSearchConfigFromStorage } from "@spotify-to-plex/music-search/functions/getMusicSearchConfigFromStorage";
-import { getStorageDir } from '@spotify-to-plex/shared-utils/utils/getStorageDir';
+import { getMusicSearchConfig } from "@spotify-to-plex/music-search/functions/getMusicSearchConfig";
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createRouter } from 'next-connect';
 import { getSettings } from '@spotify-to-plex/plex-config/functions/getSettings';
@@ -13,7 +12,6 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
         async (req, res) => {
             try {
                 const searchItem: PlexMusicSearchTrack = req.body.item;
-                const { fast = false } = req.body;
 
                 if (!searchItem?.id)
                     return res.status(400).json({ msg: "No items given" });
@@ -26,14 +24,13 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 //////////////////////////////////////
                 // Load music search configuration and analyze
                 //////////////////////////////////////
-                const musicSearchConfig = await getMusicSearchConfigFromStorage(getStorageDir());
+                const musicSearchConfig = await getMusicSearchConfig();
+
                 const plexConfig = {
                     uri: settings.uri,
                     token: settings.token,
                     musicSearchConfig,
-                    searchApproaches: fast ? [
-                        { id: 'fast', filtered: true }
-                    ] : undefined
+                    searchApproaches: musicSearchConfig.searchApproaches
                 };
 
                 const searchResponse = await analyze(plexConfig, searchItem)

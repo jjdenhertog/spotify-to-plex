@@ -2,18 +2,13 @@ import { AxiosRequest } from '@spotify-to-plex/http-client/AxiosRequest';
 import { GetPlaylistResponse } from '@spotify-to-plex/shared-types/plex/GetPlaylistResponse';
 import { PlexSettings } from '../PlexSettings';
 import { PlexPlaylistError } from '../PlexPlaylistError';
-import { GetAPIUrlFn } from '../GetAPIUrlFn';
 import { validatePlexSettings } from '../utils/validatePlexSettings';
+import { getAPIUrl } from '@spotify-to-plex/shared-utils/utils/getAPIUrl';
 
 /**
  * Creates a new Plex playlist
  */
-export async function storePlaylist(
-    settings: PlexSettings,
-    getAPIUrl: GetAPIUrlFn,
-    name: string,
-    uri: string
-): Promise<string> {
+export async function storePlaylist(settings: PlexSettings, name: string, uri: string): Promise<string> {
     validatePlexSettings(settings);
 
     const url = getAPIUrl(settings.uri, `/playlists`);
@@ -25,12 +20,12 @@ export async function storePlaylist(
     });
 
     const result = await AxiosRequest.post<GetPlaylistResponse>(
-        `${url}?${query.toString()}`, 
+        `${url}?${query.toString()}`,
         settings.token
     );
-  
+
     const id = result.data.MediaContainer.Metadata?.[0]?.ratingKey;
-  
+
     if (!id) {
         throw new PlexPlaylistError('Failed to create playlist - no ID returned');
     }

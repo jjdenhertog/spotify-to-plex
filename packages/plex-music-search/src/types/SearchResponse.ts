@@ -13,5 +13,6 @@ export type SearchQuery = {
     approach: string
     artist: string
     title: string
-    album: string
+    album: string,
+    result?: PlexTrack[]
 }

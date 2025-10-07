@@ -1,3 +1,3 @@
-import { TrackWithMatching } from "./TrackWithMatching";
+import { Track } from "./Track";
 
-export type MatchFilter = { reason: string, filter: (item: TrackWithMatching) => boolean };
+export type MatchFilter = { reason: string, filter: (item: Track) => boolean };

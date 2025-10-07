@@ -1,10 +1,9 @@
 import { generateError } from '@/helpers/errors/generateError';
 import { getCachedTrackLinks } from '@spotify-to-plex/shared-utils/cache/getCachedTrackLink';
-import { getStorageDir } from '@spotify-to-plex/shared-utils/utils/getStorageDir';
 import { getById } from '@spotify-to-plex/plex-music-search/functions/getById';
 import { PlexMusicSearchTrack } from '@spotify-to-plex/plex-music-search/types/PlexMusicSearchTrack';
 import { PlexTrack } from '@spotify-to-plex/plex-music-search/types/PlexTrack';
-import { getMusicSearchConfigFromStorage } from "@spotify-to-plex/music-search/functions/getMusicSearchConfigFromStorage";
+import { getMusicSearchConfig } from "@spotify-to-plex/music-search/functions/getMusicSearchConfig";
 
 import { SearchResponse } from '@spotify-to-plex/plex-music-search/types/SearchResponse';
 import type { NextApiRequest, NextApiResponse } from 'next';
@@ -44,7 +43,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 //////////////////////////////////////
                 // Load music search configuration
                 //////////////////////////////////////
-                const musicSearchConfig = await getMusicSearchConfigFromStorage(getStorageDir());
+                const musicSearchConfig = await getMusicSearchConfig();
 
                 const plexConfig = {
                     uri: settings.uri,
@@ -89,8 +88,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
 
                 res.status(200).json(result);
             } catch (error) {
-                console.error('Error getting cached Plex tracks:', error);
-                res.status(500).json({ error: 'Failed to get cached tracks' });
+                res.status(500).json({ error: error instanceof Error ? error.message : 'Failed to get cached tracks' });
             }
         })
 

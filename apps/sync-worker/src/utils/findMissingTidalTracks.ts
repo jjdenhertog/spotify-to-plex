@@ -1,11 +1,10 @@
+import { getMusicSearchConfig } from "@spotify-to-plex/music-search/functions/getMusicSearchConfig";
+import { Track } from "@spotify-to-plex/shared-types/spotify/Track";
 import { getCachedTrackLinks } from "@spotify-to-plex/shared-utils/cache/getCachedTrackLink";
 import { getTidalCredentials } from "@spotify-to-plex/shared-utils/tidal/getTidalCredentials";
-import { Track } from "@spotify-to-plex/shared-types/spotify/Track";
-import { search as tidalMusicSearch } from "@spotify-to-plex/tidal-music-search/functions/search";
-import { setUser } from "@spotify-to-plex/tidal-music-search/functions/setUser";
-import type { SearchResponse } from "@spotify-to-plex/tidal-music-search/functions/search";
-import { getStorageDir } from "@spotify-to-plex/shared-utils/utils/getStorageDir";
-import { getMusicSearchConfigFromStorage } from "@spotify-to-plex/music-search/functions/getMusicSearchConfigFromStorage";
+import { SearchResponse } from "@spotify-to-plex/tidal-music-search/types/SearchResponse";
+import { search } from "@spotify-to-plex/tidal-music-search/functions/search";
+import { setUser } from "@spotify-to-plex/tidal-music-search/session/credentials";
 
 export async function findMissingTidalTracks(missingTracks: Track[]) {
 
@@ -40,37 +39,36 @@ export async function findMissingTidalTracks(missingTracks: Track[]) {
 
         // Credentials
         const tidalUser = await getTidalCredentials();
-        
-        // Load music search configuration
-        let musicSearchConfig;
-        try {
-            musicSearchConfig = await getMusicSearchConfigFromStorage(getStorageDir());
-        } catch (error) {
-            // Fallback to default config if error loading
-            console.warn('Failed to load music search config, using defaults:', error);
-        }
-
-        // Set up Tidal user
         setUser(tidalUser);
 
-        const tidalSearchResponse = await tidalMusicSearch({
+        // Load music search configuration
+        const musicSearchConfig = await getMusicSearchConfig();
+        const { searchApproaches } = musicSearchConfig;
+        if (!searchApproaches || searchApproaches.length === 0)
+            throw new Error(`Search approaches not found`)
+
+        const tidalConfig = {
             clientId: process.env.TIDAL_API_CLIENT_ID,
             clientSecret: process.env.TIDAL_API_CLIENT_SECRET,
             musicSearchConfig,
-        }, toSearchTidalTracks);
+            searchApproaches
+        };
+
+        const foundTracks= await search(tidalConfig, toSearchTidalTracks);
 
         for (let i = 0; i < toSearchTidalTracks.length; i++) {
             const track = toSearchTidalTracks[i];
             if (!track?.id)
                 continue;
 
-            const tidalData = tidalSearchResponse.find((item: SearchResponse) => item.id == track.id);
+            const tidalData = foundTracks.find((item: SearchResponse) => item.id == track.id);
             if (tidalData?.result?.[0]?.id) {
-                result.push({ id: track.id, tidal_id: tidalData.result[0].id });
+                // result.push({ id: track.id, tidal_id: tidalData.result[0].id });
+                result.push({ id: track.id, tidal_id: tidalData?.result?.[0]?.id })
             }
         }
 
-        add(tidalSearchResponse, 'tidal');
+        add(foundTracks, 'tidal');
     }
 
     return result;

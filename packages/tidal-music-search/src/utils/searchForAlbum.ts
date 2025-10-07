@@ -23,7 +23,6 @@ type FoundAlbumWithMatching = {
 export async function searchForAlbum(artist: string, album: string, artistMatch: { contain: boolean; similarity: number; } = { similarity: 0.6, contain: true }) {
 
     const search = `${artist} ${album}`;
-
     const searchResults = await searchAlbum(search);
 
     const foundAlbums: FoundAlbumWithMatching[] = []

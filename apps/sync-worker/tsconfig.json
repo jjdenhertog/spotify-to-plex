@@ -47,10 +47,5 @@
     {
       "path": "../../packages/plex-helpers"
     }
-  ],
-  "ts-node": {
-    "transpileOnly": true,
-    "files": true,
-    "experimentalSpecifierResolution": "node"
-  }
+  ]
 }

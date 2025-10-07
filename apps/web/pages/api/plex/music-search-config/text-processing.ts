@@ -4,7 +4,7 @@ import { generateError } from '@/helpers/errors/generateError';
 import { getTextProcessing } from '@spotify-to-plex/music-search/functions/getTextProcessing';
 import { updateTextProcessing } from '@spotify-to-plex/music-search/functions/updateTextProcessing';
 import { getStorageDir } from '@spotify-to-plex/shared-utils/utils/getStorageDir';
-import { validateTextProcessing } from '@spotify-to-plex/shared-utils/validation/validateTextProcessing';
+import { validateTextProcessing } from '@spotify-to-plex/music-search/validation/validateTextProcessing';
 
 const router = createRouter<NextApiRequest, NextApiResponse>()
     .get(
@@ -30,7 +30,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 if (!validateTextProcessing(newConfig)) {
                     return res.status(400).json({
                         error: 'Invalid text processing configuration format',
-                        details: 'Expected object with filterOutWords, filterOutQuotes, cutOffSeparators arrays and processing object'
+                        details: 'Expected object with filterOutWords, filterOutQuotes, cutOffSeparators arrays'
                     });
                 }
 

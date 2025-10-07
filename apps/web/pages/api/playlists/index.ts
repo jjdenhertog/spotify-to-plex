@@ -60,27 +60,25 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 if (!settings.uri || !settings.token || !settings.id)
                     return res.status(400).json({ msg: "No plex connection found" });
 
-                // Cast settings to required type since we've validated the fields
-                const validatedSettings = settings as Required<typeof settings>;
                 const firstItem = items.shift();
                 if (!firstItem)
                     return res.status(400).json({ msg: "No items given" });
 
-                const uri = getPlexUri(validatedSettings, firstItem.key, firstItem.source);
-                const playlistId = await storePlaylist(validatedSettings, getAPIUrl, name, uri)
-                await addItemsToPlaylist(validatedSettings, getAPIUrl, playlistId, items)
+                const uri = getPlexUri(settings, firstItem.key, firstItem.source);
+                const playlistId = await storePlaylist(settings, name, uri)
+                await addItemsToPlaylist(settings, playlistId, items)
 
                 // Update thumbnail of playlist
                 if (typeof thumb === 'string') {
                     try {
-                        await putPlaylistPoster(validatedSettings, getAPIUrl, playlistId, thumb)
+                        await putPlaylistPoster(playlistId, thumb)
                     } catch (_e) {
                     }
                 }
 
                 await addPlaylist({ type, id, plex: playlistId })
 
-                const link = getAPIUrl(validatedSettings.uri, `/web/index.html#!/server/${validatedSettings.id}/playlist?key=${encodeURIComponent(`/playlists/${playlistId}`)}`)
+                const link = getAPIUrl(settings.uri, `/web/index.html#!/server/${settings.id}/playlist?key=${encodeURIComponent(`/playlists/${playlistId}`)}`)
                 res.json({ id: playlistId, link })
             } catch (error) {
                 console.error('Error creating Plex playlist:', error);

@@ -1,8 +1,7 @@
 import { getStorageDir } from '@spotify-to-plex/shared-utils/utils/getStorageDir';
-import { plex } from "../library/plex";
 import { searchAlbum } from "@spotify-to-plex/plex-music-search/functions/searchAlbum";
 import { SearchResponse } from "@spotify-to-plex/plex-music-search/types/SearchResponse";
-import { getMusicSearchConfigFromStorage } from "@spotify-to-plex/music-search/functions/getMusicSearchConfigFromStorage";
+import { getMusicSearchConfig } from "@spotify-to-plex/music-search/functions/getMusicSearchConfig";
 import { writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { findMissingTidalAlbums } from "../utils/findMissingTidalAlbums";
@@ -10,7 +9,7 @@ import { getCachedPlexTracks } from "../utils/getCachedPlexTracks";
 import { getSavedAlbums } from "../utils/getSavedAlbums";
 import { getSyncLogs } from "../utils/getSyncLogs";
 import { loadSpotifyData } from "../utils/loadSpotifyData";
-
+import { getSettings } from "@spotify-to-plex/plex-config/functions/getSettings";
 
 export async function syncAlbums() {
 
@@ -21,7 +20,7 @@ export async function syncAlbums() {
     const { toSyncAlbums } = getSavedAlbums()
     const { putLog, logError, logComplete } = getSyncLogs()
 
-    const settings = await plex.getSettings();
+    const settings = await getSettings();
     if (!settings.uri || !settings.token)
         throw new Error("No plex connection found")
 
@@ -61,14 +60,7 @@ export async function syncAlbums() {
         //////////////////////////////////////
         // Load music search configuration and search
         //////////////////////////////////////
-        let musicSearchConfig;
-        try {
-            musicSearchConfig = await getMusicSearchConfigFromStorage(getStorageDir());
-        } catch (error) {
-            // Fallback to default config if error loading
-            console.warn('Failed to load music search config, using defaults:', error);
-        }
-
+        const musicSearchConfig = await getMusicSearchConfig();
         const plexConfig = {
             uri: settings.uri,
             token: settings.token,

@@ -30,7 +30,7 @@ const Page: NextPage = () => {
             if (typeof router.query.id !== 'string')
                 throw new Error(`ID expected.`)
 
-            const result = await axios.get<GetSpotifyAlbum | GetSpotifyPlaylist>(`/api/spotify/items/${router.query.id}`)
+            const result = await axios.get<GetSpotifyAlbum | GetSpotifyPlaylist>(`/api/spotify/items/${router.query.id}?full=1`)
             if (result.data.tracks.length > 100)
                 setShowOptimizer(true)
 
@@ -97,7 +97,7 @@ const Page: NextPage = () => {
 
                 {!loading && !!playlist && !showOptimizer &&
                     <>
-                        <Button component="a" href="/spotify" variant="outlined" color="inherit" size="small" startIcon={<ChevronLeft />}>
+                        <Button component="a" href="/" variant="outlined" color="inherit" size="small" startIcon={<ChevronLeft />}>
                             Back
                         </Button>
                         <PlexPlaylist playlist={playlist} fast={fast} />

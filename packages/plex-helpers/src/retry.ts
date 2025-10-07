@@ -14,6 +14,8 @@ export async function handleOneRetryAttempt<T = any>(
     try {
         return await request();
     } catch (_error) {
+        console.error('Error in handleOneRetryAttempt', _error)
+        
         // Wait before retry
         await createDelay(retryDelay);
 

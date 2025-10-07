@@ -5,7 +5,7 @@ import { getStorageDir } from '@spotify-to-plex/shared-utils/utils/getStorageDir
 
 import type { SavedItem } from '@spotify-to-plex/shared-types/spotify/SavedItem';
 import { getById } from '@spotify-to-plex/plex-music-search/functions/getById';
-import { getMusicSearchConfigFromStorage } from "@spotify-to-plex/music-search/functions/getMusicSearchConfigFromStorage";
+import { getMusicSearchConfig } from "@spotify-to-plex/music-search/functions/getMusicSearchConfig";
 import { SpotifyApi } from '@spotify/web-api-ts-sdk';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createRouter } from 'next-connect';
@@ -39,8 +39,8 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
     .post(
         async (req, res) => {
             try {
-                const { search, id: searchId, user_id, label } = req.body;
-                if (typeof search !== 'string' && typeof searchId !== 'string')
+                const { search, user_id, label } = req.body;
+                if (typeof search !== 'string')
                     return res.status(400).json({ error: "Search query missing" })
 
                 if (!process.env.SPOTIFY_API_CLIENT_ID || !process.env.SPOTIFY_API_CLIENT_SECRET)
@@ -55,7 +55,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                     if (!settings.token || !settings.uri)
                         return res.status(400).json({ msg: "Plex not configured" });
 
-                    const musicSearchConfig = await getMusicSearchConfigFromStorage(getStorageDir());
+                    const musicSearchConfig = await getMusicSearchConfig();
 
                     const plexConfig = {
                         uri: settings.uri,
@@ -67,13 +67,13 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                     if (metaData)
                         savedItem = { type: 'plex-media', uri: metaData.id, id: metaData.guid, title: metaData.title, image: `/api/plex/image?path=${encodeURIComponent(metaData.image)}` }
                 } else {
-                    let id = searchId || '';
+                    let id = '';
 
                     if (search.indexOf('http') > -1) {
-                        
+
                         const { path } = parse(search, true);
-                        
-                        if (!path) 
+
+                        if (!path)
                             return res.status(400).json({ error: "Invalid URL" });
 
                         id = path.split("/").join(":");
@@ -85,7 +85,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                     }
 
                     const api = SpotifyApi.withClientCredentials(process.env.SPOTIFY_API_CLIENT_ID, process.env.SPOTIFY_API_CLIENT_SECRET);
-                    const data = await getSpotifyData(api, id)
+                    const data = await getSpotifyData(api, id, true)
                     if (!data)
                         return res.status(400).json({ error: "No datas found, it might be a private playlist" })
 
@@ -96,7 +96,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                     if (typeof user_id === 'string')
                         // @ts-ignore
                         savedItem.user = user_id;
-    
+
                     if (typeof label === 'string')
                         // @ts-ignore
                         savedItem.label = label;
@@ -122,7 +122,8 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 const savedItems: SavedItem[] = JSON.parse(readFileSync(savedItemsPath, 'utf8'))
 
                 return res.status(200).json(savedItems.reverse())
-            } catch(_error) {
+            } catch (_error) {
+                console.error(_error)
                 res.status(500).json({ error: 'Failed to save items' });
             }
         })

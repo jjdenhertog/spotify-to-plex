@@ -20,6 +20,5 @@ export type PlexTrack = {
     image: string;
     src: string;
 
-    reason?: string
     matching?: Track["matching"]
 }

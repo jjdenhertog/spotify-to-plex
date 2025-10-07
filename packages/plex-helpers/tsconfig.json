@@ -16,6 +16,9 @@
         },
         {
             "path": "../http-client"
+        },
+        {
+            "path": "../shared-utils"
         }
     ],
     "include": ["src/**/*"],

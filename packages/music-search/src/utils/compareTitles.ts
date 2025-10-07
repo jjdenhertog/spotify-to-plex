@@ -5,17 +5,19 @@ export function compareTitles(a?: string, b?: string, twoWayContain: boolean = f
     if (!a || !b)
         return { match: false, contains: false, similarity: 0 }
 
-    const match = a.localeCompare(b, "en", { sensitivity: "base", ignorePunctuation: false }) === 0;
+    const searchA = createSearchString(a);
+    const searchB = createSearchString(b);
 
-    const similarity = stringSimilarity(a, b);
+    const match = searchA.localeCompare(searchB, "en", { sensitivity: "base", ignorePunctuation: false }) === 0;
 
+    const similarity = stringSimilarity(searchA, searchB);
     let contains = (twoWayContain) ?
-        createSearchString(a).indexOf(createSearchString(b)) > -1 || createSearchString(b).indexOf(createSearchString(a)) > -1
+        searchA.indexOf(searchB) > -1 || searchB.indexOf(searchA) > -1
         :
-        createSearchString(a).indexOf(createSearchString(b)) > -1;
+        searchA.indexOf(searchB) > -1;
 
     // To small titles shouldn't use contain
-    if (a.length < 5 || b.length < 5)
+    if (searchA.length < 5 || searchB.length < 5)
         contains = false;
 
 

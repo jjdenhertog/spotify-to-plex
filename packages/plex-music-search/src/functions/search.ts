@@ -1,10 +1,8 @@
-import { setConfig } from "@spotify-to-plex/music-search/functions/setConfig";
-import { setMusicSearchConfig } from "@spotify-to-plex/music-search/functions/setMusicSearchConfig";
 import { PlexMusicSearchConfig } from "../types/PlexMusicSearchConfig";
 import { PlexMusicSearchTrack } from "../types/PlexMusicSearchTrack";
 import { SearchResponse } from "../types/SearchResponse";
-import { setConfig as setStateConfig, resetCache } from "./state";
 import { newTrackSearch } from "./newTrackSearch";
+import { setMusicSearchConfig, resetCache } from "../session/state";
 
 export async function search(config: PlexMusicSearchConfig, tracks: PlexMusicSearchTrack[]): Promise<SearchResponse[]> {
     if (!config.searchApproaches || config.searchApproaches.length === 0) 
@@ -13,13 +11,7 @@ export async function search(config: PlexMusicSearchConfig, tracks: PlexMusicSea
     const approaches = config.searchApproaches;
 
     // Set configuration
-    setStateConfig(config);
-    setConfig(config);
-    
-    // Set music search configuration if available
-    const { musicSearchConfig } = config;
-    if (musicSearchConfig) 
-        setMusicSearchConfig(musicSearchConfig);
+    setMusicSearchConfig(config);
 
     // Reset cache
     resetCache();
@@ -29,7 +21,7 @@ export async function search(config: PlexMusicSearchConfig, tracks: PlexMusicSea
     for (let i = 0; i < tracks.length; i++) {
         const track = tracks[i];
         if (track) {
-            const trackResult = await newTrackSearch(approaches, track, false);
+            const trackResult = await newTrackSearch(approaches, track);
             result.push(trackResult);
         }
     }

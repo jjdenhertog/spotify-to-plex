@@ -1,119 +1,223 @@
+/* eslint-disable unicorn/consistent-destructuring */
+/* eslint-disable react/display-name */
 import { errorBoundary } from "@/helpers/errors/errorBoundary";
-import type { SearchResponse } from "@spotify-to-plex/plex-music-search/types/SearchResponse";
+import { GetSpotifyTrackByIdResponse } from "@/pages/api/spotify/tracks/[id]";
+import { CheckCircle, Close } from "@mui/icons-material";
+import { Box, CircularProgress, Divider, Typography } from "@mui/material";
 import type { PlexTrack } from "@spotify-to-plex/plex-music-search/types/PlexTrack";
-import CloseIcon from '@mui/icons-material/Close';
-import { Box, CircularProgress, Divider, IconButton, Modal, Typography } from "@mui/material";
+import type { SearchQuery, SearchResponse } from "@spotify-to-plex/plex-music-search/types/SearchResponse";
 import axios from "axios";
-import { Fragment, useEffect, useState } from "react";
+import { forwardRef, Fragment, useCallback, useImperativeHandle, useState } from "react";
 
-type Props = {
-    readonly track: {
-        id: string
-        artists: string[];
-        title: string;
-        reason?: string;
-    }
-    readonly fast: boolean
-    readonly onClose: () => void;
+type TrackAnalyzerHandles = {
+    readonly analyze: (trackId: string, type: 'plex' | 'tidal') => void
 }
 
-export default function TrackAnalyzer(props: Props) {
+const TrackAnalyzer = forwardRef<TrackAnalyzerHandles, unknown>((_props, ref) => {
 
-    const { track, fast = false, onClose } = props;
-    const [loading, setLoading] = useState(true)
+    const [loading, setLoading] = useState(false)
+    const [trackLoading, setTrackLoading] = useState(false)
+    const [track, setTrack] = useState<GetSpotifyTrackByIdResponse>()
     const [searchResponse, setSearchResponse] = useState<SearchResponse>()
-    useEffect(() => {
+
+    useImperativeHandle(ref, () => ({
+        analyze: (trackId: string, type: 'plex' | 'tidal') => {
+            analyzeTrack(trackId, type)
+        }
+    }))
+
+    const analyzeTrack = useCallback((trackId: string, type: 'plex' | 'tidal') => {
 
         errorBoundary(async () => {
+            setTrackLoading(true)
+            setLoading(true)
 
-            const result = await axios.post(`/api/plex/analyze`, {
-                item: track,
-                fast
+            setTrack(undefined)
+            setSearchResponse(undefined)
+
+            // First load the Spotify track data
+            const trackResult = await axios.get<GetSpotifyTrackByIdResponse>(`/api/spotify/tracks/${trackId}`)
+            setTrack(trackResult.data)
+            setTrackLoading(false)
+
+            // Then analyze with the specified service
+            const analyzeEndpoint = type === 'plex' ? '/api/plex/analyze' : '/api/tidal/analyze';
+            const analyzeResult = await axios.post(analyzeEndpoint, {
+                item: trackResult.data
             })
 
-            setSearchResponse(result.data)
+            setSearchResponse(analyzeResult.data)
             setLoading(false)
         })
-
-    }, [fast, track])
+    }, [])
 
     const getRoundedSimilarity = (value: number) => {
         return `${Math.round(value * 100)}%`
     }
 
-    return (<Modal open onClose={onClose}>
-        <Box sx={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            maxWidth: 600,
-            maxHeight: '90vh',
-            bgcolor: 'background.paper',
-            borderRadius: 1,
-            overflow: 'hidden',
-            display: 'flex',
-            flexDirection: 'column'
-        }}>
-            <Box sx={{
-                position: 'sticky',
-                top: 0,
-                bgcolor: 'background.paper',
-                zIndex: 1,
-                p: 2,
-                pb: 1,
-                borderBottom: '1px solid',
-                borderColor: 'divider'
-            }}>
-                <IconButton size="small" onClick={onClose} sx={{ position: 'absolute', right: 8, top: 8 }}>
-                    <CloseIcon fontSize="small" />
-                </IconButton>
-            </Box>
-            <Box sx={{
-                flex: 1,
-                overflow: 'auto',
-                p: 3,
-                pt: 1
-            }}>
-            {!!loading && <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', p: 5 }}>
-                <CircularProgress  />
-            </Box>}
+    return (
+        <Box>
+            {Boolean(trackLoading || loading) && (
+                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', p: 5 }}>
+                    <CircularProgress />
+                </Box>
+            )}
 
-            {!loading && !!searchResponse &&
+            {Boolean(!trackLoading && !loading && track && searchResponse) && (
                 <>
-                    <Typography variant="h6" sx={{ mb: 1 }}>Search Analysis</Typography>
-
                     <Box sx={{ mb: 2 }}>
-                        <Typography variant="subtitle1" sx={{ mb: 1 }}>Track Being Searched:</Typography>
-                        <Typography variant="body1"><strong>Title:</strong> {searchResponse.title}</Typography>
-                        <Typography variant="body1"><strong>Artist:</strong> {searchResponse.artist}</Typography>
-                        <Typography variant="body1"><strong>Album:</strong> {searchResponse.album}</Typography>
+                        <Typography variant="subtitle1" sx={{ mb: 1 }}>
+                            Track Being Searched
+                        </Typography>
+                        <Divider sx={{ mt: 1, mb: 2 }} />
+                        <Typography variant="body1" mb={1}>
+                            <strong>{track?.title}</strong>
+                        </Typography>
+                        <Box sx={{ flex: 1, display: 'flex' }}>
+                            <Typography variant="body2" sx={{ width: '60px' }}>
+                                <strong>Artists</strong>
+                            </Typography>
+                            <Typography variant="body2" sx={{ flex: 1 }}>
+                                {track?.artists.join(', ')}
+                            </Typography>
+                        </Box>
+                        <Box sx={{ flex: 1, display: 'flex' }}>
+                            <Typography variant="body2" sx={{ width: '60px' }}>
+                                <strong>Album</strong>
+                            </Typography>
+                            <Typography variant="body2" sx={{ flex: 1 }}>
+                                {track?.album}
+                            </Typography>
+                        </Box>
                     </Box>
 
-                    <Divider sx={{ mt: 1, mb: 2 }} />
+                    <Divider sx={{ mt: 1 }} />
 
-                    <Typography variant="subtitle1" sx={{ mb: 1 }}>Search Queries Attempted:</Typography>
-                    {searchResponse.queries && searchResponse.queries.map((query: any, index: number) => (
-                        <Box key={`query-${index}`} sx={{ mb: 1, p: 1, bgcolor: 'action.hover', borderRadius: 1 }}>
-                            <Typography variant="body2"><strong>Approach:</strong> {query.approach}</Typography>
-                            <Typography variant="body2"><strong>Artist:</strong> "{query.artist}"</Typography>
-                            <Typography variant="body2"><strong>Title:</strong> "{query.title}"</Typography>
-                            <Typography variant="body2"><strong>Album:</strong> "{query.album}"</Typography>
-                        </Box>
-                    ))}
+                    {searchResponse?.queries?.map((query: SearchQuery, index: number) => {
 
-                    <Divider sx={{ mt: 2, mb: 2 }} />
+                        const prevApproach = searchResponse?.queries?.[index - 1]?.approach;
+                        const isNewSection = prevApproach !== query.approach;
 
-                    {searchResponse.result && searchResponse.result.length > 0 ? (
+                        const results = query.result || [];
+
+                        return <Fragment key={`query-${index}`}>
+
+                            {!!isNewSection &&
+                                <Typography variant="body1" mb={1} mt={3}>
+                                    Search Approach: <strong>{query.approach}</strong>
+                                </Typography>
+                            }
+                            <Box sx={{ mb: 1, p: 1, bgcolor: 'action.hover', borderRadius: 1 }} >
+                                <Typography variant="h6" sx={{ mb: 1, fontSize: "1.2em" }}>{query.title}</Typography>
+                                <Box sx={{ flex: 1, display: 'flex' }}>
+                                    <Typography variant="body2" sx={{ width: '60px' }}>
+                                        <strong>Artist</strong>
+                                    </Typography>
+                                    <Typography variant="body2" sx={{ flex: 1 }}>
+                                        {query.artist}
+                                    </Typography>
+                                </Box>
+                                <Box sx={{ flex: 1, display: 'flex' }}>
+                                    <Typography variant="body2" sx={{ width: '60px' }}>
+                                        <strong>Album</strong>
+                                    </Typography>
+                                    <Typography variant="body2" sx={{ flex: 1 }}>
+                                        {query.album}
+                                    </Typography>
+                                </Box>
+                            </Box>
+
+                            {results.length > 0 &&
+                                <Box sx={{ mb: 1, p: 1, ml: 4 }} >
+
+                                    {results.map((result: PlexTrack) => {
+
+                                        const { id: resultId, title, artist, album, matching } = result;
+
+                                        if (!matching)
+                                            return null;
+
+                                        const { isMatchingApproach } = matching;
+
+                                        return <Box key={`result-${resultId}`} sx={{ mb: 1, p: 1, bgcolor: 'action.hover', borderRadius: 1 }} >
+                                            <Box >
+                                                <Typography variant="h6" sx={{ mb: 1, fontSize: "1.2em", display: "flex", alignItems: "center", gap: 1 }} >
+                                                    {isMatchingApproach ? <CheckCircle sx={{ fontSize: "1.2em", color: "success.main" }} /> : <Close sx={{ fontSize: "1.2em", color: "error.main" }} />}
+                                                    {title}
+                                                </Typography>
+                                                <Box sx={{ flex: 1, display: 'flex' }}>
+                                                    <Typography variant="body2" sx={{ width: '60px' }}>
+                                                        <strong>Artists</strong>
+                                                    </Typography>
+                                                    <Typography variant="body2" sx={{ flex: 1 }}>
+                                                        {artist.title}
+                                                    </Typography>
+                                                </Box>
+                                                {!!album &&
+                                                    <Box sx={{ flex: 1, display: 'flex' }}>
+                                                        <Typography variant="body2" sx={{ width: '60px' }}>
+                                                            <strong>Album</strong>
+                                                        </Typography>
+                                                        <Typography variant="body2" sx={{ flex: 1 }}>
+                                                            {album.title}
+                                                        </Typography>
+                                                    </Box>
+                                                }
+                                            </Box>
+                                            <Divider sx={{ mt: 1, mb: 1, borderColor: "black" }} />
+                                            <Box sx={{ display: 'flex', mt: 1 }}>
+                                                <Box sx={{ width: "160px" }}>
+                                                    <Typography variant="body1"><strong>Title</strong></Typography>
+                                                    <Typography variant="body2">Match: {matching.title.match ? "Yes" : "No"}</Typography>
+                                                    <Typography variant="body2">Contains: {matching.title.contains ? "Yes" : "No"}</Typography>
+                                                    <Typography variant="body2">Similarity: {getRoundedSimilarity(matching.title.similarity)}</Typography>
+                                                </Box>
+                                                <Box sx={{ width: "160px" }}>
+                                                    <Typography variant="body1"><strong>Artist</strong></Typography>
+                                                    <Typography variant="body2">Match: {matching.artist.match ? "Yes" : "No"}</Typography>
+                                                    <Typography variant="body2">Contains: {matching.artist.contains ? "Yes" : "No"}</Typography>
+                                                    <Typography variant="body2">Similarity: {getRoundedSimilarity(matching.artist.similarity)}</Typography>
+                                                </Box>
+                                                <Box sx={{ width: "160px" }}>
+                                                    <Typography variant="body1"><strong>Artist in Title</strong></Typography>
+                                                    <Typography variant="body2">Match: {matching.artistInTitle.match ? "Yes" : "No"}</Typography>
+                                                    <Typography variant="body2">Contains: {matching.artistInTitle.contains ? "Yes" : "No"}</Typography>
+                                                    <Typography variant="body2">Similarity: {getRoundedSimilarity(matching.artistInTitle.similarity)}</Typography>
+                                                </Box>
+                                                <Box sx={{ width: "160px" }}>
+                                                    <Typography variant="body1"><strong>Artist with Title</strong></Typography>
+                                                    <Typography variant="body2">Match: {matching.artistWithTitle.match ? "Yes" : "No"}</Typography>
+                                                    <Typography variant="body2">Contains: {matching.artistWithTitle.contains ? "Yes" : "No"}</Typography>
+                                                    <Typography variant="body2">Similarity: {getRoundedSimilarity(matching.artistWithTitle.similarity)}</Typography>
+                                                </Box>
+                                                <Box sx={{ width: "160px" }}>
+                                                    <Typography variant="body1"><strong>Album</strong></Typography>
+                                                    <Typography variant="body2">Match: {matching.album.match ? "Yes" : "No"}</Typography>
+                                                    <Typography variant="body2">Contains: {matching.album.contains ? "Yes" : "No"}</Typography>
+                                                    <Typography variant="body2">Similarity: {getRoundedSimilarity(matching.album.similarity)}</Typography>
+                                                </Box>
+                                            </Box>
+                                        </Box>
+                                    })}
+                                </Box>
+                            }
+
+                        </Fragment>
+                    })}
+
+                    {/* <Divider sx={{ mt: 2, mb: 2 }} /> */}
+                    {/* {searchResponse?.result && searchResponse.result.length > 0 ? (
                         <>
-                            <Typography variant="subtitle1" sx={{ mb: 1 }}>Matches Found:</Typography>
-                            {searchResponse.result.map(({ id, title, artist, matching, reason }: PlexTrack) => {
+                            <Typography variant="subtitle1" sx={{ mb: 1 }}>
+                                Matches Found
+                            </Typography>
+                            {searchResponse?.result.map(({ id, title, artist, matching }: PlexTrack) => {
                                 if (!matching)
                                     return null;
 
                                 return <Fragment key={`analyze-${id}`}>
                                     <Box>
-                                        <Typography variant="h6" sx={{ mb: 1 }}>Reason for match: {reason}</Typography>
+                                        <Typography variant="h6" sx={{ mb: 1 }}>Match</Typography>
                                         <Typography variant="body1">{title}</Typography>
                                         <Typography variant="body2">{artist.title}</Typography>
                                     </Box>
@@ -162,10 +266,11 @@ export default function TrackAnalyzer(props: Props) {
                                 The track may not exist in your library, or the naming might be significantly different.
                             </Typography>
                         </Box>
-                    )}
+                    )} */}
                 </>
-            }
-            </Box>
+            )}
         </Box>
-    </Modal>)
-}
+    )
+})
+
+export default TrackAnalyzer;

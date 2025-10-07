@@ -2,12 +2,11 @@ import { AxiosRequest } from "@spotify-to-plex/http-client/AxiosRequest";
 import { getAPIUrl } from "@spotify-to-plex/shared-utils/utils/getAPIUrl";
 import { getStorageDir } from "@spotify-to-plex/shared-utils/utils/getStorageDir";
 import { handleOneRetryAttempt } from "@spotify-to-plex/plex-helpers/retry";
-import { plex } from "../library/plex";
 import { Playlist } from "@spotify-to-plex/shared-types/plex/Playlist";
 import { GetPlaylistResponse } from "@spotify-to-plex/shared-types/plex/GetPlaylistResponse";
 import { SearchResponse } from "@spotify-to-plex/plex-music-search/types/SearchResponse";
 import { search as plexMusicSearch } from "@spotify-to-plex/plex-music-search/functions/search";
-import { getMusicSearchConfigFromStorage } from "@spotify-to-plex/music-search/functions/getMusicSearchConfigFromStorage";
+import { getMusicSearchConfig } from "@spotify-to-plex/music-search/functions/getMusicSearchConfig";
 import { writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { findMissingTidalTracks } from "../utils/findMissingTidalTracks";
@@ -17,6 +16,7 @@ import { getSavedPlaylists } from "../utils/getSavedPlaylists";
 import { getSyncLogs } from "../utils/getSyncLogs";
 import { loadSpotifyData } from "../utils/loadSpotifyData";
 import { putPlexPlaylist } from "../utils/putPlexTracks";
+import { getSettings } from "@spotify-to-plex/plex-config/functions/getSettings";
 
 
 export async function syncPlaylists() {
@@ -28,7 +28,7 @@ export async function syncPlaylists() {
     const { toSyncPlaylists } = getSavedPlaylists()
     const { putLog, logError, logComplete } = getSyncLogs()
 
-    const settings = await plex.getSettings();
+    const settings = await getSettings();
     if (!settings.uri || !settings.token)
         throw new Error("No plex connection found")
 
@@ -90,21 +90,13 @@ export async function syncPlaylists() {
             //////////////////////////////////////
             // Load music search configuration
             //////////////////////////////////////
-            let musicSearchConfig;
-            try {
-                musicSearchConfig = await getMusicSearchConfigFromStorage(getStorageDir());
-            } catch (error) {
-                // Fallback to default config if error loading
-                console.warn('Failed to load music search config, using defaults:', error);
-            }
+            const musicSearchConfig = await getMusicSearchConfig();
+            if(!musicSearchConfig)
+                throw new Error(`Music search config not found`)
 
-            // Ensure search approaches are provided - convert to PlexMusicSearchApproach format
-            const searchApproaches = (musicSearchConfig?.searchApproaches?.plex || [
-                { id: 'normal', filtered: false, trim: false },
-                { id: 'filtered', filtered: true, trim: false, removeQuotes: true },
-                { id: 'trimmed', filtered: false, trim: true },
-                { id: 'filtered_trimmed', filtered: true, trim: true, removeQuotes: true }
-            ]).map(approach => ({ ...approach }));
+            const {searchApproaches} = musicSearchConfig;
+            if(!searchApproaches || searchApproaches.length === 0)
+                throw new Error(`Search approaches not found`)
 
             const plexSearchConfig = {
                 uri: settings.uri,
@@ -147,8 +139,9 @@ export async function syncPlaylists() {
 
             console.log(`Missing ${missingTracks.length} tracks`)
             missingTracks.forEach(item => {
-                if (!missingSpotifyTracks.includes(item.id))
-                    missingSpotifyTracks.push(item.id)
+                const id = item.id.indexOf(":") > -1 ? item.id.split(":")[2] : item.id;
+                if (typeof id === 'string' && !missingSpotifyTracks.includes(id))
+                    missingSpotifyTracks.push(id)
             })
 
             const tidalTracks = await findMissingTidalTracks(missingTracks)

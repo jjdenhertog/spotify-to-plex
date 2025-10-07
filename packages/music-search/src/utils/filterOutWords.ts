@@ -1,10 +1,6 @@
-import { getCurrentMusicSearchConfig } from "../functions/getMusicSearchConfig";
+import { TextProcessingConfig } from "../types/TextProcessingConfig";
 
-export function filterOutWords(input: string, filtered: boolean = false, cutOffSeperators: boolean = false, removeQuotes = false) {
-
-    // Get the config for word filtering - now uses the new configuration system
-    const musicSearchConfig = getCurrentMusicSearchConfig();
-    const {textProcessing} = musicSearchConfig;
+export function filterOutWords(input: string, textProcessing: TextProcessingConfig, filtered: boolean = false, cutOffSeperators: boolean = false, removeQuotes = false) {
 
     let result = input.toLowerCase();
     const {
@@ -34,8 +30,10 @@ export function filterOutWords(input: string, filtered: boolean = false, cutOffS
     if (cutOffSeperators)
         for (let i = 0; i < separators.length; i++) {
             const separator = separators[i];
-            if (separator && result.indexOf(separator) > -1) {
-                result = result.slice(0, Math.max(0, result.lastIndexOf(separator)));
+            if (separator && result.indexOf(separator) > 4) {
+                // Use indexOf for separators containing commas to cut at first occurrence, lastIndexOf for others
+                const cutIndex = separator.includes(",") ? result.indexOf(separator) : result.lastIndexOf(separator);
+                result = result.slice(0, Math.max(0, cutIndex));
             }
         }
 

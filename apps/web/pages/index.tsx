@@ -1,18 +1,16 @@
 import Logo from "@/components/Logo";
+import ManagePlaylists from "@/components/ManagePlaylists";
 import PlexConnection from "@/components/PlexConnection";
-import PlexConnectionDialog from "@/components/PlexConnectionDialog";
+import SpotifyNavigation from "@/components/SpotifyNavigation";
 import { errorBoundary } from "@/helpers/errors/errorBoundary";
 import MainLayout from "@/layouts/MainLayout";
-import { Assignment, People, PlaylistPlay, Search, Tune } from "@mui/icons-material";
-import { Alert, Box, Button, Card, CardActionArea, CardContent, Container, Divider, Paper, Typography } from "@mui/material";
-import Grid2 from '@mui/material/Grid2';
+import { Alert, Box, Container, Paper, Typography } from '@mui/material';
 import axios from "axios";
 import { NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { enqueueSnackbar } from "notistack";
-import { useCallback, useEffect, useState } from "react";
-
+import { useEffect, useState } from "react";
 import { GetSettingsResponse } from "./api/settings";
 
 const Page: NextPage = () => {
@@ -20,7 +18,6 @@ const Page: NextPage = () => {
     const [settings, setSettings] = useState<GetSettingsResponse>();
     const [connected, setConnected] = useState(false);
     const [loading, setLoading] = useState(true);
-    const [plexDialogOpen, setPlexDialogOpen] = useState(false);
     const router = useRouter()
 
     useEffect(() => {
@@ -32,13 +29,6 @@ const Page: NextPage = () => {
         }, undefined, true);
     }, []);
 
-    const onPlexSettingsClick = useCallback(() => {
-        setPlexDialogOpen(true);
-    }, []);
-
-    const onPlexDialogClose = useCallback(() => {
-        setPlexDialogOpen(false);
-    }, []);
 
     useEffect(() => {
         if (!router.isReady) return;
@@ -64,47 +54,17 @@ const Page: NextPage = () => {
         }
     }, [router, router.isReady]);
 
-    const menuItems = [
-        {
-            title: 'Playlists & Albums',
-            description: 'Manage your Spotify playlists and albums synchronization',
-            icon: <PlaylistPlay sx={{ fontSize: 40 }} />,
-            path: '/spotify/manage-playlists'
-        },
-        {
-            title: 'Users',
-            description: 'Manage Spotify user connections',
-            icon: <People sx={{ fontSize: 40 }} />,
-            path: '/spotify/manage-users'
-        },
-        {
-            title: 'Search Analyzer',
-            description: 'Debug Spotify to Plex search results',
-            icon: <Search sx={{ fontSize: 40 }} />,
-            path: '/spotify/search-analyzer'
-        },
-        {
-            title: 'Plex Search Settings',
-            description: 'Configure matching settings for Spotify to Plex search',
-            icon: <Tune sx={{ fontSize: 40 }} />,
-            path: '/plex/music-search-config'
-        },
-        {
-            title: 'Logs',
-            description: 'View system logs and sync history',
-            icon: <Assignment sx={{ fontSize: 40 }} />,
-            path: '/spotify/logs'
-        }
-    ];
 
-    return (<>
-        <Head>
-            <title>Spotify to Plex</title>
-        </Head>
-        <MainLayout maxWidth="700px">
-            <Container>
-                <Logo  />
-                <Paper elevation={0} sx={{ p: 2, bgcolor: 'action.hover' }}>
+    return (
+        <>
+            <Head>
+                <title>
+                    Manage Playlists - Spotify to Plex
+                </title>
+            </Head>
+            <MainLayout maxWidth="700px">
+                <Container>
+                    <Logo />
 
                     {!!loading &&
                         <Box display="flex" justifyContent="center">
@@ -122,37 +82,24 @@ const Page: NextPage = () => {
                         <PlexConnection settings={settings} setSettings={setSettings} connected={connected} setConnected={setConnected} />
                     }
 
-                    {!!connected && !!settings?.uri &&
-                        <>
-                            <Typography variant="h4" sx={{ mb: 3 }}>Spotify to Plex</Typography>
-                            <Typography variant="body1" sx={{ mb: 3, maxWidth: 500 }}>
-                                Manage your Spotify connections, synchronization settings, and view system logs.
+                    {!!connected && !!settings?.uri && <>
+                        <SpotifyNavigation />
+                        <Paper elevation={0} sx={{ p: 2, mb: 2, bgcolor: 'action.hover' }}>
+                            <Typography variant="h4" sx={{ mt: 2, mb: 0.5 }}>
+                                Manage Playlists & Albums
                             </Typography>
-                            <Grid2 container spacing={2}>
-                                {menuItems.map((item) => (
-                                    <Grid2 size={{ xs: 12, sm: 6 }} key={item.path}>
-                                        <Card>
-                                            <CardActionArea component="a" href={item.path} sx={{ height: '100%' }}>
-                                                <CardContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', p: 3 }}>
-                                                    {item.icon}
-                                                    <Typography variant="h6" sx={{ mt: 2 }}>{item.title}</Typography>
-                                                    <Typography variant="body2" color="text.secondary">{item.description}</Typography>
-                                                </CardContent>
-                                            </CardActionArea>
-                                        </Card>
-                                    </Grid2>
-                                ))}
-                            </Grid2>
-                            <Divider sx={{ mb: 3, mt: 3 }} />
-                            <Button variant="outlined" color="primary" onClick={onPlexSettingsClick}>Plex Settings</Button>
-                        </>
+                            <Typography variant="body1" sx={{ mb: 1, maxWidth: 500 }}>
+                                Manage your Spotify playlists and albums synchronization with Plex.
+                            </Typography>
+                        </Paper>
+
+                        <ManagePlaylists />
+                    </>
                     }
-                </Paper>
-            </Container>
-        </MainLayout>
-        
-        <PlexConnectionDialog open={plexDialogOpen} onClose={onPlexDialogClose} settings={settings} setSettings={setSettings} connected={connected} setConnected={setConnected} />
-    </>);
+                </Container>
+            </MainLayout>
+        </>
+    );
 };
 
-export default Page;
+export default Page; 

@@ -1,20 +1,13 @@
-import { readFile, writeFile, ensureDir, pathExists, remove } from 'fs-extra';
+/* eslint-disable custom/no-export-only-files */
+import { readFile, writeFile, pathExists, remove } from 'fs-extra';
+import { getStorageDir } from '@spotify-to-plex/shared-utils/utils/getStorageDir';
+
 import { join } from 'node:path';
-import { settingsPath } from './settingsPath';
-
-let initialized = false;
-
-async function ensureInitialized(): Promise<void> {
-    if (!initialized) {
-        initialized = true;
-        await ensureDir(settingsPath);
-    }
-}
 
 export async function readJSON<T>(fileName: string): Promise<T | null> {
     try {
-        await ensureInitialized();
 
+        const settingsPath = getStorageDir();
         const filePath = join(settingsPath, fileName);
 
         if (!(await pathExists(filePath))) {
@@ -35,8 +28,8 @@ export async function readJSON<T>(fileName: string): Promise<T | null> {
 
 export async function writeJSON(fileName: string, data: unknown): Promise<void> {
     try {
-        await ensureInitialized();
 
+        const settingsPath = getStorageDir();
         const filePath = join(settingsPath, fileName);
 
         // Write to temporary file first for atomic operation
@@ -53,8 +46,8 @@ export async function writeJSON(fileName: string, data: unknown): Promise<void> 
 
 export async function deleteJSON(fileName: string): Promise<void> {
     try {
-        await ensureInitialized();
 
+        const settingsPath = getStorageDir();
         const filePath = join(settingsPath, fileName);
 
         if (await pathExists(filePath)) {

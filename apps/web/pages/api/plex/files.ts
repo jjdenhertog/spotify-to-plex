@@ -1,8 +1,7 @@
 import { generateError } from "@/helpers/errors/generateError"
 import { getMetaData } from "@spotify-to-plex/plex-music-search/functions/getMetaData";
 import { Metadata } from "@spotify-to-plex/plex-music-search/types/plex/Metadata";
-import { getMusicSearchConfigFromStorage } from "@spotify-to-plex/music-search/functions/getMusicSearchConfigFromStorage";
-import { getStorageDir } from '@spotify-to-plex/shared-utils/utils/getStorageDir';
+import { getMusicSearchConfig } from "@spotify-to-plex/music-search/functions/getMusicSearchConfig";
 import { NextApiRequest, NextApiResponse } from "next"
 import { createRouter } from "next-connect"
 import { getSettings } from "@spotify-to-plex/plex-config/functions/getSettings";
@@ -20,7 +19,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 if (!settings.token || !settings.uri)
                     return res.status(400).json({ error: 'Missing plex configuration' })
 
-                const musicSearchConfig = await getMusicSearchConfigFromStorage(getStorageDir());
+                const musicSearchConfig = await getMusicSearchConfig();
 
                 const plexConfig = {
                     uri: settings.uri,

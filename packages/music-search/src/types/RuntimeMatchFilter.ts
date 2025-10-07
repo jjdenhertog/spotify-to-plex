@@ -1,9 +1,9 @@
-import { TrackWithMatching } from './TrackWithMatching';
+import { Track } from "./Track";
 
 /**
  * Runtime filter function type - for converted function strings
  */
 export type RuntimeMatchFilter = {
-  readonly reason: string;
-  readonly filter: (item: TrackWithMatching) => boolean;
+    reason: string;
+    filter: (item: Track) => boolean;
 }

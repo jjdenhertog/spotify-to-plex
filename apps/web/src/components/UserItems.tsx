@@ -3,10 +3,8 @@ import { GetSpotifyUserResponse } from "@/pages/api/spotify/users";
 import { GetSpotifyAlbum } from "@spotify-to-plex/shared-types/spotify/GetSpotifyAlbum";
 import { GetSpotifyPlaylist } from "@spotify-to-plex/shared-types/spotify/GetSpotifyPlaylist";
 import { SavedItem } from "@spotify-to-plex/shared-types/spotify/SavedItem";
-// MIGRATED: Updated to use shared types package
-import { Add, Check } from "@mui/icons-material";
-import CloseIcon from '@mui/icons-material/Close';
-import { Box, Button, CircularProgress, Divider, IconButton, Modal, Paper, TextField, Tooltip, Typography } from "@mui/material";
+import { Add, Check, Close } from "@mui/icons-material";
+import { Box, Button, CircularProgress, Dialog, DialogContent, DialogTitle, Divider, IconButton, Paper, TextField, Tooltip, Typography } from "@mui/material";
 import axios from "axios";
 import { enqueueSnackbar } from "notistack";
 import { ChangeEvent, useCallback, useEffect, useState } from "react";
@@ -42,7 +40,7 @@ export default function UserItems(props: Props) {
             propsOnClose(event, reason)
 
     }, [propsOnClose])
-    
+
     const handleCloseClick = useCallback((e: React.MouseEvent) => {
         handleClose(e, 'closeClick')
     }, [handleClose])
@@ -65,14 +63,14 @@ export default function UserItems(props: Props) {
 
         const item = items.find(item => item.id === id)
         if (item) {
-            let searchId = 'spotify:'
+            let search = 'spotify:'
             if (type === 'albums')
-                searchId += 'album:'
+                search += 'album:'
 
             if (type === 'playlists')
-                searchId += 'playlist:'
+                search += 'playlist:'
 
-            searchId += id;
+            search += id;
 
             const itemId = item.id
 
@@ -80,7 +78,7 @@ export default function UserItems(props: Props) {
                 // Add loading
                 setAddingItems(prev => [...prev, itemId])
 
-                await axios.post<SavedItem[]>(`/api/saved-items`, { id: searchId, user_id, label })
+                await axios.post<SavedItem[]>(`/api/saved-items`, { search, user_id, label })
                 enqueueSnackbar(`Added ${item.title}`)
                 // Set added item to added
                 setItems(prev => prev.map(item => {
@@ -135,13 +133,20 @@ export default function UserItems(props: Props) {
         curEnd = items.length;
 
 
-    return (<Modal open onClose={handleClose}>
-        <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', maxWidth: 600, bgcolor: 'background.paper', p: 3, borderRadius: 1 }}>
-            <IconButton size="small" onClick={handleCloseClick} sx={{ position: 'absolute', right: 8, top: 8 }}>
-                <CloseIcon fontSize="small" />
+    return (<Dialog open onClose={handleClose}>
+
+
+        <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            Plex Server Connection
+            <IconButton onClick={handleCloseClick} size="small">
+                <Close />
             </IconButton>
+        </DialogTitle>
+
+        <DialogContent>
+
             {!!loading && <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', p: 5 }}>
-                <CircularProgress  />
+                <CircularProgress />
             </Box>}
 
             {!loading &&
@@ -188,7 +193,7 @@ export default function UserItems(props: Props) {
                         {totalPages > 1 &&
                             <Box mt={1} display="flex" justifyContent="space-between">
                                 <Button size="small" variant="outlined" disabled={page <= 0} onClick={prevPageClick}>Previous</Button>
-                                <Button size="small" variant="outlined" disabled={page>= totalPages - 1} onClick={nextPageClick}>Next</Button>
+                                <Button size="small" variant="outlined" disabled={page >= totalPages - 1} onClick={nextPageClick}>Next</Button>
                             </Box>
                         }
 
@@ -196,6 +201,9 @@ export default function UserItems(props: Props) {
                     </Box>
                 </>
             }
-        </Box>
-    </Modal>)
+
+        </DialogContent>
+        {/* </Box> */}
+    </Dialog>
+    )
 }
