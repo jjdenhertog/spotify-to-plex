@@ -11,6 +11,14 @@
         "./*": {
             "types": "./dist/*.d.ts",
             "default": "./dist/*.js"
+        },
+        "./*/*": {
+            "types": "./dist/*/*.d.ts",
+            "default": "./dist/*/*.js"
+        },
+        "./*/*/*": {
+            "types": "./dist/*/*/*.d.ts",
+            "default": "./dist/*/*/*.js"
         }
     },
     "scripts": {
@@ -25,6 +33,7 @@
     },
     "dependencies": {
         "@spotify-to-plex/shared-types": "workspace:*",
+        "@spotify-to-plex/shared-utils": "workspace:*",
         "fs-extra": "^11.3.1",
         "string-similarity-js": "^2.1.4"
     },

@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url';
  */
 export const getStorageDir = (): string => {
 
-    const dir = process.env.SETTINGS_DIR || join(dirname(fileURLToPath(import.meta.url)), '..', '..', 'settings');
+    const dir = process.env.STORAGE_DIR || join(dirname(fileURLToPath(import.meta.url)), '..', '..', 'settings');
     ensureDirSync(dir)
 
     return dir;

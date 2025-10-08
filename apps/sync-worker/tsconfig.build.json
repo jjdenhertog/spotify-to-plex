@@ -1,0 +1,18 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "moduleResolution": "node",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@spotify-to-plex/music-search/*": ["../../packages/music-search/dist/*"],
+      "@spotify-to-plex/plex-music-search/*": ["../../packages/plex-music-search/dist/*"],
+      "@spotify-to-plex/tidal-music-search/*": ["../../packages/tidal-music-search/dist/*"],
+      "@spotify-to-plex/plex-config/*": ["../../packages/plex-config/dist/*"],
+      "@spotify-to-plex/plex-helpers/*": ["../../packages/plex-helpers/dist/*"],
+      "@spotify-to-plex/shared-types/*": ["../../packages/shared-types/dist/*"],
+      "@spotify-to-plex/shared-utils/*": ["../../packages/shared-utils/dist/*"],
+      "@spotify-to-plex/http-client/*": ["../../packages/http-client/dist/*"]
+    }
+  }
+}

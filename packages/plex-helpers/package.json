@@ -12,7 +12,9 @@
     },
     "dependencies": {
         "@spotify-to-plex/http-client": "workspace:*",
+        "@spotify-to-plex/plex-config": "workspace:*",
         "@spotify-to-plex/shared-types": "workspace:*",
+        "@spotify-to-plex/shared-utils": "workspace:*",
         "axios": "^1.0.0"
     },
     "devDependencies": {
@@ -22,6 +24,14 @@
         "./*": {
             "types": "./dist/*.d.ts",
             "default": "./dist/*.js"
+        },
+        "./*/*": {
+            "types": "./dist/*/*.d.ts",
+            "default": "./dist/*/*.js"
+        },
+        "./*/*/*": {
+            "types": "./dist/*/*/*.d.ts",
+            "default": "./dist/*/*/*.js"
         }
     }
 }

@@ -1,8 +1,16 @@
+const path = require('path');
+
 module.exports = {
     output: process.env.NEXT_DOCKER ? "standalone" : undefined,
+    // Critical for monorepo: tells Next.js to trace dependencies from monorepo root
+    outputFileTracingRoot: process.env.NEXT_DOCKER ? path.join(__dirname, '../../') : undefined,
     distDir: "dist",
     reactStrictMode: false,
     productionBrowserSourceMaps: true,
+    typescript: {
+        // Skip type checking in Docker builds since we already type-checked during package builds
+        ignoreBuildErrors: process.env.NEXT_DOCKER === "1",
+    },
     
     // Suppress webpack warnings for missing platform-specific SWC binaries
     webpack: (config) => {

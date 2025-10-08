@@ -12,6 +12,14 @@
         "./*": {
             "types": "./dist/*.d.ts",
             "default": "./dist/*.js"
+        },
+        "./*/*": {
+            "types": "./dist/*/*.d.ts",
+            "default": "./dist/*/*.js"
+        },
+        "./*/*/*": {
+            "types": "./dist/*/*/*.d.ts",
+            "default": "./dist/*/*/*.js"
         }
     },
     "scripts": {
@@ -25,7 +33,9 @@
         "node": ">=18.0.0"
     },
     "dependencies": {
-        "@spotify-to-plex/music-search": "workspace:*"
+        "@spotify-to-plex/http-client": "workspace:*",
+        "@spotify-to-plex/music-search": "workspace:*",
+        "@spotify-to-plex/shared-types": "workspace:*"
     },
     "devDependencies": {
         "@types/node": "^20.3.0",

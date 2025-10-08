@@ -6,6 +6,14 @@
         "./*": {
             "types": "./dist/*.d.ts",
             "default": "./dist/*.js"
+        },
+        "./*/*": {
+            "types": "./dist/*/*.d.ts",
+            "default": "./dist/*/*.js"
+        },
+        "./*/*/*": {
+            "types": "./dist/*/*/*.d.ts",
+            "default": "./dist/*/*/*.js"
         }
     },
     "scripts": {
@@ -25,9 +33,11 @@
     "dependencies": {
         "@spotify-to-plex/shared-types": "workspace:*",
         "@spotify/web-api-ts-sdk": "^1.2.0",
-        "axios": "^1.11.0"
+        "axios": "^1.11.0",
+        "fs-extra": "^11.3.1"
     },
     "devDependencies": {
+        "@types/fs-extra": "^11.0.4",
         "@types/node": "^20.19.11",
         "typescript": "^5.3.3"
     },

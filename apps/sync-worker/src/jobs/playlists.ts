@@ -82,7 +82,8 @@ export async function syncPlaylists() {
                 }
 
                 const url = getAPIUrl(settings.uri, `/playlists`);
-                const result = await handleOneRetryAttempt<GetPlaylistResponse>(() => AxiosRequest.get(url, settings.token!));
+                const result = await handleOneRetryAttempt<GetPlaylistResponse>(() => AxiosRequest.get(url, settings.token));
+                
                 // eslint-disable-next-line unicorn/consistent-destructuring
                 plexPlaylist = result.data.MediaContainer.Metadata.find((item: Playlist) => item.ratingKey == foundPlaylist.plex)
             }

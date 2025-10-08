@@ -13,8 +13,6 @@
     "sync:playlists": "tsx src/jobs/playlists.ts",
     "sync:albums": "tsx src/jobs/albums.ts",
     "sync:users": "tsx src/jobs/users.ts",
-    "mqtt:service": "tsx src/index-mqtt.ts",
-    "mqtt:service:build": "node dist/index-mqtt.js",
     "dev:sync:playlists": "dotenv -e ../web/.env.local -- tsx src/jobs/playlists.ts -- force",
     "dev:sync:albums": "dotenv -e ../web/.env.local -- tsx src/jobs/albums.ts -- force",
     "dev:sync:users": "dotenv -e ../web/.env.local -- tsx src/jobs/users.ts -- force",

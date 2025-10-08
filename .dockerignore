@@ -1,0 +1,55 @@
+# Node modules and dependencies
+node_modules
+**/node_modules
+.pnpm-store
+
+# Build outputs and temp files
+dist
+**/dist
+build
+**/build
+.next
+**/.next
+*.log
+
+# Git and version control
+.git
+.gitignore
+
+# Development and IDE files
+.vscode
+.idea
+*.swp
+*.swo
+.DS_Store
+
+# Environment files (should be passed as Docker env vars)
+.env
+.env.local
+.env.production
+.env*.local
+
+# Test files
+*.test.js
+*.test.ts
+*.spec.js
+*.spec.ts
+coverage
+.nyc_output
+
+# Docker files (don't copy into context)
+Dockerfile
+docker-compose*.yml
+.dockerignore
+
+# Config directory (will be mounted as volume) - BUT keep TypeScript configs
+config/*
+!config/typescript/
+
+# Claude/AI assistant files
+.swarm
+CLAUDE.md
+claude-code
+
+# Documentation (keeping markdown files IN the image for reference)
+# docs/

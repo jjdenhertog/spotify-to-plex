@@ -6,6 +6,14 @@
         "./*": {
             "types": "./dist/*.d.ts",
             "default": "./dist/*.js"
+        },
+        "./*/*": {
+            "types": "./dist/*/*.d.ts",
+            "default": "./dist/*/*.js"
+        },
+        "./*/*/*": {
+            "types": "./dist/*/*/*.d.ts",
+            "default": "./dist/*/*/*.js"
         }
     },
     "scripts": {

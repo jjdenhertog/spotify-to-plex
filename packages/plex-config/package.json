@@ -6,6 +6,14 @@
     "./*": {
       "types": "./dist/*.d.ts",
       "default": "./dist/*.js"
+    },
+    "./*/*": {
+      "types": "./dist/*/*.d.ts",
+      "default": "./dist/*/*.js"
+    },
+    "./*/*/*": {
+      "types": "./dist/*/*/*.d.ts",
+      "default": "./dist/*/*/*.js"
     }
   },
   "files": ["dist"],
@@ -17,6 +25,7 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
+    "@spotify-to-plex/shared-utils": "workspace:*",
     "fs-extra": "^11.3.1"
   },
   "devDependencies": {
