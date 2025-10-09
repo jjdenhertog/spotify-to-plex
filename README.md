@@ -38,8 +38,8 @@ openssl rand -hex 32
 
 To import playlists you need Spotify API credentials to make the connection. You can get these credentials at the [Spotify Developer site](https://developer.spotify.com/). More information can also be found at the [Getting started section](https://developer.spotify.com/documentation/web-api) of the documentation.
 
-> [!TIP]
-> Many users have some issues with connecting Spotify the right way. Especially when it comes to connecting users. You *do not need* to connect users in order to sync playlists. This is only used for automatic synchronization of your albums.
+#### Insecure redirect URI
+Spotify has required to use *secure* redirect URLs. This means that every redirect URL needs to start with `https`, even IP addresses. As a result during the authentication process you will at some point redirect to a not working url. In that case you need to replace `https` for `http` in order to contiue.
 
 #### Creating a new app
 
@@ -51,11 +51,11 @@ The screenshot below shows how you should create the app.
 
 If you get the message that you have set an invalid redirect URL there are two things to check:
 
-**2. Environment variable**
-`SPOTIFY_API_REDIRECT_URI` should be set correctly, for example: `http://192.168.100.130:9030/api/spotify/token`
+**1. Environment variable**
+`SPOTIFY_API_REDIRECT_URI` should be set correctly, for example: `https://192.168.100.130:9030/api/spotify/token`. Note that this has to start with **https**.
 
-**1. Redirect URL in the Spotify App**
-It should be exactly the same as the environment variable. So in this case: `http://192.168.100.130:9030/api/spotify/token`
+**2. Redirect URL in the Spotify App**
+It should be exactly the same as the environment variable. So in this case: `https://192.168.100.130:9030/api/spotify/token`
 
 <img src="misc/spotify_app_2.jpg" width="450"/>
 
