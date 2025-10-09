@@ -45,7 +45,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
     PORT=9030 \
     HOSTNAME=0.0.0.0 \
     SPOTIFY_SCRAPER_URL=http://localhost:3020 \
-    STORAGE_DIR=/app/storage
+    STORAGE_DIR=/app/config
 
 # Install all production runtime dependencies in one layer
 RUN apt-get update && apt-get install -y --no-install-recommends \
