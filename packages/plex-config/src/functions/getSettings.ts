@@ -1,10 +1,16 @@
 import { PlexSettings } from '../types/PlexSettings';
 import { readJSON } from '../utils/fileUtils';
 
-export async function getSettings(): Promise<PlexSettings> {
+export async function getSettings(raw: boolean = false): Promise<PlexSettings> {
     const settings = await readJSON<PlexSettings>('plex.json');
-    if (!settings) 
+    if (!settings)
         return { id: '', uri: '', token: '' };
-    
-    return settings;
+
+    if (raw)
+        return settings;
+
+    return {
+        ...settings,
+        token: settings.serverToken || settings.token
+    };
 }

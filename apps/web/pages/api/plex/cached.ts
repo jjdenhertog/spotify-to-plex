@@ -44,7 +44,6 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 // Load music search configuration
                 //////////////////////////////////////
                 const musicSearchConfig = await getMusicSearchConfig();
-
                 const plexConfig = {
                     uri: settings.uri,
                     token: settings.token,

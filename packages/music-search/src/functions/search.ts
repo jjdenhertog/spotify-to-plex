@@ -5,6 +5,8 @@ import { getRuntimeFilters } from "./getRuntimeFilters";
 
 export function search(find: Track, options: Track[], analyze: boolean = false): Track[] {
     const matchFilters = getRuntimeFilters();
+    if (matchFilters.length == 0)
+        throw new Error("No match filters found");
 
     const results: Track[] = options
         .map(item => {

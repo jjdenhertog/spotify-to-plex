@@ -14,9 +14,9 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
         async (req, res) => {
             try {
                 if (req.body.uri) 
-                    await updateSettings({ uri: req.body.uri, id: req.body.id })
+                    await updateSettings({ uri: req.body.uri, id: req.body.id, serverToken: req.body.serverToken })
 
-                const settings = await getSettings();
+                const settings = await getSettings(true);
                 res.json({ loggedin: !!settings.token, uri: settings.uri, id: settings.id })
             } catch (error) {
                 console.error('Error updating Plex settings:', error);
@@ -26,7 +26,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
     .get(
         async (_req, res) => {
             try {
-                const settings = await getSettings();
+                const settings = await getSettings(true);
                 res.json({ loggedin: !!settings.token, uri: settings.uri, id: settings.id })
             } catch (error) {
                 console.error('Error getting Plex settings:', error);

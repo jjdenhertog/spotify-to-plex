@@ -11,8 +11,6 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
         async (_req, res, _next) => {
             try {
                 const settings = await getSettings();
-
-                console.log(settings)
                 
                 if (!settings.pin_id || !settings.pin_code)
                     return res.status(400).json({ error: 'No authentication pin found' });

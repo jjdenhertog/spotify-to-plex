@@ -4,4 +4,5 @@ export type PlexSettingsUpdate = {
   token?: string;
   pin_code?: string;
   pin_id?: string;
+  serverToken?: string;
 }

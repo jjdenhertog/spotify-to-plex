@@ -70,9 +70,11 @@ const PlexConnection = (props: Props) => {
             if (!resource)
                 throw new Error("Something went wrong selecting the resource");
 
+            const {id, accessToken} = resource
             const settings = await axios.post<GetSettingsResponse>("/api/settings", {
                 uri: newPlexUri,
-                id: resource.id
+                id,
+                serverToken: accessToken
             });
 
             try {
@@ -170,7 +172,7 @@ const PlexConnection = (props: Props) => {
                     <Box maxWidth={400} margin="0 auto" textAlign="left">
                         <Select fullWidth value={newPlexUri || ''} onChange={onPlexUriChange}>
                             {resources.map(item => {
-                                if (item.connections.length < 2) return null;
+                                // if (item.connections.length < 2) return null;
 
                                 return [
                                     <ListItem key={`header-${item.name}`}>

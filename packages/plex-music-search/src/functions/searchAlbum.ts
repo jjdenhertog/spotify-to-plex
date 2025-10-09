@@ -1,4 +1,4 @@
-import { search as musicSearch } from "@spotify-to-plex/music-search/functions/search";
+import { search } from "@spotify-to-plex/music-search/functions/search";
 import { Track } from "@spotify-to-plex/music-search/types/Track";
 import getAlbumTracks from "../actions/getAlbumTracks";
 import { PlexMusicSearchConfig } from "../types/PlexMusicSearchConfig";
@@ -7,8 +7,15 @@ import { SearchResponse } from "../types/SearchResponse";
 import hubSearchToPlexTrack from "../utils/searching/hubSearchToPlexTrack";
 import { searchForAlbum } from "../utils/searching/searchForAlbum";
 import searchResultToTracks from "../utils/searching/searchResultToTracks";
+import { resetCache, setMusicSearchConfig } from "../session/state";
 
 export async function searchAlbum(config: PlexMusicSearchConfig, tracks: PlexMusicSearchTrack[]): Promise<SearchResponse[]> {
+    if (!config.searchApproaches || config.searchApproaches.length === 0) 
+        throw new Error('No search approaches provided. Configuration must include explicit searchApproaches.');
+
+    setMusicSearchConfig(config);
+    resetCache();
+    
     const firstValidAlbum = tracks.find(item => !!item?.album);
     if (!firstValidAlbum) {
         return tracks.map(item => ({ 
@@ -36,7 +43,7 @@ export async function searchAlbum(config: PlexMusicSearchConfig, tracks: PlexMus
 
         for (let i = 0; i < find.artists.length; i++) {
             const artist = find.artists[i];
-            const result = musicSearch({ id, title, album: album || '', artist: artist || '' }, tracks);
+            const result = search({ id, title, album: album || '', artist: artist || '' }, tracks);
             if (result.length > 0) {
                 return result;
             }
@@ -53,9 +60,11 @@ export async function searchAlbum(config: PlexMusicSearchConfig, tracks: PlexMus
                 // We go for the first hit
                 const [albumResult] = foundAlbums;
                 const albumTracks = await getAlbumTracks(config.uri, config.token, albumResult?.id || '');
+                const reformedAlbumTracks = searchResultToTracks(albumTracks)
 
                 return tracks.map(item => {
-                    const result = getMusicSearchResult(item, searchResultToTracks(albumTracks));
+                    const result = getMusicSearchResult(item, reformedAlbumTracks);
+
                     const plexTracks = result
                         .map(item => albumTracks
                             .find(track => track.id == item.id))

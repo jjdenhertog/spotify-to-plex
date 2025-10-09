@@ -8,9 +8,11 @@ import { createRouter } from 'next-connect';
 export type GetPlexResourcesResponse = {
     name: string
     id: string
+    accessToken: string
     connections: {
         uri: string,
-        local: boolean
+        local: boolean,
+        accessToken: string
     }[]
 }
 
@@ -20,8 +22,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
 
             try {
 
-                const settings = await getSettings();
-
+                const settings = await getSettings(true);
                 if (!settings?.token)
                     return res.status(400).json({ message: "No Plex connection found" });
 
@@ -33,28 +34,29 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                     }
                 })
 
-                console.log(result.data)
-
                 const servers: GetPlexResourcesResponse[] = [];
-                result.data.forEach((item: { product: string; name: string; clientIdentifier: string; connections: { local: boolean; uri: string }[]; httpsRequired?: boolean }) => {
+                result.data.forEach((item: { product: string; name: string; clientIdentifier: string; connections: { local: boolean; uri: string }[]; httpsRequired?: boolean; accessToken: string }) => {
                     if (item.product === "Plex Media Server") {
 
+                        const { accessToken, httpsRequired, name, clientIdentifier } = item
                         const connections = item.connections.map((connection: { local: boolean; uri: string }) => {
                             const { local } = connection;
                             let { uri } = connection
-                            if (item.httpsRequired)
+                            if (httpsRequired)
                                 uri = uri.split('http://').join('https://')
 
-                            return { uri, local }
+                            return { uri, local, accessToken }
                         })
 
                         servers.push({
-                            name: item.name,
-                            id: item.clientIdentifier,
+                            name,
+                            id: clientIdentifier,
+                            accessToken,
                             connections
                         })
                     }
                 })
+
 
                 return res.status(200).json(servers)
             } catch (_e) {
