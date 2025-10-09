@@ -60,21 +60,22 @@ If you want to match missing songs with Tidal you also need to use Tidal Credent
 
 ### Binding volume
 
-All the data is stored in the `/app/config` folder, you need to add it as a volume for persistent storage.
+All the data is stored in the `/app/storage` folder, you need to add it as a volume for persistent storage.
 
 ### Docker installation
 
 ```sh
 docker run -d \
     -e PORT=9030 \
-    -e TIDAL_API_CLIENT_ID=PASTE_YOUR_TIDAL_CLIENT_ID_HERE \
+    -e SPOTIFY_API_CLIENT_ID=PASTE_YOUR_SPOTIFY_CLIENT_ID_HERE \
     -e SPOTIFY_API_CLIENT_SECRET=PASTE_YOUR_SPOTIFY_CLIENT_SECRET_HERE \
     -e SPOTIFY_API_REDIRECT_URI=http://[IP_OF_SPOTIFY_TO_PLEX]:9030/api/spotify/token \
     -e TIDAL_API_CLIENT_ID=PASTE_YOUR_TIDAL_CLIENT_ID_HERE \
     -e TIDAL_API_CLIENT_SECRET=PASTE_YOUR_TIDAL_CLIENT_SECRET_HERE \
-    -e TIDAL_API_REDIRECT_URI=http://[IP_OF_SPOTIFY_TO_PLEX]:3000/api/tidal/token \
+    -e TIDAL_API_REDIRECT_URI=http://[IP_OF_SPOTIFY_TO_PLEX]:9030/api/tidal/token \
     -e ENCRYPTION_KEY=PASTE_YOUR_ENCRYPTION_KEY \
-    -v /local/directory/:/app/config:rw \
+    -e PLEX_APP_ID=eXf+f9ktw3CZ8i45OY468WxriOCtoFxuNPzVeDcAwfw= \
+    -v /local/directory/:/app/storage:rw \
     --name=spotify-to-plex \
     --network=host \
     --restart on-failure:4 \
@@ -92,7 +93,7 @@ services:
         container_name: spotify-to-plex
         restart: unless-stopped
         volumes:
-            - '/local/directory:/app/config'
+            - '/local/directory:/app/storage'
         environment:
             - PORT=9030
             - SPOTIFY_API_CLIENT_ID=PASTE_YOUR_SPOTIFY_CLIENT_ID_HERE
@@ -102,6 +103,7 @@ services:
             - TIDAL_API_CLIENT_SECRET=PASTE_YOUR_TIDAL_CLIENT_SECRET_HERE
             - TIDAL_API_REDIRECT_URI=http://[IP_OF_SPOTIFY_TO_PLEX]:9030/api/tidal/token
             - ENCRYPTION_KEY=PASTE_YOUR_ENCRYPTION_KEY
+            - PLEX_APP_ID=eXf+f9ktw3CZ8i45OY468WxriOCtoFxuNPzVeDcAwfw=
         network_mode: "host"
         image: 'jjdenhertog/spotify-to-plex:latest'
 ```
@@ -151,7 +153,7 @@ Most requests are made in sets of 5 tracks at-a-time and also cached in that way
 
 ### Removing cache
 
-All cached data is stored in `track_links.json` in the data folder. When removing this file all previously matched tracks will be removed. The other option is to click on the refresh icon on the playlist screen. This will reload the current playlist but ignore any previously matched songs. 
+All cached data is stored in `track_links.json` in the storage folder. When removing this file all previously matched tracks will be removed. The other option is to click on the refresh icon on the playlist screen. This will reload the current playlist but ignore any previously matched songs. 
 
 <img src="misc/clear_cache.jpg" width="200">
 
@@ -179,7 +181,7 @@ You can also add multiple users. In order to add multiple users you need to sign
 
 ### Security
 
-When you login to your Spotify account the tokens will be stored in `spotify.json` in your data folder. Make sure to properly protect the folder that you are adding to this app. Sensitive data is encrypted using an [encryption key](#encryption-key) that you can add.
+When you login to your Spotify account the tokens will be stored in `spotify.json` in your storage folder (`/app/storage`). Make sure to properly protect the folder that you are mounting to this app. Sensitive data is encrypted using an [encryption key](#encryption-key) that you can add.
 
 ------------
 
@@ -193,9 +195,9 @@ You can use `Spotify to Plex` to automatically synchronize your playlists with P
 
 ### How it works
 
-At the one hand you need to setup which playlists (and in which interval) you want to sync. Then on the other end you need to make sure that you call the sync script within a set interval. 
+The application now includes a built-in automatic synchronization scheduler that runs daily at **12:00 PM (noon)** by default. You simply need to enable automatic syncing for your playlists and set the sync interval in days.
 
-An example approach would be that you call the sync script every day around midnight. And then you would set the 'days to sync' for a playlist to 7. Even though the sync script is called every day. The select playlist will only be synced once a week.
+For example, if you set a playlist to sync every 7 days, the scheduler will check daily at 12:00 PM, but only sync that specific playlist once a week.
 
 ### What happens during synchronization
 
@@ -207,40 +209,52 @@ During synchronization it does exactly the same as you would do in the app. Whic
 
 It <u>does not</u> remember any selection that you made during the process of matching of a playlist. So if you have chose alternative songs during the first setup it will not apply that same selection.
 
-### Setup
+### Configuration
 
-You need to setup your own task to start the automatic synchronization. To do this, you have two options: 
-* Run the action via the command line `npm run sync:playlists`
-* Call an API action `http://[ipaddress]:9030/api/sync/playlists` 
+The synchronization scheduler is automatically enabled when you start the container. No additional setup is required.
 
-#### Docker
+**Optional environment variables:**
 
-The preferred approach is by using the docker `exec` command in combination with something like a task scheduler. When using the API action you might run into issues with requests timing out. This really depends per setup, but if you have Spotify to Plex installed on a NAS this would be the go to method. 
+* `TZ` - Set your timezone (default: `UTC`). Example: `TZ=America/New_York`
+* `SYNC_ON_STARTUP` - Run sync immediately on container startup (default: `false`). Set to `true` to enable.
 
-```
-docker exec spotify-to-plex sh -c "cd /app && npm run sync:playlists"
+**Manual synchronization:**
+
+If you want to manually trigger a sync outside the scheduled time, you can use:
+
+```bash
+docker exec spotify-to-plex sh -c "cd /app/apps/sync-worker && npm run sync"
 ```
 
 ### Logs
 
-In the application you can find log entries for each time the synchronization took place - including the duration of each playlists or any error messages. When you have setup a scheduled task to run the `docker exec` command you can also stream the output to a file. Below you find an example of this setup.
+In the application you can find log entries for each time the synchronization took place - including the duration of each playlist and any error messages.
 
+You can also view the container logs to see the scheduler activity:
+
+```bash
+docker logs spotify-to-plex
 ```
-docker exec spotify-to-plex sh -c "cd /app && npm run sync:playlists"  > /volume2/Share/spotify_to_plex_playlists.log
-touch spotify_to_plex_playlists.log
+
+For continuous monitoring:
+
+```bash
+docker logs -f spotify-to-plex
 ```
 
 ### Syncing albums
 
-It is also possible to sync albums with the similar approach as with playlists. You can use either of two options:
-* Run the action via the command line `npm run sync:albums`
-* Call an API action `http://[ipaddress]:9030/api/sync/albums` 
+Album synchronization is included in the automatic scheduler. The syncing service for albums creates `missing_albums_spotify.txt` and `missing_albums_tidal.txt` files in your storage folder. It does not create or update any Plex playlists.
 
-The only thing that the syncing service for albums does is create a `missing_albums_spotify.txt` and `missing_albums_tidal.txt` file. It does not create or update any Plex playlists.
+To manually sync albums, you can run:
+
+```bash
+docker exec spotify-to-plex sh -c "cd /app/apps/sync-worker && npx tsx src/jobs/albums.ts"
+```
 
 ### Missing songs
 
-The cronjob will automatically update all missing songs in two text files `missing_tracks_spotify.txt` and `missing_tracks_tidal.txt`. You can do this to easily see which songs are not in your Plex environment. The Tidal songs are also structured in such a way that it could be used in [Tidal Media Downloader](https://github.com/yaronzz/Tidal-Media-Downloader). [Disclaimer](https://github.com/yaronzz/Tidal-Media-Downloader?tab=readme-ov-file#-disclaimer). Or it can be used with the [Spotify to Plex Tidal Downloader](https://github.com/jjdenhertog/spotify-to-plex-tidal-downloader)
+The automatic scheduler will update all missing songs in two text files `missing_tracks_spotify.txt` and `missing_tracks_tidal.txt` in your storage folder. You can use these files to easily see which songs are not in your Plex environment. The Tidal songs are also structured in such a way that they could be used with [Tidal Media Downloader](https://github.com/yaronzz/Tidal-Media-Downloader) ([Disclaimer](https://github.com/yaronzz/Tidal-Media-Downloader?tab=readme-ov-file#-disclaimer)) or the [Spotify to Plex Tidal Downloader](https://github.com/jjdenhertog/spotify-to-plex-tidal-downloader)
 
 
 ------------

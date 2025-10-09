@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   spotify-to-plex:
     image: jjdenhertog/spotify-to-plex:latest

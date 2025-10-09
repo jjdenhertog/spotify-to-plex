@@ -3,7 +3,7 @@ const path = require('path');
 module.exports = {
     output: process.env.NEXT_DOCKER ? "standalone" : undefined,
     // Critical for monorepo: tells Next.js to trace dependencies from monorepo root
-    outputFileTracingRoot: process.env.NEXT_DOCKER ? path.join(__dirname, '../../') : undefined,
+    // outputFileTracingRoot: process.env.NEXT_DOCKER ? path.join(__dirname, '../../') : undefined,
     distDir: "dist",
     reactStrictMode: false,
     productionBrowserSourceMaps: true,

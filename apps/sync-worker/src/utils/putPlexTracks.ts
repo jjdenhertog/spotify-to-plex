@@ -6,7 +6,6 @@ import { updatePlaylist } from "@spotify-to-plex/plex-helpers/playlist/updatePla
 import { getPlexUri } from "@spotify-to-plex/plex-helpers/utils/getPlexUri";
 import { Playlist } from "@spotify-to-plex/shared-types/plex/Playlist";
 import { SearchResponse } from "@spotify-to-plex/plex-music-search/types/SearchResponse";
-import { type } from "node:os";
 import { getSettings } from "@spotify-to-plex/plex-config/functions/getSettings";
 import { addPlaylist } from "@spotify-to-plex/plex-config/functions/addPlaylist";
 
@@ -66,7 +65,7 @@ export async function putPlexPlaylist(id: string, plexPlaylist: Playlist | undef
                 console.log(`** Could not update poster image`)
             }
             // Store new playlist
-            await addPlaylist({ type: type(), id, plex: playlistId });
+            await addPlaylist({ type: 'playlist', id, plex: playlistId });
         }
     }
 }

@@ -122,9 +122,10 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 const savedItems: SavedItem[] = JSON.parse(readFileSync(savedItemsPath, 'utf8'))
 
                 return res.status(200).json(savedItems.reverse())
-            } catch (_error) {
-                console.error(_error)
-                res.status(500).json({ error: 'Failed to save items' });
+            } catch (error: any) {
+
+                const message = error.message || 'Failed to save items'
+                res.status(500).json({ error: message });
             }
         })
     .delete(

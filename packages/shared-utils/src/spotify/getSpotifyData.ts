@@ -2,7 +2,7 @@
 import { GetSpotifyPlaylist } from "@spotify-to-plex/shared-types/spotify/GetSpotifyPlaylist";
 import { GetSpotifyScraperData } from "@spotify-to-plex/shared-types/spotify/GetSpotifyScraperData";
 import { SpotifyApi } from "@spotify/web-api-ts-sdk";
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 
 import { getSpotifyPlaylist } from "./getSpotifyPlaylist";
 import { Track } from "@spotify-to-plex/shared-types/spotify/Track";
@@ -46,14 +46,21 @@ export async function getSpotifyData(api: SpotifyApi, id: string, simplified: bo
     if (playlist)
         return playlist;
 
-    const spotifyUrl = `https://open.spotify.com/playlist/${playlistId}`;
-    const response = await axios.post<GetSpotifyScraperData>(`${process.env.SPOTIFY_SCRAPER_URL}/playlist`, {
-        url: spotifyUrl,
-        include_album_data: false
-    });
+    let response: AxiosResponse<GetSpotifyScraperData>;
+    try {
+        const spotifyUrl = `https://open.spotify.com/playlist/${playlistId}`;
+        response = await axios.post<GetSpotifyScraperData>(`${process.env.SPOTIFY_SCRAPER_URL}/playlist`, {
+            url: spotifyUrl,
+            include_album_data: false
+        });
 
-    if (!response.data)
-        return null;
+    } catch (_e) {
+        throw new Error(`This was a Spotify curated playlist, and SpotifyScraper is not available. You might need to restart Spotify-to-Plex to fix this.`)
+    }
+
+    if (!response.data){
+        throw new Error(`This was a Spotify curated playlist. Unfortuantely even SpotifyScraper couldn't find it.`)
+    }
 
     const scraperData = response.data
 
@@ -88,7 +95,7 @@ export async function getSpotifyData(api: SpotifyApi, id: string, simplified: bo
         return null;
 
 
-    if(simplified) {
+    if (simplified) {
         return {
             type: "spotify-playlist",
             id: scraperData.id || playlistId,
@@ -98,7 +105,7 @@ export async function getSpotifyData(api: SpotifyApi, id: string, simplified: bo
             tracks
         }
     }
-    
+
     const BATCH_SIZE = 10;
     const BATCH_DELAY = 1000;
     const RETRY_DELAY = 5000;
@@ -112,7 +119,7 @@ export async function getSpotifyData(api: SpotifyApi, id: string, simplified: bo
                 return new Promise((resolve) => {
 
                     const trackId = track.id.replace('spotify:track:', '');
-                    
+
                     api.tracks.get(trackId)
                         .then(enrichedTrack => {
                             resolve({
@@ -152,7 +159,7 @@ export async function getSpotifyData(api: SpotifyApi, id: string, simplified: bo
             owner: scraperData.owner?.name || '',
             tracks
         }
-        
+
         return result;
 
     } catch (e) {

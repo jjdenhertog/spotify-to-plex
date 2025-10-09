@@ -28,7 +28,7 @@ function TabPanel(props: TabPanelProps) {
     );
 }
 
-export default function Logs() {
+export default function fLogs() {
     const [loading, setLoading] = useState(true);
     const [data, setData] = useState<GetLogsResponse | null>(null);
     const [tabValue, setTabValue] = useState(0);
@@ -113,7 +113,7 @@ export default function Logs() {
         if (!content || content.trim() === '') {
             return (
                 <Alert severity="info">
-                    No missing tracks found for {platform}. This is good news!
+                    No missing tracks found for {platform}.
                 </Alert>
             );
         }

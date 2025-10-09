@@ -152,7 +152,7 @@ export default function ManagePlaylists() {
                             <Box component="li" sx={{ mb: 0.5 }}>
                                 Spotify URI (e.g. spotify:playlist:37i9dQZF1EQqA6klNdJvwx )
                             </Box>
-                            <Box component="li">Plex Content id, for <Link href="https://github.com/jjdenhertog/spotify-to-plex/blob/main/README.md#dashboarding" target="_blank">dashboarding</Link> &#40;e.g. /library/metadata/12345 &#41;</Box>
+                            {/* <Box component="li">Plex Content id, for <Link href="https://github.com/jjdenhertog/spotify-to-plex/blob/main/README.md#dashboarding" target="_blank">dashboarding</Link> &#40;e.g. /library/metadata/12345 &#41;</Box> */}
                         </Box>
                         <TextField
                             fullWidth

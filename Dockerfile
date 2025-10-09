@@ -28,19 +28,12 @@ RUN pnpm -r run clean || true
 # Build all packages first
 RUN pnpm run build:packages
 
-# Build sync-worker with explicit path mappings for Docker environment
-RUN cd /build/apps/sync-worker && npx tsc --project tsconfig.build.json
-
 # Build web application with Next.js standalone output (type checking disabled via next.config.js)
 RUN cd /build && NEXT_DOCKER=1 pnpm --filter @spotify-to-plex/web run build
 
 # ===== PRODUCTION STAGE =====
 # Stage 2: Production runtime with Node.js 20, Python 3.11, Chromium, and Supervisor
 FROM ubuntu:22.04 AS production
-
-LABEL maintainer="Spotify-to-Plex Contributors"
-LABEL version="1.0.66"
-LABEL description="Multi-service Spotify-to-Plex synchronization platform"
 
 ENV DEBIAN_FRONTEND=noninteractive \
     TZ=UTC \
@@ -58,9 +51,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
 RUN apt-get update && apt-get install -y --no-install-recommends \
     # Basic tools
     curl wget git ca-certificates gnupg \
-    # Supervisor for process management
-    supervisor \
-    # Python 3.11 and pip
+    # Python 3.11 and pip first (needed for newer supervisor)
     python3.11 python3-pip \
     # Build tools for Python packages
     build-essential \
@@ -81,6 +72,10 @@ RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
     && apt-get install -y nodejs \
     && rm -rf /var/lib/apt/lists/*
 
+# Install latest Supervisor via pip to avoid pkg_resources deprecation warning
+RUN pip install --upgrade pip setuptools wheel \
+    && pip install --no-cache-dir supervisor
+
 # Create application directories
 RUN mkdir -p /app/config /app/apps/spotify-scraper /app/apps/sync-worker \
     /var/log/supervisor \
@@ -89,18 +84,19 @@ RUN mkdir -p /app/config /app/apps/spotify-scraper /app/apps/sync-worker \
 # Copy spotify-scraper application and install Python dependencies
 COPY apps/spotify-scraper/requirements.txt /app/apps/spotify-scraper/
 WORKDIR /app/apps/spotify-scraper
-# Upgrade pip and setuptools first, then install dependencies
+# Install Python dependencies (pip already upgraded earlier)
 RUN git config --global url."https://github.com/".insteadOf "git@github.com:" \
-    && pip install --upgrade pip setuptools wheel \
     && pip install --no-cache-dir -r requirements.txt \
     && python3 -c "from spotify_scraper import SpotifyClient; print('SpotifyScraper installed successfully')"
 
 # Copy spotify-scraper application code
 COPY apps/spotify-scraper/ /app/apps/spotify-scraper/
 
-# Copy sync-worker built artifacts from node-builder
-COPY --from=node-builder /build/apps/sync-worker/dist/ /app/apps/sync-worker/dist/
+# Copy sync-worker source and dependencies from node-builder
+COPY --from=node-builder /build/apps/sync-worker/src/ /app/apps/sync-worker/src/
 COPY --from=node-builder /build/apps/sync-worker/package.json /app/apps/sync-worker/
+COPY --from=node-builder /build/apps/sync-worker/tsconfig.production.json /app/apps/sync-worker/tsconfig.json
+COPY --from=node-builder /build/apps/sync-worker/node_modules/ /app/apps/sync-worker/node_modules/
 COPY --from=node-builder /build/node_modules/ /app/node_modules/
 COPY --from=node-builder /build/packages/ /app/packages/
 

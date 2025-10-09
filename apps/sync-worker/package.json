@@ -10,9 +10,9 @@
     "clean": "rm -rf dist",
     "start": "node dist/index.js",
     "dev": "tsx src/index.ts",
-    "sync:playlists": "tsx src/jobs/playlists.ts",
-    "sync:albums": "tsx src/jobs/albums.ts",
-    "sync:users": "tsx src/jobs/users.ts",
+    "scheduler": "tsx src/scheduler.ts",
+    "scheduler:prod": "tsx src/scheduler.ts",
+    "sync": "tsx src/jobs/playlists.ts && tsx src/jobs/albums.ts && tsx src/jobs/users.ts",
     "dev:sync:playlists": "dotenv -e ../web/.env.local -- tsx src/jobs/playlists.ts -- force",
     "dev:sync:albums": "dotenv -e ../web/.env.local -- tsx src/jobs/albums.ts -- force",
     "dev:sync:users": "dotenv -e ../web/.env.local -- tsx src/jobs/users.ts -- force",
@@ -22,6 +22,7 @@
   },
   "dependencies": {
     "@spotify-to-plex/http-client": "workspace:*",
+    "@spotify-to-plex/music-search": "workspace:*",
     "@spotify-to-plex/plex-config": "workspace:*",
     "@spotify-to-plex/plex-helpers": "workspace:*",
     "@spotify-to-plex/plex-music-search": "workspace:*",
@@ -29,13 +30,14 @@
     "@spotify-to-plex/shared-utils": "workspace:*",
     "@spotify-to-plex/tidal-music-search": "workspace:*",
     "@spotify/web-api-ts-sdk": "^1.2.0",
-    "mqtt": "^5.14.0"
+    "node-cron": "^3.0.3",
+    "tsx": "^4.20.6"
   },
   "devDependencies": {
     "@types/node": "^20.19.11",
+    "@types/node-cron": "^3.0.11",
     "dotenv-cli": "^7.4.4",
     "eslint": "^8.57.0",
-    "tsx": "^4.20.6",
     "typescript": "^5.7.2"
   },
   "engines": {

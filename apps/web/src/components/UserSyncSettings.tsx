@@ -1,7 +1,7 @@
 import { errorBoundary } from "@/helpers/errors/errorBoundary";
 import { GetSpotifyUserResponse } from "@/pages/api/spotify/users";
 import CloseIcon from '@mui/icons-material/Close';
-import { Box, Button, CircularProgress, Divider, FormControl, FormHelperText, FormLabel, IconButton, Modal, Switch, TextField, Typography } from "@mui/material";
+import { Box, Button, CircularProgress, Divider, FormControl, FormLabel, IconButton, Modal, Switch, TextField, Typography } from "@mui/material";
 import axios from "axios";
 import { enqueueSnackbar } from "notistack";
 import { ChangeEvent, useCallback, useEffect, useState } from "react";
@@ -13,9 +13,9 @@ type Props = {
 
 export default function UserSyncSettings(props: Props) {
     const { user, onClose } = props;
+    const [recentContext, setRecentContext] = useState(false);
     const [autoSync, setAutoSync] = useState(false);
     const [label, setLabel] = useState('')
-    const [recentContext, setRecentContext] = useState(false);
     // eslint-disable-next-line react/hook-use-state
     const [loading] = useState(false);
 
@@ -26,8 +26,8 @@ export default function UserSyncSettings(props: Props) {
         setLabel(e.target.value)
     }, [])
 
-    const onSwitchChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-        switch (e.target.dataset.id) {
+    const onSwitchChange = useCallback((id: string) => (e: ChangeEvent<HTMLInputElement>) => {
+        switch (id) {
             case "autosync":
                 setAutoSync(e.target.checked)
                 break;
@@ -52,7 +52,7 @@ export default function UserSyncSettings(props: Props) {
 
             enqueueSnackbar(`[${user.name}] Changes saved`)
 
-             
+
             onClose(true)
         })
 
@@ -63,10 +63,10 @@ export default function UserSyncSettings(props: Props) {
     //////////////////////////////
     const handleClose = useCallback((_e: unknown, reason: string) => {
         if (reason === 'closeClick')
-             
+
             onClose()
     }, [onClose])
-    
+
     const handleCloseClick = useCallback((e: React.MouseEvent) => {
         handleClose(e, 'closeClick')
     }, [handleClose])
@@ -93,7 +93,7 @@ export default function UserSyncSettings(props: Props) {
                 <CloseIcon fontSize="small" />
             </IconButton>
             {!!loading && <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', p: 5 }}>
-                <CircularProgress  />
+                <CircularProgress />
             </Box>}
 
             {!loading && <>
@@ -106,20 +106,29 @@ export default function UserSyncSettings(props: Props) {
 
                 <FormControl sx={{ mb: 2 }}>
                     <FormLabel component="legend">Automatic sync</FormLabel>
-                    <FormHelperText>
+                    <Typography variant="body2">
                         When enabled, this item will be synced automatically.
-                    </FormHelperText>
-                    <Switch checked={autoSync} onChange={onSwitchChange} color="success" />
+                    </Typography>
+                    <Switch checked={autoSync} onChange={onSwitchChange('autosync')} color="success" />
                 </FormControl>
 
-                {!!autoSync &&
+                {!!autoSync && <>
                     <FormControl sx={{ mb: 2 }}>
                         <FormLabel component="legend">Label</FormLabel>
-                        <FormHelperText>
+                        <Typography variant="body2">
                             Created playlists will get this label
-                        </FormHelperText>
+                        </Typography>
                         <TextField size="small" value={label} onChange={onLabelChange} />
                     </FormControl>
+
+                    <FormControl sx={{ mb: 2 }}>
+                        <FormLabel component="legend">Recently played</FormLabel>
+                        <Typography variant="body2">
+                            Automatically sync playlists and albums of recently played items.
+                        </Typography>
+                        <Switch checked={recentContext} onChange={onSwitchChange('recent-context')} color="success"  />
+                    </FormControl>
+                </>
                 }
 
                 <Divider sx={{ mt: 1, mb: 1 }} />

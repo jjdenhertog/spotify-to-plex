@@ -1,8 +1,11 @@
-import { Box, Button, Card, CardContent, Divider, TextField, Typography } from "@mui/material"
+import { Alert, Box, Button, Card, CardContent, Divider, TextField, Typography } from "@mui/material"
 import { NextPage } from "next"
 import MusicSearchConfigLayout from "@/components/layouts/MusicSearchConfigLayout"
 import TrackAnalyzer from "@/components/TrackAnalyzer"
 import { useState, useRef, ElementRef, useEffect, useCallback } from "react"
+import { errorBoundary } from "@/helpers/errors/errorBoundary"
+import axios from "axios"
+import { LoadingButton } from "@mui/lab"
 
 const STORAGE_KEY = 'spotify-test-track-id';
 
@@ -10,6 +13,27 @@ const TestConfigPage: NextPage = () => {
     const [spotifyId, setSpotifyId] = useState('');
 
     const trackAnalyzerRef = useRef<ElementRef<typeof TrackAnalyzer>>(null);
+
+    const [loading, setLoading] = useState(true)
+    const [canUseTidal, setCanUseTidal] = useState(false)
+    useEffect(() => {
+
+        errorBoundary(async () => {
+
+            const validResult = await axios.get<{ ok: boolean }>('/api/tidal/valid')
+            if (!validResult.data.ok) {
+                setLoading(false)
+
+                return;
+            }
+
+            setCanUseTidal(true)
+        }, () => {
+            setLoading(false)
+        })
+
+    }, [])
+
 
     useEffect(() => {
         const savedId = localStorage.getItem(STORAGE_KEY);
@@ -60,7 +84,7 @@ const TestConfigPage: NextPage = () => {
         const trackId = extractSpotifyId(value);
         handleIdChange(trackId);
     }, []);
-    
+
     return (
         <MusicSearchConfigLayout activeTab="test" title="Test Configuration">
             <Card>
@@ -79,10 +103,15 @@ const TestConfigPage: NextPage = () => {
                             <Button variant="contained" onClick={handleAnalyzePlex} disabled={!spotifyId.trim()} sx={{ mr: 1 }}>
                                 Analyze Track in Plex
                             </Button>
-                            <Button variant="contained" onClick={handleAnalyzeTidal} disabled={!spotifyId.trim()}>
+                            <Button  disabled={!spotifyId.trim() ||!canUseTidal} variant="contained" onClick={handleAnalyzeTidal} >
                                 Analyze Track in Tidal
                             </Button>
                         </Box>
+                        {!loading && !canUseTidal && (
+                            <Alert severity="warning" sx={{ mt: 2 }}>
+                                You have not added Tidal credentials. Visit Github for more info.
+                            </Alert>
+                        )}
 
                         <Divider sx={{ my: 2 }} />
                         <TrackAnalyzer ref={trackAnalyzerRef} />

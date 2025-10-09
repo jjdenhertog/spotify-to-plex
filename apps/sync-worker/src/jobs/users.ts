@@ -39,14 +39,14 @@ export async function syncUsers() {
 
             // Get the last 50 tracks.
             const recentPlayedContexts: RecentPlayedContext[] = []
-            const result = await api.player.getRecentlyPlayedTracks(50)
+            const result = await api.player.getRecentlyPlayedTracks(49)
 
             for (let j = 0; j < result.items.length; j++) {
                 const element = result.items[j];
-
-                 
-                if (element?.context && !recentPlayedContexts.some(item => item.uri == element.context.uri))
+                
+                if (element?.context && !recentPlayedContexts.some(item => item.uri == element.context.uri)){
                     recentPlayedContexts.push(element.context)
+                }
             }
 
             const { label, id: userId } = user;
@@ -77,8 +77,6 @@ export async function syncUsers() {
 
             // Store saved item
             savedItems.save()
-
-            console.log("recentPlayedThings:", recentPlayedContexts)
         } catch (e) {
             console.log(e)
         }

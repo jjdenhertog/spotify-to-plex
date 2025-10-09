@@ -80,7 +80,7 @@ export default function PlexTrack(props: Props) {
         // Save track ID to localStorage for the test page to pick up
         localStorage.setItem('spotify-test-track-id', id);
         // Navigate to test page in new tab
-        const url = `/plex/music-search-config/test`;
+        const url = `/advanced/music-search-config/test`;
         window.open(url, '_blank');
     }, [id])
 

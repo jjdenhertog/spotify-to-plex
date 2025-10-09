@@ -9,6 +9,7 @@ import { useRouter } from "next/router"
 import { enqueueSnackbar } from "notistack"
 import { ReactNode, useCallback, useRef, useState } from "react"
 import { errorBoundary } from "@/helpers/errors/errorBoundary"
+import SpotifyNavigation from "../SpotifyNavigation"
 
 type MusicSearchConfigLayoutProps = {
     readonly children: ReactNode
@@ -151,15 +152,8 @@ const MusicSearchConfigLayout = (props: MusicSearchConfigLayoutProps) => {
             <MainLayout maxWidth="1200px">
                 <Container>
                     <Logo />
+                    <SpotifyNavigation />
                     <Paper elevation={0} sx={{ p: 2, bgcolor: "action.hover", mb: 3 }}>
-                        <Breadcrumbs sx={{ mb: 2 }}>
-                            <Link href="/" underline="hover" color="inherit">Home</Link>
-                            <Link href="/advanced" underline="hover" color="inherit">Advanced</Link>
-                            <Typography color="text.primary">
-                                Music Search Configuration
-                            </Typography>
-                        </Breadcrumbs>
-
                         <Typography variant="h4" sx={{ mt: 2, mb: 0.5 }}>
                             Music Search Configuration
                         </Typography>
