@@ -1,3 +1,9 @@
+
+> [!NOTE]
+> The recent update might have broken your Plex connection. To resolve this remove `plex.json` and re-authenticate to solve the issue.
+
+------------
+
 <p align="center"><img src="misc/logo.png" width="90"></p>
 <p align="center" color="red">Spotify to Plex</p>
 
@@ -8,9 +14,6 @@ A beautiful web application that you can use to sync your Spotify playlists with
 <img src="misc/app_overview.jpg">
 
 This project started because I'm using Home Assistant together with Plex and Sonos. During the week I'm listing to Spotify but in the evening and weekends Plex is more often used. Using this application I can automatically synchronize my Spotify songs with my Plex setup. 
-
-> [!NOTE]
-> The recent update might have broken your Plex connection. To resolve this remove `plex.json` and re-authenticate to solve the issue.
 
 #### Features
 * Matching Spotify songs with Plex
