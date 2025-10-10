@@ -4,6 +4,7 @@ import { getSpotifyData } from '@spotify-to-plex/shared-utils/spotify/getSpotify
 import { getStorageDir } from '@spotify-to-plex/shared-utils/utils/getStorageDir';
 
 import type { SavedItem } from '@spotify-to-plex/shared-types/spotify/SavedItem';
+import type { SpotifyCredentials } from '@spotify-to-plex/shared-types/spotify/SpotifyCredentials';
 import { getById } from '@spotify-to-plex/plex-music-search/functions/getById';
 import { getMusicSearchConfig } from "@spotify-to-plex/music-search/functions/getMusicSearchConfig";
 import { SpotifyApi } from '@spotify/web-api-ts-sdk';
@@ -66,6 +67,53 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                     const metaData = await getById(plexConfig, plexMediaId)
                     if (metaData)
                         savedItem = { type: 'plex-media', uri: metaData.id, id: metaData.guid, title: metaData.title, image: `/api/plex/image?path=${encodeURIComponent(metaData.image)}` }
+                } else if (search.includes(':liked')) {
+                    // Handle {username}:liked pattern
+                    const parts = search.trim().split(':');
+
+                    // Validate format is exactly {username}:liked
+                    if (parts.length !== 2 || parts[1]?.toLowerCase() !== 'liked') 
+                        return res.status(400).json({ error: "Invalid format. Expected: {username}:liked" });
+
+                    const [username] = parts;
+                    if (!username) 
+                        return res.status(400).json({ error: "Username cannot be empty. Expected: {username}:liked" });
+
+                    // Load spotify.json to validate username
+                    const credentialsPath = join(getStorageDir(), 'spotify.json');
+                    if (!existsSync(credentialsPath)) 
+                        return res.status(400).json({ error: "No Spotify users are currently connected. Please connect a Spotify account first." });
+
+                    const users: SpotifyCredentials[] = JSON.parse(readFileSync(credentialsPath, 'utf8'));
+
+                    // Find user by name (case-insensitive)
+                    const matchedUser = users.find(cred =>
+                        cred.user.name.toLowerCase() === username.toLowerCase()
+                    );
+
+                    if (!matchedUser) {
+                        const availableUsernames = users.map(cred => cred.user.name).join(', ');
+
+                        return res.status(400).json({
+                            error: `Username "${username}" not found. Available usernames: ${availableUsernames}`
+                        });
+                    }
+
+                    // Create SavedItem with synthetic URI
+                    const userId = matchedUser.user.id;
+                    savedItem = {
+                        type: 'spotify-playlist',
+                        uri: `spotify:liked:${userId}`,
+                        id: `liked-${userId}`,
+                        title: label && typeof label === 'string' ? label : 'Liked Songs',
+                        image: ''
+                    };
+
+                    if (typeof user_id === 'string')
+                        savedItem.user = user_id;
+
+                    if (typeof label === 'string')
+                        savedItem.label = label;
                 } else {
                     let id = '';
 
