@@ -1,6 +1,6 @@
 /* eslint-disable react/no-multi-comp */
 import { errorBoundary } from "@/helpers/errors/errorBoundary";
-import { Alert, Box, CircularProgress, Paper, Tab, Tabs, TextField, Typography } from "@mui/material";
+import { Alert, Box, Button, CircularProgress, Paper, Tab, Tabs, TextField, Typography } from "@mui/material";
 import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
 import { GetLogsResponse } from "../../pages/api/logs";
@@ -32,18 +32,37 @@ export default function fLogs() {
     const [loading, setLoading] = useState(true);
     const [data, setData] = useState<GetLogsResponse | null>(null);
     const [tabValue, setTabValue] = useState(0);
+    const [clearing, setClearing] = useState(false);
 
-    useEffect(() => {
-        errorBoundary(async () => {
+    const fetchLogs = useCallback(async () => {
+        setLoading(true);
+        await errorBoundary(async () => {
             const result = await axios.get<GetLogsResponse>('/api/logs');
             setData(result.data);
             setLoading(false);
         });
     }, []);
 
+    useEffect(() => {
+        fetchLogs();
+    }, [fetchLogs]);
+
     const handleTabChange = useCallback((_event: React.SyntheticEvent, newValue: number) => {
         setTabValue(newValue);
     }, []);
+
+    const handleClearLogs = useCallback(async () => {
+        if (!confirm('Are you sure you want to clear all logs? This action cannot be undone.')) {
+            return;
+        }
+
+        setClearing(true);
+        await errorBoundary(async () => {
+            await axios.delete('/api/logs');
+            await fetchLogs();
+            setClearing(false);
+        });
+    }, [fetchLogs]);
 
     const formatDuration = (ms: number) => {
         const seconds = Math.floor(ms / 1000);
@@ -63,19 +82,42 @@ export default function fLogs() {
     const renderSyncLogs = () => {
         if (!data?.sync_log || Object.keys(data.sync_log).length === 0) {
             return (
-                <Alert severity="info">
-                    No synchronization logs found. Logs will appear here after your first sync.
-                </Alert>
+                <>
+                    <Box sx={{ mb: 2, display: 'flex', justifyContent: 'flex-end' }}>
+                        <Button
+                            variant="outlined"
+                            color="error"
+                            onClick={handleClearLogs}
+                            disabled={clearing}
+                        >
+                            {clearing ? 'Clearing...' : 'Clear Logs'}
+                        </Button>
+                    </Box>
+                    <Alert severity="info">
+                        No synchronization logs found. Logs will appear here after your first sync.
+                    </Alert>
+                </>
             );
         }
 
         // Convert sync_log object to array and sort by start time (descending)
         const syncEntries = Object.entries(data.sync_log)
             .map(([id, log]: [string, any]) => ({ id, ...log }))
-            .sort((a, b) => (b.start || 0) - (a.start || 0));
+            .sort((a, b) => (b.start || 0) - (a.start || 0))
+            .slice(0, 100); // Limit to 100 entries
 
         return (
             <Box>
+                <Box sx={{ mb: 2, display: 'flex', justifyContent: 'flex-end' }}>
+                    <Button
+                        variant="outlined"
+                        color="error"
+                        onClick={handleClearLogs}
+                        disabled={clearing}
+                    >
+                        {clearing ? 'Clearing...' : 'Clear Logs'}
+                    </Button>
+                </Box>
                 {syncEntries.map((log) => {
                     const duration = log.end && log.start ? log.end - log.start : null;
 
@@ -87,7 +129,7 @@ export default function fLogs() {
 
                             <Box sx={{ display: 'grid', gap: 0.5 }}>
                                 {log.start ? <Typography variant="body2" color="text.secondary">
-                                    Started: <BMoment date={log.start} variant="date" />
+                                    Started: <BMoment date={log.start} format="D MMMM YYYY HH:mm" />
                                 </Typography> : null}
 
                                 {duration ? <Typography variant="body2" color="text.secondary">

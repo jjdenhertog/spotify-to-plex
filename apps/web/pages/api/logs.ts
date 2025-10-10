@@ -1,6 +1,6 @@
 import { generateError } from '@/helpers/errors/generateError';
 import { getStorageDir } from '@spotify-to-plex/shared-utils/utils/getStorageDir';
-import { readFileSync, existsSync } from 'fs';
+import { readFileSync, existsSync, unlinkSync } from 'fs';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createRouter } from 'next-connect';
 import { join } from 'path';
@@ -64,6 +64,23 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
             } catch (error) {
                 console.error('Error fetching logs:', error);
                 res.status(500).json({ error: 'Failed to fetch logs' });
+            }
+        })
+    .delete(
+        async (_req, res) => {
+            try {
+                const storageDir = getStorageDir();
+                const syncLogPath = join(storageDir, 'sync_log.json');
+
+                // Delete sync_log.json if it exists
+                if (existsSync(syncLogPath)) {
+                    unlinkSync(syncLogPath);
+                }
+
+                res.status(200).json({ message: 'Logs cleared successfully' });
+            } catch (error) {
+                console.error('Error clearing logs:', error);
+                res.status(500).json({ error: 'Failed to clear logs' });
             }
         })
 

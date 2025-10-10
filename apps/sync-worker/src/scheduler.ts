@@ -1,7 +1,7 @@
 import { schedule } from 'node-cron';
 import { spawn } from 'node:child_process';
 
-const SYNC_SCHEDULE = '0 12 * * *'; // cron format: minute hour day month weekday
+const SYNC_SCHEDULE = '0 */2 * * *'; // cron format: minute hour day month weekday
 
 console.log('🚀 Sync scheduler started');
 console.log(`⏰ Scheduled to run daily at 12:00 PM (schedule: ${SYNC_SCHEDULE})`);

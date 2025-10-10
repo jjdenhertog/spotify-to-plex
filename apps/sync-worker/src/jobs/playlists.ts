@@ -161,8 +161,8 @@ export async function syncPlaylists() {
             writeFileSync(join(getStorageDir(), 'missing_tracks_tidal.txt'), missingTidalTracks.map(id => `https://tidal.com/browse/track/${id}`).join('\n'))
 
         } catch (e) {
-            console.log(e);
-            logError(itemLog, `Something went wrong while syncing`)
+            const message = e instanceof Error ? e.message : 'Unknown error';
+            logError(itemLog, `Something went wrong while syncing: ${message}`)
         }
 
     }

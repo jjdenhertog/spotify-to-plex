@@ -44,6 +44,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
     PYTHONPATH=/app/apps/spotify-scraper \
     PORT=9030 \
     HOSTNAME=0.0.0.0 \
+    PLEX_APP_ID=eXf+f9ktw3CZ8i45OY468WxriOCtoFxuNPzVeDcAwfw= \
     SPOTIFY_SCRAPER_URL=http://localhost:3020 \
     STORAGE_DIR=/app/config
 
