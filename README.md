@@ -1,3 +1,9 @@
+
+> [!NOTE]
+> The recent update might have broken your Plex connection. To resolve this remove `plex.json` and re-authenticate to solve the issue.
+
+------------
+
 <p align="center"><img src="misc/logo.png" width="90"></p>
 <p align="center" color="red">Spotify to Plex</p>
 
@@ -8,7 +14,6 @@ A beautiful web application that you can use to sync your Spotify playlists with
 <img src="misc/app_overview.jpg">
 
 This project started because I'm using Home Assistant together with Plex and Sonos. During the week I'm listing to Spotify but in the evening and weekends Plex is more often used. Using this application I can automatically synchronize my Spotify songs with my Plex setup. 
-
 
 #### Features
 * Matching Spotify songs with Plex
@@ -39,8 +44,8 @@ openssl rand -hex 32
 
 To import playlists you need Spotify API credentials to make the connection. You can get these credentials at the [Spotify Developer site](https://developer.spotify.com/). More information can also be found at the [Getting started section](https://developer.spotify.com/documentation/web-api) of the documentation.
 
-> [!TIP]
-> Many users have some issues with connecting Spotify the right way. Especially when it comes to connecting users. You *do not need* to connect users in order to sync playlists. This is only used for automatic synchronization of your albums.
+#### Insecure redirect URI
+Spotify has required to use *secure* redirect URLs. This means that every redirect URL needs to start with `https`, even IP addresses. As a result during the authentication process you will at some point redirect to a not working url. In that case you need to replace `https` for `http` in order to contiue.
 
 #### Creating a new app
 
@@ -52,11 +57,11 @@ The screenshot below shows how you should create the app.
 
 If you get the message that you have set an invalid redirect URL there are two things to check:
 
-**2. Environment variable**
-`SPOTIFY_API_REDIRECT_URI` should be set correctly, for example: `http://192.168.100.130:9030/api/spotify/token`
+**1. Environment variable**
+`SPOTIFY_API_REDIRECT_URI` should be set correctly, for example: `https://192.168.100.130:9030/api/spotify/token`. Note that this has to start with **https**.
 
-**1. Redirect URL in the Spotify App**
-It should be exactly the same as the environment variable. So in this case: `http://192.168.100.130:9030/api/spotify/token`
+**2. Redirect URL in the Spotify App**
+It should be exactly the same as the environment variable. So in this case: `https://192.168.100.130:9030/api/spotify/token`
 
 <img src="misc/spotify_app_2.jpg" width="450"/>
 
@@ -202,7 +207,7 @@ You can use `Spotify to Plex` to automatically synchronize your playlists with P
 
 ### How it works
 
-The application includes a built-in automatic synchronization scheduler that runs hourly. You simply need to enable automatic syncing for your playlists and set the sync interval in days. For example, if you set a playlist to sync every 7 days, the scheduler will check hourly, but only sync that specific playlist once a week.
+The application includes a built-in automatic synchronization scheduler that runs every day around 12:00. You simply need to enable automatic syncing for your playlists and set the sync interval in days. For example, if you set a playlist to sync every 7 days, the scheduler will check hourly, but only sync that specific playlist once a week.
 
 ### What happens during synchronization
 
