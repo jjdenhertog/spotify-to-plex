@@ -56,11 +56,15 @@ export async function getSpotifyPlaylist(api: SpotifyApi, id: string, simplified
                         }
                     })
                     .filter((track)=>!!track);
-                
+
                 playlist.tracks = playlist.tracks.concat(validLoadMoreTracks);
 
                 hasMoreResults = loadMore.offset + loadMore.limit < loadMore.total;
                 offset = loadMore.offset + loadMore.limit;
+
+                // Add throttling between pagination requests (~171 req/min)
+                if (hasMoreResults) 
+                    await new Promise(resolve => { setTimeout(resolve, 350) });
             }
         }
 

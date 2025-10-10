@@ -5,10 +5,9 @@ import { SpotifyApi } from "@spotify/web-api-ts-sdk";
 import axios, { AxiosResponse } from "axios";
 
 import { getSpotifyPlaylist } from "./getSpotifyPlaylist";
-import { Track } from "@spotify-to-plex/shared-types/spotify/Track";
 
 
-export async function getSpotifyData(api: SpotifyApi, id: string, simplified: boolean = false) {
+export async function getSpotifyData(api: SpotifyApi, id: string, simplified: boolean = false, skipRateLimitChecks: boolean = false) {
 
     ////////////////////////////////////////
     // Albums
@@ -58,7 +57,7 @@ export async function getSpotifyData(api: SpotifyApi, id: string, simplified: bo
         throw new Error(`This was a Spotify curated playlist, and SpotifyScraper is not available. You might need to restart Spotify-to-Plex to fix this.`)
     }
 
-    if (!response.data){
+    if (!response.data) {
         throw new Error(`This was a Spotify curated playlist. Unfortuantely even SpotifyScraper couldn't find it.`)
     }
 
@@ -106,49 +105,79 @@ export async function getSpotifyData(api: SpotifyApi, id: string, simplified: bo
         }
     }
 
-    const BATCH_SIZE = 10;
-    const BATCH_DELAY = 1000;
-    const RETRY_DELAY = 5000;
+    // Use Spotify's batch API: up to 50 tracks per request
+    const BATCH_SIZE = 50;
+    // ~350ms delay = ~171 requests/minute (under the ~180 req/min limit with safety margin)
+    const BATCH_DELAY = 350;
+    const MAX_RETRIES = 3;
 
     for (let i = 0; i < tracks.length; i += BATCH_SIZE) {
         const batch = tracks.slice(i, i + BATCH_SIZE);
-        try {
-            // Process batch in parallel
-            const promises: Promise<Track>[] = batch.map(async (track) => {
 
-                return new Promise((resolve) => {
+        // Extract track IDs for batch API call
+        const trackIds = batch.map(track => track.id.replace('spotify:track:', ''));
 
-                    const trackId = track.id.replace('spotify:track:', '');
+        let retryCount = 0;
+        let success = false;
 
-                    api.tracks.get(trackId)
-                        .then(enrichedTrack => {
-                            resolve({
-                                ...track,
-                                album: enrichedTrack.album.name,
-                                album_id: enrichedTrack.album.id
-                            });
-                        })
-                        .catch(() => {
-                            resolve(track);
-                        });
+        while (!success && retryCount < MAX_RETRIES) {
+            try {
+                // SINGLE API CALL for up to 50 tracks (50x more efficient!)
+                const enrichedTracks = await api.tracks.get(trackIds);
+
+                // Map enriched data back to original tracks
+                const enrichedBatch = batch.map((track, idx) => {
+                    const enrichedTrack = enrichedTracks[idx];
+                    if (!enrichedTrack) return track; // Fallback if track not found
+
+                    return {
+                        ...track,
+                        album: enrichedTrack.album.name,
+                        album_id: enrichedTrack.album.id
+                    };
                 });
-            })
 
-            const enrichedBatch = await Promise.all(promises);
+                tracks.splice(i, BATCH_SIZE, ...enrichedBatch);
+                success = true;
 
-            tracks.splice(i, BATCH_SIZE, ...enrichedBatch);
+                // Wait between batches (except for the last batch)
+                if (i + BATCH_SIZE < tracks.length)
+                    await new Promise(resolve => { setTimeout(resolve, BATCH_DELAY) });
 
-            // Wait between batches (except for the last batch)
-            if (i + BATCH_SIZE < tracks.length)
-                await new Promise(resolve => { setTimeout(resolve, BATCH_DELAY) });
+            } catch (batchError: any) {
+                retryCount++;
 
-        } catch (batchError: any) {
+                // Check for rate limit errors (429) - SDK might wrap the status differently
+                const isRateLimit = batchError.status === 429 ||
+                    batchError.statusCode === 429 ||
+                    batchError.message?.includes('rate limit') ||
+                    batchError.message?.includes('429');
 
-            // If rate limited (429), wait longer
-            if (batchError.status === 429) {
-                await new Promise(resolve => { setTimeout(resolve, RETRY_DELAY) });
+                if (isRateLimit) {
+                    // Extract retry-after from various possible locations
+                    const retryAfter = parseInt(
+                        batchError.headers?.['retry-after'] ||
+                        batchError.response?.headers?.['retry-after'] ||
+                        '5',
+                        10
+                    );
+                    const backoffDelay = Math.min(retryAfter * 1000, 1000 * (2 ** retryCount));
+
+                    if (!skipRateLimitChecks)
+                        throw new Error(`Rate Limit Exceeded, try with a different token.`)
+
+                    console.log(`Rate limited. Waiting ${backoffDelay}ms before retry ${retryCount}/${MAX_RETRIES}...`);
+                    await new Promise(resolve => { setTimeout(resolve, backoffDelay) });
+                } else {
+                    // For other errors, just log and continue with original track data
+                    console.error(`Error enriching batch - ${retryCount}/${MAX_RETRIES}: ${batchError.message}`);
+                    success = true; // Don't retry non-rate-limit errors
+                }
             }
         }
+
+        if (!success)
+            console.error(`Failed to enrich batch after ${MAX_RETRIES} retries. Using original track data.`);
     }
 
     try {
