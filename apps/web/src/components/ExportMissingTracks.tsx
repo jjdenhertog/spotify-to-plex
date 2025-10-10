@@ -2,10 +2,11 @@ import { errorBoundary } from "@/helpers/errors/errorBoundary";
 import { GetTidalTracksResponse } from "@/pages/api/tidal";
 import { Track } from "@spotify-to-plex/shared-types/spotify/Track";
 import CloseIcon from '@mui/icons-material/Close';
-import { Alert, Box, Button, CircularProgress, Dialog, Divider, IconButton, Modal, Typography } from "@mui/material";
+import { Alert, Box, Button, CircularProgress, Dialog, Divider, IconButton, Typography } from "@mui/material";
 import axios from "axios";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { PlexPlaylistProps } from "./PlexPlaylist";
+import LidarrAlbumDialog from './LidarrAlbumDialog';
 
 type Props = {
     readonly onClose: () => void,
@@ -22,6 +23,12 @@ export default function ExportMissingTracks(props: Props) {
     // Tidal Tracks
     ///////////////////////////////////////////////=
     const [tidalTracks, setTidalTracks] = useState<GetTidalTracksResponse[]>([])
+
+    ///////////////////////////////////////////////
+    // Lidarr
+    ///////////////////////////////////////////////
+    const [lidarrDialogOpen, setLidarrDialogOpen] = useState(false);
+    const [lidarrEnabled, setLidarrEnabled] = useState(false);
 
     ///////////////////////////////////////////////
     // Pagination
@@ -133,6 +140,36 @@ export default function ExportMissingTracks(props: Props) {
         })
     }, [loadTidalTracks, missingTidalTracks, playlist, tracks, type])
 
+    const onOpenLidarrDialog = useCallback(() => {
+        setLidarrDialogOpen(true);
+    }, []);
+
+    const onCloseLidarrDialog = useCallback(() => {
+        setLidarrDialogOpen(false);
+    }, []);
+
+    // Extract unique albums for Lidarr
+    const uniqueAlbums = useMemo(() => {
+        const albumMap = new Map<string, { artist_name: string; album_name: string; spotify_album_id?: string }>();
+
+        tracks.forEach(track => {
+            // Use first artist as album artist
+            const artist = track.artists[0] || 'Unknown Artist';
+            const album = track.album?.trim() || 'Unknown Album';
+            const key = `${artist}|${album}`;
+
+            if (!albumMap.has(key)) {
+                albumMap.set(key, {
+                    artist_name: artist,
+                    album_name: album,
+                    spotify_album_id: track.album_id
+                });
+            }
+        });
+
+        return Array.from(albumMap.values());
+    }, [tracks]);
+
     ///////////////////////////////////////////////
     // Load cached tracks
     ///////////////////////////////////////////////
@@ -166,9 +203,17 @@ export default function ExportMissingTracks(props: Props) {
 
     }, [tracks])
 
+    // Check if Lidarr is enabled
+    useEffect(() => {
+        errorBoundary(async () => {
+            const result = await axios.get('/api/lidarr/settings');
+            setLidarrEnabled(result.data.enabled);
+        });
+    }, []);
+
     const hasTidalTracks = tidalTracks.some(item => item.tidal_ids && item.tidal_ids.length > 0)
 
-    return (<Modal open onClose={onClose}>
+    return (<>
         <Dialog open onClose={onClose}>
             <Box sx={{ maxWidth: 600, p: 2, position: 'relative' }}>
                 <IconButton size="small" onClick={onClose} sx={{ position: 'absolute', right: 8, top: 8 }}>
@@ -184,7 +229,7 @@ export default function ExportMissingTracks(props: Props) {
                         <Typography variant="body2">
                             Below you find an overview of all missing tracks of the current selection.
                         </Typography>
-                        <Box sx={{ display: 'flex', gap: 1, mt: 1 }}>
+                        <Box sx={{ display: 'flex', gap: 1, mt: 1, flexWrap: 'wrap' }}>
                             {!!(tracks.length > 0) &&
                                 <>
                                     <form method="POST" action="/api/download" target="_blank" >
@@ -207,6 +252,12 @@ export default function ExportMissingTracks(props: Props) {
                                             </Button>
                                         </form>
                                     }
+
+                                    {!!lidarrEnabled && uniqueAlbums.length > 0 && (
+                                        <Button variant="outlined" onClick={onOpenLidarrDialog}>
+                                            Send to Lidarr ({uniqueAlbums.length} albums)
+                                        </Button>
+                                    )}
                                 </>
                             }
                         </Box>
@@ -312,5 +363,6 @@ export default function ExportMissingTracks(props: Props) {
                 }
             </Box>
         </Dialog>
-    </Modal>)
+        {lidarrDialogOpen ? <LidarrAlbumDialog onClose={onCloseLidarrDialog} albums={uniqueAlbums} /> : null}
+    </>)
 }

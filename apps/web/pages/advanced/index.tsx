@@ -1,7 +1,7 @@
 import Logo from "@/components/Logo";
 import PlexConnectionDialog from "@/components/PlexConnectionDialog";
 import MainLayout from "@/layouts/MainLayout";
-import { Assignment, Tune } from "@mui/icons-material";
+import { Assignment, Settings, Tune } from "@mui/icons-material";
 import { Button, Card, CardActionArea, CardContent, Container, Divider, Paper, Typography } from "@mui/material";
 import Grid2 from '@mui/material/Grid2';
 import { NextPage } from "next";
@@ -28,6 +28,12 @@ const Page: NextPage = () => {
             description: 'Configure matching settings for Spotify to Plex search',
             icon: <Tune sx={{ fontSize: 40 }} />,
             path: '/advanced/music-search-config'
+        },
+        {
+            title: 'Settings',
+            description: 'Configure Lidarr and other integrations',
+            icon: <Settings sx={{ fontSize: 40 }} />,
+            path: '/advanced/settings'
         },
         {
             title: 'Logs',

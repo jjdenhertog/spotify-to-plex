@@ -5,7 +5,6 @@ import TrackAnalyzer from "@/components/TrackAnalyzer"
 import { useState, useRef, ElementRef, useEffect, useCallback } from "react"
 import { errorBoundary } from "@/helpers/errors/errorBoundary"
 import axios from "axios"
-import { LoadingButton } from "@mui/lab"
 
 const STORAGE_KEY = 'spotify-test-track-id';
 

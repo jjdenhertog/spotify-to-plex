@@ -35,7 +35,7 @@ const Page: NextPage = () => {
                 setShowOptimizer(true)
 
             const savedItems = await axios.get<[SavedItem]>(`/api/saved-items?id=${router.query.id}`)
-             
+
             const [savedItem] = savedItems.data
             if (!savedItem)
                 throw new Error(`Could not find saved item`)

@@ -9,6 +9,7 @@ export type GetLogsResponse = {
     sync_log: Record<string, any>;
     missing_tracks_spotify: string;
     missing_tracks_tidal: string;
+    lidarr_sync_log: Record<string, any>;
 }
 
 const router = createRouter<NextApiRequest, NextApiResponse>()
@@ -54,10 +55,24 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                     }
                 }
 
+                // Read lidarr_sync_log.json with fallback to empty object
+                let lidarrSyncLog = {};
+                const lidarrSyncLogPath = join(storageDir, 'lidarr_sync_log.json');
+                if (existsSync(lidarrSyncLogPath)) {
+                    try {
+                        const content = readFileSync(lidarrSyncLogPath, 'utf-8');
+                        lidarrSyncLog = JSON.parse(content);
+                    } catch (error) {
+                        console.error('Error parsing lidarr_sync_log.json:', error);
+                        lidarrSyncLog = {};
+                    }
+                }
+
                 const response: GetLogsResponse = {
                     sync_log: syncLog,
                     missing_tracks_spotify: missingTracksSpotify,
-                    missing_tracks_tidal: missingTracksTidal
+                    missing_tracks_tidal: missingTracksTidal,
+                    lidarr_sync_log: lidarrSyncLog
                 };
 
                 res.status(200).json(response);
@@ -71,10 +86,16 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
             try {
                 const storageDir = getStorageDir();
                 const syncLogPath = join(storageDir, 'sync_log.json');
+                const lidarrSyncLogPath = join(storageDir, 'lidarr_sync_log.json');
 
                 // Delete sync_log.json if it exists
                 if (existsSync(syncLogPath)) {
                     unlinkSync(syncLogPath);
+                }
+
+                // Delete lidarr_sync_log.json if it exists
+                if (existsSync(lidarrSyncLogPath)) {
+                    unlinkSync(lidarrSyncLogPath);
                 }
 
                 res.status(200).json({ message: 'Logs cleared successfully' });

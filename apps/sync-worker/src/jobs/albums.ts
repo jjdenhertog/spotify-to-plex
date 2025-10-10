@@ -10,6 +10,7 @@ import { getSavedAlbums } from "../utils/getSavedAlbums";
 import { getSyncLogs } from "../utils/getSyncLogs";
 import { loadSpotifyData } from "../utils/loadSpotifyData";
 import { getSettings } from "@spotify-to-plex/plex-config/functions/getSettings";
+import { LidarrAlbumData } from "@spotify-to-plex/shared-types/common/lidarr";
 
 export async function syncAlbums() {
 
@@ -26,6 +27,7 @@ export async function syncAlbums() {
 
     const missingSpotifyAlbums: string[] = []
     const missingTidalAlbums: string[] = []
+    const missingAlbumsLidarr: LidarrAlbumData[] = []
 
     for (let i = 0; i < toSyncAlbums.length; i++) {
         const item = toSyncAlbums[i];
@@ -95,6 +97,22 @@ export async function syncAlbums() {
                 missingTidalAlbums.push(tidalId)
         })
 
+        // Collect unique albums for Lidarr
+        missingTracks.forEach(track => {
+            const artist = track.artists[0] || 'Unknown Artist';
+            const album = track.album || 'Unknown Album';
+            const key = `${artist}|${album}`;
+
+            // Check if album already exists in the array
+            if (!missingAlbumsLidarr.some(item => `${item.artist_name}|${item.album_name}` === key)) {
+                missingAlbumsLidarr.push({
+                    artist_name: artist,
+                    album_name: album,
+                    spotify_album_id: data.id
+                });
+            }
+        });
+
         /////////////////////////////
         // Store logs
         /////////////////////////////
@@ -103,9 +121,8 @@ export async function syncAlbums() {
         // Store the missing albums
         writeFileSync(join(getStorageDir(), 'missing_albums_spotify.txt'), missingSpotifyAlbums.map(id => `https://open.spotify.com/album/${id}`).join('\n'))
         writeFileSync(join(getStorageDir(), 'missing_albums_tidal.txt'), missingTidalAlbums.map(id => `https://tidal.com/browse/album/${id}`).join('\n'))
+        writeFileSync(join(getStorageDir(), 'missing_albums_lidarr.json'), JSON.stringify(missingAlbumsLidarr, null, 2))
     }
-
-
 }
 
 

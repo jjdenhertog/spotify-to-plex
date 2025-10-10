@@ -1,10 +1,13 @@
 import { schedule } from 'node-cron';
 import { spawn } from 'node:child_process';
+import { getLidarrSettings } from '@spotify-to-plex/plex-config/functions/getLidarrSettings';
 
-const SYNC_SCHEDULE = '0 */2 * * *'; // cron format: minute hour day month weekday
+const SYNC_SCHEDULE = '0 12 * * *'; // Every day at 12:00
+const LIDARR_SYNC_SCHEDULE = '0 13 * * *'; // Every day at 13:00
 
 console.log('🚀 Sync scheduler started');
-console.log(`⏰ Scheduled to run daily at 12:00 PM (schedule: ${SYNC_SCHEDULE})`);
+console.log(`⏰ Main sync schedule: ${SYNC_SCHEDULE}`);
+console.log(`⏰ Lidarr sync schedule: ${LIDARR_SYNC_SCHEDULE}`);
 
 // Function to run the sync command
 function runSync() {
@@ -30,10 +33,61 @@ function runSync() {
     });
 }
 
+// NEW: Function to run Lidarr sync
+async function runLidarrSync() {
+    console.log(`\n📀 Checking Lidarr sync settings at ${new Date().toISOString()}`);
+
+    try {
+        const settings = await getLidarrSettings();
+
+        if (!settings.enabled) {
+            console.log('ℹ️ Lidarr integration is not enabled. Skipping sync.');
+
+            return;
+        }
+
+        if (!settings.auto_sync) {
+            console.log('ℹ️ Lidarr automatic synchronization is not enabled. Skipping sync.');
+
+            return;
+        }
+
+        console.log('✅ Lidarr auto-sync is enabled. Starting sync...');
+
+        const lidarrProcess = spawn('npm', ['run', 'sync:lidarr'], {
+            cwd: '/app/apps/sync-worker',
+            stdio: 'inherit',
+            shell: true
+        });
+
+        lidarrProcess.on('exit', (code) => {
+            if (code === 0) {
+                console.log(`✅ Lidarr sync completed successfully at ${new Date().toISOString()}`);
+            } else {
+                console.error(`❌ Lidarr sync failed with exit code ${code} at ${new Date().toISOString()}`);
+            }
+        });
+
+        lidarrProcess.on('error', (error) => {
+            console.error(`❌ Failed to start Lidarr sync process:`, error);
+        });
+    } catch (error) {
+        console.error('❌ Error checking Lidarr settings:', error);
+    }
+}
+
 // Schedule the sync task
 const task = schedule(SYNC_SCHEDULE, runSync, {
     scheduled: true,
     timezone: process.env.TZ || 'UTC' // Use TZ env var or default to UTC
+});
+
+// NEW: Schedule Lidarr sync task
+const lidarrTask = schedule(LIDARR_SYNC_SCHEDULE, () => {
+    void runLidarrSync();
+}, {
+    scheduled: true,
+    timezone: process.env.TZ || 'UTC'
 });
 
 // Run sync immediately on startup if SYNC_ON_STARTUP env var is set
@@ -46,12 +100,14 @@ if (process.env.SYNC_ON_STARTUP === 'true') {
 process.on('SIGTERM', () => {
     console.log('🛑 Received SIGTERM, stopping scheduler...');
     task.stop();
+    lidarrTask.stop();
     process.exit(0);
 });
 
 process.on('SIGINT', () => {
     console.log('🛑 Received SIGINT, stopping scheduler...');
     task.stop();
+    lidarrTask.stop();
     process.exit(0);
 });
 

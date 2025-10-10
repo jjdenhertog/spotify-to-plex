@@ -13,9 +13,11 @@
     "scheduler": "tsx src/scheduler.ts",
     "scheduler:prod": "tsx src/scheduler.ts",
     "sync": "tsx src/jobs/playlists.ts && tsx src/jobs/albums.ts && tsx src/jobs/users.ts",
+    "sync:lidarr": "tsx src/jobs/lidarr.ts",
     "dev:sync:playlists": "dotenv -e ../web/.env.local -- tsx src/jobs/playlists.ts -- force",
     "dev:sync:albums": "dotenv -e ../web/.env.local -- tsx src/jobs/albums.ts -- force",
     "dev:sync:users": "dotenv -e ../web/.env.local -- tsx src/jobs/users.ts -- force",
+    "dev:sync:lidarr": "dotenv -e ../web/.env.local -- tsx src/jobs/lidarr.ts",
     "lint": "eslint src",
     "lint:fix": "eslint src --fix",
     "type-check": "tsc --noEmit"
@@ -30,6 +32,7 @@
     "@spotify-to-plex/shared-utils": "workspace:*",
     "@spotify-to-plex/tidal-music-search": "workspace:*",
     "@spotify/web-api-ts-sdk": "^1.2.0",
+    "axios": "^1.11.0",
     "node-cron": "^3.0.3",
     "tsx": "^4.20.6"
   },

@@ -17,6 +17,7 @@ import { getSyncLogs } from "../utils/getSyncLogs";
 import { loadSpotifyData } from "../utils/loadSpotifyData";
 import { putPlexPlaylist } from "../utils/putPlexTracks";
 import { getSettings } from "@spotify-to-plex/plex-config/functions/getSettings";
+import { LidarrAlbumData } from "@spotify-to-plex/shared-types/common/lidarr";
 
 
 export async function syncPlaylists() {
@@ -36,6 +37,7 @@ export async function syncPlaylists() {
 
     const missingSpotifyTracks: string[] = []
     const missingTidalTracks: string[] = []
+    const missingAlbumsLidarr: LidarrAlbumData[] = []
 
     for (let i = 0; i < toSyncPlaylists.length; i++) {
         const item = toSyncPlaylists[i];
@@ -151,6 +153,22 @@ export async function syncPlaylists() {
                     missingTidalTracks.push(item.tidal_id)
             })
 
+            // Collect unique albums for Lidarr
+            missingTracks.forEach(track => {
+                const artist = track.artists[0] || 'Unknown Artist';
+                const album = track.album || 'Unknown Album';
+                const key = `${artist}|${album}`;
+
+                // Check if album already exists in the array
+                if (!missingAlbumsLidarr.some(item => `${item.artist_name}|${item.album_name}` === key)) {
+                    missingAlbumsLidarr.push({
+                        artist_name: artist,
+                        album_name: album,
+                        spotify_album_id: track.id
+                    });
+                }
+            });
+
             /////////////////////////////
             // Store logs
             /////////////////////////////
@@ -159,6 +177,7 @@ export async function syncPlaylists() {
             // Store missing tracks
             writeFileSync(join(getStorageDir(), 'missing_tracks_spotify.txt'), missingSpotifyTracks.map(id => `https://open.spotify.com/track/${id}`).join('\n'))
             writeFileSync(join(getStorageDir(), 'missing_tracks_tidal.txt'), missingTidalTracks.map(id => `https://tidal.com/browse/track/${id}`).join('\n'))
+            writeFileSync(join(getStorageDir(), 'missing_tracks_lidarr.json'), JSON.stringify(missingAlbumsLidarr, null, 2))
 
         } catch (e) {
             const message = e instanceof Error ? e.message : 'Unknown error';

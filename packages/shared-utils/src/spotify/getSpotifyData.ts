@@ -124,10 +124,11 @@ export async function getSpotifyData(api: SpotifyApi, id: string, simplified: bo
                         .then(enrichedTrack => {
                             resolve({
                                 ...track,
-                                album: enrichedTrack.album.name
+                                album: enrichedTrack.album.name,
+                                album_id: enrichedTrack.album.id
                             });
                         })
-                        .finally(() => {
+                        .catch(() => {
                             resolve(track);
                         });
                 });

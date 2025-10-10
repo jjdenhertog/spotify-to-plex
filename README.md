@@ -14,11 +14,12 @@ This project started because I'm using Home Assistant together with Plex and Son
 * Matching Spotify songs with Plex
 * Imported automated personal playlists (e.g. Daylist)
 * Update thumbnail in Plex to the Spotify Thumbnail
+* Automatic download missing albums with [Lidarr](https://github.com/Lidarr/Lidarr)
 
 #### Working on:
 * Filtering songs based on Quality
 * MQTT Connection
-* Connection with [Lidarr](https://github.com/Lidarr/Lidarr) and [Tidal Media Downloader](https://github.com/yaronzz/Tidal-Media-Downloader))
+* Connection with [Tidal Media Downloader](https://github.com/yaronzz/Tidal-Media-Downloader)
 
 ------------
 
@@ -63,6 +64,10 @@ It should be exactly the same as the environment variable. So in this case: `htt
 
 If you want to match missing songs with Tidal you also need to use Tidal Credentials. To obtain your Tidal API client ID and client secret, you need to register for access to the Tidal API. Visit the [Tidal Developer Portal](https://developer.tidal.com/) to apply for API access and retrieve your credentials.
 
+### Lidarr integration
+
+You can integrate with [Lidarr](https://github.com/Lidarr/Lidarr) to automatically download missing albums from your playlists. To use this feature, set the `LIDARR_API_KEY` environment variable with your Lidarr API key. You can find your API key in Lidarr under Settings → General → Security → API Key.
+
 ### Binding volume
 
 All the data is stored in the `/app/config` folder, you need to add it as a volume for persistent storage.
@@ -78,6 +83,7 @@ docker run -d \
     -e TIDAL_API_CLIENT_ID=PASTE_YOUR_TIDAL_CLIENT_ID_HERE \
     -e TIDAL_API_CLIENT_SECRET=PASTE_YOUR_TIDAL_CLIENT_SECRET_HERE \
     -e TIDAL_API_REDIRECT_URI=http://[IP_OF_SPOTIFY_TO_PLEX]:9030/api/tidal/token \
+    -e LIDARR_API_KEY=PASTE_YOUR_LIDARR_API_KEY_HERE \
     -e ENCRYPTION_KEY=PASTE_YOUR_ENCRYPTION_KEY \
     -e PLEX_APP_ID=eXf+f9ktw3CZ8i45OY468WxriOCtoFxuNPzVeDcAwfw= \
     -v /local/directory/:/app/storage:rw \
@@ -106,6 +112,7 @@ services:
             - TIDAL_API_CLIENT_ID=PASTE_YOUR_TIDAL_CLIENT_ID_HERE
             - TIDAL_API_CLIENT_SECRET=PASTE_YOUR_TIDAL_CLIENT_SECRET_HERE
             - TIDAL_API_REDIRECT_URI=http://[IP_OF_SPOTIFY_TO_PLEX]:9030/api/tidal/token
+            - LIDARR_API_KEY=PASTE_YOUR_LIDARR_API_KEY_HERE
             - ENCRYPTION_KEY=PASTE_YOUR_ENCRYPTION_KEY
             - PLEX_APP_ID=eXf+f9ktw3CZ8i45OY468WxriOCtoFxuNPzVeDcAwfw=
         network_mode: "host"
@@ -123,7 +130,7 @@ When a song is not getting match you can analyse the track in the Music Search C
 
 ### Missing songs
 
-You can view all songs that cannot be matched and download it as a text file containing all song links. It is also possible to match it up with Tidal, for this you need to setup [Tidal credentials](#tidal-credentials) as well.
+You can view all songs that cannot be matched and download it as a text file containing all song links. It is also possible to match it up with Tidal, for this you need to setup [Tidal credentials](#tidal-credentials) as well. Additionally, you can send missing albums directly to Lidarr for automatic download when you have the [Lidarr integration](#lidarr-integration) configured.
 
 ### Spotify API Limitations
 
@@ -217,6 +224,7 @@ If you want to manually trigger a sync it is best to use the API calls for this:
 - `http://[IP-ADDRESS]:9030/api/sync/albums`
 - `http://[IP-ADDRESS]:9030/api/sync/playlists`
 - `http://[IP-ADDRESS]:9030/api/sync/users`
+- `http://[IP-ADDRESS]:9030/api/sync/lidarr`
 
 
 ### Logs
@@ -229,7 +237,31 @@ Album synchronization is included in the automatic scheduler. The syncing servic
 
 ### Missing songs
 
-The automatic scheduler will update all missing songs in two text files `missing_tracks_spotify.txt` and `missing_tracks_tidal.txt` in your storage folder. You can use these files to easily see which songs are not in your Plex environment. 
+The automatic scheduler will update all missing songs in two text files `missing_tracks_spotify.txt` and `missing_tracks_tidal.txt` in your storage folder. You can use these files to easily see which songs are not in your Plex environment.
+
+------------
+
+## Lidarr Integration
+
+When you have configured the [Lidarr integration](#lidarr-integration), you can automatically send missing albums to Lidarr for download. Keep in mind that Lidarr synchronises albums, not songs. A playlist can easily contain songs from 50+ albums. So this feature will cause a lot of albums to be downloaded by Lidarr.
+
+### Configuration
+
+Once you have set the `LIDARR_API_KEY` environment variable, navigate to the Advanced section and configure your Lidarr settings:
+
+* **Lidarr URL**: The base URL of your Lidarr instance (e.g., `http://192.168.1.100:8686`)
+* **Root Folder Path**: Where Lidarr should download music (must match a root folder in Lidarr)
+* **Quality Profile ID**: Usually `1` for the default quality profile
+* **Metadata Profile ID**: Usually `1` for the default metadata profile
+* **Automatic sync**: Can be used to enabled the automatic synchronization with Lidarr.
+
+### Sending albums to Lidarr
+
+When viewing missing tracks for a playlist, you'll see a "Send to Lidarr" button that shows how many unique albums are missing. 
+
+<center>
+<img src="misc/lidarr_dialog.jpg" width="400">
+</center>
 
 ------------
 

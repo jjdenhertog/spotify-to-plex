@@ -179,6 +179,72 @@ export default function fLogs() {
         );
     };
 
+    const renderLidarrLogs = () => {
+        if (!data?.lidarr_sync_log || Object.keys(data.lidarr_sync_log).length === 0) {
+            return (
+                <Alert severity="info">
+                    No Lidarr synchronization logs found. Logs will appear here after albums are sent to Lidarr.
+                </Alert>
+            );
+        }
+
+        const lidarrEntries = Object.entries(data.lidarr_sync_log)
+            .map(([id, log]: [string, any]) => ({ id, ...log }))
+            .sort((a, b) => (b.start || 0) - (a.start || 0))
+            .slice(0, 100);
+
+        return (
+            <Box>
+                {lidarrEntries.map((log) => {
+                    const duration = log.end && log.start ? log.end - log.start : null;
+                    const statusColor = log.status === 'success' ? 'success.main' :
+                                       log.status === 'error' ? 'error.main' : 'warning.main';
+
+                    return (
+                        <Paper key={log.id} elevation={0} sx={{ mb: 2, p: 2, bgcolor: 'action.hover' }}>
+                            <Box display="flex" alignItems="center" justifyContent="space-between" mb={1}>
+                                <Typography variant="h6">{log.album_name}</Typography>
+                                <Typography variant="caption" sx={{ color: statusColor }}>
+                                    {log.status?.toUpperCase()}
+                                </Typography>
+                            </Box>
+
+                            <Box sx={{ display: 'grid', gap: 0.5 }}>
+                                <Typography variant="body2" color="text.secondary">
+                                    Artist: {log.artist_name}
+                                </Typography>
+
+                                {log.start ? (
+                                    <Typography variant="body2" color="text.secondary">
+                                        Started: <BMoment date={log.start} format="D MMMM YYYY HH:mm" />
+                                    </Typography>
+                                ) : null}
+
+                                {duration ? (
+                                    <Typography variant="body2" color="text.secondary">
+                                        Duration: {formatDuration(duration)}
+                                    </Typography>
+                                ) : null}
+
+                                {log.error ? (
+                                    <Typography variant="body2" color="error">
+                                        Error: {log.error}
+                                    </Typography>
+                                ) : null}
+
+                                {log.musicbrainz_album_id ? (
+                                    <Typography variant="body2" color="text.secondary">
+                                        MusicBrainz Album ID: {log.musicbrainz_album_id}
+                                    </Typography>
+                                ) : null}
+                            </Box>
+                        </Paper>
+                    );
+                })}
+            </Box>
+        );
+    };
+
     if (loading) {
         return (
             <Paper sx={{ p: 4 }}>
@@ -196,6 +262,7 @@ export default function fLogs() {
                     <Tab label="Sync Logs" />
                     <Tab label="Missing Spotify Tracks" />
                     <Tab label="Missing Tidal Tracks" />
+                    <Tab label="Lidarr Sync" />
                 </Tabs>
             </Box>
 
@@ -209,6 +276,10 @@ export default function fLogs() {
 
             <TabPanel value={tabValue} index={2}>
                 {renderMissingTracks(data?.missing_tracks_tidal || '', 'Tidal')}
+            </TabPanel>
+
+            <TabPanel value={tabValue} index={3}>
+                {renderLidarrLogs()}
             </TabPanel>
         </Paper>
     );
