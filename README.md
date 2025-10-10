@@ -104,7 +104,7 @@ Before you begin, you'll need:
    ```
 
 2. **Spotify API Credentials** - Get them from the [Spotify Developer site](https://developer.spotify.com/)
-   - See [Spotify App Setup Guide](#spotify-app-setup-guide) below for detailed instructions
+   - See [Spotify App Configuration](#spotify-app-configuration) below for detailed instructions
 
 3. **Tidal API Credentials** (optional) - For matching missing songs with Tidal
    - Register at the [Tidal Developer Portal](https://developer.tidal.com/)
@@ -126,14 +126,14 @@ docker run -d \
     -e LIDARR_API_KEY=PASTE_YOUR_LIDARR_API_KEY_HERE \
     -e ENCRYPTION_KEY=PASTE_YOUR_ENCRYPTION_KEY \
     -e PLEX_APP_ID=eXf+f9ktw3CZ8i45OY468WxriOCtoFxuNPzVeDcAwfw= \
-    -v /local/directory/:/app/storage:rw \
+    -v /local/directory/:/app/config:rw \
     --name=spotify-to-plex \
     --network=host \
     --restart on-failure:4 \
     jjdenhertog/spotify-to-plex
 ```
 
-> **Note:** All data is stored in `/app/storage` - make sure to mount this as a volume for persistent storage.
+> **Note:** All data is stored in `/app/config` - make sure to mount this as a volume for persistent storage.
 
 ### Portainer Installation
 
@@ -145,7 +145,7 @@ services:
         container_name: spotify-to-plex
         restart: unless-stopped
         volumes:
-            - '/local/directory:/app/storage'
+            - '/local/directory:/app/config'
         environment:
             - PORT=9030
             - SPOTIFY_API_CLIENT_ID=PASTE_YOUR_SPOTIFY_CLIENT_ID_HERE
@@ -315,7 +315,7 @@ You can also add multiple users. In order to add multiple users you need to sign
 
 ### Security
 
-When you login to your Spotify account the tokens will be stored in `spotify.json` in your storage folder (`/app/storage`). Make sure to properly protect the folder that you are mounting to this app. Sensitive data is encrypted using an [encryption key](#prerequisites) that you can add.
+When you login to your Spotify account the tokens will be stored in `spotify.json` in your storage folder (`/app/config`). Make sure to properly protect the folder that you are mounting to this app. Sensitive data is encrypted using an [encryption key](#prerequisites) that you can add.
 
 ---
 
