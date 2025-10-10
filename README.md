@@ -20,7 +20,7 @@ This project started because I'm using Home Assistant together with Plex and Son
 * Imported automated personal playlists (e.g. Daylist)
 * Update thumbnail in Plex to the Spotify Thumbnail
 * Automatic download missing albums with [Lidarr](https://github.com/Lidarr/Lidarr)
-* Automatic download missing tracks with [Tidal Media Downloader](https://github.com/yaronzz/Tidal-Media-Downloader)
+* Automatic download missing tracks with [Spotify-to-Plex-Tidal-Downloader](https://github.com/jjdenhertog/spotify-to-plex-tidal-downloader)
 
 #### Working on:
 * Filtering songs based on Quality
