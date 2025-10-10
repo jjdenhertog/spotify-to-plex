@@ -63,10 +63,16 @@ export async function syncAlbums() {
         // Load music search configuration and search
         //////////////////////////////////////
         const musicSearchConfig = await getMusicSearchConfig();
+
+        const { searchApproaches } = musicSearchConfig;
+        if (!searchApproaches || searchApproaches.length === 0)
+            throw new Error(`Search approaches not found`)
+
         const plexConfig = {
             uri: settings.uri,
             token: settings.token,
             musicSearchConfig,
+            searchApproaches
         };
         const result = await searchAlbum(plexConfig, data.tracks);
 

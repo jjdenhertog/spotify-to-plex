@@ -2,8 +2,8 @@ import { schedule } from 'node-cron';
 import { spawn } from 'node:child_process';
 import { getLidarrSettings } from '@spotify-to-plex/plex-config/functions/getLidarrSettings';
 
-const SYNC_SCHEDULE = '0 12 * * *'; // Every day at 12:00
-const LIDARR_SYNC_SCHEDULE = '0 14 * * *'; // Every day at 13:00
+const SYNC_SCHEDULE = '0 2 * * *'; // Every day at 02:00
+const LIDARR_SYNC_SCHEDULE = '0 4 * * *'; // Every day at 04:00
 const MQTT_SYNC_SCHEDULE = '0 * * * *'; // Every hour
 
 console.log('🚀 Sync scheduler started');

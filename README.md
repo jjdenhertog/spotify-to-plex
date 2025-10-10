@@ -207,7 +207,7 @@ You can use `Spotify to Plex` to automatically synchronize your playlists with P
 
 ### How it works
 
-The application includes a built-in automatic synchronization scheduler that runs every day around 12:00. You simply need to enable automatic syncing for your playlists and set the sync interval in days. For example, if you set a playlist to sync every 7 days, the scheduler will check hourly, but only sync that specific playlist once a week.
+The application includes a built-in automatic synchronization scheduler that runs every day around 02:00. You simply need to enable automatic syncing for your playlists and set the sync interval in days. For example, if you set a playlist to sync every 7 days, the scheduler will check daily, but only sync that specific playlist once a week.
 
 ### What happens during synchronization
 
