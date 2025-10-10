@@ -32,8 +32,8 @@
 - [Matching Songs](#matching-songs)
 - [Creating Plex Playlists](#creating-plex-playlists)
 - [Synchronization](#synchronization)
-- [Spotify User Integration](#spotify-user-integration)
 - [Spotify App Configuration](#spotify-app-configuration)
+- [Spotify User Integration](#spotify-user-integration)
 - [Lidarr Integration](#lidarr-integration)
 - [Support](#support-this-open-source-project-️)
 
