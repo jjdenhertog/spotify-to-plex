@@ -13,11 +13,13 @@
     "scheduler": "tsx src/scheduler.ts",
     "scheduler:prod": "tsx src/scheduler.ts",
     "sync": "tsx src/jobs/playlists.ts && tsx src/jobs/albums.ts && tsx src/jobs/users.ts",
+    "mqtt": "tsx src/jobs/mqtt.ts",
     "sync:lidarr": "tsx src/jobs/lidarr.ts",
     "dev:sync:playlists": "dotenv -e ../web/.env.local -- tsx src/jobs/playlists.ts -- force",
     "dev:sync:albums": "dotenv -e ../web/.env.local -- tsx src/jobs/albums.ts -- force",
     "dev:sync:users": "dotenv -e ../web/.env.local -- tsx src/jobs/users.ts -- force",
     "dev:sync:lidarr": "dotenv -e ../web/.env.local -- tsx src/jobs/lidarr.ts",
+    "dev:mqtt": "dotenv -e ../web/.env.local -- tsx src/jobs/mqtt.ts",
     "lint": "eslint src",
     "lint:fix": "eslint src --fix",
     "type-check": "tsc --noEmit"
@@ -33,10 +35,12 @@
     "@spotify-to-plex/tidal-music-search": "workspace:*",
     "@spotify/web-api-ts-sdk": "^1.2.0",
     "axios": "^1.11.0",
+    "mqtt": "^5.10.1",
     "node-cron": "^3.0.3",
     "tsx": "^4.20.6"
   },
   "devDependencies": {
+    "@types/mqtt": "^2.5.0",
     "@types/node": "^20.19.11",
     "@types/node-cron": "^3.0.11",
     "dotenv-cli": "^7.4.4",

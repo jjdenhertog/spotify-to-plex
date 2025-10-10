@@ -3,11 +3,13 @@ import { spawn } from 'node:child_process';
 import { getLidarrSettings } from '@spotify-to-plex/plex-config/functions/getLidarrSettings';
 
 const SYNC_SCHEDULE = '0 12 * * *'; // Every day at 12:00
-const LIDARR_SYNC_SCHEDULE = '0 13 * * *'; // Every day at 13:00
+const LIDARR_SYNC_SCHEDULE = '0 14 * * *'; // Every day at 13:00
+const MQTT_SYNC_SCHEDULE = '0 * * * *'; // Every hour
 
 console.log('🚀 Sync scheduler started');
 console.log(`⏰ Main sync schedule: ${SYNC_SCHEDULE}`);
 console.log(`⏰ Lidarr sync schedule: ${LIDARR_SYNC_SCHEDULE}`);
+console.log(`⏰ MQTT sync schedule: ${MQTT_SYNC_SCHEDULE}`);
 
 // Function to run the sync command
 function runSync() {
@@ -84,8 +86,37 @@ const task = schedule(SYNC_SCHEDULE, runSync, {
 
 // NEW: Schedule Lidarr sync task
 const lidarrTask = schedule(LIDARR_SYNC_SCHEDULE, () => {
-    void runLidarrSync();
+    runLidarrSync();
 }, {
+    scheduled: true,
+    timezone: process.env.TZ || 'UTC'
+});
+
+// NEW: Function to run MQTT sync
+function runMqttSync() {
+    console.log(`\n📡 Starting MQTT sync at ${new Date().toISOString()}`);
+
+    const mqttProcess = spawn('npm', ['run', 'mqtt'], {
+        cwd: '/app/apps/sync-worker',
+        stdio: 'inherit',
+        shell: true
+    });
+
+    mqttProcess.on('exit', (code) => {
+        if (code === 0) {
+            console.log(`✅ MQTT sync completed successfully at ${new Date().toISOString()}`);
+        } else {
+            console.error(`❌ MQTT sync failed with exit code ${code} at ${new Date().toISOString()}`);
+        }
+    });
+
+    mqttProcess.on('error', (error) => {
+        console.error(`❌ Failed to start MQTT sync process:`, error);
+    });
+}
+
+// NEW: Schedule MQTT sync task
+const mqttTask = schedule(MQTT_SYNC_SCHEDULE, runMqttSync, {
     scheduled: true,
     timezone: process.env.TZ || 'UTC'
 });
@@ -101,6 +132,7 @@ process.on('SIGTERM', () => {
     console.log('🛑 Received SIGTERM, stopping scheduler...');
     task.stop();
     lidarrTask.stop();
+    mqttTask.stop();
     process.exit(0);
 });
 
@@ -108,6 +140,7 @@ process.on('SIGINT', () => {
     console.log('🛑 Received SIGINT, stopping scheduler...');
     task.stop();
     lidarrTask.stop();
+    mqttTask.stop();
     process.exit(0);
 });
 
