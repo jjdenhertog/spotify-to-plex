@@ -1,15 +1,23 @@
 import { generateError } from '@/helpers/errors/generateError';
 import { getStorageDir } from '@spotify-to-plex/shared-utils/utils/getStorageDir';
+import { SyncTypeLogCollection, SyncLogCollection } from '@spotify-to-plex/shared-types/common/sync';
 import { readFileSync, existsSync, unlinkSync } from 'fs';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createRouter } from 'next-connect';
 import { join } from 'path';
 
 export type GetLogsResponse = {
-    sync_log: Record<string, any>;
-    missing_tracks_spotify: string;
-    missing_tracks_tidal: string;
+    sync_type_log: SyncTypeLogCollection;
+    sync_log: SyncLogCollection;
     lidarr_sync_log: Record<string, any>;
+    missing_files: {
+        missing_tracks_spotify: string;
+        missing_tracks_tidal: string;
+        missing_albums_spotify: string;
+        missing_albums_tidal: string;
+        missing_tracks_lidarr: string;
+        missing_albums_lidarr: string;
+    };
 }
 
 const router = createRouter<NextApiRequest, NextApiResponse>()
@@ -18,8 +26,32 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
             try {
                 const storageDir = getStorageDir();
 
-                // Read sync_log.json with fallback to empty object
-                let syncLog = {};
+                // Read sync_type_log.json with fallback
+                let syncTypeLog: SyncTypeLogCollection = {
+                    users: undefined,
+                    albums: undefined,
+                    playlists: undefined,
+                    lidarr: undefined,
+                    mqtt: undefined
+                };
+                const syncTypeLogPath = join(storageDir, 'sync_type_log.json');
+                if (existsSync(syncTypeLogPath)) {
+                    try {
+                        const content = readFileSync(syncTypeLogPath, 'utf-8');
+                        syncTypeLog = JSON.parse(content);
+                    } catch (error) {
+                        console.error('Error parsing sync_type_log.json:', error);
+                    }
+                }
+
+                // Read sync_log.json with fallback
+                let syncLog: SyncLogCollection = {
+                    users: [],
+                    albums: [],
+                    playlists: [],
+                    lidarr: [],
+                    mqtt: []
+                };
                 const syncLogPath = join(storageDir, 'sync_log.json');
                 if (existsSync(syncLogPath)) {
                     try {
@@ -27,35 +59,10 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                         syncLog = JSON.parse(content);
                     } catch (error) {
                         console.error('Error parsing sync_log.json:', error);
-                        syncLog = {};
                     }
                 }
 
-                // Read missing_tracks_spotify.txt with fallback to empty string
-                let missingTracksSpotify = '';
-                const missingTracksSpotifyPath = join(storageDir, 'missing_tracks_spotify.txt');
-                if (existsSync(missingTracksSpotifyPath)) {
-                    try {
-                        missingTracksSpotify = readFileSync(missingTracksSpotifyPath, 'utf-8');
-                    } catch (error) {
-                        console.error('Error reading missing_tracks_spotify.txt:', error);
-                        missingTracksSpotify = '';
-                    }
-                }
-
-                // Read missing_tracks_tidal.txt with fallback to empty string
-                let missingTracksTidal = '';
-                const missingTracksTidalPath = join(storageDir, 'missing_tracks_tidal.txt');
-                if (existsSync(missingTracksTidalPath)) {
-                    try {
-                        missingTracksTidal = readFileSync(missingTracksTidalPath, 'utf-8');
-                    } catch (error) {
-                        console.error('Error reading missing_tracks_tidal.txt:', error);
-                        missingTracksTidal = '';
-                    }
-                }
-
-                // Read lidarr_sync_log.json with fallback to empty object
+                // Read lidarr_sync_log.json with fallback
                 let lidarrSyncLog = {};
                 const lidarrSyncLogPath = join(storageDir, 'lidarr_sync_log.json');
                 if (existsSync(lidarrSyncLogPath)) {
@@ -64,15 +71,49 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                         lidarrSyncLog = JSON.parse(content);
                     } catch (error) {
                         console.error('Error parsing lidarr_sync_log.json:', error);
-                        lidarrSyncLog = {};
                     }
                 }
 
+                // Read all missing files
+                const readMissingFile = (filename: string): string => {
+                    const filePath = join(storageDir, filename);
+                    if (existsSync(filePath)) {
+                        try {
+                            return readFileSync(filePath, 'utf-8');
+                        } catch (error) {
+                            console.error(`Error reading ${filename}:`, error);
+                            return '';
+                        }
+                    }
+                    return '';
+                };
+
+                const readMissingJsonFile = (filename: string): string => {
+                    const filePath = join(storageDir, filename);
+                    if (existsSync(filePath)) {
+                        try {
+                            const content = readFileSync(filePath, 'utf-8');
+                            return JSON.stringify(JSON.parse(content), null, 2);
+                        } catch (error) {
+                            console.error(`Error reading ${filename}:`, error);
+                            return '';
+                        }
+                    }
+                    return '';
+                };
+
                 const response: GetLogsResponse = {
+                    sync_type_log: syncTypeLog,
                     sync_log: syncLog,
-                    missing_tracks_spotify: missingTracksSpotify,
-                    missing_tracks_tidal: missingTracksTidal,
-                    lidarr_sync_log: lidarrSyncLog
+                    lidarr_sync_log: lidarrSyncLog,
+                    missing_files: {
+                        missing_tracks_spotify: readMissingFile('missing_tracks_spotify.txt'),
+                        missing_tracks_tidal: readMissingFile('missing_tracks_tidal.txt'),
+                        missing_albums_spotify: readMissingFile('missing_albums_spotify.txt'),
+                        missing_albums_tidal: readMissingFile('missing_albums_tidal.txt'),
+                        missing_tracks_lidarr: readMissingJsonFile('missing_tracks_lidarr.json'),
+                        missing_albums_lidarr: readMissingJsonFile('missing_albums_lidarr.json'),
+                    }
                 };
 
                 res.status(200).json(response);
@@ -85,8 +126,14 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
         async (_req, res) => {
             try {
                 const storageDir = getStorageDir();
+                const syncTypeLogPath = join(storageDir, 'sync_type_log.json');
                 const syncLogPath = join(storageDir, 'sync_log.json');
                 const lidarrSyncLogPath = join(storageDir, 'lidarr_sync_log.json');
+
+                // Delete sync_type_log.json if it exists
+                if (existsSync(syncTypeLogPath)) {
+                    unlinkSync(syncTypeLogPath);
+                }
 
                 // Delete sync_log.json if it exists
                 if (existsSync(syncLogPath)) {

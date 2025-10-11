@@ -3,7 +3,11 @@ import { getById } from '@spotify-to-plex/plex-music-search/functions/getById';
 import { PlexMusicSearchConfig } from '@spotify-to-plex/plex-music-search/types/PlexMusicSearchConfig';
 import { SavedItem } from '@spotify-to-plex/shared-types/spotify/SavedItem';
 import { PlaylistData } from '@spotify-to-plex/shared-types/dashboard/PlaylistData';
-import { getSyncLogs } from '../utils/getSyncLogs';
+import { getNestedSyncLogsForType } from '../utils/getNestedSyncLogsForType';
+import { startSyncType } from '../utils/startSyncType';
+import { clearSyncTypeLogs } from '../utils/clearSyncTypeLogs';
+import { completeSyncType } from '../utils/completeSyncType';
+import { errorSyncType } from '../utils/errorSyncType';
 import { loadMQTTConfig } from '../services/mqtt/config';
 import { createMQTTClient } from '../services/mqtt/createMQTTClient';
 import { loadMQTTData } from '../services/mqtt/loadMQTTData';
@@ -28,7 +32,11 @@ import { PublishedItem, TrackLink, MQTTEntity } from '../services/mqtt/types';
  * Publishes Plex playlist and album data to Home Assistant via MQTT Discovery
  */
 export async function syncMQTT() {
-    const { putLog, logError, logComplete } = getSyncLogs();
+    // Start sync type logging
+    startSyncType('mqtt');
+    clearSyncTypeLogs('mqtt');
+
+    const { putLog, logError, logComplete } = getNestedSyncLogsForType('mqtt');
 
     // Check for dry-run mode
     const isDryRun = process.env.MQTT_DRY_RUN === 'true';
@@ -265,9 +273,12 @@ function run() {
     console.log('Start MQTT sync');
     syncMQTT()
         .then(() => {
+            completeSyncType('mqtt');
             console.log('MQTT sync complete');
         })
         .catch((e: unknown) => {
+            const message = e instanceof Error ? e.message : 'Unknown error';
+            errorSyncType('mqtt', message);
             console.error('MQTT sync failed:', e);
             throw e;
         });

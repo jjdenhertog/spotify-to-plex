@@ -1,9 +1,10 @@
 /* eslint-disable react/no-multi-comp */
 import { errorBoundary } from "@/helpers/errors/errorBoundary";
-import { Alert, Box, Button, CircularProgress, Paper, Tab, Tabs, TextField, Typography } from "@mui/material";
+import { Alert, Box, Button, Chip, CircularProgress, Paper, Tab, Tabs, TextField, Typography } from "@mui/material";
 import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
 import { GetLogsResponse } from "../../pages/api/logs";
+import { SyncType } from "@spotify-to-plex/shared-types/common/sync";
 import BMoment from "./BMoment";
 
 type TabPanelProps = {
@@ -64,126 +65,162 @@ export default function fLogs() {
         });
     }, [fetchLogs]);
 
-    const formatDuration = (ms: number) => {
+    const onClearLogsClick = useCallback(() => {
+        handleClearLogs().catch((error: unknown) => {
+            console.error('Error clearing logs:', error);
+        });
+    }, [handleClearLogs]);
+
+    const getSyncTypeTitle = (type: SyncType): string => {
+        const titles: Record<SyncType, string> = {
+            users: 'Users',
+            albums: 'Albums',
+            playlists: 'Playlists',
+            lidarr: 'Lidarr',
+            mqtt: 'MQTT'
+        };
+
+        return titles[type];
+    };
+
+    const formatDuration = (ms: number): string => {
         const seconds = Math.floor(ms / 1000);
         const minutes = Math.floor(seconds / 60);
         const hours = Math.floor(minutes / 60);
 
         if (hours > 0) {
-            return `${hours}h ${minutes % 60}m ${seconds % 60}s`;
+            return `${hours}h ${minutes % 60}m`;
         } else if (minutes > 0) {
             return `${minutes}m ${seconds % 60}s`;
         }
 
         return `${seconds}s`;
-
     };
 
-    const renderSyncLogs = () => {
-        if (!data?.sync_log || Object.keys(data.sync_log).length === 0) {
-            return (
-                <>
-                    <Box sx={{ mb: 2, display: 'flex', justifyContent: 'flex-end' }}>
-                        <Button
-                            variant="outlined"
-                            color="error"
-                            onClick={handleClearLogs}
-                            disabled={clearing}
-                        >
-                            {clearing ? 'Clearing...' : 'Clear Logs'}
-                        </Button>
-                    </Box>
-                    <Alert severity="info">
-                        No synchronization logs found. Logs will appear here after your first sync.
-                    </Alert>
-                </>
-            );
-        }
+    const renderOverview = () => {
+        if (!data) return null;
 
-        // Convert sync_log object to array and sort by start time (descending)
-        const syncEntries = Object.entries(data.sync_log)
-            .map(([id, log]: [string, any]) => ({ id, ...log }))
-            .sort((a, b) => (b.start || 0) - (a.start || 0))
-            .slice(0, 100); // Limit to 100 entries
+        const syncTypes: SyncType[] = ['users', 'albums', 'playlists', 'lidarr', 'mqtt'];
 
         return (
-            <Box>
-                <Box sx={{ mb: 2, display: 'flex', justifyContent: 'flex-end' }}>
-                    <Button
-                        variant="outlined"
-                        color="error"
-                        onClick={handleClearLogs}
-                        disabled={clearing}
-                    >
-                        {clearing ? 'Clearing...' : 'Clear Logs'}
-                    </Button>
+            <Box sx={{ mb: 3 }}>
+                <Typography variant="h6" sx={{ mb: 2 }}>Sync Overview</Typography>
+                <Box sx={{ display: 'grid', gap: 2 }}>
+                    {syncTypes.map(type => {
+                        const typeLog = data.sync_type_log[type];
+                        const duration = typeLog?.end && typeLog?.start ? typeLog.end - typeLog.start : null;
+
+                        return (
+                            <Paper key={type} elevation={0} sx={{ p: 2, bgcolor: 'action.hover' }}>
+                                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <Typography variant="body1" fontWeight="medium">
+                                        {getSyncTypeTitle(type)}
+                                    </Typography>
+                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                        {typeLog ? (
+                                            <>
+                                                {duration !== null && (
+                                                    <Typography variant="body2" color="text.secondary">
+                                                        {formatDuration(duration)}
+                                                    </Typography>
+                                                )}
+                                                <Chip
+                                                    label={typeLog.status}
+                                                    color={typeLog.status === 'success' ? 'success' : typeLog.status === 'error' ? 'error' : 'default'}
+                                                    size="small"
+                                                />
+                                                {typeLog.start && (
+                                                    <Typography variant="body2" color="text.secondary">
+                                                        <BMoment date={typeLog.start} format="D MMM HH:mm" />
+                                                    </Typography>
+                                                )}
+                                            </>
+                                        ) : (
+                                            <Typography variant="body2" color="text.secondary">
+                                                Never run
+                                            </Typography>
+                                        )}
+                                    </Box>
+                                </Box>
+                                {typeLog?.error && (
+                                    <Typography variant="body2" color="error" sx={{ mt: 1 }}>
+                                        {typeLog.error}
+                                    </Typography>
+                                )}
+                            </Paper>
+                        );
+                    })}
                 </Box>
-                {syncEntries.map((log) => {
-                    const duration = log.end && log.start ? log.end - log.start : null;
-
-                    return (
-                        <Paper key={log.id} elevation={0} sx={{ mb: 2, p: 2, bgcolor: 'action.hover' }}>
-                            <Box display="flex" alignItems="center" justifyContent="space-between" mb={1}>
-                                <Typography variant="h6">{log.title || log.type || 'Sync Operation'}</Typography>
-                            </Box>
-
-                            <Box sx={{ display: 'grid', gap: 0.5 }}>
-                                {log.start ? <Typography variant="body2" color="text.secondary">
-                                    Started: <BMoment date={log.start} format="D MMMM YYYY HH:mm" />
-                                </Typography> : null}
-
-                                {duration ? <Typography variant="body2" color="text.secondary">
-                                    Duration: {formatDuration(duration)}
-                                </Typography> : null}
-
-                                {log.error ? <Typography variant="body2" color="error">
-                                    Error: {log.error}
-                                </Typography> : null}
-
-                                {log.details ? <Typography variant="body2" color="text.secondary">
-                                    Details: {JSON.stringify(log.details)}
-                                </Typography> : null}
-                            </Box>
-                        </Paper>
-                    );
-                })}
             </Box>
         );
     };
 
-    const renderMissingTracks = (content: string, platform: string) => {
-        if (!content || content.trim() === '') {
+    const renderSyncTypeLogs = (type: SyncType) => {
+        if (!data) return null;
+
+        const logs = data.sync_log[type];
+
+        if (!logs || logs.length === 0) {
             return (
                 <Alert severity="info">
-                    No missing tracks found for {platform}.
+                    No {getSyncTypeTitle(type)} sync logs found. Logs will appear here after the first sync.
                 </Alert>
             );
         }
 
         return (
             <Box>
-                <TextField
-                    multiline
-                    fullWidth
-                    value={content}
-                    variant="outlined"
-                    minRows={5}
-                    maxRows={20}
-                    sx={{
-                        '& .MuiOutlinedInput-root': {
-                            backgroundColor: 'action.hover'
-                        }
-                    }}
-                />
+                {logs.map((log) => {
+                    const duration = log.end && log.start ? log.end - log.start : null;
+                    const hasError = Boolean(log.error);
+
+                    return (
+                        <Box
+                            key={log.id}
+                            sx={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                alignItems: 'center',
+                                py: 0.75,
+                                px: 1.5,
+                                bgcolor: hasError ? 'error.lighter' : 'action.hover',
+                                borderRadius: 1,
+                                mb: 0.5
+                            }}
+                        >
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flex: 1, minWidth: 0 }}>
+                                <Typography variant="body2" sx={{ minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1 }}>
+                                    {log.title}
+                                </Typography>
+                                {log.start && (
+                                    <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: 'nowrap' }}>
+                                        <BMoment date={log.start} format="D MMM HH:mm" />
+                                    </Typography>
+                                )}
+                                {duration !== null && (
+                                    <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: 'nowrap', minWidth: '60px', textAlign: 'right' }}>
+                                        {formatDuration(duration)}
+                                    </Typography>
+                                )}
+                                <Chip
+                                    label={hasError ? 'Error' : 'Success'}
+                                    color={hasError ? 'error' : 'success'}
+                                    size="small"
+                                    sx={{ minWidth: '75px' }}
+                                />
+                            </Box>
+                        </Box>
+                    );
+                })}
             </Box>
         );
     };
 
-    const renderLidarrLogs = () => {
+    const renderLidarrDetailLogs = () => {
         if (!data?.lidarr_sync_log || Object.keys(data.lidarr_sync_log).length === 0) {
             return (
                 <Alert severity="info">
-                    No Lidarr synchronization logs found. Logs will appear here after albums are sent to Lidarr.
+                    No Lidarr synchronization detail logs found. Logs will appear here after albums are sent to Lidarr.
                 </Alert>
             );
         }
@@ -197,48 +234,92 @@ export default function fLogs() {
             <Box>
                 {lidarrEntries.map((log) => {
                     const duration = log.end && log.start ? log.end - log.start : null;
-                    const statusColor = log.status === 'success' ? 'success.main' :
-                                       log.status === 'error' ? 'error.main' : 'warning.main';
+                    const hasError = log.status === 'error';
 
                     return (
-                        <Paper key={log.id} elevation={0} sx={{ mb: 2, p: 2, bgcolor: 'action.hover' }}>
-                            <Box display="flex" alignItems="center" justifyContent="space-between" mb={1}>
-                                <Typography variant="h6">{log.album_name}</Typography>
-                                <Typography variant="caption" sx={{ color: statusColor }}>
-                                    {log.status?.toUpperCase()}
+                        <Box
+                            key={log.id}
+                            sx={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                alignItems: 'center',
+                                py: 0.75,
+                                px: 1.5,
+                                bgcolor: hasError ? 'error.lighter' : 'action.hover',
+                                borderRadius: 1,
+                                mb: 0.5
+                            }}
+                        >
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flex: 1, minWidth: 0 }}>
+                                <Typography variant="body2" sx={{ minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1 }}>
+                                    {log.artist_name} - {log.album_name}
                                 </Typography>
+                                {log.start && (
+                                    <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: 'nowrap' }}>
+                                        <BMoment date={log.start} format="D MMM HH:mm" />
+                                    </Typography>
+                                )}
+                                {duration !== null && (
+                                    <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: 'nowrap', minWidth: '60px', textAlign: 'right' }}>
+                                        {formatDuration(duration)}
+                                    </Typography>
+                                )}
+                                <Chip
+                                    label={log.status}
+                                    color={log.status === 'success' ? 'success' : log.status === 'error' ? 'error' : 'warning'}
+                                    size="small"
+                                    sx={{ minWidth: '85px' }}
+                                />
                             </Box>
+                        </Box>
+                    );
+                })}
+            </Box>
+        );
+    };
 
-                            <Box sx={{ display: 'grid', gap: 0.5 }}>
-                                <Typography variant="body2" color="text.secondary">
-                                    Artist: {log.artist_name}
-                                </Typography>
+    const renderOutput = () => {
+        if (!data) return null;
 
-                                {log.start ? (
-                                    <Typography variant="body2" color="text.secondary">
-                                        Started: <BMoment date={log.start} format="D MMMM YYYY HH:mm" />
-                                    </Typography>
-                                ) : null}
+        const outputFiles = [
+            { title: 'Missing Tracks - Spotify', content: data.missing_files.missing_tracks_spotify },
+            { title: 'Missing Tracks - Tidal', content: data.missing_files.missing_tracks_tidal },
+            { title: 'Missing Albums - Spotify', content: data.missing_files.missing_albums_spotify },
+            { title: 'Missing Albums - Tidal', content: data.missing_files.missing_albums_tidal },
+            { title: 'Missing Tracks - Lidarr (JSON)', content: data.missing_files.missing_tracks_lidarr },
+            { title: 'Missing Albums - Lidarr (JSON)', content: data.missing_files.missing_albums_lidarr },
+        ];
 
-                                {duration ? (
-                                    <Typography variant="body2" color="text.secondary">
-                                        Duration: {formatDuration(duration)}
-                                    </Typography>
-                                ) : null}
+        return (
+            <Box sx={{ display: 'grid', gap: 3 }}>
+                {outputFiles.map(file => {
+                    const hasContent = file.content && file.content.trim() !== '' && file.content !== '[]';
 
-                                {log.error ? (
-                                    <Typography variant="body2" color="error">
-                                        Error: {log.error}
-                                    </Typography>
-                                ) : null}
-
-                                {log.musicbrainz_album_id ? (
-                                    <Typography variant="body2" color="text.secondary">
-                                        MusicBrainz Album ID: {log.musicbrainz_album_id}
-                                    </Typography>
-                                ) : null}
-                            </Box>
-                        </Paper>
+                    return (
+                        <Box key={file.title}>
+                            <Typography variant="h6" sx={{ mb: 1 }}>{file.title}</Typography>
+                            {!hasContent ? (
+                                <Alert severity="info">
+                                    No data found for {file.title.toLowerCase()}.
+                                </Alert>
+                            ) : (
+                                <TextField
+                                    multiline
+                                    fullWidth
+                                    value={file.content}
+                                    variant="outlined"
+                                    minRows={5}
+                                    maxRows={15}
+                                    sx={{
+                                        '& .MuiOutlinedInput-root': {
+                                            backgroundColor: 'action.hover',
+                                            fontFamily: 'monospace',
+                                            fontSize: '0.85rem'
+                                        }
+                                    }}
+                                />
+                            )}
+                        </Box>
                     );
                 })}
             </Box>
@@ -255,32 +336,54 @@ export default function fLogs() {
         );
     }
 
+    // Determine which tabs to show based on available logs
+    const tabs: { label: string; type: SyncType | 'overview' | 'output' }[] = [
+        { label: 'Overview', type: 'overview' }
+    ];
+
+    if (data?.sync_log.users && data.sync_log.users.length > 0)
+        tabs.push({ label: 'Users', type: 'users' });
+
+    if (data?.sync_log.albums && data.sync_log.albums.length > 0)
+        tabs.push({ label: 'Albums', type: 'albums' });
+
+    if (data?.sync_log.playlists && data.sync_log.playlists.length > 0)
+        tabs.push({ label: 'Playlists', type: 'playlists' });
+
+    if (data?.lidarr_sync_log && Object.keys(data.lidarr_sync_log).length > 0)
+        tabs.push({ label: 'Lidarr', type: 'lidarr' });
+
+    if (data?.sync_log.mqtt && data.sync_log.mqtt.length > 0)
+        tabs.push({ label: 'MQTT', type: 'mqtt' });
+
+    tabs.push({ label: 'Output', type: 'output' });
+
     return (
         <Paper sx={{ width: '100%' }}>
-            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+            <Box sx={{ borderBottom: 1, borderColor: 'divider', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <Tabs value={tabValue} onChange={handleTabChange} aria-label="logs tabs">
-                    <Tab label="Sync Logs" />
-                    <Tab label="Missing Spotify Tracks" />
-                    <Tab label="Missing Tidal Tracks" />
-                    <Tab label="Lidarr Sync" />
+                    {tabs.map((tab, index) => (
+                        <Tab key={tab.type} label={tab.label} id={`logs-tab-${index}`} />
+                    ))}
                 </Tabs>
+                <Box sx={{ pr: 2 }}>
+                    <Button variant="outlined" color="error" size="small" onClick={onClearLogsClick} disabled={clearing}>
+                        {clearing ? 'Clearing...' : 'Clear Logs'}
+                    </Button>
+                </Box>
             </Box>
 
-            <TabPanel value={tabValue} index={0}>
-                {renderSyncLogs()}
-            </TabPanel>
-
-            <TabPanel value={tabValue} index={1}>
-                {renderMissingTracks(data?.missing_tracks_spotify || '', 'Spotify')}
-            </TabPanel>
-
-            <TabPanel value={tabValue} index={2}>
-                {renderMissingTracks(data?.missing_tracks_tidal || '', 'Tidal')}
-            </TabPanel>
-
-            <TabPanel value={tabValue} index={3}>
-                {renderLidarrLogs()}
-            </TabPanel>
+            {tabs.map((tab, index) => (
+                <TabPanel key={tab.type} value={tabValue} index={index}>
+                    {tab.type === 'overview' && renderOverview()}
+                    {tab.type === 'users' && renderSyncTypeLogs('users')}
+                    {tab.type === 'albums' && renderSyncTypeLogs('albums')}
+                    {tab.type === 'playlists' && renderSyncTypeLogs('playlists')}
+                    {tab.type === 'lidarr' && renderLidarrDetailLogs()}
+                    {tab.type === 'mqtt' && renderSyncTypeLogs('mqtt')}
+                    {tab.type === 'output' && renderOutput()}
+                </TabPanel>
+            ))}
         </Paper>
     );
 }

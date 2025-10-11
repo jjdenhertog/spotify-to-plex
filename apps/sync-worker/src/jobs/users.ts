@@ -9,12 +9,20 @@ import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { savedItemsHelpers } from "../helpers/savedItemsHelpers";
 import { loadSpotifyData } from "../utils/loadSpotifyData";
+import { startSyncType } from "../utils/startSyncType";
+import { completeSyncType } from "../utils/completeSyncType";
+import { errorSyncType } from "../utils/errorSyncType";
+import { clearSyncTypeLogs } from "../utils/clearSyncTypeLogs";
 
 
 export async function syncUsers() {
     const credentialsPath = join(getStorageDir(), 'spotify.json')
     if (!existsSync(credentialsPath))
         throw new Error("No users are currently connected.")
+
+    // Start sync type logging
+    startSyncType('users');
+    clearSyncTypeLogs('users');
 
     await refreshAccessTokens()
     const credentials: SpotifyCredentials[] = JSON.parse(readFileSync(credentialsPath, 'utf8'))
@@ -90,9 +98,12 @@ function run() {
     console.log(`Start syncing users`)
     syncUsers()
         .then(() => {
+            completeSyncType('users');
             console.log(`Sync complete`)
         })
         .catch((e: unknown) => {
+            const message = e instanceof Error ? e.message : 'Unknown error';
+            errorSyncType('users', message);
             console.log(e)
         })
 }

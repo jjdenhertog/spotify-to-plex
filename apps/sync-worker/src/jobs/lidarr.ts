@@ -4,7 +4,11 @@ import { LidarrAlbumData, LidarrSearchResult, LidarrAddAlbumRequest, LidarrSyncL
 import axios from "axios";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { getSyncLogs } from "../utils/getSyncLogs";
+import { getNestedSyncLogsForType } from "../utils/getNestedSyncLogsForType";
+import { startSyncType } from "../utils/startSyncType";
+import { clearSyncTypeLogs } from "../utils/clearSyncTypeLogs";
+import { completeSyncType } from "../utils/completeSyncType";
+import { errorSyncType } from "../utils/errorSyncType";
 
 export async function syncLidarr() {
     console.log('Starting Lidarr sync...');
@@ -16,6 +20,10 @@ export async function syncLidarr() {
 
         return;
     }
+
+    // Start sync type logging
+    startSyncType('lidarr');
+    clearSyncTypeLogs('lidarr');
 
     if (!settings.url) {
         console.error('Lidarr URL is not configured.');
@@ -77,7 +85,7 @@ export async function syncLidarr() {
     console.log(`Found ${albums.length} albums to sync.`);
 
     // Initialize logs
-    const { putLog, logComplete } = getSyncLogs();
+    const { putLog, logComplete } = getNestedSyncLogsForType('lidarr');
     const syncLog = putLog('lidarr-sync', 'Lidarr Sync');
 
     // Read existing Lidarr logs
@@ -226,9 +234,12 @@ function run() {
     console.log('Start Lidarr sync');
     syncLidarr()
         .then(() => {
+            completeSyncType('lidarr');
             console.log('Lidarr sync complete');
         })
         .catch((e: unknown) => {
+            const message = e instanceof Error ? e.message : 'Unknown error';
+            errorSyncType('lidarr', message);
             console.error('Lidarr sync failed:', e);
         });
 }

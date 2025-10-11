@@ -7,19 +7,27 @@ import { join } from "node:path";
 import { findMissingTidalAlbums } from "../utils/findMissingTidalAlbums";
 import { getCachedPlexTracks } from "../utils/getCachedPlexTracks";
 import { getSavedAlbums } from "../utils/getSavedAlbums";
-import { getSyncLogs } from "../utils/getSyncLogs";
+import { getNestedSyncLogsForType } from "../utils/getNestedSyncLogsForType";
+import { startSyncType } from "../utils/startSyncType";
+import { clearSyncTypeLogs } from "../utils/clearSyncTypeLogs";
+import { completeSyncType } from "../utils/completeSyncType";
+import { errorSyncType } from "../utils/errorSyncType";
 import { loadSpotifyData } from "../utils/loadSpotifyData";
 import { getSettings } from "@spotify-to-plex/plex-config/functions/getSettings";
 import { LidarrAlbumData } from "@spotify-to-plex/shared-types/common/lidarr";
 
 export async function syncAlbums() {
 
+    // Start sync type logging
+    startSyncType('albums');
+    clearSyncTypeLogs('albums');
+
     // Check if we need to force syncing
     const args = process.argv.slice(2);
     const force = args.includes("force")
 
     const { toSyncAlbums } = getSavedAlbums()
-    const { putLog, logError, logComplete } = getSyncLogs()
+    const { putLog, logError, logComplete } = getNestedSyncLogsForType('albums')
 
     const settings = await getSettings();
     if (!settings.uri || !settings.token)
@@ -136,19 +144,14 @@ function run() {
     console.log(`Start syncing items`)
     syncAlbums()
         .then(() => {
+            completeSyncType('albums');
             console.log(`Sync complete`)
         })
         .catch((e: unknown) => {
+            const message = e instanceof Error ? e.message : 'Unknown error';
+            errorSyncType('albums', message);
             console.log(e)
         })
-}
-
-export type SyncLog = {
-    id: string
-    title: string
-    start: number
-    end?: number
-    error?: string
 }
 
 run();

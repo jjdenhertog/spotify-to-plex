@@ -13,7 +13,11 @@ import { findMissingTidalTracks } from "../utils/findMissingTidalTracks";
 import { getCachedPlexTracks } from "../utils/getCachedPlexTracks";
 import { getPlexPlaylists } from "../utils/getPlexPlaylists";
 import { getSavedPlaylists } from "../utils/getSavedPlaylists";
-import { getSyncLogs } from "../utils/getSyncLogs";
+import { getNestedSyncLogsForType } from "../utils/getNestedSyncLogsForType";
+import { startSyncType } from "../utils/startSyncType";
+import { clearSyncTypeLogs } from "../utils/clearSyncTypeLogs";
+import { completeSyncType } from "../utils/completeSyncType";
+import { errorSyncType } from "../utils/errorSyncType";
 import { loadSpotifyData } from "../utils/loadSpotifyData";
 import { putPlexPlaylist } from "../utils/putPlexTracks";
 import { getSettings } from "@spotify-to-plex/plex-config/functions/getSettings";
@@ -22,12 +26,16 @@ import { LidarrAlbumData } from "@spotify-to-plex/shared-types/common/lidarr";
 
 export async function syncPlaylists() {
 
+    // Start sync type logging
+    startSyncType('playlists');
+    clearSyncTypeLogs('playlists');
+
     // Check if we need to force syncing
     const args = process.argv.slice(2);
     const force = args.includes("force")
 
     const { toSyncPlaylists } = getSavedPlaylists()
-    const { putLog, logError, logComplete } = getSyncLogs()
+    const { putLog, logError, logComplete } = getNestedSyncLogsForType('playlists')
 
     const settings = await getSettings();
     if (!settings.uri || !settings.token)
@@ -193,9 +201,12 @@ function run() {
     console.log(`Start syncing items`)
     syncPlaylists()
         .then(() => {
+            completeSyncType('playlists');
             console.log(`Sync complete`)
         })
         .catch((e: unknown) => {
+            const message = e instanceof Error ? e.message : 'Unknown error';
+            errorSyncType('playlists', message);
             console.log(e)
         })
 }
