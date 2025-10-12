@@ -292,7 +292,7 @@ Once you have created your Spotify app, configure the following settings:
 - Ensure `SPOTIFY_API_REDIRECT_URI` environment variable matches exactly what you set in your Spotify app
 - The redirect URI must start with `https` (even for local IP addresses)
 
-**HTTPS Redirect Issue:**
+**HTTPS Redirect Issue / ERR_SSL_PROTOCOL_ERROR:**
 - During authentication, Spotify will redirect to an `https://` URL that may not work
 - Simply replace `https` with `http` in your browser's address bar to continue
 
