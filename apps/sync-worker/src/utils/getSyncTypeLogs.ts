@@ -18,6 +18,7 @@ export function getSyncTypeLogs(): SyncTypeLogCollection {
 
     try {
         const content = readFileSync(logsPath, 'utf8');
+
         return JSON.parse(content) as SyncTypeLogCollection;
     } catch {
         return {

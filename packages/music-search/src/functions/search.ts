@@ -1,6 +1,6 @@
 import { Track } from "../types/Track";
-import { compareTitles } from "../utils/compareTitles";
-import { removeFeaturing } from "../utils/removeFeaturing";
+import { compareTitles } from '@spotify-to-plex/shared-utils/music/compareTitles';
+import { removeFeaturing } from '@spotify-to-plex/shared-utils/music/removeFeaturing';
 import { getRuntimeFilters } from "./getRuntimeFilters";
 
 export function search(find: Track, options: Track[], analyze: boolean = false): Track[] {

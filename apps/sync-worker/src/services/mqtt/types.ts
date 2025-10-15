@@ -53,14 +53,6 @@ export type PublishedItem = {
   category: string;
 };
 
-export type CategoriesEntity = {
-  state: string;
-  attributes: {
-    icon: string;
-    friendly_name: string;
-  };
-};
-
 export type TrackLink = {
   spotify_id: string;
   plex_id?: string[];

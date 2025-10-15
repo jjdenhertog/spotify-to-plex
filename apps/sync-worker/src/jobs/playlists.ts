@@ -21,7 +21,7 @@ import { errorSyncType } from "../utils/errorSyncType";
 import { loadSpotifyData } from "../utils/loadSpotifyData";
 import { putPlexPlaylist } from "../utils/putPlexTracks";
 import { getSettings } from "@spotify-to-plex/plex-config/functions/getSettings";
-import { LidarrAlbumData } from "@spotify-to-plex/shared-types/common/lidarr";
+import { LidarrAlbumData } from "@spotify-to-plex/shared-types/lidarr/LidarrAlbumData";
 
 
 export async function syncPlaylists() {

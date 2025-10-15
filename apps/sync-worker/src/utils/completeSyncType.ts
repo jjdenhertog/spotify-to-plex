@@ -7,7 +7,7 @@ export function completeSyncType(type: SyncType): void {
 
     if (logs[type]) {
         logs[type] = {
-            ...logs[type]!,
+            ...logs[type],
             end: Date.now(),
             status: 'success',
             error: undefined

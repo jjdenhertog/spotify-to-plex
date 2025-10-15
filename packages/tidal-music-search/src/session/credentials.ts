@@ -1,12 +1,10 @@
 import axios, { AxiosError } from "axios";
 import qs from "qs";
 import { AuthenticateResponse } from "../types/TidalAPI";
-import { TidalCredentials } from "@spotify-to-plex/shared-types/tidal/api";
 
 type TidalAPICredentials = {
     accessToken?: string;
     expiresAt?: number;
-    user?: TidalCredentials;
     clientId?: string;
     clientSecret?: string;
 }
@@ -14,7 +12,6 @@ type TidalAPICredentials = {
 const state: TidalAPICredentials = {
     accessToken: undefined,
     expiresAt: undefined,
-    user: undefined,
     clientId: undefined,
     clientSecret: undefined
 };
@@ -26,17 +23,14 @@ export function getCredentials(): TidalAPICredentials {
 export function setCredentials(clientId: string, clientSecret: string): void {
     Object.assign(state, { clientId, clientSecret });
 }
+
 export function setToken(accessToken: string, expiresAt: number): void {
     Object.assign(state, { accessToken, expiresAt });
-}
-export function setUser(user: TidalCredentials|undefined): void {
-    Object.assign(state, { user });
 }
 
 export function resetState(): void {
     state.accessToken = undefined;
     state.expiresAt = undefined;
-    state.user = undefined;
     state.clientId = undefined;
     state.clientSecret = undefined;
 }
@@ -44,16 +38,7 @@ export function resetState(): void {
 export async function authenticate(): Promise<void> {
     const state = getCredentials();
 
-    // Don't authenticate if we have a user
-    const now = Date.now();
-    if (state.user && state.user.expires_at > now) {
-        // Set user credentials
-        setToken(state.user.access_token.access_token, state.user.expires_at);
-
-        return;
-    }
-
-    // Initiate the client
+    // Validate client credentials are set
     if (typeof state.clientId !== 'string') {
         throw new Error(`Client ID is missing`);
     }

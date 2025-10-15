@@ -67,10 +67,19 @@ export default function LidarrAlbumDialog(props: Props) {
 
                 return newSet;
             });
-        }, () => {
+        }, (error: unknown) => {
+            // Extract error message from API response
+            let errorMessage = 'Album could not be processed by Lidarr, attempt a manual import instead.';
+
+            if (axios.isAxiosError(error) && error.response?.data?.message) {
+                errorMessage = error.response.data.message;
+            } else if (error instanceof Error) {
+                errorMessage = error.message;
+            }
+
             setSentAlbums(prev => new Map(prev).set(key, {
                 success: false,
-                message: 'Album could not be processed by Lidarr, attempt a manual import instead.'
+                message: errorMessage
             }));
             setSendingAlbums(prev => {
                 const newSet = new Set(prev);

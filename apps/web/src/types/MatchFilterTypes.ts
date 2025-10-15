@@ -1,8 +1,6 @@
 /* eslint-disable custom/no-export-only-files */
 // Types for the expression-based match filter system
 
-export type ViewMode = 'ui' | 'json';
-
 // Expression-based filter configuration (just a string)
 export type MatchFilterRule = string; // e.g., "artist:match AND title:match"
 
@@ -17,21 +15,4 @@ export type ParsedCondition = {
   operation: OperationType;
   threshold?: number; // For similarity operations
   negated?: boolean; // For 'not' operator
-};
-
-export type ExpressionToken = ParsedCondition | CombinatorType;
-
-// Autocomplete suggestions
-export type AutocompleteSuggestion = {
-  label: string;
-  value: string;
-  description?: string;
-  category: 'field' | 'operation' | 'combinator';
-};
-
-// Validation result
-export type ValidationResult = {
-  isValid: boolean;
-  error?: string;
-  suggestions?: string[];
 };

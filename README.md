@@ -108,6 +108,7 @@ Before you begin, you'll need:
 
 3. **Tidal API Credentials** (optional) - For matching missing songs with Tidal
    - Register at the [Tidal Developer Portal](https://developer.tidal.com/)
+   - Only client credentials (Client ID and Secret) are needed - no OAuth flow required
 
 4. **Lidarr API Key** (optional) - For automatic album downloads
    - Find it in Lidarr under Settings → General → Security → API Key
@@ -122,7 +123,6 @@ docker run -d \
     -e SPOTIFY_API_REDIRECT_URI=https://[IP_OF_SPOTIFY_TO_PLEX]:9030/api/spotify/token \
     -e TIDAL_API_CLIENT_ID=PASTE_YOUR_TIDAL_CLIENT_ID_HERE \
     -e TIDAL_API_CLIENT_SECRET=PASTE_YOUR_TIDAL_CLIENT_SECRET_HERE \
-    -e TIDAL_API_REDIRECT_URI=https://[IP_OF_SPOTIFY_TO_PLEX]:9030/api/tidal/token \
     -e LIDARR_API_KEY=PASTE_YOUR_LIDARR_API_KEY_HERE \
     -e ENCRYPTION_KEY=PASTE_YOUR_ENCRYPTION_KEY \
     -e PLEX_APP_ID=eXf+f9ktw3CZ8i45OY468WxriOCtoFxuNPzVeDcAwfw= \
@@ -153,7 +153,6 @@ services:
             - SPOTIFY_API_REDIRECT_URI=https://[IP_OF_SPOTIFY_TO_PLEX]:9030/api/spotify/token
             - TIDAL_API_CLIENT_ID=PASTE_YOUR_TIDAL_CLIENT_ID_HERE
             - TIDAL_API_CLIENT_SECRET=PASTE_YOUR_TIDAL_CLIENT_SECRET_HERE
-            - TIDAL_API_REDIRECT_URI=https://[IP_OF_SPOTIFY_TO_PLEX]:9030/api/tidal/token
             - LIDARR_API_KEY=PASTE_YOUR_LIDARR_API_KEY_HERE
             - ENCRYPTION_KEY=PASTE_YOUR_ENCRYPTION_KEY
             - PLEX_APP_ID=eXf+f9ktw3CZ8i45OY468WxriOCtoFxuNPzVeDcAwfw=

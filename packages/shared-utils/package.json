@@ -34,7 +34,8 @@
         "@spotify-to-plex/shared-types": "workspace:*",
         "@spotify/web-api-ts-sdk": "^1.2.0",
         "axios": "^1.11.0",
-        "fs-extra": "^11.3.1"
+        "fs-extra": "^11.3.1",
+        "string-similarity-js": "^2.1.4"
     },
     "devDependencies": {
         "@types/fs-extra": "^11.0.4",

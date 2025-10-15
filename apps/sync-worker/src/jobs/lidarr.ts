@@ -1,6 +1,8 @@
 import { getLidarrSettings } from "@spotify-to-plex/plex-config/functions/getLidarrSettings";
 import { getStorageDir } from "@spotify-to-plex/shared-utils/utils/getStorageDir";
-import { LidarrAlbumData, LidarrSearchResult, LidarrAddAlbumRequest, LidarrSyncLog } from "@spotify-to-plex/shared-types/common/lidarr";
+import { LidarrAlbumData } from "@spotify-to-plex/shared-types/lidarr/LidarrAlbumData";
+import { LidarrAddAlbumRequest } from "@spotify-to-plex/shared-types/lidarr/LidarrAddAlbumRequest";
+import { LidarrSyncLog } from "@spotify-to-plex/shared-types/lidarr/LidarrSyncLog";
 import axios from "axios";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
@@ -9,34 +11,27 @@ import { startSyncType } from "../utils/startSyncType";
 import { clearSyncTypeLogs } from "../utils/clearSyncTypeLogs";
 import { completeSyncType } from "../utils/completeSyncType";
 import { errorSyncType } from "../utils/errorSyncType";
+import { getMusicBrainzIds } from "@spotify-to-plex/shared-utils/lidarr/getMusicBrainzIds";
+import { lookupLidarrAlbum } from "@spotify-to-plex/shared-utils/lidarr/lookupLidarrAlbum";
 
 export async function syncLidarr() {
     console.log('Starting Lidarr sync...');
 
     // Check Lidarr settings
     const settings = await getLidarrSettings();
-    if (!settings.enabled) {
-        console.log('Lidarr is not enabled. Skipping sync.');
-
+    if (!settings.enabled)
         return;
-    }
 
     // Start sync type logging
     startSyncType('lidarr');
     clearSyncTypeLogs('lidarr');
 
-    if (!settings.url) {
-        console.error('Lidarr URL is not configured.');
-
+    if (!settings.url)
         return;
-    }
 
     const apiKey = process.env.LIDARR_API_KEY;
-    if (!apiKey) {
-        console.error('LIDARR_API_KEY environment variable is not set.');
-
+    if (!apiKey)
         return;
-    }
 
     // Read albums and tracks to sync from both files
     const albumsPath = join(getStorageDir(), 'missing_albums_lidarr.json');
@@ -76,13 +71,8 @@ export async function syncLidarr() {
 
     const albums = Array.from(albumMap.values());
 
-    if (albums.length === 0) {
-        console.log('No albums to sync.');
-
+    if (albums.length === 0)
         return;
-    }
-
-    console.log(`Found ${albums.length} albums to sync.`);
 
     // Initialize logs
     const { putLog, logComplete } = getNestedSyncLogsForType('lidarr');
@@ -110,53 +100,50 @@ export async function syncLidarr() {
         };
 
         try {
-            console.log(`Processing: ${album.artist_name} - ${album.album_name}`);
 
-            // Step 1: Search Lidarr
+            // VALIDATION: Ensure spotify_album_id exists
+            if (!album.spotify_album_id) {
+                albumLog.status = 'error';
+                albumLog.error = 'Missing spotify_album_id';
+                albumLog.end = Date.now();
+                errorCount++;
+                lidarrLogs[logId] = albumLog;
+                continue;
+            }
+
+            // STEP 1: Get MusicBrainz IDs (with fallback using artist/album names)
+            const musicBrainzIds = await getMusicBrainzIds(album.spotify_album_id, album.artist_name, album.album_name);
+
+            if (!musicBrainzIds) {
+                albumLog.status = 'not_found';
+                albumLog.error = 'No MusicBrainz mapping found';
+                albumLog.end = Date.now();
+                notFoundCount++;
+                lidarrLogs[logId] = albumLog;
+                continue;
+            }
+
+            const { releaseGroupId, artistId } = musicBrainzIds;
+            albumLog.musicbrainz_album_id = releaseGroupId;
+            albumLog.musicbrainz_artist_id = artistId;
+
+            // STEP 2: Lookup album in Lidarr using MusicBrainz ID
             const baseUrl = settings.url.endsWith('/') ? settings.url.slice(0, -1) : settings.url;
-            const searchTerm = `${album.artist_name} ${album.album_name}`;
-            const searchUrl = `${baseUrl}/api/v1/search?term=${encodeURIComponent(searchTerm)}`;
+            const lidarrAlbum = await lookupLidarrAlbum(releaseGroupId, settings.url, apiKey);
 
-            const searchResponse = await axios.get<LidarrSearchResult[]>(searchUrl, {
-                headers: {
-                    'X-Api-Key': apiKey,
-                },
-            });
-
-            if (!searchResponse.data || searchResponse.data.length === 0) {
-                console.log(`  No results found for: ${searchTerm}`);
+            if (!lidarrAlbum?.artist) {
                 albumLog.status = 'not_found';
-                albumLog.error = 'No search results found';
+                albumLog.error = 'Album not found in Lidarr database';
                 albumLog.end = Date.now();
                 notFoundCount++;
                 lidarrLogs[logId] = albumLog;
                 continue;
             }
 
-            // Find the best match (first album result)
-            const albumResult = searchResponse.data.find(result => result.album);
-            if (!albumResult?.album?.artist) {
-                console.log(`  No album match found for: ${searchTerm}`);
-                albumLog.status = 'not_found';
-                albumLog.error = 'No album in search results';
-                albumLog.end = Date.now();
-                notFoundCount++;
-                lidarrLogs[logId] = albumLog;
-                continue;
-            }
-
-            const { foreignAlbumId, title, artist } = albumResult.album;
-            const { foreignArtistId, artistName } = artist;
-
-            console.log(`  Found: ${title} (Album ID: ${foreignAlbumId})`);
-
-            albumLog.musicbrainz_album_id = foreignAlbumId;
-            albumLog.musicbrainz_artist_id = foreignArtistId;
-
-            // Step 2: Add to Lidarr
+            // STEP 3: Add to Lidarr (this part remains the same)
             const addRequest: LidarrAddAlbumRequest = {
-                foreignAlbumId,
-                title,
+                foreignAlbumId: lidarrAlbum.foreignAlbumId,
+                title: lidarrAlbum.title,
                 artistId: 0,
                 profileId: settings.quality_profile_id,
                 qualityProfileId: settings.quality_profile_id,
@@ -168,8 +155,8 @@ export async function syncLidarr() {
                     searchForNewAlbum: true,
                 },
                 artist: {
-                    foreignArtistId,
-                    artistName,
+                    foreignArtistId: lidarrAlbum.artist.foreignArtistId,
+                    artistName: lidarrAlbum.artist.artistName,
                     qualityProfileId: settings.quality_profile_id,
                     metadataProfileId: settings.metadata_profile_id,
                     rootFolderPath: settings.root_folder_path,
@@ -177,33 +164,25 @@ export async function syncLidarr() {
             };
 
             const addUrl = `${baseUrl}/api/v1/album`;
-            const addResponse = await axios.post(addUrl, addRequest, {
+            await axios.post(addUrl, addRequest, {
                 headers: {
                     'X-Api-Key': apiKey,
                     'Content-Type': 'application/json',
                 },
             });
 
-            console.log(`  Successfully added to Lidarr: ${addResponse.data.title}`);
             albumLog.status = 'success';
             albumLog.end = Date.now();
             successCount++;
             lidarrLogs[logId] = albumLog;
 
         } catch (error: any) {
-            console.error(`  Error processing album: ${error.message}`);
-
-
-            // Check if album already exists (409 conflict)
-
             const result = error.response?.data[0];
 
             const albumExists = error.response?.status === 409 || result?.errorCode == 'AlbumExistsValidator';
             if (albumExists) {
-
                 albumLog.status = 'success';
                 albumLog.error = 'Album already exists in Lidarr';
-                console.log(`  Album already exists: ${album.album_name}`);
                 continue;
             } else {
                 albumLog.status = 'error';
@@ -215,9 +194,8 @@ export async function syncLidarr() {
             lidarrLogs[logId] = albumLog;
         }
 
-        // Small delay between requests
         await new Promise(resolve => {
-            setTimeout(resolve, 500);
+            setTimeout(resolve, 1000); // Increased from 500ms to 1000ms for MusicBrainz rate limit
         });
     }
 
@@ -231,16 +209,13 @@ export async function syncLidarr() {
 }
 
 function run() {
-    console.log('Start Lidarr sync');
     syncLidarr()
         .then(() => {
             completeSyncType('lidarr');
-            console.log('Lidarr sync complete');
         })
         .catch((e: unknown) => {
             const message = e instanceof Error ? e.message : 'Unknown error';
             errorSyncType('lidarr', message);
-            console.error('Lidarr sync failed:', e);
         });
 }
 

@@ -12,8 +12,10 @@ const DEFAULT_SETTINGS: LidarrSettings = {
 
 export async function getLidarrSettings(): Promise<LidarrSettings> {
     const settings = await readJSON<LidarrSettings>('lidarr.json');
+
     if (!settings) {
         return DEFAULT_SETTINGS;
     }
+
     return settings;
 }

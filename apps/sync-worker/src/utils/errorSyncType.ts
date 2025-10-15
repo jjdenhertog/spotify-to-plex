@@ -7,7 +7,7 @@ export function errorSyncType(type: SyncType, error: string): void {
 
     if (logs[type]) {
         logs[type] = {
-            ...logs[type]!,
+            ...logs[type],
             end: Date.now(),
             status: 'error',
             error

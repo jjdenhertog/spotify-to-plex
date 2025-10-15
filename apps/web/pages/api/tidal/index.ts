@@ -1,11 +1,10 @@
 import { generateError } from '@/helpers/errors/generateError';
 import { getCachedTrackLinks } from '@spotify-to-plex/shared-utils/cache/getCachedTrackLink';
-import { getTidalCredentials } from '@spotify-to-plex/shared-utils/tidal/getTidalCredentials';
 import { Album } from '@spotify-to-plex/shared-types/spotify/Album';
 import { Track } from '@spotify-to-plex/shared-types/spotify/Track';
 import { search as tidalMusicSearch } from '@spotify-to-plex/tidal-music-search/functions/search';
 import { searchAlbum } from '@spotify-to-plex/tidal-music-search/functions/searchAlbum';
-import { setUser } from '@spotify-to-plex/tidal-music-search/session/credentials';
+import { setCredentials } from '@spotify-to-plex/tidal-music-search/session/credentials';
 import { SearchResponse } from '@spotify-to-plex/tidal-music-search/types/SearchResponse';
 import { getMusicSearchConfig } from "@spotify-to-plex/music-search/functions/getMusicSearchConfig";
 import type { NextApiRequest, NextApiResponse } from 'next';
@@ -39,11 +38,8 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
             ///////////////////////////////////////
             // Tidal authentication and configuration
             ///////////////////////////////////////
-            const tidalUser = await getTidalCredentials();
-            if(!tidalUser)
-                throw new Error(`Tidal credentials not found`)
-            
-            setUser(tidalUser);
+            // Set client credentials for Tidal API (no user OAuth needed)
+            setCredentials(process.env.TIDAL_API_CLIENT_ID, process.env.TIDAL_API_CLIENT_SECRET);
             
             // Load music search configuration
             const musicSearchConfig= await getMusicSearchConfig();

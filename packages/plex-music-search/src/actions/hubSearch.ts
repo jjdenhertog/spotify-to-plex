@@ -1,6 +1,6 @@
 /* eslint-disable unicorn/prefer-code-point */
 /* eslint-disable prefer-template */
- 
+
 import { removeFeaturing } from "@spotify-to-plex/music-search/utils/removeFeaturing";
 import { HubSearchResult } from "../types/actions/HubSearchResult";
 import { HubSearchResponse } from "../types/plex/HubSearchResponse";
@@ -11,15 +11,15 @@ export default function hubSearch(uri: string, token: string, query: string, lim
     return new Promise<HubSearchResult[]>((resolve, reject) => {
 
         // Fix forbidden characters
-        const forbiddenCharacters = ['(', ')', '/', "...","..", '"']
+        const forbiddenCharacters = [ '/', "...", "..", '"']
 
         for (let i = 0; i < forbiddenCharacters.length; i++) {
             const element = forbiddenCharacters[i];
-            if (element) 
+            if (element)
                 query = query.split(element).join('')
         }
 
-        if(!query.trim()) 
+        if (!query.trim())
             throw new Error("Query is empty");
 
         const url = getAPIUrl(uri, `/hubs/search?query=${fixedEncodeURIComponent(query.trim())}&limit=${limit}`);
@@ -27,7 +27,7 @@ export default function hubSearch(uri: string, token: string, query: string, lim
             .then((result) => {
                 const response: HubSearchResult[] = [];
                 const { Hub } = result.data.MediaContainer;
-                
+
                 if (!Hub || Hub.length === 0) {
                     resolve(response);
 
@@ -37,11 +37,11 @@ export default function hubSearch(uri: string, token: string, query: string, lim
                 for (const hub of Hub) {
                     if (!hub?.Metadata)
                         continue;
-                    
-                    if (hub.type === "album") 
+
+                    if (hub.type === "album")
                         processAlbumMetadata(hub.Metadata, response);
 
-                    if (hub.type === "track") 
+                    if (hub.type === "track")
                         processTrackMetadata(hub.Metadata, response);
                 }
 
@@ -60,7 +60,7 @@ function processAlbumMetadata(metadata: any[], response: HubSearchResult[]) {
     for (const item of metadata) {
         if (!item)
             continue;
-        
+
         response.push({
             type: "album",
             id: item.key || '',
@@ -85,7 +85,7 @@ function processTrackMetadata(metadata: any[], response: HubSearchResult[]) {
     for (const item of metadata) {
         if (!item)
             continue;
-        
+
         response.push({
             type: "track",
             id: item.key || '',
@@ -112,7 +112,10 @@ function processTrackMetadata(metadata: any[], response: HubSearchResult[]) {
 }
 
 function fixedEncodeURIComponent(str: string) {
-    return encodeURIComponent(str).replace(/[!'()*]/g, (c) => {
-        return '%' + c.charCodeAt(0).toString(16);
-    });
+    return encodeURIComponent(str)
+        .replace(/[!'()*]/g, (c) => {
+            return '%' + c.charCodeAt(0).toString(16);
+        })
+        .replace(/\./g, '%2E'); // Also encode dots
+
 }

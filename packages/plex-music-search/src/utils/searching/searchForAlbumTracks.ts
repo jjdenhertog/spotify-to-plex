@@ -5,7 +5,6 @@ import { searchForAlbum } from "./searchForAlbum";
 
 export async function searchForAlbumTracks(uri: string, token: string, artist: string, _track: string, album: string) {
     const foundAlbums = await searchForAlbum(uri, token, artist, album);
-
     const results: HubSearchResult[] = []
 
     for (let i = 0; i < foundAlbums.length; i++) {

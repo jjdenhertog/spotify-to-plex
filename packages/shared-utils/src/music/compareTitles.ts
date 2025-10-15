@@ -1,5 +1,5 @@
 import stringSimilarity from 'string-similarity-js';
-import { createSearchString } from '@spotify-to-plex/shared-utils/music/createSearchString';
+import { createSearchString } from './createSearchString';
 
 export function compareTitles(a?: string, b?: string, twoWayContain: boolean = false) {
     if (!a || !b)

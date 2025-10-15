@@ -1,10 +1,23 @@
+import getAlbumTracks from "../../actions/getAlbumTracks";
 import hubSearch from "../../actions/hubSearch";
+import { HubSearchResult } from "../../types/actions/HubSearchResult";
 
 export async function searchForTrack(uri: string, token: string, artist: string, track: string, _album: string = '') {
     const search = `${artist} ${track}`;
-
     // Search for artist + track
     const searchResult = await hubSearch(uri, token, search, 20);
+
+    const albums = searchResult.filter(item => item.type == "album");
+    const [foundAlbum] = albums;
+    if (searchResult.length == albums.length && foundAlbum) {
+        
+        const trackResult: HubSearchResult[] = await getAlbumTracks(uri, token, foundAlbum.id)
+        trackResult.forEach(item => {
+            if (searchResult.filter(existingItem => existingItem.guid == item.guid).length == 0)
+                searchResult.push(item);
+        });
+
+    }
 
     // Search for track name
     {

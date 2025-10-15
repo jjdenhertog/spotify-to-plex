@@ -14,7 +14,7 @@ import { completeSyncType } from "../utils/completeSyncType";
 import { errorSyncType } from "../utils/errorSyncType";
 import { loadSpotifyData } from "../utils/loadSpotifyData";
 import { getSettings } from "@spotify-to-plex/plex-config/functions/getSettings";
-import { LidarrAlbumData } from "@spotify-to-plex/shared-types/common/lidarr";
+import { LidarrAlbumData } from "@spotify-to-plex/shared-types/lidarr/LidarrAlbumData";
 
 export async function syncAlbums() {
 

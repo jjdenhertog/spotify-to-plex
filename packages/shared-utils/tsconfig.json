@@ -10,6 +10,9 @@
         "incremental": true,
         "tsBuildInfoFile": "./dist/.tsbuildinfo"
     },
+    "references": [
+        { "path": "../shared-types" }
+    ],
     "include": ["src/**/*"],
     "exclude": ["node_modules", "dist"]
 }

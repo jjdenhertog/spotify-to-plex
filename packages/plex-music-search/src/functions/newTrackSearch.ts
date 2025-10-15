@@ -7,7 +7,6 @@ import { PlexMusicSearchTrack } from "../types/PlexMusicSearchTrack";
 import { SearchQuery, SearchResponse } from "../types/SearchResponse";
 import { PlexTrack } from "../types/PlexTrack";
 import hubSearchToPlexTrack from "../utils/searching/hubSearchToPlexTrack";
-import { searchForAlbumTracks } from "../utils/searching/searchForAlbumTracks";
 import { searchForTrack } from "../utils/searching/searchForTrack";
 import searchResultToTracks from "../utils/searching/searchResultToTracks";
 import { getConfig, addToCache, getFromCache } from "../session/state";
@@ -104,14 +103,14 @@ async function performApproachSearch(approach: PlexMusicSearchApproach, searchPa
     const searchTrack = filterOutWords(title.toLowerCase(), config.musicSearchConfig!.textProcessing, filtered, trim, removeQuotes);
 
     // Perform search function
-    const performSearch = async (approach: string, artist: string, title: string, album: string, searchAlbumTracks: boolean = false) => {
-        const cacheId = `${searchAlbumTracks ? 'album-' : ''}${artist}-${title}-${album}`;
+    const performSearch = async (approach: string, artist: string, title: string, album: string) => {
+        const cacheId = `${artist}-${title}-${album}`;
         const foundCache = getFromCache(cacheId);
         if (foundCache)
             return foundCache;
 
-        const searchHandler = searchAlbumTracks ? searchForAlbumTracks : searchForTrack;
-        const searchResults = await searchHandler(config.uri, config.token, artist, title, album);
+        // const searchHandler = searchAlbumTracks ? searchForAlbumTracks : searchForTrack;
+        const searchResults = await searchForTrack(config.uri, config.token, artist, title, album);
         const musicSearchResult = musicSearch({ id, artist, title, album }, searchResultToTracks(searchResults), analyze);
 
         const plexTracks = musicSearchResult
@@ -130,7 +129,7 @@ async function performApproachSearch(approach: PlexMusicSearchApproach, searchPa
 
         addToCache(cacheId, plexTracks);
 
-        const actualApproachId = searchAlbumTracks ? `${approach}-album` : approach;
+        const actualApproachId = approach;
 
         const query: SearchQuery = { approach: actualApproachId, artist, title, album };
         if (analyze)
@@ -153,8 +152,8 @@ async function performApproachSearch(approach: PlexMusicSearchApproach, searchPa
 
     // Search for albums
     // Plex has difficulties finding tracks where the album name is the same as the track
-    if (searchResult.length == 0)
-        searchResult = await performSearch(approachId, searchArtist, searchTrack, searchAlbum, true);
+    // if (searchResult.length == 0)
+    //     searchResult = await performSearch(approachId, searchArtist, searchTrack, searchAlbum, true);
 
     return { queries, result: searchResult };
 }

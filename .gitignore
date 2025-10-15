@@ -18,6 +18,8 @@ build/
 out/
 **/out/
 
+CLAUDE.md
+
 # TypeScript build artifacts
 *.tsbuildinfo
 **/*.tsbuildinfo
@@ -130,6 +132,10 @@ docker-compose.yml
 
 
 
+
+
+# Removed Windows wrapper files per user request
+hive-mind-prompt-*.txt
 
 # Claude Flow generated files
 .claude/settings.local.json

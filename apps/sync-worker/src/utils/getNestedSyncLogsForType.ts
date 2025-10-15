@@ -8,17 +8,18 @@ export function getNestedSyncLogsForType(syncType: SyncType) {
     const putLog = (id: string, title: string): SyncLog => {
         let itemLog = logs[syncType].find(log => log.id === id);
 
-        if (!itemLog) {
-            itemLog = { id, title, start: Date.now() };
-            logs[syncType].push(itemLog);
-        } else {
+        if (itemLog) {
             // Restart log
             itemLog.start = Date.now();
             itemLog.end = undefined;
             itemLog.error = undefined;
+        } else {
+            itemLog = { id, title, start: Date.now() };
+            logs[syncType].push(itemLog);
         }
 
         saveNestedSyncLogs(logs);
+
         return itemLog;
     };
 

@@ -18,6 +18,7 @@ export function getNestedSyncLogs(): SyncLogCollection {
 
     try {
         const content = readFileSync(logsPath, 'utf8');
+
         return JSON.parse(content) as SyncLogCollection;
     } catch {
         return {

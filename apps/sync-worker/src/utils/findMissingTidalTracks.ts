@@ -1,10 +1,9 @@
 import { getMusicSearchConfig } from "@spotify-to-plex/music-search/functions/getMusicSearchConfig";
 import { Track } from "@spotify-to-plex/shared-types/spotify/Track";
 import { getCachedTrackLinks } from "@spotify-to-plex/shared-utils/cache/getCachedTrackLink";
-import { getTidalCredentials } from "@spotify-to-plex/shared-utils/tidal/getTidalCredentials";
 import { SearchResponse } from "@spotify-to-plex/tidal-music-search/types/SearchResponse";
 import { search } from "@spotify-to-plex/tidal-music-search/functions/search";
-import { setUser } from "@spotify-to-plex/tidal-music-search/session/credentials";
+import { setCredentials } from "@spotify-to-plex/tidal-music-search/session/credentials";
 
 export async function findMissingTidalTracks(missingTracks: Track[]) {
 
@@ -37,9 +36,8 @@ export async function findMissingTidalTracks(missingTracks: Track[]) {
 
         console.log(`Search for ${toSearchTidalTracks.length} tracks on Tidal`);
 
-        // Credentials
-        const tidalUser = await getTidalCredentials();
-        setUser(tidalUser);
+        // Set client credentials for Tidal API (no user OAuth needed)
+        setCredentials(process.env.TIDAL_API_CLIENT_ID, process.env.TIDAL_API_CLIENT_SECRET);
 
         // Load music search configuration
         const musicSearchConfig = await getMusicSearchConfig();
