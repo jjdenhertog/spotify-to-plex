@@ -3,36 +3,66 @@ import { syncAlbums } from 'cronjob/albums';
 import { syncPlaylists } from 'cronjob/playlists';
 import { syncUsers } from 'cronjob/users';
 import { syncLidarr } from 'cronjob/lidarr';
+import { syncMQTT } from 'cronjob/mqtt';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createRouter } from 'next-connect';
 
 const router = createRouter<NextApiRequest, NextApiResponse>()
-    .get(
+    .post(
         async (req, res) => {
 
             const { type } = req.query
-            if (type !== 'albums' && type !== 'playlists' && type !== "users" && type !== "lidarr")
-                throw new Error(`Expecting type albums, playlists or users. Got ${typeof type === 'string' ? type : 'none'}`)
 
-            switch (type) {
-                case "albums":
-                    await syncAlbums()
-                    break;
+            if (type !== 'albums' && type !== 'playlists' && type !== "users" && type !== "lidarr" && type !== "mqtt" && type !== "all")
+                throw new Error(`Expecting type albums, playlists, users, lidarr, mqtt, or all. Got ${typeof type === 'string' ? type : 'none'}`)
 
-                case "playlists":
-                    await syncPlaylists()
-                    break;
+            // Fire and forget - start the sync process without awaiting
+            if (type === 'all') {
+                // Run all syncs in sequence but don't await
+                syncUsers()
+                    .then(() => syncAlbums())
+                    .then(() => syncPlaylists())
+                    .then(() => syncLidarr())
+                    .then(() => syncMQTT())
+                    .catch((error: unknown) => {
+                        console.error('Sync all failed:', error);
+                    });
+            } else {
+                switch (type) {
+                    case "albums":
+                        syncAlbums().catch((error: unknown) => {
+                            console.error('Sync albums failed:', error);
+                        });
+                        break;
 
-                case "users":
-                    await syncUsers()
-                    break;
+                    case "playlists":
+                        syncPlaylists().catch((error: unknown) => {
+                            console.error('Sync playlists failed:', error);
+                        });
+                        break;
 
-                case "lidarr":
-                    await syncLidarr()
-                    break;
+                    case "users":
+                        syncUsers().catch((error: unknown) => {
+                            console.error('Sync users failed:', error);
+                        });
+                        break;
+
+                    case "lidarr":
+                        syncLidarr().catch((error: unknown) => {
+                            console.error('Sync lidarr failed:', error);
+                        });
+                        break;
+
+                    case "mqtt":
+                        syncMQTT().catch((error: unknown) => {
+                            console.error('Sync mqtt failed:', error);
+                        });
+                        break;
+                }
             }
 
-            res.json({ ok: true })
+            // Return immediately
+            res.json({ ok: true, message: `Sync ${type} started` })
         })
 
 

@@ -211,4 +211,8 @@ function run() {
         })
 }
 
-run();
+// Only run if this file is executed directly, not when imported
+// eslint-disable-next-line unicorn/prefer-module
+if (require.main === module) {
+    run();
+}
