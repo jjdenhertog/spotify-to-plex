@@ -5,7 +5,7 @@
         "apps/*",
         "packages/*"
     ],
-    "version": "1.0.80",
+    "version": "1.0.81",
     "description": "Sync Spotify with your Plex Library.",
     "keywords": [
         "plex",

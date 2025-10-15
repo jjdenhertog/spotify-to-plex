@@ -46,12 +46,19 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                         .map(item => item.tidal_id ? item.tidal_id[0] : null)
                         .filter(item => !!item)
 
+
+
                     res.send(tidalTracks.map(id => `https://tidal.com/browse/track/${id}`).join('\n'))
                     break;
 
                 default:
                 case "spotify":
-                    res.send(trackIds.map(id => `https://open.spotify.com/track/${id}`).join('\n'))
+                    res.send(trackIds.map(id => {
+                        const cleanId = id.replace('spotify:track:', '')
+
+                        return `https://open.spotify.com/track/${cleanId}`
+
+                    }).join('\n'))
                     break;
             }
 
