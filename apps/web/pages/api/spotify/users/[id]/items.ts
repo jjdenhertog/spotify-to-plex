@@ -70,7 +70,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 if (nextUrl) {
                     while (hasMoreResults) {
                         const loadMore = await api.currentUser.albums.savedAlbums(50, offset)
-                        allAlbums = allAlbums.concat(savedAlbumResult.items)
+                        allAlbums = allAlbums.concat(loadMore.items)
                         hasMoreResults = loadMore.offset + loadMore.limit < loadMore.total;
                         offset = loadMore.offset + loadMore.limit;
                     }
@@ -109,7 +109,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
             if (nextUrl) {
                 while (hasMoreResults) {
                     const loadMore = await api.currentUser.playlists.playlists(50, offset)
-                    allPlaylists = allPlaylists.concat(savedPlaylistResult.items)
+                    allPlaylists = allPlaylists.concat(loadMore.items)
                     hasMoreResults = loadMore.offset + loadMore.limit < loadMore.total;
                     offset = loadMore.offset + loadMore.limit;
                 }
