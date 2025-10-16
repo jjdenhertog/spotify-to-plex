@@ -150,9 +150,14 @@ export default function ExportMissingTracks(props: Props) {
 
     // Extract unique albums for Lidarr
     const uniqueAlbums = useMemo(() => {
-        const albumMap = new Map<string, { artist_name: string; album_name: string; spotify_album_id?: string }>();
+        const albumMap = new Map<string, { artist_name: string; album_name: string; spotify_album_id: string }>();
 
         tracks.forEach(track => {
+            // Skip tracks without valid album_id
+            if (!track.album_id || track.album_id === 'unknown') {
+                return;
+            }
+
             // Use first artist as album artist
             const artist = track.artists[0] || 'Unknown Artist';
             const album = track.album?.trim() || 'Unknown Album';

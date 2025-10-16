@@ -11,6 +11,7 @@ import { startSyncType } from "../utils/startSyncType";
 import { clearSyncTypeLogs } from "../utils/clearSyncTypeLogs";
 import { completeSyncType } from "../utils/completeSyncType";
 import { errorSyncType } from "../utils/errorSyncType";
+import { updateSyncTypeProgress } from "../utils/updateSyncTypeProgress";
 import { getMusicBrainzIds } from "@spotify-to-plex/shared-utils/lidarr/getMusicBrainzIds";
 import { lookupLidarrAlbum } from "@spotify-to-plex/shared-utils/lidarr/lookupLidarrAlbum";
 
@@ -25,6 +26,8 @@ export async function syncLidarr() {
     // Start sync type logging
     startSyncType('lidarr');
     clearSyncTypeLogs('lidarr');
+
+    try {
 
     if (!settings.url)
         return;
@@ -87,7 +90,13 @@ export async function syncLidarr() {
     let errorCount = 0;
     let notFoundCount = 0;
 
-    for (const album of albums) {
+    for (let i = 0; i < albums.length; i++) {
+        const album = albums[i];
+        if (!album) continue;
+
+        // Update progress
+        updateSyncTypeProgress('lidarr', i + 1, albums.length);
+
         const albumKey = `${album.artist_name}|${album.album_name}`;
         const logId = `${Date.now()}-${albumKey}`;
 
@@ -100,6 +109,17 @@ export async function syncLidarr() {
         };
 
         try {
+
+            // VALIDATION: Skip albums with unknown album_id
+            if (album.spotify_album_id === 'unknown') {
+                albumLog.status = 'error';
+                albumLog.error = 'Album ID is unknown (likely from simplified mode or incomplete data)';
+                albumLog.end = Date.now();
+                errorCount++;
+                lidarrLogs[logId] = albumLog;
+                console.log(`⚠️  Skipping album (unknown ID): ${album.artist_name} - ${album.album_name}`);
+                continue;
+            }
 
             // VALIDATION: Ensure spotify_album_id exists
             if (!album.spotify_album_id) {
@@ -206,16 +226,23 @@ export async function syncLidarr() {
     logComplete(syncLog);
 
     console.log(`Lidarr sync complete: ${successCount} success, ${notFoundCount} not found, ${errorCount} errors`);
+
+        // Mark sync as complete
+        completeSyncType('lidarr');
+    } catch (e: unknown) {
+        const message = e instanceof Error ? e.message : 'Unknown error';
+        errorSyncType('lidarr', message);
+        throw e;
+    }
 }
 
 function run() {
     syncLidarr()
         .then(() => {
-            completeSyncType('lidarr');
+            console.log('Lidarr sync completed');
         })
         .catch((e: unknown) => {
-            const message = e instanceof Error ? e.message : 'Unknown error';
-            errorSyncType('lidarr', message);
+            console.error('Lidarr sync failed:', e);
         });
 }
 

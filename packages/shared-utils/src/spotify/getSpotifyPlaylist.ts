@@ -28,6 +28,7 @@ export async function getSpotifyPlaylist(api: SpotifyApi, id: string, simplified
                     artist: item.track.artists?.[0]?.name || 'Unknown',
                     album: item.track.album?.name || 'Unknown',
                     artists: artists || [],
+                    album_id: item.track.album?.id || 'unknown'
                 }
             })
             .filter((track)=>!!track);
@@ -53,6 +54,7 @@ export async function getSpotifyPlaylist(api: SpotifyApi, id: string, simplified
                             artist: item.track.artists?.[0]?.name || 'Unknown',
                             album: item.track.album?.name || 'Unknown',
                             artists: item.track.artists?.map(artist => artist.name) || [],
+                            album_id: item.track.album?.id || 'unknown'
                         }
                     })
                     .filter((track)=>!!track);

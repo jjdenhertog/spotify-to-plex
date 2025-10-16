@@ -12,6 +12,7 @@ import { loadSpotifyData } from "../utils/loadSpotifyData";
 import { startSyncType } from "../utils/startSyncType";
 import { completeSyncType } from "../utils/completeSyncType";
 import { errorSyncType } from "../utils/errorSyncType";
+import { updateSyncTypeProgress } from "../utils/updateSyncTypeProgress";
 import { clearSyncTypeLogs } from "../utils/clearSyncTypeLogs";
 
 
@@ -24,12 +25,17 @@ export async function syncUsers() {
     startSyncType('users');
     clearSyncTypeLogs('users');
 
+    try {
+
     await refreshAccessTokens()
     const credentials: SpotifyCredentials[] = JSON.parse(readFileSync(credentialsPath, 'utf8'))
 
     const savedItems = savedItemsHelpers()
 
     for (let i = 0; i < credentials.length; i++) {
+        // Update progress
+        updateSyncTypeProgress('users', i + 1, credentials.length);
+
         try {
             const credential = credentials[i];
             if (!credential?.user)
@@ -90,7 +96,13 @@ export async function syncUsers() {
         }
     }
 
-
+        // Mark sync as complete
+        completeSyncType('users');
+    } catch (e: unknown) {
+        const message = e instanceof Error ? e.message : 'Unknown error';
+        errorSyncType('users', message);
+        throw e;
+    }
 }
 
 
@@ -98,12 +110,9 @@ function run() {
     console.log(`Start syncing users`)
     syncUsers()
         .then(() => {
-            completeSyncType('users');
             console.log(`Sync complete`)
         })
         .catch((e: unknown) => {
-            const message = e instanceof Error ? e.message : 'Unknown error';
-            errorSyncType('users', message);
             console.log(e)
         })
 }

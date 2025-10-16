@@ -27,7 +27,8 @@ export async function getSpotifyData(api: SpotifyApi, id: string, simplified: bo
                     id: item.id,
                     artists: item.artists.map(artist => artist.name),
                     album: result.name,
-                    title: item.name
+                    title: item.name,
+                    album_id: result.id
                 }))
             }
         } catch (_e) { }
@@ -86,7 +87,8 @@ export async function getSpotifyData(api: SpotifyApi, id: string, simplified: bo
             id: id || uri,
             title: name || '',
             album: album?.name || '',
-            artists: splitArtists
+            artists: splitArtists,
+            album_id: 'unknown'
         }
     }) || []
 

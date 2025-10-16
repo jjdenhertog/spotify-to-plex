@@ -15,6 +15,10 @@ export type SyncTypeLog = {
     end?: number;
     status: 'running' | 'success' | 'error';
     error?: string;
+    progress?: {
+        current: number;
+        total: number;
+    };
 };
 
 export type SyncTypeLogCollection = {

@@ -3,6 +3,6 @@ export type Track = {
     title: string;
     album: string;
     artists: string[];
-    album_id?: string;
+    album_id: string;
     album_artist?: string;
 }

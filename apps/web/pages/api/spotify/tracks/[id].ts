@@ -33,7 +33,8 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                     id: data.id,
                     title: data.name,
                     artists: data.artists.map(item => item.name),
-                    album: data.album.name
+                    album: data.album.name,
+                    album_id: data.album?.id || 'unknown'
                 }
 
                 res.status(200).json(result)

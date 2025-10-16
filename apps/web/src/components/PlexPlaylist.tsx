@@ -115,7 +115,7 @@ export default function PlexPlaylist(props: PlexPlaylistProps) {
         abortController.current = new AbortController();
 
         errorBoundary(async () => {
-            const tracks = playlist.tracks.map(item => ({ id: item.id, artists: item.artists, title: item.title, album: item.album }))
+            const tracks = playlist.tracks.map(item => ({ id: item.id, artists: item.artists, title: item.title, album: item.album, album_id: item.album_id }))
 
             switch (playlist.type) {
                 case "spotify-album":
@@ -190,7 +190,7 @@ export default function PlexPlaylist(props: PlexPlaylistProps) {
         abortController.current = new AbortController();
 
         errorBoundary(async () => {
-            const tracks = playlist.tracks.map(item => ({ id: item.id, artists: item.artists, title: item.title, album: item.album }))
+            const tracks = playlist.tracks.map(item => ({ id: item.id, artists: item.artists, title: item.title, album: item.album, album_id: item.album_id }))
             switch (playlist.type) {
                 case "spotify-album":
                     const result = await axios.post<SearchResponse[]>('/api/plex/tracks', {

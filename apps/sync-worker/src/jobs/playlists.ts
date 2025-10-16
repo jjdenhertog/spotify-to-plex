@@ -18,6 +18,7 @@ import { startSyncType } from "../utils/startSyncType";
 import { clearSyncTypeLogs } from "../utils/clearSyncTypeLogs";
 import { completeSyncType } from "../utils/completeSyncType";
 import { errorSyncType } from "../utils/errorSyncType";
+import { updateSyncTypeProgress } from "../utils/updateSyncTypeProgress";
 import { loadSpotifyData } from "../utils/loadSpotifyData";
 import { putPlexPlaylist } from "../utils/putPlexTracks";
 import { getSettings } from "@spotify-to-plex/plex-config/functions/getSettings";
@@ -25,10 +26,11 @@ import { LidarrAlbumData } from "@spotify-to-plex/shared-types/lidarr/LidarrAlbu
 
 
 export async function syncPlaylists() {
-
     // Start sync type logging
     startSyncType('playlists');
     clearSyncTypeLogs('playlists');
+
+    try {
 
     // Check if we need to force syncing
     const args = process.argv.slice(2);
@@ -51,6 +53,9 @@ export async function syncPlaylists() {
         const item = toSyncPlaylists[i];
         if (!item)
             continue;
+
+        // Update progress
+        updateSyncTypeProgress('playlists', i + 1, toSyncPlaylists.length);
 
         const { id, title, uri, user, sync_interval } = item;
 
@@ -163,6 +168,12 @@ export async function syncPlaylists() {
 
             // Collect unique albums for Lidarr
             missingTracks.forEach(track => {
+                // Skip tracks with unknown album_id
+                if (track.album_id === 'unknown') {
+                    console.log(`⚠️  Skipping track with unknown album_id: ${track.title} by ${track.artists[0]}`);
+                    return;
+                }
+
                 const artist = track.artists[0] || 'Unknown Artist';
                 const album = track.album || 'Unknown Album';
                 const key = `${artist}|${album}`;
@@ -172,7 +183,7 @@ export async function syncPlaylists() {
                     missingAlbumsLidarr.push({
                         artist_name: artist,
                         album_name: album,
-                        spotify_album_id: track.id
+                        spotify_album_id: track.album_id
                     });
                 }
             });
@@ -194,6 +205,13 @@ export async function syncPlaylists() {
 
     }
 
+        // Mark sync as complete
+        completeSyncType('playlists');
+    } catch (e: unknown) {
+        const message = e instanceof Error ? e.message : 'Unknown error';
+        errorSyncType('playlists', message);
+        throw e;
+    }
 }
 
 
@@ -201,12 +219,9 @@ function run() {
     console.log(`Start syncing items`)
     syncPlaylists()
         .then(() => {
-            completeSyncType('playlists');
             console.log(`Sync complete`)
         })
         .catch((e: unknown) => {
-            const message = e instanceof Error ? e.message : 'Unknown error';
-            errorSyncType('playlists', message);
             console.log(e)
         })
 }

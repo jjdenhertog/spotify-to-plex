@@ -8,6 +8,7 @@ import { startSyncType } from '../utils/startSyncType';
 import { clearSyncTypeLogs } from '../utils/clearSyncTypeLogs';
 import { completeSyncType } from '../utils/completeSyncType';
 import { errorSyncType } from '../utils/errorSyncType';
+import { updateSyncTypeProgress } from '../utils/updateSyncTypeProgress';
 import { loadMQTTConfig } from '../services/mqtt/config';
 import { createMQTTClient } from '../services/mqtt/createMQTTClient';
 import { loadMQTTData } from '../services/mqtt/loadMQTTData';
@@ -101,6 +102,9 @@ export async function syncMQTT() {
             const item = savedItems[i];
             if (!item?.label)
                 continue;
+
+            // Update progress
+            updateSyncTypeProgress('mqtt', i + 1, savedItems.length);
 
             const itemLog = putLog(`mqtt_${item.id}`, item.title);
             categories.add(item.label);
@@ -232,9 +236,12 @@ export async function syncMQTT() {
             console.log(`[MQTT] Successfully published ${successCount} items (${countByType.playlists} playlists, ${countByType.albums} albums, ${countByType['plex-media']} plex media)`);
         }
 
+        // Mark sync as complete
+        completeSyncType('mqtt');
     } catch (error) {
         const message = error instanceof Error ? error.message : 'Unknown error';
         console.error(`[MQTT] ERROR: ${message}`);
+        errorSyncType('mqtt', message);
         throw error;
     } finally {
         if (!isDryRun && client)
@@ -273,14 +280,10 @@ function run() {
     console.log('Start MQTT sync');
     syncMQTT()
         .then(() => {
-            completeSyncType('mqtt');
             console.log('MQTT sync complete');
         })
         .catch((e: unknown) => {
-            const message = e instanceof Error ? e.message : 'Unknown error';
-            errorSyncType('mqtt', message);
             console.error('MQTT sync failed:', e);
-            throw e;
         });
 }
 
