@@ -417,20 +417,8 @@ Navigate to **Advanced → SLSKD Integration** in the web interface and configur
 
 ### Using SLSKD
 
-Once configured, SLSKD integration works in two ways:
+Once configured you can manually search for SLSKD songs via the Missing Tracks dialog. Or use the automatic synchronization during the daily sync. 
 
-#### Manual Search
-
-When viewing missing tracks for a playlist, you can manually send the tracks to SLSKD.
-
-#### Automatic Synchronization
-
-When automatic sync is enabled, SLSKD will:
-1. Read missing tracks from `missing_tracks_spotify.txt` in your storage folder
-2. Search the Soulseek network for each track
-3. Apply quality filters and matching logic
-4. Automatically queue downloads for matching files
-5. Log all actions in `slskd_sync_log.json`
 
 ### Slow Soulseek Search
 
