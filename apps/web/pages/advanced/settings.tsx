@@ -1,5 +1,6 @@
 import Logo from "@/components/Logo";
 import LidarrSettings from "@/components/LidarrSettings";
+import SlskdSettings from "@/components/SlskdSettings";
 import SpotifyNavigation from "@/components/SpotifyNavigation";
 import MainLayout from "@/layouts/MainLayout";
 import { Container, Paper, Typography, Divider } from '@mui/material';
@@ -10,7 +11,9 @@ const Page: NextPage = () => {
     return (
         <>
             <Head>
-                <title>Settings - Spotify to Plex</title>
+                <title>
+                    Settings - Spotify to Plex
+                </title>
             </Head>
             <MainLayout maxWidth="700px">
                 <Container>
@@ -28,7 +31,9 @@ const Page: NextPage = () => {
 
                         <LidarrSettings />
 
-                        {/* Future settings sections go here */}
+                        <Divider sx={{ my: 4 }} />
+
+                        <SlskdSettings />
                     </Paper>
                 </Container>
             </MainLayout>

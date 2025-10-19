@@ -19,6 +19,7 @@
     "dev:sync:albums": "dotenv -e ../web/.env.local -- tsx src/jobs/albums.ts -- force",
     "dev:sync:users": "dotenv -e ../web/.env.local -- tsx src/jobs/users.ts -- force",
     "dev:sync:lidarr": "dotenv -e ../web/.env.local -- tsx src/jobs/lidarr.ts",
+    "dev:sync:slskd": "dotenv -e ../web/.env.local -- tsx src/jobs/slskd.ts",
     "dev:mqtt": "dotenv -e ../web/.env.local -- tsx src/jobs/mqtt.ts",
     "lint": "eslint src",
     "lint:fix": "eslint src --fix",

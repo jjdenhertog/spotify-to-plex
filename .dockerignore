@@ -2,6 +2,20 @@
 node_modules
 **/node_modules
 .pnpm-store
+.claude
+.claude-flow
+.github
+.hive-mind
+.swarm
+.vscode
+analysis
+coordination
+docs
+memory
+storage
+CLAUDE.md
+claude-flow
+.mcp.json
 
 # Build outputs and temp files
 dist

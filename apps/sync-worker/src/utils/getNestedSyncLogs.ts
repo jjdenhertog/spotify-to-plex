@@ -12,7 +12,8 @@ export function getNestedSyncLogs(): SyncLogCollection {
             albums: [],
             playlists: [],
             lidarr: [],
-            mqtt: []
+            mqtt: [],
+            slskd: []
         };
     }
 
@@ -26,7 +27,8 @@ export function getNestedSyncLogs(): SyncLogCollection {
             albums: [],
             playlists: [],
             lidarr: [],
-            mqtt: []
+            mqtt: [],
+            slskd: []
         };
     }
 }

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-loop-func */
+/* eslint-disable max-lines */
 import { errorBoundary } from "@/helpers/errors/errorBoundary";
 import { GetTidalTracksResponse } from "@/pages/api/tidal";
 import { Track } from "@spotify-to-plex/shared-types/spotify/Track";
@@ -7,6 +9,7 @@ import axios from "axios";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { PlexPlaylistProps } from "./PlexPlaylist";
 import LidarrAlbumDialog from './LidarrAlbumDialog';
+import MissingTrack, { MissingTrackHandle } from './MissingTrack';
 
 type Props = {
     readonly onClose: () => void,
@@ -29,6 +32,17 @@ export default function ExportMissingTracks(props: Props) {
     ///////////////////////////////////////////////
     const [lidarrDialogOpen, setLidarrDialogOpen] = useState(false);
     const [lidarrEnabled, setLidarrEnabled] = useState(false);
+
+    ///////////////////////////////////////////////
+    // SLSKD
+    ///////////////////////////////////////////////
+    const [slskdEnabled, setSlskdEnabled] = useState(false);
+    const [sendingToSlskd, setSendingToSlskd] = useState(false);
+    const trackRefs = useRef<(MissingTrackHandle | null)[]>([]);
+
+    const setTrackRefs = useCallback((index: number) => (ref: MissingTrackHandle | null) => {
+        trackRefs.current[index] = ref;
+    }, []);
 
     ///////////////////////////////////////////////
     // Pagination
@@ -148,6 +162,23 @@ export default function ExportMissingTracks(props: Props) {
         setLidarrDialogOpen(false);
     }, []);
 
+    const handleSendPageToSlskd = useCallback(async () => {
+        setSendingToSlskd(true);
+
+        // Sequential processing through refs
+        for (let i = 0; i < trackRefs.current.length; i++) {
+            const ref = trackRefs.current[i];
+            if (ref) 
+                await ref.sendToSlskd();
+        }
+
+        setSendingToSlskd(false);
+    }, []);
+
+    const onSendPageToSlskdClick = useCallback(() => {
+        handleSendPageToSlskd();
+    }, [handleSendPageToSlskd]);
+
     // Extract unique albums for Lidarr
     const uniqueAlbums = useMemo(() => {
         const albumMap = new Map<string, { artist_name: string; album_name: string; spotify_album_id: string }>();
@@ -216,6 +247,14 @@ export default function ExportMissingTracks(props: Props) {
         });
     }, []);
 
+    // Check if SLSKD is enabled
+    useEffect(() => {
+        errorBoundary(async () => {
+            const result = await axios.get('/api/slskd/settings');
+            setSlskdEnabled(result.data.enabled);
+        });
+    }, []);
+
     const hasTidalTracks = tidalTracks.some(item => item.tidal_ids && item.tidal_ids.length > 0)
 
     return (<>
@@ -263,15 +302,22 @@ export default function ExportMissingTracks(props: Props) {
                                             Send to Lidarr ({uniqueAlbums.length} albums)
                                         </Button>
                                     )}
+
+                                    {!!slskdEnabled && visibleTracks.length > 0 && (
+                                        <Button variant="outlined" onClick={onSendPageToSlskdClick} disabled={sendingToSlskd}>
+                                            {sendingToSlskd ? 'Sending...' : `Send Page to SLSKD (${visibleTracks.length} tracks)`}
+                                        </Button>
+                                    )}
                                 </>
                             }
                         </Box>
                         {!canUseTidal &&
-                            <Alert severity="warning" sx={{ fontWeight: 'normal',  mt:1 }}>
+                            <Alert severity="warning" sx={{ fontWeight: 'normal', mt: 1 }}>
                                 You have not added Tidal credentials. Visit Github for more info.
                             </Alert>
                         }
                         <Divider sx={{ mt: 1, mb: 2 }} />
+
                         {!!loadingTracks &&
                             <Box >
                                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, border: '2px solid rgba(255,255,255,0.5)', borderRadius: '4px', p: 2, textAlign: 'center' }}>
@@ -300,65 +346,16 @@ export default function ExportMissingTracks(props: Props) {
                         }
 
                         <Box>
+                            {visibleTracks.map((item, index) => {
+                                const tidalTrack = tidalTracks.find(tidalTrack => tidalTrack.id === item.id);
 
-                            {visibleTracks.map(item => {
-
-                                const tidalTrack = tidalTracks.find(tidalTrack => tidalTrack.id === item.id)
-
-                                return <>
-                                    <Box
-                                        key={item.id}
-                                        sx={{
-                                            display: 'flex',
-                                            justifyContent: 'space-between',
-                                            '& .btn': { visibility: 'hidden' },
-                                            '&:hover .btn': { visibility: 'visible' },
-                                            gap: 1,
-                                            mb: 1
-                                        }}>
-
-                                        <Box>
-                                            <Typography variant="body2" color={!!tidalTrack && !!tidalTrack.tidal_ids && tidalTrack.tidal_ids.length === 0 ? 'warning' : undefined}>
-                                                {item.title}
-                                            </Typography>
-                                            <Typography variant="caption">{item.artists.join(', ')}</Typography>
-                                        </Box>
-                                        <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end' }}>
-                                            <Box>
-                                                {!!tidalTrack && !!tidalTrack.tidal_ids && tidalTrack.tidal_ids.length > 0 &&
-                                                    <Button
-                                                        component="a"
-                                                        href={`https://tidal.com/browse/track/${tidalTrack.tidal_ids[0]}`}
-                                                        target="_blank"
-                                                        className="btn"
-                                                        color="inherit"
-                                                        variant="outlined"
-                                                        size="small"
-                                                        sx={{ fontSize: '.8em' }}>Tidal</Button>
-                                                }
-                                            </Box>
-                                            <Box>
-                                                <Button
-                                                    component="a"
-                                                    href={`https://open.spotify.com/track/${item.id}`}
-                                                    target="_blank"
-                                                    className="btn"
-                                                    color="inherit"
-                                                    variant="outlined"
-                                                    size="small"
-                                                    sx={{ fontSize: '.8em' }}>Spotify</Button>
-                                            </Box>
-                                        </Box>
-                                    </Box>
-                                    <Divider sx={{ mt: 1, mb: 1 }} />
-                                </>
-
+                                return <MissingTrack key={item.id} ref={setTrackRefs(index)} track={item} tidalTrack={tidalTrack} slskdEnabled={slskdEnabled} />;
                             })}
 
                             {totalPages > 1 &&
                                 <Box mt={1} display="flex" justifyContent="space-between">
-                                    <Button size="small" variant="outlined" color="inherit" disabled={page <= 0} onClick={prevPageClick}>Previous</Button>
-                                    <Button size="small" variant="outlined" color="inherit" disabled={page >= totalPages-1} onClick={nextPageClick}>Next</Button>
+                                    <Button size="small" variant="outlined" color="inherit" disabled={page <= 0 || sendingToSlskd} onClick={prevPageClick}>Previous</Button>
+                                    <Button size="small" variant="outlined" color="inherit" disabled={page >= totalPages - 1 || sendingToSlskd} onClick={nextPageClick}>Next</Button>
                                 </Box>
                             }
 

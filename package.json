@@ -5,7 +5,7 @@
         "apps/*",
         "packages/*"
     ],
-    "version": "1.0.86",
+    "version": "1.0.87",
     "description": "Sync Spotify with your Plex Library.",
     "keywords": [
         "plex",
@@ -37,6 +37,7 @@
         "dev:sync:albums": "npm run dev:sync:albums --workspace=@spotify-to-plex/sync-worker",
         "dev:sync:users": "npm run dev:sync:users --workspace=@spotify-to-plex/sync-worker",
         "dev:sync:lidarr": "npm run dev:sync:lidarr --workspace=@spotify-to-plex/sync-worker",
+        "dev:sync:slskd": "npm run dev:sync:slskd --workspace=@spotify-to-plex/sync-worker",
         "dev:mqtt": "npm run dev:mqtt --workspace=@spotify-to-plex/sync-worker",
         "start": "npm run start --workspace=@spotify-to-plex/web",
         "lint": "npm run lint --workspaces --if-present",

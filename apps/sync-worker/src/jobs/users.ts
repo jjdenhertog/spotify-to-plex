@@ -27,74 +27,74 @@ export async function syncUsers() {
 
     try {
 
-    await refreshAccessTokens()
-    const credentials: SpotifyCredentials[] = JSON.parse(readFileSync(credentialsPath, 'utf8'))
+        await refreshAccessTokens()
+        const credentials: SpotifyCredentials[] = JSON.parse(readFileSync(credentialsPath, 'utf8'))
 
-    const savedItems = savedItemsHelpers()
+        const savedItems = savedItemsHelpers()
 
-    for (let i = 0; i < credentials.length; i++) {
+        for (let i = 0; i < credentials.length; i++) {
         // Update progress
-        updateSyncTypeProgress('users', i + 1, credentials.length);
+            updateSyncTypeProgress('users', i + 1, credentials.length);
 
-        try {
-            const credential = credentials[i];
-            if (!credential?.user)
-                continue;
+            try {
+                const credential = credentials[i];
+                if (!credential?.user)
+                    continue;
 
-            const { user } = credential;
-            if (!user.sync)
-                continue;
+                const { user } = credential;
+                if (!user.sync)
+                    continue;
 
-            const accessToken = await getAccessToken(user.id)
-            if (!accessToken)
-                continue;
+                const accessToken = await getAccessToken(user.id)
+                if (!accessToken)
+                    continue;
 
-            const api = SpotifyApi.withAccessToken(`${process.env.SPOTIFY_API_CLIENT_ID}`, accessToken)
+                const api = SpotifyApi.withAccessToken(`${process.env.SPOTIFY_API_CLIENT_ID}`, accessToken)
 
-            // Get the last 50 tracks.
-            const recentPlayedContexts: RecentPlayedContext[] = []
-            const result = await api.player.getRecentlyPlayedTracks(49)
+                // Get the last 50 tracks.
+                const recentPlayedContexts: RecentPlayedContext[] = []
+                const result = await api.player.getRecentlyPlayedTracks(49)
 
-            for (let j = 0; j < result.items.length; j++) {
-                const element = result.items[j];
+                for (let j = 0; j < result.items.length; j++) {
+                    const element = result.items[j];
                 
-                if (element?.context && !recentPlayedContexts.some(item => item.uri == element.context.uri)){
-                    recentPlayedContexts.push(element.context)
+                    if (element?.context && !recentPlayedContexts.some(item => item.uri == element.context.uri)){
+                        recentPlayedContexts.push(element.context)
+                    }
                 }
-            }
 
-            const { label, id: userId } = user;
+                const { label, id: userId } = user;
 
-            for (let i = 0; i < recentPlayedContexts.length; i++) {
-                const context = recentPlayedContexts[i];
-                if (!context?.uri || savedItems.items.some(item => item.uri == context.uri))
-                    continue;
+                for (let i = 0; i < recentPlayedContexts.length; i++) {
+                    const context = recentPlayedContexts[i];
+                    if (!context?.uri || savedItems.items.some(item => item.uri == context.uri))
+                        continue;
 
-                const data = await loadSpotifyData(context.uri, userId, true)
-                if (!data)
-                    continue;
+                    const data = await loadSpotifyData(context.uri, userId, true)
+                    if (!data)
+                        continue;
 
-                const { type, id: resultId, title: name, image } = data;
-                const savedItem: SavedItem = {
-                    type: type as SavedItem['type'],
-                    uri: context.uri,
-                    id: resultId,
-                    title: name,
-                    image,
-                    sync: true,
-                    sync_interval: "0",
-                    label,
-                    user: userId
+                    const { type, id: resultId, title: name, image } = data;
+                    const savedItem: SavedItem = {
+                        type: type as SavedItem['type'],
+                        uri: context.uri,
+                        id: resultId,
+                        title: name,
+                        image,
+                        sync: true,
+                        sync_interval: "0",
+                        label,
+                        user: userId
+                    }
+                    savedItems.add(savedItem);
                 }
-                savedItems.add(savedItem);
-            }
 
-            // Store saved item
-            savedItems.save()
-        } catch (e) {
-            console.log(e)
+                // Store saved item
+                savedItems.save()
+            } catch (e) {
+                console.log(e)
+            }
         }
-    }
 
         // Mark sync as complete
         completeSyncType('users');

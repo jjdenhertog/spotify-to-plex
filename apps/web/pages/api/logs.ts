@@ -1,15 +1,16 @@
 import { generateError } from '@/helpers/errors/generateError';
 import { getStorageDir } from '@spotify-to-plex/shared-utils/utils/getStorageDir';
 import { SyncTypeLogCollection, SyncLogCollection } from '@spotify-to-plex/shared-types/common/sync';
-import { readFileSync, existsSync, unlinkSync } from 'fs';
+import { readFileSync, existsSync, unlinkSync } from 'node:fs';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createRouter } from 'next-connect';
-import { join } from 'path';
+import { join } from 'node:path';
 
 export type GetLogsResponse = {
     sync_type_log: SyncTypeLogCollection;
     sync_log: SyncLogCollection;
     lidarr_sync_log: Record<string, any>;
+    slskd_sync_log: Record<string, any>;
     missing_files: {
         missing_tracks_spotify: string;
         missing_tracks_tidal: string;
@@ -17,6 +18,7 @@ export type GetLogsResponse = {
         missing_albums_tidal: string;
         missing_tracks_lidarr: string;
         missing_albums_lidarr: string;
+        missing_tracks_slskd: string;
     };
 }
 
@@ -32,7 +34,8 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                     albums: undefined,
                     playlists: undefined,
                     lidarr: undefined,
-                    mqtt: undefined
+                    mqtt: undefined,
+                    slskd: undefined
                 };
                 const syncTypeLogPath = join(storageDir, 'sync_type_log.json');
                 if (existsSync(syncTypeLogPath)) {
@@ -50,7 +53,8 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                     albums: [],
                     playlists: [],
                     lidarr: [],
-                    mqtt: []
+                    mqtt: [],
+                    slskd: []
                 };
                 const syncLogPath = join(storageDir, 'sync_log.json');
                 if (existsSync(syncLogPath)) {
@@ -74,6 +78,18 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                     }
                 }
 
+                // Read slskd_sync_log.json with fallback
+                let slskdSyncLog = {};
+                const slskdSyncLogPath = join(storageDir, 'slskd_sync_log.json');
+                if (existsSync(slskdSyncLogPath)) {
+                    try {
+                        const content = readFileSync(slskdSyncLogPath, 'utf-8');
+                        slskdSyncLog = JSON.parse(content);
+                    } catch (error) {
+                        console.error('Error parsing slskd_sync_log.json:', error);
+                    }
+                }
+
                 // Read all missing files
                 const readMissingFile = (filename: string): string => {
                     const filePath = join(storageDir, filename);
@@ -82,9 +98,11 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                             return readFileSync(filePath, 'utf-8');
                         } catch (error) {
                             console.error(`Error reading ${filename}:`, error);
+
                             return '';
                         }
                     }
+
                     return '';
                 };
 
@@ -93,12 +111,15 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                     if (existsSync(filePath)) {
                         try {
                             const content = readFileSync(filePath, 'utf-8');
+
                             return JSON.stringify(JSON.parse(content), null, 2);
                         } catch (error) {
                             console.error(`Error reading ${filename}:`, error);
+
                             return '';
                         }
                     }
+
                     return '';
                 };
 
@@ -106,6 +127,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                     sync_type_log: syncTypeLog,
                     sync_log: syncLog,
                     lidarr_sync_log: lidarrSyncLog,
+                    slskd_sync_log: slskdSyncLog,
                     missing_files: {
                         missing_tracks_spotify: readMissingFile('missing_tracks_spotify.txt'),
                         missing_tracks_tidal: readMissingFile('missing_tracks_tidal.txt'),
@@ -113,6 +135,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                         missing_albums_tidal: readMissingFile('missing_albums_tidal.txt'),
                         missing_tracks_lidarr: readMissingJsonFile('missing_tracks_lidarr.json'),
                         missing_albums_lidarr: readMissingJsonFile('missing_albums_lidarr.json'),
+                        missing_tracks_slskd: readMissingJsonFile('missing_tracks_slskd.json'),
                     }
                 };
 
@@ -129,6 +152,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 const syncTypeLogPath = join(storageDir, 'sync_type_log.json');
                 const syncLogPath = join(storageDir, 'sync_log.json');
                 const lidarrSyncLogPath = join(storageDir, 'lidarr_sync_log.json');
+                const slskdSyncLogPath = join(storageDir, 'slskd_sync_log.json');
 
                 // Delete sync_type_log.json if it exists
                 if (existsSync(syncTypeLogPath)) {
@@ -143,6 +167,11 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 // Delete lidarr_sync_log.json if it exists
                 if (existsSync(lidarrSyncLogPath)) {
                     unlinkSync(lidarrSyncLogPath);
+                }
+
+                // Delete slskd_sync_log.json if it exists
+                if (existsSync(slskdSyncLogPath)) {
+                    unlinkSync(slskdSyncLogPath);
                 }
 
                 res.status(200).json({ message: 'Logs cleared successfully' });

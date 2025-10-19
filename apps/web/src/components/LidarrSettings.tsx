@@ -1,16 +1,7 @@
 import { errorBoundary } from "@/helpers/errors/errorBoundary";
-import {
-    Alert,
-    Box,
-    Button,
-    CircularProgress,
-    FormControlLabel,
-    Switch,
-    TextField,
-    Typography
-} from "@mui/material";
+import { Alert, Box, Button, CircularProgress, FormControlLabel, Switch, TextField, Typography } from "@mui/material";
 import axios from "axios";
-import { useCallback, useEffect, useState } from "react";
+import { ChangeEvent, useCallback, useEffect, useState } from "react";
 
 type LidarrSettings = {
     enabled: boolean;
@@ -61,6 +52,8 @@ export default function LidarrSettings() {
         await errorBoundary(async () => {
             await axios.put('/api/lidarr/settings', settings);
             setSaving(false);
+
+            // eslint-disable-next-line no-alert
             alert('Settings saved successfully!');
         }, () => {
             setSaving(false);
@@ -86,6 +79,39 @@ export default function LidarrSettings() {
         });
     }, [settings.url]);
 
+
+    const handleEnabledChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+        handleChange('enabled', e.target.checked);
+    }, [handleChange]);
+
+    const handleUrlChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+        handleChange('url', e.target.value);
+    }, [handleChange]);
+
+    const handleRootFolderPathChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+        handleChange('root_folder_path', e.target.value);
+    }, [handleChange]);
+
+    const handleQualityProfileIdChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+        handleChange('quality_profile_id', parseInt(e.target.value, 10));
+    }, [handleChange]);
+
+    const handleMetadataProfileIdChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+        handleChange('metadata_profile_id', parseInt(e.target.value, 10));
+    }, [handleChange]);
+
+    const handleAutoSyncChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+        handleChange('auto_sync', e.target.checked);
+    }, [handleChange]);
+
+    const handleSaveClick = useCallback(() => {
+        handleSave();
+    }, [handleSave]);
+
+    const handleTestConnectionClick = useCallback(() => {
+        handleTestConnection();
+    }, [handleTestConnection]);
+
     if (loading) {
         return (
             <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
@@ -93,6 +119,7 @@ export default function LidarrSettings() {
             </Box>
         );
     }
+
 
     return (
         <Box>
@@ -109,99 +136,53 @@ export default function LidarrSettings() {
                 </Alert>
             )}
 
-            <FormControlLabel
-                control={
-                    <Switch
-                        checked={settings.enabled}
-                        onChange={(e) => handleChange('enabled', e.target.checked)}
-                        disabled={!canUseLidarr}
-                    />
-                }
-                label="Enable Lidarr Integration"
-                sx={{ mb: 2 }}
-            />
+            <FormControlLabel control={<Switch checked={settings.enabled} onChange={handleEnabledChange} disabled={!canUseLidarr} />} label="Enable Lidarr Integration" sx={{ mb: 2 }} />
 
-            {settings.enabled && canUseLidarr && (
-                <>
-                    <TextField
-                        fullWidth
-                        label="Lidarr URL"
-                        placeholder="http://192.168.1.100:8686"
-                        value={settings.url}
-                        onChange={(e) => handleChange('url', e.target.value)}
-                        sx={{ mb: 2 }}
-                        helperText="The base URL of your Lidarr instance (e.g., http://192.168.1.100:8686)"
-                    />
+            {settings.enabled && canUseLidarr ? <>
+                <TextField
+                    fullWidth
+                    label="Lidarr URL"
+                    placeholder="http://192.168.1.100:8686"
+                    value={settings.url}
+                    onChange={handleUrlChange}
+                    sx={{ mb: 2 }}
+                    helperText="The base URL of your Lidarr instance (e.g., http://192.168.1.100:8686)"
+                />
 
-                    <TextField
-                        fullWidth
-                        label="Root Folder Path"
-                        placeholder="/library/lidarr/music"
-                        value={settings.root_folder_path}
-                        onChange={(e) => handleChange('root_folder_path', e.target.value)}
-                        sx={{ mb: 2 }}
-                        helperText="The root folder path in Lidarr where music will be downloaded"
-                    />
+                <TextField
+                    fullWidth
+                    label="Root Folder Path"
+                    placeholder="/library/lidarr/music"
+                    value={settings.root_folder_path}
+                    onChange={handleRootFolderPathChange}
+                    sx={{ mb: 2 }}
+                    helperText="The root folder path in Lidarr where music will be downloaded"
+                />
 
-                    <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
-                        <TextField
-                            label="Quality Profile ID"
-                            type="number"
-                            value={settings.quality_profile_id}
-                            onChange={(e) => handleChange('quality_profile_id', parseInt(e.target.value))}
-                            sx={{ flex: 1 }}
-                            helperText="Usually 1 for default profile"
-                        />
+                <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
+                    <TextField label="Quality Profile ID" type="number" value={settings.quality_profile_id} onChange={handleQualityProfileIdChange} sx={{ flex: 1 }} helperText="Usually 1 for default profile" />
+                    <TextField label="Metadata Profile ID" type="number" value={settings.metadata_profile_id} onChange={handleMetadataProfileIdChange} sx={{ flex: 1 }} helperText="Usually 1 for default profile" />
+                </Box>
 
-                        <TextField
-                            label="Metadata Profile ID"
-                            type="number"
-                            value={settings.metadata_profile_id}
-                            onChange={(e) => handleChange('metadata_profile_id', parseInt(e.target.value))}
-                            sx={{ flex: 1 }}
-                            helperText="Usually 1 for default profile"
-                        />
-                    </Box>
+                <FormControlLabel control={<Switch checked={settings.auto_sync} onChange={handleAutoSyncChange} />} label="Enable Automatic Synchronization" sx={{ mb: 2 }} />
+                <Typography variant="body2" sx={{ mb: 2, color: 'text.secondary' }}>
+                    When enabled, Lidarr will automatically download missing albums during daily synchronization.
+                </Typography>
 
-                    <FormControlLabel
-                        control={
-                            <Switch
-                                checked={settings.auto_sync}
-                                onChange={(e) => handleChange('auto_sync', e.target.checked)}
-                            />
-                        }
-                        label="Enable Automatic Synchronization"
-                        sx={{ mb: 2 }}
-                    />
-                    <Typography variant="body2" sx={{ mb: 2, color: 'text.secondary' }}>
-                        When enabled, Lidarr will automatically download missing albums during daily synchronization.
-                    </Typography>
+                <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
+                    <Button variant="outlined" onClick={handleTestConnectionClick} disabled={testing || !settings.url}>
+                        {testing ? 'Testing...' : 'Test Connection'}
+                    </Button>
 
-                    <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
-                        <Button
-                            variant="outlined"
-                            onClick={handleTestConnection}
-                            disabled={testing || !settings.url}
-                        >
-                            {testing ? 'Testing...' : 'Test Connection'}
-                        </Button>
+                    <Button variant="contained" onClick={handleSaveClick} disabled={saving}>
+                        {saving ? 'Saving...' : 'Save Settings'}
+                    </Button>
+                </Box>
 
-                        <Button
-                            variant="contained"
-                            onClick={handleSave}
-                            disabled={saving}
-                        >
-                            {saving ? 'Saving...' : 'Save Settings'}
-                        </Button>
-                    </Box>
-
-                    {testResult && (
-                        <Alert severity={testResult.success ? 'success' : 'error'} sx={{ mb: 2 }}>
-                            {testResult.message}
-                        </Alert>
-                    )}
-                </>
-            )}
+                {testResult ? <Alert severity={testResult.success ? 'success' : 'error'} sx={{ mb: 2 }}>
+                    {testResult.message}
+                </Alert> : null}
+            </> : null}
         </Box>
     );
 }

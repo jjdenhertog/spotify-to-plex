@@ -29,7 +29,7 @@ function TabPanel(props: TabPanelProps) {
     );
 }
 
-export default function fLogs() {
+export default function Logs() {
     const [loading, setLoading] = useState(true);
     const [data, setData] = useState<GetLogsResponse | null>(null);
     const [tabValue, setTabValue] = useState(0);
@@ -53,6 +53,7 @@ export default function fLogs() {
     }, []);
 
     const handleClearLogs = useCallback(async () => {
+        // eslint-disable-next-line no-alert
         if (!confirm('Are you sure you want to clear all logs? This action cannot be undone.')) {
             return;
         }
@@ -77,6 +78,7 @@ export default function fLogs() {
             albums: 'Albums',
             playlists: 'Playlists',
             lidarr: 'Lidarr',
+            slskd: 'SLSKD',
             mqtt: 'MQTT'
         };
 
@@ -100,7 +102,7 @@ export default function fLogs() {
     const renderOverview = () => {
         if (!data) return null;
 
-        const syncTypes: SyncType[] = ['users', 'albums', 'playlists', 'lidarr', 'mqtt'];
+        const syncTypes: SyncType[] = ['users', 'albums', 'playlists', 'lidarr', 'slskd', 'mqtt'];
 
         return (
             <Box sx={{ mb: 3 }}>
@@ -124,16 +126,10 @@ export default function fLogs() {
                                                         {formatDuration(duration)}
                                                     </Typography>
                                                 )}
-                                                <Chip
-                                                    label={typeLog.status}
-                                                    color={typeLog.status === 'success' ? 'success' : typeLog.status === 'error' ? 'error' : 'default'}
-                                                    size="small"
-                                                />
-                                                {typeLog.start && (
-                                                    <Typography variant="body2" color="text.secondary">
-                                                        <BMoment date={typeLog.start} format="D MMM HH:mm" />
-                                                    </Typography>
-                                                )}
+                                                <Chip label={typeLog.status} color={typeLog.status==='success' ? 'success' : typeLog.status==='error' ? 'error' : 'default'} size="small" />
+                                                {typeLog.start ? <Typography variant="body2" color="text.secondary">
+                                                    <BMoment date={typeLog.start} format="D MMM HH:mm" />
+                                                </Typography> : null}
                                             </>
                                         ) : (
                                             <Typography variant="body2" color="text.secondary">
@@ -142,11 +138,9 @@ export default function fLogs() {
                                         )}
                                     </Box>
                                 </Box>
-                                {typeLog?.error && (
-                                    <Typography variant="body2" color="error" sx={{ mt: 1 }}>
-                                        {typeLog.error}
-                                    </Typography>
-                                )}
+                                {typeLog?.error ? <Typography variant="body2" color="error" sx={{ mt: 1 }}>
+                                    {typeLog.error}
+                                </Typography> : null}
                             </Paper>
                         );
                     })}
@@ -192,22 +186,15 @@ export default function fLogs() {
                                 <Typography variant="body2" sx={{ minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1 }}>
                                     {log.title}
                                 </Typography>
-                                {log.start && (
-                                    <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: 'nowrap' }}>
-                                        <BMoment date={log.start} format="D MMM HH:mm" />
-                                    </Typography>
-                                )}
+                                {log.start ? <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: 'nowrap' }}>
+                                    <BMoment date={log.start} format="D MMM HH:mm" />
+                                </Typography> : null}
                                 {duration !== null && (
                                     <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: 'nowrap', minWidth: '60px', textAlign: 'right' }}>
                                         {formatDuration(duration)}
                                     </Typography>
                                 )}
-                                <Chip
-                                    label={hasError ? 'Error' : 'Success'}
-                                    color={hasError ? 'error' : 'success'}
-                                    size="small"
-                                    sx={{ minWidth: '75px' }}
-                                />
+                                <Chip label={hasError ? 'Error' : 'Success'} color={hasError ? 'error' : 'success'} size="small" sx={{ minWidth: '75px' }} />
                             </Box>
                         </Box>
                     );
@@ -254,22 +241,72 @@ export default function fLogs() {
                                 <Typography variant="body2" sx={{ minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1 }}>
                                     {log.artist_name} - {log.album_name}
                                 </Typography>
-                                {log.start && (
-                                    <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: 'nowrap' }}>
-                                        <BMoment date={log.start} format="D MMM HH:mm" />
-                                    </Typography>
-                                )}
+                                {log.start ? <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: 'nowrap' }}>
+                                    <BMoment date={log.start} format="D MMM HH:mm" />
+                                </Typography> : null}
                                 {duration !== null && (
                                     <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: 'nowrap', minWidth: '60px', textAlign: 'right' }}>
                                         {formatDuration(duration)}
                                     </Typography>
                                 )}
-                                <Chip
-                                    label={log.status}
-                                    color={log.status === 'success' ? 'success' : log.status === 'error' ? 'error' : 'warning'}
-                                    size="small"
-                                    sx={{ minWidth: '85px' }}
-                                />
+                                <Chip label={log.status} color={log.status==='success' ? 'success' : log.status==='error' ? 'error' : 'warning'} size="small" sx={{ minWidth: '85px' }} />
+                            </Box>
+                        </Box>
+                    );
+                })}
+            </Box>
+        );
+    };
+
+    const renderSlskdDetailLogs = () => {
+        if (!data?.slskd_sync_log || Object.keys(data.slskd_sync_log).length === 0) {
+            return (
+                <Alert severity="info">
+                    No SLSKD synchronization detail logs found. Logs will appear here after tracks are sent to SLSKD.
+                </Alert>
+            );
+        }
+
+        const slskdEntries = Object.entries(data.slskd_sync_log)
+            .map(([id, log]: [string, any]) => ({ id, ...log }))
+            .sort((a, b) => (b.start || 0) - (a.start || 0))
+            .slice(0, 100);
+
+        return (
+            <Box>
+                {slskdEntries.map((log) => {
+                    const duration = log.end && log.start ? log.end - log.start : null;
+                    const hasError = log.status === 'error';
+                    const notFound = log.status === 'not_found';
+                    const isQueued = log.status === 'queued';
+
+                    return (
+                        <Box
+                            key={log.id}
+                            sx={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                alignItems: 'center',
+                                py: 0.75,
+                                px: 1.5,
+                                bgcolor: hasError ? 'error.lighter' : 'action.hover',
+                                borderRadius: 1,
+                                mb: 0.5
+                            }}
+                        >
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flex: 1, minWidth: 0 }}>
+                                <Typography variant="body2" sx={{ minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1 }}>
+                                    {log.artist_name} - {log.track_name}
+                                </Typography>
+                                {log.start ? <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: 'nowrap' }}>
+                                    <BMoment date={log.start} format="D MMM HH:mm" />
+                                </Typography> : null}
+                                {duration !== null && (
+                                    <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: 'nowrap', minWidth: '60px', textAlign: 'right' }}>
+                                        {formatDuration(duration)}
+                                    </Typography>
+                                )}
+                                <Chip label={log.status} color={log.status==='success' || isQueued ? 'success' : notFound ? 'warning' : 'error'} size="small" sx={{ minWidth: '85px' }} />
                             </Box>
                         </Box>
                     );
@@ -288,6 +325,7 @@ export default function fLogs() {
             { title: 'Missing Albums - Tidal', content: data.missing_files.missing_albums_tidal },
             { title: 'Missing Tracks - Lidarr (JSON)', content: data.missing_files.missing_tracks_lidarr },
             { title: 'Missing Albums - Lidarr (JSON)', content: data.missing_files.missing_albums_lidarr },
+            { title: 'Missing Tracks - SLSKD (JSON)', content: data.missing_files.missing_tracks_slskd }
         ];
 
         return (
@@ -298,11 +336,7 @@ export default function fLogs() {
                     return (
                         <Box key={file.title}>
                             <Typography variant="h6" sx={{ mb: 1 }}>{file.title}</Typography>
-                            {!hasContent ? (
-                                <Alert severity="info">
-                                    No data found for {file.title.toLowerCase()}.
-                                </Alert>
-                            ) : (
+                            {hasContent ? (
                                 <TextField
                                     multiline
                                     fullWidth
@@ -318,6 +352,10 @@ export default function fLogs() {
                                         }
                                     }}
                                 />
+                            ) : (
+                                <Alert severity="info">
+                                    No data found for {file.title.toLowerCase()}.
+                                </Alert>
                             )}
                         </Box>
                     );
@@ -353,6 +391,9 @@ export default function fLogs() {
     if (data?.lidarr_sync_log && Object.keys(data.lidarr_sync_log).length > 0)
         tabs.push({ label: 'Lidarr', type: 'lidarr' });
 
+    if (data?.slskd_sync_log && Object.keys(data.slskd_sync_log).length > 0)
+        tabs.push({ label: 'SLSKD', type: 'slskd' });
+
     if (data?.sync_log.mqtt && data.sync_log.mqtt.length > 0)
         tabs.push({ label: 'MQTT', type: 'mqtt' });
 
@@ -380,6 +421,7 @@ export default function fLogs() {
                     {tab.type === 'albums' && renderSyncTypeLogs('albums')}
                     {tab.type === 'playlists' && renderSyncTypeLogs('playlists')}
                     {tab.type === 'lidarr' && renderLidarrDetailLogs()}
+                    {tab.type === 'slskd' && renderSlskdDetailLogs()}
                     {tab.type === 'mqtt' && renderSyncTypeLogs('mqtt')}
                     {tab.type === 'output' && renderOutput()}
                 </TabPanel>

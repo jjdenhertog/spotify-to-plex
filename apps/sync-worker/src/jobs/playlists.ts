@@ -23,6 +23,7 @@ import { loadSpotifyData } from "../utils/loadSpotifyData";
 import { putPlexPlaylist } from "../utils/putPlexTracks";
 import { getSettings } from "@spotify-to-plex/plex-config/functions/getSettings";
 import { LidarrAlbumData } from "@spotify-to-plex/shared-types/lidarr/LidarrAlbumData";
+import { SlskdTrackData } from "@spotify-to-plex/shared-types/slskd/SlskdTrackData";
 
 
 export async function syncPlaylists() {
@@ -32,178 +33,200 @@ export async function syncPlaylists() {
 
     try {
 
-    // Check if we need to force syncing
-    const args = process.argv.slice(2);
-    const force = args.includes("force")
+        // Check if we need to force syncing
+        const args = process.argv.slice(2);
+        const force = args.includes("force")
 
-    const { toSyncPlaylists } = getSavedPlaylists()
-    const { putLog, logError, logComplete } = getNestedSyncLogsForType('playlists')
+        const { toSyncPlaylists } = getSavedPlaylists()
+        const { putLog, logError, logComplete } = getNestedSyncLogsForType('playlists')
 
-    const settings = await getSettings();
-    if (!settings.uri || !settings.token)
-        throw new Error("No plex connection found")
+        const settings = await getSettings();
+        if (!settings.uri || !settings.token)
+            throw new Error("No plex connection found")
 
-    const { playlists } = await getPlexPlaylists()
+        const { playlists } = await getPlexPlaylists()
 
-    const missingSpotifyTracks: string[] = []
-    const missingTidalTracks: string[] = []
-    const missingAlbumsLidarr: LidarrAlbumData[] = []
+        const missingSpotifyTracks: string[] = []
+        const missingTidalTracks: string[] = []
+        const missingAlbumsLidarr: LidarrAlbumData[] = []
+        const missingTracksSlskd: SlskdTrackData[] = []
 
-    for (let i = 0; i < toSyncPlaylists.length; i++) {
-        const item = toSyncPlaylists[i];
-        if (!item)
-            continue;
-
-        // Update progress
-        updateSyncTypeProgress('playlists', i + 1, toSyncPlaylists.length);
-
-        const { id, title, uri, user, sync_interval } = item;
-
-        //////////////////////////////////
-        // Load Plex playlist
-        //////////////////////////////////
-        const itemLog = putLog(id, title)
-        let days = Number(sync_interval)
-        if (isNaN(days))
-            days = 0;
-
-        try {
-
-            const nextSyncAfter = new Date((itemLog.end || 0) + (days * 24 * 60 * 60 * 1000));
-            if (nextSyncAfter.getTime() > Date.now() && !force) {
-                console.log(`Next sync on: ${nextSyncAfter.toString()}`)
+        for (let i = 0; i < toSyncPlaylists.length; i++) {
+            const item = toSyncPlaylists[i];
+            if (!item)
                 continue;
-            }
+
+            // Update progress
+            updateSyncTypeProgress('playlists', i + 1, toSyncPlaylists.length);
+
+            const { id, title, uri, user, sync_interval } = item;
 
             //////////////////////////////////
-            // Load Spotify Data
+            // Load Plex playlist
             //////////////////////////////////
-            const data = await loadSpotifyData(uri, user)
-            if (!data) {
-                logError(itemLog, `Spotify data could not be loaded`)
-                continue;
-            }
+            const itemLog = putLog(id, title)
+            let days = Number(sync_interval)
+            if (isNaN(days))
+                days = 0;
 
-            console.log(`---- Syncing ${data.title} ----`)
-            //////////////////////////////////
-            // Load Plex Playlists if it exists
-            //////////////////////////////////
-            // eslint-disable-next-line unicorn/consistent-destructuring
-            const foundPlaylist = playlists.find(item => item.id == id)
-            let plexPlaylist: Playlist | undefined | null = null
-            if (foundPlaylist) {
-                if (!settings.uri || !settings.token) {
-                    throw new Error('Plex settings not configured properly');
+            try {
+
+                const nextSyncAfter = new Date((itemLog.end || 0) + (days * 24 * 60 * 60 * 1000));
+                if (nextSyncAfter.getTime() > Date.now() && !force) {
+                    console.log(`Next sync on: ${nextSyncAfter.toString()}`)
+                    continue;
                 }
 
-                const url = getAPIUrl(settings.uri, `/playlists`);
-                const result = await handleOneRetryAttempt<GetPlaylistResponse>(() => AxiosRequest.get(url, settings.token));
-                
+                //////////////////////////////////
+                // Load Spotify Data
+                //////////////////////////////////
+                const data = await loadSpotifyData(uri, user)
+                if (!data) {
+                    logError(itemLog, `Spotify data could not be loaded`)
+                    continue;
+                }
+
+                console.log(`---- Syncing ${data.title} ----`)
+                //////////////////////////////////
+                // Load Plex Playlists if it exists
+                //////////////////////////////////
                 // eslint-disable-next-line unicorn/consistent-destructuring
-                plexPlaylist = result.data.MediaContainer.Metadata.find((item: Playlist) => item.ratingKey == foundPlaylist.plex)
-            }
+                const foundPlaylist = playlists.find(item => item.id == id)
+                let plexPlaylist: Playlist | undefined | null = null
+                if (foundPlaylist) {
+                    if (!settings.uri || !settings.token) {
+                        throw new Error('Plex settings not configured properly');
+                    }
 
-            //////////////////////////////////////
-            // Load music search configuration
-            //////////////////////////////////////
-            const musicSearchConfig = await getMusicSearchConfig();
-            if(!musicSearchConfig)
-                throw new Error(`Music search config not found`)
+                    const url = getAPIUrl(settings.uri, `/playlists`);
+                    const result = await handleOneRetryAttempt<GetPlaylistResponse>(() => AxiosRequest.get(url, settings.token));
+                
+                    // eslint-disable-next-line unicorn/consistent-destructuring
+                    plexPlaylist = result.data.MediaContainer.Metadata.find((item: Playlist) => item.ratingKey == foundPlaylist.plex)
+                }
 
-            const {searchApproaches} = musicSearchConfig;
-            if(!searchApproaches || searchApproaches.length === 0)
-                throw new Error(`Search approaches not found`)
+                //////////////////////////////////////
+                // Load music search configuration
+                //////////////////////////////////////
+                const musicSearchConfig = await getMusicSearchConfig();
+                if(!musicSearchConfig)
+                    throw new Error(`Music search config not found`)
 
-            const plexSearchConfig = {
-                uri: settings.uri,
-                token: settings.token,
-                musicSearchConfig,
-                searchApproaches
-            };
+                const {searchApproaches} = musicSearchConfig;
+                if(!searchApproaches || searchApproaches.length === 0)
+                    throw new Error(`Search approaches not found`)
 
-            // @ts-ignore
-            // eslint-disable-next-line prefer-const
-            let { result, add } = await getCachedPlexTracks(plexSearchConfig, data)
+                const plexSearchConfig = {
+                    uri: settings.uri,
+                    token: settings.token,
+                    musicSearchConfig,
+                    searchApproaches
+                };
 
-            // eslint-disable-next-line unicorn/consistent-destructuring
-            const toSearchItems = data.tracks.filter(track => !result.some((item: SearchResponse) => item.id == track.id))
-            if (toSearchItems.length > 0) {
-                console.log(`Searching for ${toSearchItems.length} tracks`)
-                const searchResult = await plexMusicSearch(plexSearchConfig, toSearchItems)
-                result = result.concat(searchResult)
+                // @ts-ignore
+                // eslint-disable-next-line prefer-const
+                let { result, add } = await getCachedPlexTracks(plexSearchConfig, data)
 
-                add(searchResult, 'plex')
-            }
+                // eslint-disable-next-line unicorn/consistent-destructuring
+                const toSearchItems = data.tracks.filter(track => !result.some((item: SearchResponse) => item.id == track.id))
+                if (toSearchItems.length > 0) {
+                    console.log(`Searching for ${toSearchItems.length} tracks`)
+                    const searchResult = await plexMusicSearch(plexSearchConfig, toSearchItems)
+                    result = result.concat(searchResult)
 
-            ////////////
-            // Put plex playlist
-            ////////////
-            await putPlexPlaylist(id, plexPlaylist, result, title, data.image)
+                    add(searchResult, 'plex')
+                }
 
-            ////////////
-            // Handle missing tracks
-            ////////////
-            const missingTracks = toSearchItems.filter(item => {
-                const { title: trackTitle, artists: trackArtists } = item;
+                ////////////
+                // Put plex playlist
+                ////////////
+                await putPlexPlaylist(id, plexPlaylist, result, title, data.image)
 
-                return result.some(track => track.title == trackTitle && trackArtists.indexOf(track.artist) > - 1 && track.result.length == 0)
-            })
-            if (missingTracks.length == 0) {
-                logComplete(itemLog)
-                continue;
-            }
+                ////////////
+                // Handle missing tracks
+                ////////////
+                const missingTracks = toSearchItems.filter(item => {
+                    const { title: trackTitle, artists: trackArtists } = item;
 
-            console.log(`Missing ${missingTracks.length} tracks`)
-            missingTracks.forEach(item => {
-                const id = item.id.indexOf(":") > -1 ? item.id.split(":")[2] : item.id;
-                if (typeof id === 'string' && !missingSpotifyTracks.includes(id))
-                    missingSpotifyTracks.push(id)
-            })
+                    return result.some(track => track.title == trackTitle && trackArtists.indexOf(track.artist) > - 1 && track.result.length == 0)
+                })
+                if (missingTracks.length == 0) {
+                    logComplete(itemLog)
+                    continue;
+                }
 
-            const tidalTracks = await findMissingTidalTracks(missingTracks)
-            tidalTracks.forEach(item => {
-                if (!missingTidalTracks.includes(item.tidal_id))
-                    missingTidalTracks.push(item.tidal_id)
-            })
+                console.log(`Missing ${missingTracks.length} tracks`)
+                missingTracks.forEach(item => {
+                    const id = item.id.indexOf(":") > -1 ? item.id.split(":")[2] : item.id;
+                    if (typeof id === 'string' && !missingSpotifyTracks.includes(id))
+                        missingSpotifyTracks.push(id)
+                })
 
-            // Collect unique albums for Lidarr
-            missingTracks.forEach(track => {
+                const tidalTracks = await findMissingTidalTracks(missingTracks)
+                tidalTracks.forEach(item => {
+                    if (!missingTidalTracks.includes(item.tidal_id))
+                        missingTidalTracks.push(item.tidal_id)
+                })
+
+                // Collect unique albums for Lidarr
+                missingTracks.forEach(track => {
                 // Skip tracks with unknown album_id
-                if (track.album_id === 'unknown') {
-                    console.log(`⚠️  Skipping track with unknown album_id: ${track.title} by ${track.artists[0]}`);
-                    return;
-                }
+                    if (track.album_id === 'unknown') {
+                        console.log(`⚠️  Skipping track with unknown album_id: ${track.title} by ${track.artists[0]}`);
 
-                const artist = track.artists[0] || 'Unknown Artist';
-                const album = track.album || 'Unknown Album';
-                const key = `${artist}|${album}`;
+                        return;
+                    }
 
-                // Check if album already exists in the array
-                if (!missingAlbumsLidarr.some(item => `${item.artist_name}|${item.album_name}` === key)) {
-                    missingAlbumsLidarr.push({
-                        artist_name: artist,
-                        album_name: album,
-                        spotify_album_id: track.album_id
-                    });
-                }
-            });
+                    const artist = track.artists[0] || 'Unknown Artist';
+                    const album = track.album || 'Unknown Album';
+                    const key = `${artist}|${album}`;
 
-            /////////////////////////////
-            // Store logs
-            /////////////////////////////
-            logComplete(itemLog)
+                    // Check if album already exists in the array
+                    if (!missingAlbumsLidarr.some(item => `${item.artist_name}|${item.album_name}` === key)) {
+                        missingAlbumsLidarr.push({
+                            artist_name: artist,
+                            album_name: album,
+                            spotify_album_id: track.album_id
+                        });
+                    }
+                });
 
-            // Store missing tracks
-            writeFileSync(join(getStorageDir(), 'missing_tracks_spotify.txt'), missingSpotifyTracks.map(id => `https://open.spotify.com/track/${id}`).join('\n'))
-            writeFileSync(join(getStorageDir(), 'missing_tracks_tidal.txt'), missingTidalTracks.map(id => `https://tidal.com/browse/track/${id}`).join('\n'))
-            writeFileSync(join(getStorageDir(), 'missing_tracks_lidarr.json'), JSON.stringify(missingAlbumsLidarr, null, 2))
+                // Collect track data for SLSKD
+                missingTracks.forEach(track => {
+                    const spotifyId = track.id.indexOf(":") > -1 ? track.id.split(":")[2] : track.id;
+                    const artist = track.artists[0] || 'Unknown Artist';
+                    const trackName = track.title || 'Unknown Track';
+                    const album = track.album || 'Unknown Album';
+                    const key = `${spotifyId}`;
 
-        } catch (e) {
-            const message = e instanceof Error ? e.message : 'Unknown error';
-            logError(itemLog, `Something went wrong while syncing: ${message}`)
+                    // Check if track already exists in the array
+                    if (spotifyId && !missingTracksSlskd.some(item => item.spotify_id === key)) {
+                        missingTracksSlskd.push({
+                            spotify_id: spotifyId,
+                            artist_name: artist,
+                            track_name: trackName,
+                            album_name: album
+                        });
+                    }
+                });
+
+                /////////////////////////////
+                // Store logs
+                /////////////////////////////
+                logComplete(itemLog)
+
+                // Store missing tracks
+                writeFileSync(join(getStorageDir(), 'missing_tracks_spotify.txt'), missingSpotifyTracks.map(id => `https://open.spotify.com/track/${id}`).join('\n'))
+                writeFileSync(join(getStorageDir(), 'missing_tracks_tidal.txt'), missingTidalTracks.map(id => `https://tidal.com/browse/track/${id}`).join('\n'))
+                writeFileSync(join(getStorageDir(), 'missing_tracks_lidarr.json'), JSON.stringify(missingAlbumsLidarr, null, 2))
+                writeFileSync(join(getStorageDir(), 'missing_tracks_slskd.json'), JSON.stringify(missingTracksSlskd, null, 2))
+
+            } catch (e) {
+                const message = e instanceof Error ? e.message : 'Unknown error';
+                logError(itemLog, `Something went wrong while syncing: ${message}`)
+            }
+
         }
-
-    }
 
         // Mark sync as complete
         completeSyncType('playlists');

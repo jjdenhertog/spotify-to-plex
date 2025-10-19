@@ -1,5 +1,6 @@
 import { generateError } from '@/helpers/errors/generateError';
 import { getLidarrSettings } from '@spotify-to-plex/plex-config/functions/getLidarrSettings';
+import { getSlskdSettings } from '@spotify-to-plex/plex-config/functions/getSlskdSettings';
 import { getStorageDir } from "@spotify-to-plex/shared-utils/utils/getStorageDir";
 import { SpotifyCredentials } from '@spotify-to-plex/shared-types/spotify/SpotifyCredentials';
 import type { NextApiRequest, NextApiResponse } from 'next';
@@ -13,6 +14,7 @@ export type SyncAvailability = {
     playlists: boolean;
     lidarr: boolean;
     mqtt: boolean;
+    slskd: boolean;
 }
 
 const router = createRouter<NextApiRequest, NextApiResponse>()
@@ -30,9 +32,18 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
             let lidarrAvailable = false;
             try {
                 const lidarrSettings = await getLidarrSettings();
-                lidarrAvailable = lidarrSettings.enabled === true && !!process.env.LIDARR_API_KEY;
+                lidarrAvailable = lidarrSettings.enabled && !!process.env.LIDARR_API_KEY;
             } catch {
                 // Lidarr settings not configured
+            }
+
+            // Check SLSKD - enabled in settings AND API key configured
+            let slskdAvailable = false;
+            try {
+                const slskdSettings = await getSlskdSettings();
+                slskdAvailable = slskdSettings.enabled && !!process.env.SLSKD_API_KEY;
+            } catch {
+                // SLSKD settings not configured
             }
 
             // Check MQTT - broker URL configured
@@ -44,7 +55,8 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 albums: true,
                 playlists: true,
                 lidarr: lidarrAvailable,
-                mqtt: mqttAvailable
+                mqtt: mqttAvailable,
+                slskd: slskdAvailable
             };
 
             res.status(200).json(availability);

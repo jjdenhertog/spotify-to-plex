@@ -7,7 +7,7 @@ export type SyncLog = {
     error?: string;
 };
 
-export type SyncType = 'users' | 'albums' | 'playlists' | 'lidarr' | 'mqtt';
+export type SyncType = 'users' | 'albums' | 'playlists' | 'lidarr' | 'mqtt' | 'slskd';
 
 export type SyncTypeLog = {
     type: SyncType;
@@ -27,6 +27,7 @@ export type SyncTypeLogCollection = {
     playlists?: SyncTypeLog;
     lidarr?: SyncTypeLog;
     mqtt?: SyncTypeLog;
+    slskd?: SyncTypeLog;
 };
 
 export type SyncLogCollection = {
@@ -35,4 +36,5 @@ export type SyncLogCollection = {
     playlists: SyncLog[];
     lidarr: SyncLog[];
     mqtt: SyncLog[];
+    slskd: SyncLog[];
 };

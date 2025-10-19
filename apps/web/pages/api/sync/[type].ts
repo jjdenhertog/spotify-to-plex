@@ -4,6 +4,7 @@ import { syncPlaylists } from 'cronjob/playlists';
 import { syncUsers } from 'cronjob/users';
 import { syncLidarr } from 'cronjob/lidarr';
 import { syncMQTT } from 'cronjob/mqtt';
+import { syncSlskd } from 'cronjob/slskd';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createRouter } from 'next-connect';
 
@@ -13,8 +14,8 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
 
             const { type } = req.query
 
-            if (type !== 'albums' && type !== 'playlists' && type !== "users" && type !== "lidarr" && type !== "mqtt" && type !== "all")
-                throw new Error(`Expecting type albums, playlists, users, lidarr, mqtt, or all. Got ${typeof type === 'string' ? type : 'none'}`)
+            if (type !== 'albums' && type !== 'playlists' && type !== "users" && type !== "lidarr" && type !== "mqtt" && type !== "slskd" && type !== "all")
+                throw new Error(`Expecting type albums, playlists, users, lidarr, mqtt, slskd, or all. Got ${typeof type === 'string' ? type : 'none'}`)
 
             // Fire and forget - start the sync process without awaiting
             if (type === 'all') {
@@ -24,6 +25,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                     .then(() => syncPlaylists())
                     .then(() => syncLidarr())
                     .then(() => syncMQTT())
+                    .then(() => syncSlskd())
                     .catch((error: unknown) => {
                         console.error('Sync all failed:', error);
                     });
@@ -56,6 +58,12 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                     case "mqtt":
                         syncMQTT().catch((error: unknown) => {
                             console.error('Sync mqtt failed:', error);
+                        });
+                        break;
+
+                    case "slskd":
+                        syncSlskd().catch((error: unknown) => {
+                            console.error('Sync slskd failed:', error);
                         });
                         break;
                 }

@@ -35,6 +35,7 @@
 - [Spotify App Configuration](#spotify-app-configuration)
 - [Spotify User Integration](#spotify-user-integration)
 - [Lidarr Integration](#lidarr-integration)
+- [SLSKD Integration](#slskd-integration)
 - [Support](#support-this-open-source-project-️)
 
 ---
@@ -64,6 +65,7 @@ Advanced matching algorithms that find your songs across different formats:
 Never miss a song from your playlists:
 - **[Tidal Downloader](https://github.com/jjdenhertog/spotify-to-plex-tidal-downloader)** integration for individual tracks
 - **[Lidarr](https://github.com/Lidarr/Lidarr)** integration for complete albums
+- **[SLSKD](https://github.com/slskd/slskd)** integration for P2P downloads from Soulseek network
 - Automatic missing track detection and reporting
 - Export missing songs as text files with Spotify/Tidal links
 
@@ -113,6 +115,10 @@ Before you begin, you'll need:
 4. **Lidarr API Key** (optional) - For automatic album downloads
    - Find it in Lidarr under Settings → General → Security → API Key
 
+5. **SLSKD API Key** (optional) - For P2P downloads from Soulseek
+   - Generate using: `openssl rand -base64 48`
+   - Configure in your SLSKD instance's `slskd.yml` file
+
 ### Docker Installation
 
 ```sh
@@ -124,6 +130,7 @@ docker run -d \
     -e TIDAL_API_CLIENT_ID=PASTE_YOUR_TIDAL_CLIENT_ID_HERE \
     -e TIDAL_API_CLIENT_SECRET=PASTE_YOUR_TIDAL_CLIENT_SECRET_HERE \
     -e LIDARR_API_KEY=PASTE_YOUR_LIDARR_API_KEY_HERE \
+    -e SLSKD_API_KEY=PASTE_YOUR_SLSKD_API_KEY_HERE \
     -e ENCRYPTION_KEY=PASTE_YOUR_ENCRYPTION_KEY \
     -e PLEX_APP_ID=eXf+f9ktw3CZ8i45OY468WxriOCtoFxuNPzVeDcAwfw= \
     -v /local/directory/:/app/config:rw \
@@ -154,6 +161,7 @@ services:
             - TIDAL_API_CLIENT_ID=PASTE_YOUR_TIDAL_CLIENT_ID_HERE
             - TIDAL_API_CLIENT_SECRET=PASTE_YOUR_TIDAL_CLIENT_SECRET_HERE
             - LIDARR_API_KEY=PASTE_YOUR_LIDARR_API_KEY_HERE
+            - SLSKD_API_KEY=PASTE_YOUR_SLSKD_API_KEY_HERE
             - ENCRYPTION_KEY=PASTE_YOUR_ENCRYPTION_KEY
             - PLEX_APP_ID=eXf+f9ktw3CZ8i45OY468WxriOCtoFxuNPzVeDcAwfw=
         network_mode: "host"
@@ -342,6 +350,92 @@ When viewing missing tracks for a playlist, you'll see a "Send to Lidarr" button
 
 ---
 
+## SLSKD Integration
+
+SLSKD integration allows you to automatically download missing tracks using Soulseek.
+
+### Prerequisites
+
+Before configuring SLSKD integration, you need:
+
+1. **A running SLSKD instance** - Install and configure [SLSKD](https://github.com/slskd/slskd)
+2. **SLSKD API Key** - Generate a secure API key for authentication
+
+### Setup in SLSKD
+
+You need to add an authentication section for the web API in your SLSKD configuration. This allows Spotify to Plex to connect securely.
+
+#### Generate API Key
+
+```bash
+openssl rand -base64 48
+```
+
+#### Configure SLSKD YAML
+
+Add the generated API key to your SLSKD configuration.
+
+```yaml
+web:
+  authentication:
+    api_keys:
+      spotify_to_plex:
+        key: "YOUR_GENERATED_API_KEY"  # Replace with your generated key
+        role: readwrite
+        cidr: "0.0.0.0/0"  # Allows access from any IP, or restrict to specific IPs
+```
+
+> **Security Note**: For better security, restrict the `cidr` field to your specific network range (e.g., `192.168.1.0/24`) instead of allowing all IPs.
+
+### Setup in Spotify to Plex
+
+#### 1. Add Environment Variable
+
+Add your SLSKD API key to your Docker configuration:
+
+**Docker Command:**
+```sh
+docker run -d \
+    -e SLSKD_API_KEY=YOUR_GENERATED_API_KEY \
+    # ... other environment variables ...
+    jjdenhertog/spotify-to-plex
+```
+
+**Docker Compose / Portainer:**
+```yaml
+environment:
+    - SLSKD_API_KEY=YOUR_GENERATED_API_KEY
+```
+
+#### 2. Configure SLSKD Settings
+
+Navigate to **Advanced → SLSKD Integration** in the web interface and configure:
+
+- **SLSKD URL**: The base URL of your SLSKD instance (e.g., `http://192.168.1.100:5030`)
+- **Enable SLSKD Integration**: Toggle to enable the feature
+- **Enable Automatic Synchronization**: Automatically search and download missing tracks during daily sync
+
+### Using SLSKD
+
+Once configured, SLSKD integration works in two ways:
+
+#### Manual Search
+
+When viewing missing tracks for a playlist, you can manually send the tracks to SLSKD.
+
+#### Automatic Synchronization
+
+When automatic sync is enabled, SLSKD will:
+1. Read missing tracks from `missing_tracks_spotify.txt` in your storage folder
+2. Search the Soulseek network for each track
+3. Apply quality filters and matching logic
+4. Automatically queue downloads for matching files
+5. Log all actions in `slskd_sync_log.json`
+
+### Slow Soulseek Search
+
+Real-time P2P searches take longer than other lookups. Meaning that it takes approximatly 40 seconds per song to find a version to download.
+
 ## Support This Open-Source Project ❤️
 
 If you appreciate my work, consider starring this repository or making a donation to support ongoing development. Your support means the world to me—thank you!
@@ -349,7 +443,7 @@ If you appreciate my work, consider starring this repository or making a donatio
 [![Buy Me a Coffee](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/jjdenhertog)
 
 Are you a developer with some free time on your hands? It would be great if you can help me maintain and improve this project.
-
+1. 
 ---
 
 ## License
