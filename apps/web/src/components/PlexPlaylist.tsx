@@ -183,6 +183,7 @@ export default function PlexPlaylist(props: PlexPlaylistProps) {
     // Force reloading
     ///////////////////////////////////
     const onForceRefreshClick = useCallback(() => {
+        setTracks([])
         setTracksLoaded([])
         setTrackSelections([])
         setLoadingTracks(true);
