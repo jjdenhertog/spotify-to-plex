@@ -380,7 +380,7 @@ export default function PlexPlaylist(props: PlexPlaylistProps) {
                 <>
                     <Typography variant="h6" sx={{ mb: 0.5 }}>Playlist loaded</Typography>
                     <Typography variant="body2" sx={{ mb: 1 }}>
-                        We finished matching all songs from the playlist with your library. Any succesfull matches are cached to improve performance the next time this playlist is opened.
+                        We finished matching all songs from the playlist with your library. Any successful matches are cached to improve performance the next time this playlist is opened.
                     </Typography>
                 </>
             }

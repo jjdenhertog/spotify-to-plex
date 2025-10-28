@@ -37,37 +37,34 @@ export async function getSpotifyPlaylist(api: SpotifyApi, id: string, simplified
         if (simplified)
             return playlist;
 
-        let offset = 50;
-        let hasMoreResults = result.tracks.offset + result.tracks.limit < result.tracks.total;
-        const nextUrl = result.tracks.next
+        let offset = result.tracks.limit;
+        let nextUrl = result.tracks.next
 
-        if (nextUrl) {
-            while (hasMoreResults) {
-                const loadMore = await api.playlists.getPlaylistItems(id, undefined, undefined, 50, offset)
-                const validLoadMoreTracks = loadMore.items
-                    .map(item => {
-                        if (!item.track) return null;
+        while (nextUrl) {
+            const loadMore = await api.playlists.getPlaylistItems(id, undefined, undefined, 50, offset)
+            const validLoadMoreTracks = loadMore.items
+                .map(item => {
+                    if (!item.track) return null;
 
-                        return {
-                            id: item.track.id,
-                            title: item.track.name,
-                            artist: item.track.artists?.[0]?.name || 'Unknown',
-                            album: item.track.album?.name || 'Unknown',
-                            artists: item.track.artists?.map(artist => artist.name) || [],
-                            album_id: item.track.album?.id || 'unknown'
-                        }
-                    })
-                    .filter((track)=>!!track);
+                    return {
+                        id: item.track.id,
+                        title: item.track.name,
+                        artist: item.track.artists?.[0]?.name || 'Unknown',
+                        album: item.track.album?.name || 'Unknown',
+                        artists: item.track.artists?.map(artist => artist.name) || [],
+                        album_id: item.track.album?.id || 'unknown'
+                    }
+                })
+                .filter((track)=>!!track);
 
-                playlist.tracks = playlist.tracks.concat(validLoadMoreTracks);
+            playlist.tracks = playlist.tracks.concat(validLoadMoreTracks);
 
-                hasMoreResults = loadMore.offset + loadMore.limit < loadMore.total;
-                offset = loadMore.offset + loadMore.limit;
+            nextUrl = loadMore.next
+            offset = loadMore.offset + loadMore.limit;
 
-                // Add throttling between pagination requests (~171 req/min)
-                if (hasMoreResults) 
-                    await new Promise(resolve => { setTimeout(resolve, 350) });
-            }
+            // Add throttling between pagination requests (~171 req/min)
+            if (nextUrl) 
+                await new Promise(resolve => { setTimeout(resolve, 350) });
         }
 
         return playlist;
