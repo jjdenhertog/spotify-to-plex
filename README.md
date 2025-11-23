@@ -1,3 +1,6 @@
+> [!NOTE]
+> I'm currently very busy with work and as a result not able to activily maintain this repo. Will be back in January!
+
 <p align="center"><img src="misc/logo.png" width="90"></p>
 <h1 align="center">Spotify to Plex</h1>
 
@@ -16,8 +19,6 @@
   <img src="misc/app_overview.jpg" alt="Spotify to Plex Overview">
 </p>
 
-> [!NOTE]
-> The recent update might have broken your Plex connection. To resolve this remove `plex.json` and re-authenticate to solve the issue.
 
 ---
 
