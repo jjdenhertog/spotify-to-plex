@@ -5,7 +5,7 @@
         "apps/*",
         "packages/*"
     ],
-    "version": "1.0.90",
+    "version": "1.0.92",
     "description": "Sync Spotify with your Plex Library.",
     "keywords": [
         "plex",
@@ -29,7 +29,7 @@
         "watch:packages": "tsc --build packages/* --watch",
         "test:packages": "npm run test --workspaces --if-present",
         "dev:web": "npm run dev --workspace=@spotify-to-plex/web",
-        "docker:dev": "pnpm install && npm run docker:build && docker-compose down && docker-compose up -d --build",
+        "docker:dev": "pnpm install && npm run docker:build && docker compose down && docker compose up -d --build",
         "docker:build": "docker build -t jjdenhertog/spotify-to-plex .",
         "docker:push": "PACKAGE_VERSION=$(node -p \"require('./package.json').version\") && docker buildx build --platform=linux/amd64,linux/arm64 -t jjdenhertog/spotify-to-plex:latest -t jjdenhertog/spotify-to-plex:$PACKAGE_VERSION --push .",
         "docker:push:beta": "PACKAGE_VERSION=$(node -p \"require('./package.json').version\") && docker buildx build --platform=linux/amd64,linux/arm64 -t jjdenhertog/spotify-to-plex:beta -t jjdenhertog/spotify-to-plex:$PACKAGE_VERSION --push .",

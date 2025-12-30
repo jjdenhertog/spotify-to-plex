@@ -15,6 +15,7 @@
     "sync": "tsx src/jobs/playlists.ts && tsx src/jobs/albums.ts && tsx src/jobs/users.ts",
     "mqtt": "tsx src/jobs/mqtt.ts",
     "sync:lidarr": "tsx src/jobs/lidarr.ts",
+    "sync:slskd": "tsx src/jobs/slskd.ts",
     "dev:sync:playlists": "dotenv -e ../web/.env.local -- tsx src/jobs/playlists.ts -- force",
     "dev:sync:albums": "dotenv -e ../web/.env.local -- tsx src/jobs/albums.ts -- force",
     "dev:sync:users": "dotenv -e ../web/.env.local -- tsx src/jobs/users.ts -- force",

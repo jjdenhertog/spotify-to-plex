@@ -1,14 +1,17 @@
 import { schedule } from 'node-cron';
 import { spawn } from 'node:child_process';
 import { getLidarrSettings } from '@spotify-to-plex/plex-config/functions/getLidarrSettings';
+import { getSlskdSettings } from '@spotify-to-plex/plex-config/functions/getSlskdSettings';
 
 const SYNC_SCHEDULE = '0 2 * * *'; // Every day at 02:00
 const LIDARR_SYNC_SCHEDULE = '0 4 * * *'; // Every day at 04:00
+const SLSKD_SYNC_SCHEDULE = '0 3 * * *'; // Every day at 03:00
 const MQTT_SYNC_SCHEDULE = '0 * * * *'; // Every hour
 
 console.log('🚀 Sync scheduler started');
 console.log(`⏰ Main sync schedule: ${SYNC_SCHEDULE}`);
 console.log(`⏰ Lidarr sync schedule: ${LIDARR_SYNC_SCHEDULE}`);
+console.log(`⏰ SLSKD sync schedule: ${SLSKD_SYNC_SCHEDULE}`);
 console.log(`⏰ MQTT sync schedule: ${MQTT_SYNC_SCHEDULE}`);
 
 // Function to run the sync command
@@ -92,6 +95,49 @@ const lidarrTask = schedule(LIDARR_SYNC_SCHEDULE, () => {
     timezone: process.env.TZ || 'UTC'
 });
 
+// NEW: Function to run SLSKD sync
+async function runSlskdSync() {
+    console.log(`\n🎵 Checking SLSKD sync settings at ${new Date().toISOString()}`);
+
+    try {
+        const settings = await getSlskdSettings();
+
+        if (!settings.enabled) {
+            console.log('ℹ️ SLSKD integration is not enabled. Skipping sync.');
+
+            return;
+        }
+
+        if (!settings.auto_sync) {
+            console.log('ℹ️ SLSKD automatic synchronization is not enabled. Skipping sync.');
+
+            return;
+        }
+
+        console.log('✅ SLSKD auto-sync is enabled. Starting sync...');
+
+        const slskdProcess = spawn('npm', ['run', 'sync:slskd'], {
+            cwd: '/app/apps/sync-worker',
+            stdio: 'inherit',
+            shell: true
+        });
+
+        slskdProcess.on('exit', (code) => {
+            if (code === 0) {
+                console.log(`✅ SLSKD sync completed successfully at ${new Date().toISOString()}`);
+            } else {
+                console.error(`❌ SLSKD sync failed with exit code ${code} at ${new Date().toISOString()}`);
+            }
+        });
+
+        slskdProcess.on('error', (error) => {
+            console.error(`❌ Failed to start SLSKD sync process:`, error);
+        });
+    } catch (error) {
+        console.error('❌ Error checking SLSKD settings:', error);
+    }
+}
+
 // NEW: Function to run MQTT sync
 function runMqttSync() {
     console.log(`\n📡 Starting MQTT sync at ${new Date().toISOString()}`);
@@ -115,6 +161,14 @@ function runMqttSync() {
     });
 }
 
+// NEW: Schedule SLSKD sync task
+const slskdTask = schedule(SLSKD_SYNC_SCHEDULE, () => {
+    runSlskdSync();
+}, {
+    scheduled: true,
+    timezone: process.env.TZ || 'UTC'
+});
+
 // NEW: Schedule MQTT sync task
 const mqttTask = schedule(MQTT_SYNC_SCHEDULE, runMqttSync, {
     scheduled: true,
@@ -132,6 +186,7 @@ process.on('SIGTERM', () => {
     console.log('🛑 Received SIGTERM, stopping scheduler...');
     task.stop();
     lidarrTask.stop();
+    slskdTask.stop();
     mqttTask.stop();
     process.exit(0);
 });
@@ -140,6 +195,7 @@ process.on('SIGINT', () => {
     console.log('🛑 Received SIGINT, stopping scheduler...');
     task.stop();
     lidarrTask.stop();
+    slskdTask.stop();
     mqttTask.stop();
     process.exit(0);
 });
