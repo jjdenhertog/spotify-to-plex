@@ -5,7 +5,7 @@ import { SearchResponse } from "../types/SearchResponse";
 import { setMusicSearchConfig, resetCache } from "../session/state";
 import { newTrackSearch } from "./newTrackSearch";
 
-export async function search(config: TidalMusicSearchConfig, tracks: TidalMusicSearchTrack[]): Promise<SearchResponse[]> {
+export async function search(config: TidalMusicSearchConfig, tracks: TidalMusicSearchTrack[]) {
     // Setup approaches
     const { searchApproaches: approaches } = config;
     if (!approaches)

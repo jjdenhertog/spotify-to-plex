@@ -14,7 +14,7 @@ type SearchApproachConfig = {
     removeQuotes?: boolean;
 };
 
-const validateSearchApproaches = (data: SearchApproachConfig[]): string | null => {
+const validateSearchApproaches = (data: SearchApproachConfig[]) => {
     if (!Array.isArray(data)) {
         return 'Search approaches must be an array';
     }

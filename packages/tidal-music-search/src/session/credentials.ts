@@ -20,22 +20,22 @@ export function getCredentials(): TidalAPICredentials {
     return state;
 }
 
-export function setCredentials(clientId: string, clientSecret: string): void {
+export function setCredentials(clientId: string, clientSecret: string) {
     Object.assign(state, { clientId, clientSecret });
 }
 
-export function setToken(accessToken: string, expiresAt: number): void {
+export function setToken(accessToken: string, expiresAt: number) {
     Object.assign(state, { accessToken, expiresAt });
 }
 
-export function resetState(): void {
+export function resetState() {
     state.accessToken = undefined;
     state.expiresAt = undefined;
     state.clientId = undefined;
     state.clientSecret = undefined;
 }
 
-export async function authenticate(): Promise<void> {
+export async function authenticate() {
     const state = getCredentials();
 
     // Validate client credentials are set

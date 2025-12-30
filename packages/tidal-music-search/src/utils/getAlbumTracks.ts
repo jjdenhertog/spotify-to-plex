@@ -3,7 +3,7 @@ import { getAlbumTracksIds } from "./tidal/getAlbumTracksIds";
 import { getTrackByIds } from "./tidal/getTrackByIds";
 
 
-export async function getAlbumTracks(id: string, countryCode = "NL"): Promise<TidalTrack[]> {
+export async function getAlbumTracks(id: string, countryCode = "NL") {
 
     const searchResults = await getAlbumTracksIds(id);
 

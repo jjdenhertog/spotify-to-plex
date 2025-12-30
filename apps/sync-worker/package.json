@@ -33,6 +33,7 @@
     "@spotify-to-plex/plex-music-search": "workspace:*",
     "@spotify-to-plex/shared-types": "workspace:*",
     "@spotify-to-plex/shared-utils": "workspace:*",
+    "@spotify-to-plex/slskd-music-search": "workspace:*",
     "@spotify-to-plex/tidal-music-search": "workspace:*",
     "@spotify/web-api-ts-sdk": "^1.2.0",
     "axios": "^1.11.0",

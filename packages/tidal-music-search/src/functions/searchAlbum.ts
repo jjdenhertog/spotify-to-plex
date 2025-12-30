@@ -2,7 +2,6 @@ import { search as musicSearch } from "@spotify-to-plex/music-search/functions/s
 import { Track } from "@spotify-to-plex/music-search/types/Track";
 import { TidalMusicSearchConfig } from "../types/TidalMusicSearchConfig";
 import { TidalMusicSearchTrack } from "../types/TidalMusicSearchTrack";
-import { SearchResponse } from "../types/SearchResponse";
 import { searchForAlbum } from "../utils/searchForAlbum";
 import { getAlbumTracks } from "../utils/getAlbumTracks";
 import searchResultToTracks from "../utils/searchResultToTracks";
@@ -10,7 +9,7 @@ import { authenticate } from "../session/credentials";
 import { setCredentials } from "../session/credentials";
 import { setMusicSearchConfig, resetCache} from "../session/state";
 
-export async function searchAlbum(config: TidalMusicSearchConfig, tracks: TidalMusicSearchTrack[]): Promise<SearchResponse[]> {
+export async function searchAlbum(config: TidalMusicSearchConfig, tracks: TidalMusicSearchTrack[]) {
 
     // Set configuration
     setMusicSearchConfig(config);

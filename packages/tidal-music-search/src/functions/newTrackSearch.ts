@@ -4,13 +4,13 @@ import { filterOutWords } from "@spotify-to-plex/music-search/utils/filterOutWor
 import { Track } from "@spotify-to-plex/music-search/types/Track";
 import { TidalMusicSearchApproach } from "../types/TidalMusicSearchApproach";
 import { TidalMusicSearchTrack } from "../types/TidalMusicSearchTrack";
-import { SearchResponse, SearchQuery } from "../types/SearchResponse";
+import { SearchQuery } from "../types/SearchResponse";
 import { TidalTrack } from "../types/TidalTrack";
 import { searchForTrack } from "../utils/searchForTrack";
 import searchResultToTracks from "../utils/searchResultToTracks";
 import { addToCache, getFromCache, getConfig } from "../session/state";
 
-export async function newTrackSearch(approaches: TidalMusicSearchApproach[], searchTrack: TidalMusicSearchTrack, analyze: boolean = false): Promise<SearchResponse> {
+export async function newTrackSearch(approaches: TidalMusicSearchApproach[], searchTrack: TidalMusicSearchTrack, analyze: boolean = false) {
     const { id, artists, title, album = '' } = searchTrack;
 
     // Build artist variations (including combined artists)

@@ -62,7 +62,7 @@ export default router.handler({
 /**
  * Validate expression filters
  */
-function validateExpressions(filters: MatchFilterConfig[]): string | null {
+function validateExpressions(filters: MatchFilterConfig[]) {
     if (!Array.isArray(filters)) {
         return 'Filters must be an array';
     }

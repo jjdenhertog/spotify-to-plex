@@ -4,7 +4,7 @@ import { writeJSON } from '../utils/fileUtils';
 
 export async function updateLidarrSettings(
     updates: Partial<LidarrSettings>
-): Promise<LidarrSettings> {
+) {
     const current = await getLidarrSettings();
     const updated = { ...current, ...updates };
 

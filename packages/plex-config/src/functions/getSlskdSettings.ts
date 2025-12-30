@@ -5,16 +5,14 @@ const DEFAULT_SETTINGS: SlskdSettings = {
     enabled: false,
     url: '',
     allowed_extensions: ['flac', 'mp3', 'wav', 'ogg', 'm4a'],
-    min_bitrate: 320,
-    min_bitdepth: 16,
-    // max_length_difference: 10, // TODO: Re-enable when Track type includes duration_ms
     retry_limit: 5,
     search_timeout: 20,
+    max_results: 50,
     download_attempts: 3,
     auto_sync: false,
 };
 
-export async function getSlskdSettings(): Promise<SlskdSettings> {
+export async function getSlskdSettings() {
     const settings = await readJSON<SlskdSettings>('slskd.json');
 
     if (!settings) {

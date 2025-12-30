@@ -5,7 +5,7 @@ import { TextProcessingConfig } from '../types/TextProcessingConfig';
 
 const TEXT_PROCESSING_FILE = 'text-processing.json';
 
-async function writeJSON(filePath: string, data: unknown): Promise<void> {
+async function writeJSON(filePath: string, data: unknown) {
     try {
         await ensureDir(join(filePath, '..'));
         
@@ -21,7 +21,7 @@ async function writeJSON(filePath: string, data: unknown): Promise<void> {
     }
 }
 
-export async function updateTextProcessing(storageDir: string, config: TextProcessingConfig): Promise<TextProcessingConfig> {
+export async function updateTextProcessing(storageDir: string, config: TextProcessingConfig) {
     const filePath = join(storageDir, TEXT_PROCESSING_FILE);
     await writeJSON(filePath, config);
 

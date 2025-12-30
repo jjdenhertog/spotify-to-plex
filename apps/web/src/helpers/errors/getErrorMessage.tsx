@@ -1,5 +1,5 @@
 
-export function getErrorMessage(e: unknown): string {
+export function getErrorMessage(e: unknown) {
     const error = e as { response?: { data?: { error?: string; message?: string } }; message?: string };
     const message = error.response?.data?.error || error.response?.data?.message || error.message;
     if (message)

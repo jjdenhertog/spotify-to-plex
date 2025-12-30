@@ -7,7 +7,7 @@ import { DEFAULT_SEARCH_APPROACHES } from '../config/default-config';
 
 const SEARCH_APPROACHES_FILE = 'search-approaches.json';
 
-export async function getSearchApproaches(storageDir: string): Promise<SearchApproachConfig[]> {
+export async function getSearchApproaches(storageDir: string) {
     const filePath = join(storageDir, SEARCH_APPROACHES_FILE);
     const approaches = await readJSON<SearchApproachConfig[]>(filePath);
 

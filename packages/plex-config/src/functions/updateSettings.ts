@@ -1,9 +1,8 @@
-import { PlexSettings } from '../types/PlexSettings';
 import { PlexSettingsUpdate } from '../types/PlexSettingsUpdate';
 import { getSettings } from './getSettings';
 import { writeJSON } from '../utils/fileUtils';
 
-export async function updateSettings(updates: PlexSettingsUpdate): Promise<PlexSettings> {
+export async function updateSettings(updates: PlexSettingsUpdate) {
     const current = await getSettings(true);
     const updated = { ...current, ...updates };
 

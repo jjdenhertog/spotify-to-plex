@@ -7,7 +7,7 @@ import { updateMatchFilters } from './updateMatchFilters';
 
 const MATCH_FILTERS_FILE = 'match-filters.json';
 
-export async function getMatchFilters(storageDir: string): Promise<MatchFilterConfig[]> {
+export async function getMatchFilters(storageDir: string) {
     const filePath = join(storageDir, MATCH_FILTERS_FILE);
     const filters = await readJSON<MatchFilterConfig[]>(filePath);
 

@@ -1,3 +1,4 @@
+/* eslint-disable max-depth */
 import { AxiosRequest } from "@spotify-to-plex/http-client/AxiosRequest";
 import { getAPIUrl } from "@spotify-to-plex/shared-utils/utils/getAPIUrl";
 import { getStorageDir } from "@spotify-to-plex/shared-utils/utils/getStorageDir";

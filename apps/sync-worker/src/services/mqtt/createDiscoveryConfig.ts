@@ -1,9 +1,9 @@
-import { MQTTEntity, HomeAssistantDiscoveryConfig } from './types';
+import { MQTTEntity } from './types';
 
 /**
  * Create Home Assistant Discovery config
  */
-export function createDiscoveryConfig(entity: MQTTEntity, topicPrefix: string): HomeAssistantDiscoveryConfig {
+export function createDiscoveryConfig(entity: MQTTEntity, topicPrefix: string) {
     const stateTopic = `${topicPrefix}/items/${entity.id}/state`;
     const uniqueId = `${topicPrefix}_item_${entity.id}`;
 

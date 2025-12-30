@@ -3,7 +3,7 @@ import LidarrSettings from "@/components/LidarrSettings";
 import SlskdSettings from "@/components/SlskdSettings";
 import SpotifyNavigation from "@/components/SpotifyNavigation";
 import MainLayout from "@/layouts/MainLayout";
-import { Container, Paper, Typography, Divider } from '@mui/material';
+import { Container, Paper, Typography } from '@mui/material';
 import { NextPage } from "next";
 import Head from "next/head";
 
@@ -19,7 +19,7 @@ const Page: NextPage = () => {
                 <Container>
                     <Logo />
                     <SpotifyNavigation />
-                    <Paper elevation={0} sx={{ p: 2, bgcolor: 'action.hover' }}>
+                    <Paper elevation={0} sx={{ p: 2, bgcolor: 'action.hover' , mb:2}}>
                         <Typography variant="h4" sx={{ mt: 2, mb: 0.5 }}>
                             Settings
                         </Typography>
@@ -27,16 +27,16 @@ const Page: NextPage = () => {
                             Configure integrations and advanced features.
                         </Typography>
 
-                        <Divider sx={{ mb: 3 }} />
-
+                    </Paper>
+                    <Paper elevation={0} sx={{ p: 2, bgcolor: 'action.hover' , mb:2}}>
                         <LidarrSettings />
-
-                        <Divider sx={{ my: 4 }} />
+                    </Paper>
+                    <Paper elevation={0} sx={{ p: 2, bgcolor: 'action.hover' , mb:2}}>
 
                         <SlskdSettings />
                     </Paper>
                 </Container>
-            </MainLayout>
+            </MainLayout >
         </>
     );
 };

@@ -2,7 +2,7 @@
  * Extract Plex ID from plex-media URI
  * Parses /library/metadata/{id} or /playlists/{id} patterns
  */
-export function extractPlexMediaId(uri: string): string | null {
+export function extractPlexMediaId(uri: string) {
     // Try /playlists/{id} or /playlists/{id}/items pattern first
     const playlistMatch = /\/playlists\/(\d+)/.exec(uri);
     if (playlistMatch) {

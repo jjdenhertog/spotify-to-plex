@@ -27,7 +27,7 @@ export function createMQTTPublisher(client: MQTTClient, topicPrefix: string, dis
    * Publish a single entity to MQTT
    * Publishes both discovery config and state topics with retained messages
    */
-    const publishEntity = async (entity: MQTTEntity): Promise<PublishedItem> => {
+    const publishEntity = async (entity: MQTTEntity) => {
         const entityId = createEntityId(entity.id, topicPrefix);
         const discoveryTopic = createDiscoveryTopic(entityId, discoveryPrefix);
         const stateTopic = createStateTopic(entity.id, topicPrefix);
@@ -66,7 +66,7 @@ export function createMQTTPublisher(client: MQTTClient, topicPrefix: string, dis
     /**
    * Publish multiple entities
    */
-    const publishEntities = async (entities: MQTTEntity[]): Promise<PublishedItem[]> => {
+    const publishEntities = async (entities: MQTTEntity[]) => {
         const published: PublishedItem[] = [];
 
         for (const entity of entities) {
@@ -86,7 +86,7 @@ export function createMQTTPublisher(client: MQTTClient, topicPrefix: string, dis
     /**
    * Publish categories entity
    */
-    const publishCategories = async (categories: string[]): Promise<void> => {
+    const publishCategories = async (categories: string[]) => {
         const categoriesEntity = buildCategoriesEntity(categories);
         const discoveryConfig = createCategoriesDiscoveryConfig(topicPrefix);
 
@@ -116,7 +116,7 @@ export function createMQTTPublisher(client: MQTTClient, topicPrefix: string, dis
     /**
    * Publish empty retained message to remove an entity
    */
-    const removeEntity = async (itemId: string): Promise<void> => {
+    const removeEntity = async (itemId: string) => {
         const entityId = createEntityId(itemId, topicPrefix);
         const discoveryTopic = createDiscoveryTopic(entityId, discoveryPrefix);
         const stateTopic = createStateTopic(itemId, topicPrefix);
@@ -141,7 +141,7 @@ export function createMQTTPublisher(client: MQTTClient, topicPrefix: string, dis
     /**
    * Remove multiple entities
    */
-    const removeEntities = async (itemIds: string[]): Promise<void> => {
+    const removeEntities = async (itemIds: string[]) => {
         for (const itemId of itemIds) {
             await removeEntity(itemId);
         }

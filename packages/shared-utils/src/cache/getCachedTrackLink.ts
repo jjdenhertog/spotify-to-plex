@@ -19,7 +19,7 @@ type TidalMusicSearchTrack = {
 
 export function getCachedTrackLinks(
     searchItems: (PlexMusicSearchTrack | TidalMusicSearchTrack)[],
-    type: 'plex' | 'tidal'
+    type: 'plex' | 'tidal' | 'slskd'
 ) {
     //////////////////////////////////////
     // Handeling cached links
@@ -51,10 +51,17 @@ export function getCachedTrackLinks(
                     found.push(trackLink)
 
                 break;
+
+            case "slskd":
+                if (trackLink.slskd_files && trackLink.slskd_files.length > 0)
+                    found.push(trackLink)
+
+                break;
         }
     }
 
-    const add = (searchResult: { title: string, artist: string, result: ({ id: string, album?: { id: string } })[] }[], type: "tidal" | "plex", album?: { id: string }) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const add = (searchResult: { title: string, artist: string, result: any[] }[], type: "tidal" | "plex" | "slskd", album?: { id: string }) => {
 
         ////////////////////////////////
         // Cache tracks
@@ -81,6 +88,16 @@ export function getCachedTrackLinks(
                     case "tidal":
                         trackLink.tidal_id = item.result
                             .map(item => item.id)
+                        break;
+
+                    case "slskd":
+                        trackLink.slskd_files = item.result
+                            .filter(file => file.username && file.filename && file.size)
+                            .map(file => ({
+                                username: file.username!,
+                                filename: file.filename!,
+                                size: file.size!
+                            }))
                         break;
                 }
             }

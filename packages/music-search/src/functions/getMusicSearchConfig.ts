@@ -1,10 +1,9 @@
-import { MusicSearchConfig } from '../types/MusicSearchConfig';
 import { getMatchFilters } from './getMatchFilters';
 import { getTextProcessing } from './getTextProcessing';
 import { getSearchApproaches } from './getSearchApproaches';
 import { getStorageDir } from '@spotify-to-plex/shared-utils/utils/getStorageDir';
 
-export async function getMusicSearchConfig(): Promise<MusicSearchConfig> {
+export async function getMusicSearchConfig() {
 
     const storageDir = getStorageDir();
     const [matchFilters, textProcessing, searchApproaches] = await Promise.all([

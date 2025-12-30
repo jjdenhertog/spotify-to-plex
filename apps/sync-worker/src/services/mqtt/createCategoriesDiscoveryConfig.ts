@@ -1,9 +1,7 @@
-import { HomeAssistantDiscoveryConfig } from './types';
-
 /**
  * Create discovery config for categories entity
  */
-export function createCategoriesDiscoveryConfig(topicPrefix: string): HomeAssistantDiscoveryConfig {
+export function createCategoriesDiscoveryConfig(topicPrefix: string) {
     const entityId = `${topicPrefix}_categories`;
     const stateTopic = `${topicPrefix}/categories/state`;
 

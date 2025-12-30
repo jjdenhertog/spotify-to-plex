@@ -26,7 +26,7 @@ export async function readJSON<T>(fileName: string): Promise<T | null> {
     }
 }
 
-export async function writeJSON(fileName: string, data: unknown): Promise<void> {
+export async function writeJSON(fileName: string, data: unknown) {
     try {
 
         const settingsPath = getStorageDir();
@@ -44,7 +44,7 @@ export async function writeJSON(fileName: string, data: unknown): Promise<void> 
     }
 }
 
-export async function deleteJSON(fileName: string): Promise<void> {
+export async function deleteJSON(fileName: string) {
     try {
 
         const settingsPath = getStorageDir();

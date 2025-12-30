@@ -10,7 +10,7 @@ import axios from "axios";
 import { forwardRef, Fragment, useCallback, useImperativeHandle, useState } from "react";
 
 type TrackAnalyzerHandles = {
-    readonly analyze: (trackId: string, type: 'plex' | 'tidal') => void
+    readonly analyze: (trackId: string, type: 'plex' | 'tidal' | 'slskd') => void
 }
 
 const TrackAnalyzer = forwardRef<TrackAnalyzerHandles, unknown>((_props, ref) => {
@@ -21,12 +21,12 @@ const TrackAnalyzer = forwardRef<TrackAnalyzerHandles, unknown>((_props, ref) =>
     const [searchResponse, setSearchResponse] = useState<SearchResponse>()
 
     useImperativeHandle(ref, () => ({
-        analyze: (trackId: string, type: 'plex' | 'tidal') => {
+        analyze: (trackId: string, type: 'plex' | 'tidal' | 'slskd') => {
             analyzeTrack(trackId, type)
         }
     }))
 
-    const analyzeTrack = useCallback((trackId: string, type: 'plex' | 'tidal') => {
+    const analyzeTrack = useCallback((trackId: string, type: 'plex' | 'tidal' | 'slskd') => {
 
         errorBoundary(async () => {
             setTrackLoading(true)
@@ -41,12 +41,23 @@ const TrackAnalyzer = forwardRef<TrackAnalyzerHandles, unknown>((_props, ref) =>
             setTrackLoading(false)
 
             // Then analyze with the specified service
-            const analyzeEndpoint = type === 'plex' ? '/api/plex/analyze' : '/api/tidal/analyze';
+            let analyzeEndpoint: string;
+            if (type === 'plex') {
+                analyzeEndpoint = '/api/plex/analyze';
+            } else if (type === 'tidal') {
+                analyzeEndpoint = '/api/tidal/analyze';
+            } else {
+                analyzeEndpoint = '/api/slskd/analyze';
+            }
+
             const analyzeResult = await axios.post(analyzeEndpoint, {
                 item: trackResult.data
             })
 
             setSearchResponse(analyzeResult.data)
+            setLoading(false)
+        }, () => {
+            setTrackLoading(false)
             setLoading(false)
         })
     }, [])
@@ -132,7 +143,7 @@ const TrackAnalyzer = forwardRef<TrackAnalyzerHandles, unknown>((_props, ref) =>
 
                                     {results.map((result: PlexTrack) => {
 
-                                        const { id: resultId, title, artist, album, matching } = result;
+                                        const { id: resultId, title, artist, album, src, matching } = result;
 
                                         if (!matching)
                                             return null;
@@ -150,7 +161,7 @@ const TrackAnalyzer = forwardRef<TrackAnalyzerHandles, unknown>((_props, ref) =>
                                                         <strong>Artists</strong>
                                                     </Typography>
                                                     <Typography variant="body2" sx={{ flex: 1 }}>
-                                                        {artist.title}
+                                                        {artist?.title || ''}
                                                     </Typography>
                                                 </Box>
                                                 {!!album &&
@@ -159,7 +170,17 @@ const TrackAnalyzer = forwardRef<TrackAnalyzerHandles, unknown>((_props, ref) =>
                                                             <strong>Album</strong>
                                                         </Typography>
                                                         <Typography variant="body2" sx={{ flex: 1 }}>
-                                                            {album.title}
+                                                            {album?.title || ''}
+                                                        </Typography>
+                                                    </Box>
+                                                }
+                                                {!!src &&
+                                                    <Box sx={{ flex: 1, display: 'flex' }}>
+                                                        <Typography variant="body2" sx={{ width: '60px' }}>
+                                                            <strong>File</strong>
+                                                        </Typography>
+                                                        <Typography variant="body2" sx={{ flex: 1, wordBreak: 'break-all', fontSize: '0.75rem', color: 'text.secondary' }}>
+                                                            {src}
                                                         </Typography>
                                                     </Box>
                                                 }

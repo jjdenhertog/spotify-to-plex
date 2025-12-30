@@ -1,17 +1,16 @@
 import { errorBoundary } from "@/helpers/errors/errorBoundary";
 import { Alert, Box, Button, Chip, CircularProgress, Divider, FormControlLabel, Switch, TextField, Typography } from "@mui/material";
 import axios from "axios";
+import { enqueueSnackbar } from "notistack";
 import { ChangeEvent, useCallback, useEffect, useState } from "react";
 
 type SlskdSettings = {
     enabled: boolean;
     url: string;
     allowed_extensions: string[];
-    min_bitrate: number;
-    min_bitdepth: number;
-    // max_length_difference: number; // TODO: Re-enable when Track type includes duration_ms
     retry_limit: number;
     search_timeout: number;
+    max_results: number;
     download_attempts: number;
     auto_sync: boolean;
 };
@@ -27,11 +26,9 @@ export default function SlskdSettings() {
         enabled: false,
         url: '',
         allowed_extensions: ['flac', 'mp3', 'wav', 'ogg', 'm4a'],
-        min_bitrate: 320,
-        min_bitdepth: 16,
-        // max_length_difference: 10, // TODO: Re-enable when Track type includes duration_ms
         retry_limit: 5,
         search_timeout: 20,
+        max_results: 50,
         download_attempts: 3,
         auto_sync: false,
     });
@@ -61,8 +58,7 @@ export default function SlskdSettings() {
         await errorBoundary(async () => {
             await axios.put('/api/slskd/settings', settings);
             setSaving(false);
-            // eslint-disable-next-line no-alert
-            alert('Settings saved successfully!');
+            enqueueSnackbar('Settings saved successfully', { variant: 'success' });
         }, () => {
             setSaving(false);
         });
@@ -131,18 +127,6 @@ export default function SlskdSettings() {
         setExtensionInput(e.target.value);
     }, []);
 
-    const handleBitrateChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-        handleChange('min_bitrate', parseInt(e.target.value, 10));
-    }, [handleChange]);
-    const handleMinBitdepthChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-        handleChange('min_bitdepth', parseInt(e.target.value, 10));
-    }, [handleChange]);
-
-    // TODO: Re-enable when Track type includes duration_ms
-    // const handleMaxLengthDifferenceChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-    //     handleChange('max_length_difference', parseInt(e.target.value, 10));
-    // }, [handleChange]);
-
     const handleDownloadAttemptsChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
         handleChange('download_attempts', parseInt(e.target.value, 10));
     }, [handleChange]);
@@ -153,6 +137,10 @@ export default function SlskdSettings() {
 
     const handleSearchTimeoutChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
         handleChange('search_timeout', parseInt(e.target.value, 10));
+    }, [handleChange]);
+
+    const handleMaxResultsChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+        handleChange('max_results', parseInt(e.target.value, 10));
     }, [handleChange]);
 
     const handleAutoSyncChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
@@ -212,9 +200,9 @@ export default function SlskdSettings() {
 
                 <Divider sx={{ mb: 3 }} />
 
-                {/* Quality Filters */}
+                {/* File Extensions Filter */}
                 <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 'bold' }}>
-                    Quality Filters
+                    File Extensions
                 </Typography>
 
                 <Box sx={{ mb: 2 }}>
@@ -234,12 +222,6 @@ export default function SlskdSettings() {
                     </Box>
                 </Box>
 
-                <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
-                    <TextField label="Minimum Bitrate (kbps)" type="number" value={settings.min_bitrate} onChange={handleBitrateChange} sx={{ flex: 1 }} helperText="e.g., 320 for high quality (0=no filter)" />
-
-                    <TextField label="Minimum Bit Depth" type="number" value={settings.min_bitdepth} onChange={handleMinBitdepthChange} sx={{ flex: 1 }} helperText="e.g., 16 for CD quality (0=no filter)" />
-                </Box>
-
                 <Divider sx={{ mb: 3 }} />
 
                 {/* Search Settings */}
@@ -257,7 +239,11 @@ export default function SlskdSettings() {
                 <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
                     <TextField label="Retry Limit" type="number" value={settings.retry_limit} onChange={handleRetryLimitChange} sx={{ flex: 1 }} helperText="Search retry attempts" />
 
-                    <TextField label="Search Timeout (seconds)" type="number" value={settings.search_timeout} onChange={handleSearchTimeoutChange} sx={{ flex: 1 }} helperText="Time to wait between retries" />
+                    <TextField label="Search Timeout (seconds)" type="number" value={settings.search_timeout} onChange={handleSearchTimeoutChange} sx={{ flex: 1 }} helperText="Time to wait for search results" />
+                </Box>
+
+                <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
+                    <TextField label="Max Results" type="number" value={settings.max_results} onChange={handleMaxResultsChange} sx={{ flex: 1 }} helperText="Maximum results per search approach" />
                 </Box>
 
                 <Divider sx={{ mb: 3 }} />

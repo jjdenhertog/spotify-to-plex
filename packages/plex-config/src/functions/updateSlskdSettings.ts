@@ -4,7 +4,7 @@ import { writeJSON } from '../utils/fileUtils';
 
 export async function updateSlskdSettings(
     updates: Partial<SlskdSettings>
-): Promise<SlskdSettings> {
+) {
     const current = await getSlskdSettings();
     const updated = { ...current, ...updates };
 

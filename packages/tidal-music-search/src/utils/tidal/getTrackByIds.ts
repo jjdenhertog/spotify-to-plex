@@ -3,7 +3,7 @@ import { TidalComponents, operations } from "../../types/TidalAPI";
 import tidalApiRequest from "../tidalApiRequest";
 import { getCredentials } from "../../session/credentials";
 
-export async function getTrackByIds(ids: string[], countryCode: string): Promise<TidalTrack[]> {
+export async function getTrackByIds(ids: string[], countryCode: string) {
     const state = getCredentials();
 
     if (!state.accessToken) {
@@ -67,7 +67,7 @@ export async function getTrackByIds(ids: string[], countryCode: string): Promise
     return result;
 }
 
-function getLink(data?: TidalComponents["schemas"]["Catalogue_Item_External_Link"][]): string {
+function getLink(data?: TidalComponents["schemas"]["Catalogue_Item_External_Link"][]) {
     if (!data) {
         return '';
     }

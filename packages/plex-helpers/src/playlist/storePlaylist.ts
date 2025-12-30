@@ -8,7 +8,7 @@ import { getAPIUrl } from '@spotify-to-plex/shared-utils/utils/getAPIUrl';
 /**
  * Creates a new Plex playlist
  */
-export async function storePlaylist(settings: PlexSettings, name: string, uri: string): Promise<string> {
+export async function storePlaylist(settings: PlexSettings, name: string, uri: string) {
     validatePlexSettings(settings);
 
     const url = getAPIUrl(settings.uri, `/playlists`);

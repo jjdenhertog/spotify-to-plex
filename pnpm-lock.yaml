@@ -69,6 +69,9 @@ importers:
       '@spotify-to-plex/shared-utils':
         specifier: workspace:*
         version: link:../../packages/shared-utils
+      '@spotify-to-plex/slskd-music-search':
+        specifier: workspace:*
+        version: link:../../packages/slskd-music-search
       '@spotify-to-plex/tidal-music-search':
         specifier: workspace:*
         version: link:../../packages/tidal-music-search
@@ -322,6 +325,9 @@ importers:
       fs-extra:
         specifier: ^11.3.1
         version: 11.3.1
+      string-similarity-js:
+        specifier: ^2.1.4
+        version: 2.1.4
     devDependencies:
       '@types/fs-extra':
         specifier: ^11.0.4
@@ -331,6 +337,31 @@ importers:
         version: 20.19.11
       typescript:
         specifier: ^5.3.3
+        version: 5.9.2
+
+  packages/slskd-music-search:
+    dependencies:
+      '@spotify-to-plex/music-search':
+        specifier: workspace:*
+        version: link:../music-search
+      '@spotify-to-plex/shared-types':
+        specifier: workspace:*
+        version: link:../shared-types
+      axios:
+        specifier: ^1.11.0
+        version: 1.11.0
+      qs:
+        specifier: ^6.14.0
+        version: 6.14.0
+    devDependencies:
+      '@types/node':
+        specifier: ^20.3.0
+        version: 20.19.11
+      '@types/qs':
+        specifier: ^6.14.0
+        version: 6.14.0
+      typescript:
+        specifier: ^5.0.0
         version: 5.9.2
 
   packages/tidal-music-search:

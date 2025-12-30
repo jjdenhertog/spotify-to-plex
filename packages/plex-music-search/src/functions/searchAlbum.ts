@@ -3,13 +3,12 @@ import { Track } from "@spotify-to-plex/music-search/types/Track";
 import getAlbumTracks from "../actions/getAlbumTracks";
 import { PlexMusicSearchConfig } from "../types/PlexMusicSearchConfig";
 import { PlexMusicSearchTrack } from "../types/PlexMusicSearchTrack";
-import { SearchResponse } from "../types/SearchResponse";
 import hubSearchToPlexTrack from "../utils/searching/hubSearchToPlexTrack";
 import { searchForAlbum } from "../utils/searching/searchForAlbum";
 import searchResultToTracks from "../utils/searching/searchResultToTracks";
 import { resetCache, setMusicSearchConfig } from "../session/state";
 
-export async function searchAlbum(config: PlexMusicSearchConfig, tracks: PlexMusicSearchTrack[]): Promise<SearchResponse[]> {
+export async function searchAlbum(config: PlexMusicSearchConfig, tracks: PlexMusicSearchTrack[]) {
     if (!config.searchApproaches || config.searchApproaches.length === 0) 
         throw new Error('No search approaches provided. Configuration must include explicit searchApproaches.');
 

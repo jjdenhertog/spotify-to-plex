@@ -42,7 +42,7 @@ export function parseExpression(expression: string): (item: Track) => boolean {
 /**
  * Parse expression string into structured format
  */
-function parseExpressionString(expression: string): ParsedExpression {
+function parseExpressionString(expression: string) {
     // Split by AND/OR operators while preserving the operators
     const tokens = expression.split(/\s+(AND|OR)\s+/);
     
@@ -85,31 +85,31 @@ function parseCondition(conditionStr: string): ParsedCondition {
     if (parts.length !== 2) {
         throw new Error(`Invalid condition format: ${conditionStr}`);
     }
-    
+
     const field = parts[0]?.trim();
     const operation = parts[1]?.trim();
 
     if (!field || !operation) {
         throw new Error(`Invalid condition format: ${conditionStr}`);
     }
-    
+
     // Validate field
     const validFields = ['artist', 'title', 'album', 'artistWithTitle', 'artistInTitle'];
 
     if (!validFields.includes(field)) {
         throw new Error(`Invalid field: ${field}`);
     }
-    
+
     // Parse operation
     if (operation === 'match' || operation === 'contains' || operation === 'is') {
         return { field, operation };
     }
-    
+
     // Parse 'not' operation
     if (operation === 'not') {
         return { field, operation };
     }
-    
+
     // Parse similarity operation with threshold
     const similarityMatch = /^similarity>=([\d.]+)$/.exec(operation);
 
@@ -122,14 +122,14 @@ function parseCondition(conditionStr: string): ParsedCondition {
 
         return { field, operation: 'similarity', threshold };
     }
-    
+
     throw new Error(`Invalid operation: ${operation}`);
 }
 
 /**
  * Evaluate parsed expression against track item
  */
-function evaluateExpression(item: Track, parsed: ParsedExpression): boolean {
+function evaluateExpression(item: Track, parsed: ParsedExpression) {
     const { conditions, operators } = parsed;
     
     if (conditions.length === 0) {
@@ -169,7 +169,7 @@ function evaluateExpression(item: Track, parsed: ParsedExpression): boolean {
 /**
  * Evaluate single condition against track item
  */
-function evaluateCondition(item: Track, condition: ParsedCondition): boolean {
+function evaluateCondition(item: Track, condition: ParsedCondition) {
     const { field, operation, threshold } = condition;
     
     // Get the matching field from the item
@@ -226,7 +226,7 @@ function getMatchingField(item: Track, field: string) {
  * Migrate legacy filter function string to new expression format
  * This provides backward compatibility during transition
  */
-export function migrateLegacyFilter(filterString: string): string | null {
+export function migrateLegacyFilter(filterString: string) {
     try {
         // Remove function wrapper and return statement
         const cleaned = filterString

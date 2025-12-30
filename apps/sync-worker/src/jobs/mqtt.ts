@@ -252,7 +252,7 @@ export async function syncMQTT() {
 /**
  * Helper function to resolve Plex ID from SavedItem
  */
-function resolvePlexId(item: SavedItem, playlists: PlaylistData, trackLinks: TrackLink[]): string | null {
+function resolvePlexId(item: SavedItem, playlists: PlaylistData, trackLinks: TrackLink[]) {
 
     switch (item.type) {
         case 'spotify-playlist':

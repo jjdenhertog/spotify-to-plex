@@ -4,7 +4,7 @@ import { parseExpression } from "./parseExpression";
 import { RuntimeMatchFilter } from "../types/RuntimeMatchFilter";
 import { Track } from "../types/Track";
 
-export function setMusicSearchConfig(config: MusicSearchConfig): void {
+export function setMusicSearchConfig(config: MusicSearchConfig) {
     const runtimeFilters = compileFilters(config.matchFilters);
     setState({
         musicSearchConfig: config,

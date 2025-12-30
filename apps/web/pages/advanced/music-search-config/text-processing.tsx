@@ -30,7 +30,7 @@ const TextProcessingPage: NextPage = () => {
         loadConfig();
     }, [loadConfig]);
 
-    const validateConfig = (data: any): string | null => {
+    const validateConfig = (data: any) => {
         if (!data || typeof data !== 'object')
             return 'Configuration must be an object';
 

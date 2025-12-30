@@ -7,7 +7,7 @@ import { DEFAULT_TEXT_PROCESSING } from '../config/default-config';
 
 const TEXT_PROCESSING_FILE = 'text-processing.json';
 
-export async function getTextProcessing(storageDir: string): Promise<TextProcessingConfig> {
+export async function getTextProcessing(storageDir: string) {
     const filePath = join(storageDir, TEXT_PROCESSING_FILE);
     const config = await readJSON<TextProcessingConfig>(filePath);
 

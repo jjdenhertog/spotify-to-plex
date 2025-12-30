@@ -15,7 +15,7 @@ export async function removeItemsFromPlaylist(
     playlistId: string,
     items: PlaylistItem[],
     config: RetryConfig = {}
-): Promise<void> {
+) {
     validatePlexSettings(settings);
   
     const url = getAPIUrl(settings.uri, `/playlists/${playlistId}/items`);

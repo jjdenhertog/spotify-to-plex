@@ -5,7 +5,7 @@ import { MatchFilterConfig } from '@spotify-to-plex/shared-types/common/MatchFil
 
 const MATCH_FILTERS_FILE = 'match-filters.json';
 
-async function writeJSON(filePath: string, data: unknown): Promise<void> {
+async function writeJSON(filePath: string, data: unknown) {
     try {
         await ensureDir(join(filePath, '..'));
         
@@ -21,7 +21,7 @@ async function writeJSON(filePath: string, data: unknown): Promise<void> {
     }
 }
 
-export async function updateMatchFilters(storageDir: string, filters: MatchFilterConfig[]): Promise<MatchFilterConfig[]> {
+export async function updateMatchFilters(storageDir: string, filters: MatchFilterConfig[]) {
     const filePath = join(storageDir, MATCH_FILTERS_FILE);
     await writeJSON(filePath, filters);
 

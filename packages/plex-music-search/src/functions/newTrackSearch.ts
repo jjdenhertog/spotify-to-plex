@@ -4,14 +4,14 @@ import { filterOutWords } from "@spotify-to-plex/music-search/utils/filterOutWor
 import { Track } from "@spotify-to-plex/music-search/types/Track";
 import { PlexMusicSearchApproach } from "../types/PlexMusicSearchApproach";
 import { PlexMusicSearchTrack } from "../types/PlexMusicSearchTrack";
-import { SearchQuery, SearchResponse } from "../types/SearchResponse";
+import { SearchQuery } from "../types/SearchResponse";
 import { PlexTrack } from "../types/PlexTrack";
 import hubSearchToPlexTrack from "../utils/searching/hubSearchToPlexTrack";
 import { searchForTrack } from "../utils/searching/searchForTrack";
 import searchResultToTracks from "../utils/searching/searchResultToTracks";
 import { getConfig, addToCache, getFromCache } from "../session/state";
 
-export async function newTrackSearch(approaches: PlexMusicSearchApproach[], searchTrack: PlexMusicSearchTrack, analyze: boolean = false): Promise<SearchResponse> {
+export async function newTrackSearch(approaches: PlexMusicSearchApproach[], searchTrack: PlexMusicSearchTrack, analyze: boolean = false) {
     const { id, artists, title, album = '' } = searchTrack;
 
     // Build artist variations (including combined artists)

@@ -1,6 +1,7 @@
 import { errorBoundary } from "@/helpers/errors/errorBoundary";
 import { Alert, Box, Button, CircularProgress, FormControlLabel, Switch, TextField, Typography } from "@mui/material";
 import axios from "axios";
+import { enqueueSnackbar } from "notistack";
 import { ChangeEvent, useCallback, useEffect, useState } from "react";
 
 type LidarrSettings = {
@@ -52,9 +53,7 @@ export default function LidarrSettings() {
         await errorBoundary(async () => {
             await axios.put('/api/lidarr/settings', settings);
             setSaving(false);
-
-            // eslint-disable-next-line no-alert
-            alert('Settings saved successfully!');
+            enqueueSnackbar('Settings saved successfully', { variant: 'success' });
         }, () => {
             setSaving(false);
         });
@@ -130,15 +129,15 @@ export default function LidarrSettings() {
                 Configure Lidarr to automatically download missing albums from your playlists.
             </Typography>
 
-            {!canUseLidarr && (
+            {!canUseLidarr &&
                 <Alert severity="warning" sx={{ fontWeight: 'normal', mb: 2 }}>
                     You have not added the Lidarr API key. Please set the LIDARR_API_KEY environment variable. Visit Github for more info.
                 </Alert>
-            )}
+            }
 
             <FormControlLabel control={<Switch checked={settings.enabled} onChange={handleEnabledChange} disabled={!canUseLidarr} />} label="Enable Lidarr Integration" sx={{ mb: 2 }} />
 
-            {settings.enabled && canUseLidarr ? <>
+            {!!settings.enabled && !!canUseLidarr && <>
                 <TextField
                     fullWidth
                     label="Lidarr URL"
@@ -179,10 +178,20 @@ export default function LidarrSettings() {
                     </Button>
                 </Box>
 
-                {testResult ? <Alert severity={testResult.success ? 'success' : 'error'} sx={{ mb: 2 }}>
-                    {testResult.message}
-                </Alert> : null}
-            </> : null}
+                {!!testResult &&
+                    <Alert severity={testResult.success ? 'success' : 'error'} sx={{ mb: 2 }}>
+                        {testResult.message}
+                    </Alert>
+                }
+            </>
+            }
+            {!settings.enabled && !!canUseLidarr &&
+                <Box>
+                    <Button variant="contained" onClick={handleSaveClick} disabled={saving}>
+                        {saving ? 'Saving...' : 'Save Settings'}
+                    </Button>
+                </Box>
+            }
         </Box>
     );
 }

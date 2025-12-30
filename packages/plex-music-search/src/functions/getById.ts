@@ -1,9 +1,8 @@
 import { removeFeaturing } from "@spotify-to-plex/music-search/utils/removeFeaturing";
 import { getMetadata } from "../actions/getMetadata";
 import { PlexMusicSearchConfig } from "../types/PlexMusicSearchConfig";
-import { PlexTrack } from "../types/PlexTrack";
 
-export async function getById(config: PlexMusicSearchConfig, key: string): Promise<PlexTrack> {
+export async function getById(config: PlexMusicSearchConfig, key: string) {
     const metaData = await getMetadata(config.uri, config.token, key);
     const [item] = metaData;
     

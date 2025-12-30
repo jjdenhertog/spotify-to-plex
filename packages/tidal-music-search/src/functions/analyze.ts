@@ -2,11 +2,10 @@ import { setConfig } from "@spotify-to-plex/music-search/functions/setConfig";
 import { setCredentials, authenticate } from "../session/credentials";
 import { TidalMusicSearchConfig } from "../types/TidalMusicSearchConfig";
 import { TidalMusicSearchTrack } from "../types/TidalMusicSearchTrack";
-import { SearchResponse } from "../types/SearchResponse";
 import { setMusicSearchConfig, resetCache } from "../session/state";
 import { newTrackSearch } from "./newTrackSearch";
 
-export async function analyze(config: TidalMusicSearchConfig, track: TidalMusicSearchTrack): Promise<SearchResponse> {
+export async function analyze(config: TidalMusicSearchConfig, track: TidalMusicSearchTrack) {
     const { searchApproaches: approaches } = config;
 
     if (!approaches)

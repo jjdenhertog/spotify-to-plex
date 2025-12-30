@@ -2,7 +2,7 @@ import { PlaylistItem } from '../types/PlaylistItem';
 import { getPlaylists } from './getPlaylists';
 import { writeJSON } from '../utils/fileUtils';
 
-export async function addPlaylist(playlist: PlaylistItem): Promise<void> {
+export async function addPlaylist(playlist: PlaylistItem) {
     const playlists = await getPlaylists();
     const { data = [] } = playlists;
 

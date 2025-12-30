@@ -5,7 +5,7 @@ import { SearchApproachConfig } from '../types/SearchApproachConfig';
 
 const SEARCH_APPROACHES_FILE = 'search-approaches.json';
 
-async function writeJSON(filePath: string, data: unknown): Promise<void> {
+async function writeJSON(filePath: string, data: unknown) {
     try {
         await ensureDir(join(filePath, '..'));
         
@@ -20,7 +20,7 @@ async function writeJSON(filePath: string, data: unknown): Promise<void> {
     }
 }
 
-export async function updateSearchApproaches(storageDir: string, approaches: SearchApproachConfig[]): Promise<SearchApproachConfig[]> {
+export async function updateSearchApproaches(storageDir: string, approaches: SearchApproachConfig[]) {
     const filePath = join(storageDir, SEARCH_APPROACHES_FILE);
     await writeJSON(filePath, approaches);
 

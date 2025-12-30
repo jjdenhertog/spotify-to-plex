@@ -17,16 +17,16 @@ export function getState(): PlexMusicSearchState {
     return state;
 }
 
-export function setState(newState: Partial<PlexMusicSearchState>): void {
+export function setState(newState: Partial<PlexMusicSearchState>) {
     Object.assign(state, newState);
 }
 
 
-export function resetCache(): void {
+export function resetCache() {
     state.cache = [];
 }
 
-export function setMusicSearchConfig(config: PlexMusicSearchConfig): void {
+export function setMusicSearchConfig(config: PlexMusicSearchConfig) {
     state.config = config;
 
     setGlobalConfig(config);
@@ -40,11 +40,11 @@ export function getConfig(): PlexMusicSearchConfig | undefined {
     return state.config;
 }
 
-export function addToCache(id: string, result: PlexTrack[]): void {
+export function addToCache(id: string, result: PlexTrack[]) {
     state.cache.push({ id, result });
 }
 
-export function getFromCache(id: string): PlexTrack[] | undefined {
+export function getFromCache(id: string) {
     const cached = state.cache.find(item => item.id === id);
 
     return cached?.result;

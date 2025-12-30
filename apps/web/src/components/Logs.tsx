@@ -72,7 +72,7 @@ export default function Logs() {
         });
     }, [handleClearLogs]);
 
-    const getSyncTypeTitle = (type: SyncType): string => {
+    const getSyncTypeTitle = (type: SyncType) => {
         const titles: Record<SyncType, string> = {
             users: 'Users',
             albums: 'Albums',
@@ -85,7 +85,7 @@ export default function Logs() {
         return titles[type];
     };
 
-    const formatDuration = (ms: number): string => {
+    const formatDuration = (ms: number) => {
         const seconds = Math.floor(ms / 1000);
         const minutes = Math.floor(seconds / 60);
         const hours = Math.floor(minutes / 60);

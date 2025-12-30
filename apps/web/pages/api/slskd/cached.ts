@@ -1,0 +1,60 @@
+import { generateError } from '@/helpers/errors/generateError';
+import { getCachedTrackLinks } from '@spotify-to-plex/shared-utils/cache/getCachedTrackLink';
+import { Track } from '@spotify-to-plex/shared-types/spotify/Track';
+import type { NextApiRequest, NextApiResponse } from 'next';
+import { createRouter } from 'next-connect';
+
+export type GetSlskdTracksResponse = {
+    id: string,
+    title: string
+    artist: string
+    album: string
+    slskd_files: {
+        username: string;
+        filename: string;
+    }[]
+}
+
+const router = createRouter<NextApiRequest, NextApiResponse>()
+    .post(
+        async (req, res) => {
+
+            const searchItems: Track[] = req.body.items
+            if (!Array.isArray(searchItems))
+                throw new Error(`Array of items expected, none found`)
+
+            //////////////////////////////////////
+            // Handling cached links
+            //////////////////////////////////////
+            const { found: cachedTrackLinks } = getCachedTrackLinks(searchItems, 'slskd')
+
+            const result: GetSlskdTracksResponse[] = []
+
+            for (let i = 0; i < searchItems.length; i++) {
+                const searchItem = searchItems[i];
+                if (!searchItem)
+                    continue;
+
+                // Process if cached link has been found
+                const trackLink = cachedTrackLinks.find(item => item.spotify_id === searchItem.id)
+                const slskdFiles = trackLink?.slskd_files
+                if (!slskdFiles || slskdFiles.length === 0)
+                    continue;
+
+                result.push({
+                    id: searchItem.id,
+                    title: searchItem.title,
+                    artist: searchItem.artists?.[0] || '',
+                    album: searchItem.album || "",
+                    slskd_files: slskdFiles,
+                })
+            }
+
+            return res.status(200).json(result)
+        })
+
+export default router.handler({
+    onError: (err: unknown, req: NextApiRequest, res: NextApiResponse) => {
+        generateError(req, res, "SLSKD Cached Tracks", err);
+    },
+});

@@ -19,8 +19,8 @@ export function createMQTTClient(config: MQTTConfig) {
    * Connect to MQTT broker
    * Returns a Promise that resolves when connected
    */
-    const connect = async (): Promise<void> => {
-        return new Promise((resolve, reject) => {
+    const connect = async () => {
+        return new Promise<void>((resolve, reject) => {
             const options: mqtt.IClientOptions = {
                 username: config.username,
                 password: config.password,
@@ -46,12 +46,12 @@ export function createMQTTClient(config: MQTTConfig) {
    * Publish a message to MQTT broker
    * Returns a Promise that resolves when message is published
    */
-    const publish = async (topic: string, message: string, options: MQTTPublishOptions = DEFAULT_PUBLISH_OPTIONS): Promise<void> => {
+    const publish = async (topic: string, message: string, options: MQTTPublishOptions = DEFAULT_PUBLISH_OPTIONS) => {
         if (!client) {
             throw new Error('MQTT client not connected');
         }
 
-        return new Promise((resolve, reject) => {
+        return new Promise<void>((resolve, reject) => {
             client!.publish(topic, message, options, (error) => {
                 if (error) {
                     console.error(`[MQTT] Failed to publish to ${topic}:`, error.message);
@@ -67,11 +67,11 @@ export function createMQTTClient(config: MQTTConfig) {
    * Disconnect from MQTT broker
    * Returns a Promise that resolves when disconnected
    */
-    const disconnect = async (): Promise<void> => {
+    const disconnect = async () => {
         if (!client) 
             return;
 
-        return new Promise((resolve) => {
+        return new Promise<void>((resolve) => {
             client!.end(false, {}, () => {
                 console.log('[MQTT] Disconnected');
                 client = null;
@@ -83,7 +83,7 @@ export function createMQTTClient(config: MQTTConfig) {
     /**
    * Check if client is connected
    */
-    const isConnected = (): boolean => {
+    const isConnected = () => {
         return client?.connected ?? false;
     };
 

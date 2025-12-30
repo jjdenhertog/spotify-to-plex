@@ -40,7 +40,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 const syncTypeLogPath = join(storageDir, 'sync_type_log.json');
                 if (existsSync(syncTypeLogPath)) {
                     try {
-                        const content = readFileSync(syncTypeLogPath, 'utf-8');
+                        const content = readFileSync(syncTypeLogPath, 'utf8');
                         syncTypeLog = JSON.parse(content);
                     } catch (error) {
                         console.error('Error parsing sync_type_log.json:', error);
@@ -59,7 +59,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 const syncLogPath = join(storageDir, 'sync_log.json');
                 if (existsSync(syncLogPath)) {
                     try {
-                        const content = readFileSync(syncLogPath, 'utf-8');
+                        const content = readFileSync(syncLogPath, 'utf8');
                         syncLog = JSON.parse(content);
                     } catch (error) {
                         console.error('Error parsing sync_log.json:', error);
@@ -71,7 +71,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 const lidarrSyncLogPath = join(storageDir, 'lidarr_sync_log.json');
                 if (existsSync(lidarrSyncLogPath)) {
                     try {
-                        const content = readFileSync(lidarrSyncLogPath, 'utf-8');
+                        const content = readFileSync(lidarrSyncLogPath, 'utf8');
                         lidarrSyncLog = JSON.parse(content);
                     } catch (error) {
                         console.error('Error parsing lidarr_sync_log.json:', error);
@@ -83,7 +83,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 const slskdSyncLogPath = join(storageDir, 'slskd_sync_log.json');
                 if (existsSync(slskdSyncLogPath)) {
                     try {
-                        const content = readFileSync(slskdSyncLogPath, 'utf-8');
+                        const content = readFileSync(slskdSyncLogPath, 'utf8');
                         slskdSyncLog = JSON.parse(content);
                     } catch (error) {
                         console.error('Error parsing slskd_sync_log.json:', error);
@@ -91,11 +91,11 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 }
 
                 // Read all missing files
-                const readMissingFile = (filename: string): string => {
+                const readMissingFile = (filename: string) => {
                     const filePath = join(storageDir, filename);
                     if (existsSync(filePath)) {
                         try {
-                            return readFileSync(filePath, 'utf-8');
+                            return readFileSync(filePath, 'utf8');
                         } catch (error) {
                             console.error(`Error reading ${filename}:`, error);
 
@@ -106,11 +106,11 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                     return '';
                 };
 
-                const readMissingJsonFile = (filename: string): string => {
+                const readMissingJsonFile = (filename: string) => {
                     const filePath = join(storageDir, filename);
                     if (existsSync(filePath)) {
                         try {
-                            const content = readFileSync(filePath, 'utf-8');
+                            const content = readFileSync(filePath, 'utf8');
 
                             return JSON.stringify(JSON.parse(content), null, 2);
                         } catch (error) {

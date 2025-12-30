@@ -15,18 +15,23 @@ const TestConfigPage: NextPage = () => {
 
     const [loading, setLoading] = useState(true)
     const [canUseTidal, setCanUseTidal] = useState(false)
+    const [canUseSlskd, setCanUseSlskd] = useState(false)
     useEffect(() => {
 
         errorBoundary(async () => {
-
-            const validResult = await axios.get<{ ok: boolean }>('/api/tidal/valid')
-            if (!validResult.data.ok) {
-                setLoading(false)
-
-                return;
+            // Check Tidal availability
+            const tidalValidResult = await axios.get<{ ok: boolean }>('/api/tidal/valid')
+            if (tidalValidResult.data.ok) {
+                setCanUseTidal(true)
             }
 
-            setCanUseTidal(true)
+            // Check SLSKD availability
+            const slskdValidResult = await axios.get<{ ok: boolean }>('/api/slskd/valid')
+            if (slskdValidResult.data.ok) {
+                setCanUseSlskd(true)
+            }
+
+            setLoading(false)
         }, () => {
             setLoading(false)
         })
@@ -63,7 +68,13 @@ const TestConfigPage: NextPage = () => {
         trackAnalyzerRef.current?.analyze(spotifyId.trim(), 'tidal');
     }, [spotifyId]);
 
-    const extractSpotifyId = (input: string): string => {
+    const handleAnalyzeSlskd = useCallback(() => {
+        if (!spotifyId.trim()) return;
+
+        trackAnalyzerRef.current?.analyze(spotifyId.trim(), 'slskd');
+    }, [spotifyId]);
+
+    const extractSpotifyId = (input: string) => {
         // Handle Spotify URLs like: https://open.spotify.com/track/4uLU6hMCjMI75M1A2tKUQC
         const urlRegex = /spotify\.com\/track\/([\dA-Za-z]+)/;
         const urlMatch = urlRegex.exec(input);
@@ -98,19 +109,25 @@ const TestConfigPage: NextPage = () => {
                         </Typography>
 
                         <TextField fullWidth value={spotifyId} onChange={handleInputChange} placeholder="e.g., 4uLU6hMCjMI75M1A2tKUQC or https://open.spotify.com/track/..." />
-                        <Box pt={1}>
-                            <Button variant="contained" onClick={handleAnalyzePlex} disabled={!spotifyId.trim()} sx={{ mr: 1 }}>
+                        <Box pt={1} sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+                            <Button variant="contained" onClick={handleAnalyzePlex} disabled={!spotifyId.trim()}>
                                 Analyze Track in Plex
                             </Button>
-                            <Button  disabled={!spotifyId.trim() ||!canUseTidal} variant="contained" onClick={handleAnalyzeTidal} >
+                            <Button disabled={!spotifyId.trim() || !canUseTidal} variant="contained" onClick={handleAnalyzeTidal}>
                                 Analyze Track in Tidal
                             </Button>
+                            <Button disabled={!spotifyId.trim() || !canUseSlskd} variant="contained" onClick={handleAnalyzeSlskd}>
+                                Analyze Track in SLSKD
+                            </Button>
                         </Box>
-                        {!loading && !canUseTidal && (
-                            <Alert severity="warning" sx={{ mt: 2 }}>
-                                You have not added Tidal credentials. Visit Github for more info.
+                        {!loading && (!canUseTidal || !canUseSlskd) ? (
+                            <Alert severity="info" sx={{ mt: 2 }}>
+                                {!canUseTidal && !canUseSlskd ? 'You have not configured Tidal or SLSKD credentials.' : null}
+                                {!canUseTidal && canUseSlskd ? 'Tidal credentials not configured.' : null}
+                                {canUseTidal && !canUseSlskd ? 'SLSKD credentials not configured.' : null}
+                                {' '}Visit the project documentation for configuration instructions.
                             </Alert>
-                        )}
+                        ) : null}
 
                         <Divider sx={{ my: 2 }} />
                         <TrackAnalyzer ref={trackAnalyzerRef} />

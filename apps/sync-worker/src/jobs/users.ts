@@ -1,3 +1,4 @@
+/* eslint-disable max-depth */
 import { getAccessToken } from "@spotify-to-plex/shared-utils/spotify/getAccessToken";
 import { refreshAccessTokens } from "@spotify-to-plex/shared-utils/spotify/refreshAccessTokens";
 import { getStorageDir } from "@spotify-to-plex/shared-utils/utils/getStorageDir";

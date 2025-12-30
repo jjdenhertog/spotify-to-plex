@@ -1,12 +1,8 @@
 import { generateError } from '@/helpers/errors/generateError';
+import { search } from '@spotify-to-plex/slskd-music-search/functions/search';
+import type { SlskdMusicSearchTrack } from '@spotify-to-plex/slskd-music-search';
+import { getMusicSearchConfig } from "@spotify-to-plex/music-search/functions/getMusicSearchConfig";
 import { getSlskdSettings } from '@spotify-to-plex/plex-config/functions/getSlskdSettings';
-import { searchSlskdTrack } from '@spotify-to-plex/shared-utils/slskd/searchSlskdTrack';
-import { waitForSearchComplete } from '@spotify-to-plex/shared-utils/slskd/waitForSearchComplete';
-import { getSearchResults } from '@spotify-to-plex/shared-utils/slskd/getSearchResults';
-import { collectFiles } from '@spotify-to-plex/shared-utils/slskd/collectFiles';
-import { filterFiles } from '@spotify-to-plex/shared-utils/slskd/filterFiles';
-import { queueDownload } from '@spotify-to-plex/shared-utils/slskd/queueDownload';
-import { deleteSearch } from '@spotify-to-plex/shared-utils/slskd/deleteSearch';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createRouter } from 'next-connect';
 
@@ -22,7 +18,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
     .post(async (req, res) => {
         try {
             // Validate input
-            const { id, title, artist, album, duration } = req.body as SendTrackRequest;
+            const { id, title, artist, album } = req.body as SendTrackRequest;
 
             if (!id || !title || !artist) {
                 return res.status(400).json({
@@ -30,172 +26,125 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 });
             }
 
-            // Get settings
-            const settings = await getSlskdSettings();
-
-            if (!settings.enabled) {
-                return res.status(400).json({ error: 'SLSKD is not enabled' });
+            // Validate environment variables
+            if (typeof process.env.SLSKD_API_KEY !== 'string') {
+                return res.status(400).json({ error: 'Environment variable SLSKD_API_KEY is missing' });
             }
 
-            if (!settings.url) {
-                return res.status(400).json({ error: 'SLSKD URL is not configured' });
+            const slskdSettings = await getSlskdSettings();
+            if (!slskdSettings.url) {
+                return res.status(400).json({ error: 'SLSKD URL is not configured in settings. Please save your settings first.' });
             }
 
-            if (!process.env.SLSKD_API_KEY) {
-                return res.status(400).json({ error: 'SLSKD API key is not configured' });
-            }
+            // Sanitize URL (remove trailing slash to prevent double-slash issues)
+            const baseUrl = slskdSettings.url.endsWith('/')
+                ? slskdSettings.url.slice(0, -1)
+                : slskdSettings.url;
 
-            const apiKey = process.env.SLSKD_API_KEY;
+            console.log(`[SLSKD] Searching for track: ${artist} - ${title}`);
 
-            // Build track info object
-            const trackInfo = {
-                artist,
-                title,
-                album: album || '',
-                duration: duration || 0
+            // Load music search configuration
+            const musicSearchConfig = await getMusicSearchConfig();
+
+            const slskdConfig = {
+                baseUrl,
+                apiKey: process.env.SLSKD_API_KEY,
+                musicSearchConfig,
+                searchApproaches: musicSearchConfig.searchApproaches,
+                textProcessing: musicSearchConfig.textProcessing,
+                // Apply user settings for search behavior
+                searchTimeout: slskdSettings.search_timeout * 1000, // Convert seconds to milliseconds
+                maxResultsPerApproach: slskdSettings.max_results
             };
 
-            const searchQuery = `${artist} - ${title}`;
-            console.log(`[SLSKD] Searching for track: ${searchQuery}`);
+            // Build track search request
+            const searchTrack: SlskdMusicSearchTrack = {
+                id,
+                artists: [artist],
+                title,
+                album
+            };
 
-            // Step 1: Create search
-            let searchId: string;
-            try {
-                searchId = await searchSlskdTrack(trackInfo, settings.url, apiKey);
-                console.log(`[SLSKD] Search created with ID: ${searchId}`);
-            } catch (error) {
-                console.error('[SLSKD] Failed to create search:', error);
+            // Perform search using new package
+            const searchResponse = await search(slskdConfig, [searchTrack]);
 
-                return res.status(500).json({
-                    error: `Failed to create search: ${error instanceof Error ? error.message : 'Unknown error'}`
+            if (!searchResponse || searchResponse.length === 0) {
+                console.log(`[SLSKD] No search results returned`);
+
+                return res.status(404).json({
+                    error: 'Search did not return any results'
                 });
             }
 
-            const cleanupSearch = true;
+            const [result] = searchResponse;
 
-            try {
-                // Step 2: Wait for search to complete
-                console.log(`[SLSKD] Waiting for search to complete...`);
-                const searchCompleted = await waitForSearchComplete(
-                    searchId,
-                    searchQuery,
-                    settings.url,
-                    apiKey,
-                    settings.retry_limit,
-                    0,
-                    settings.search_timeout * 1000 // Convert to milliseconds
-                );
+            if (!result?.result || result.result.length === 0) {
+                console.log(`[SLSKD] No files found for: ${artist} - ${title}`);
 
-                if (!searchCompleted.completed) {
-                    console.log(`[SLSKD] Search timed out or failed`);
-
-                    return res.status(404).json({
-                        error: 'Search did not complete in time'
-                    });
-                }
-
-                if (searchCompleted.fileCount === 0) {
-                    console.log(`[SLSKD] No files found for: ${searchQuery}`);
-
-                    return res.status(404).json({
-                        error: 'No files found for this track'
-                    });
-                }
-
-                console.log(`[SLSKD] Search completed with ${searchCompleted.fileCount} files`);
-
-                // Step 3: Get search results
-                const searchResults = await getSearchResults(searchId, settings.url, apiKey);
-                console.log(`[SLSKD] Retrieved ${searchResults.length} search results`);
-
-                // Step 4: Collect matching files
-                const collectedFiles = collectFiles(
-                    trackInfo,
-                    searchResults,
-                    settings.allowed_extensions
-                    // settings.max_length_difference // TODO: Re-enable when Track type includes duration_ms
-                );
-
-                if (collectedFiles.length === 0) {
-                    console.log(`[SLSKD] No matching files after collection`);
-
-                    return res.status(404).json({
-                        error: 'No files matched the quality criteria'
-                    });
-                }
-
-                console.log(`[SLSKD] Collected ${collectedFiles.length} matching files`);
-
-                // Step 5: Filter files by quality
-                const filteredFiles = filterFiles(
-                    collectedFiles,
-                    settings.allowed_extensions,
-                    settings.min_bitrate,
-                    settings.min_bitdepth,
-                    settings.download_attempts
-                );
-
-                if (filteredFiles.length === 0) {
-                    console.log(`[SLSKD] No files passed quality filter`);
-
-                    return res.status(404).json({
-                        error: 'No files met the quality requirements'
-                    });
-                }
-
-                console.log(`[SLSKD] Filtered to ${filteredFiles.length} high-quality files`);
-
-                // Step 6: Queue downloads (try all filtered files until one succeeds)
-                let queuedFile: typeof filteredFiles[0] | undefined;
-
-                try {
-                    queuedFile = await queueDownload(filteredFiles, settings.url, apiKey);
-                    console.log(`[SLSKD] Successfully queued download: ${queuedFile.filename}`);
-                } catch (error) {
-                    const errorMsg = error instanceof Error ? error.message : 'Unknown error';
-                    console.error(`[SLSKD] Failed to queue any files:`, error);
-
-                    return res.status(500).json({
-                        error: `Failed to queue any downloads. ${errorMsg}`
-                    });
-                }
-
-                // Success response
-                return res.status(200).json({
-                    success: true,
-                    message: 'Track queued for download',
-                    track: {
-                        title,
-                        artist,
-                        album
-                    },
-                    file: {
-                        filename: queuedFile.filename,
-                        username: queuedFile.username,
-                        size: queuedFile.size,
-                        bitRate: queuedFile.bitRate,
-                        bitDepth: queuedFile.bitDepth,
-                        extension: queuedFile.extension
+                return res.status(404).json({
+                    error: 'No files found for this track',
+                    details: {
+                        queriesAttempted: result?.queries?.length || 0,
+                        approaches: result?.queries?.map(q => q.approach).filter((v, i, a) => a.indexOf(v) === i) || []
                     }
                 });
-
-            } finally {
-                // Step 7: Cleanup - delete search
-                if (cleanupSearch) {
-                    try {
-                        await deleteSearch(searchId, settings.url, apiKey);
-                        console.log(`[SLSKD] Deleted search ${searchId}`);
-                    } catch (error) {
-                        // Ignore cleanup errors
-                        console.warn(`[SLSKD] Failed to delete search ${searchId}:`, error);
-                    }
-                }
             }
+
+            // Get the best match (first result)
+            const [bestMatch] = result.result;
+            if (!bestMatch) {
+                return res.status(404).json({
+                    error: 'No best match found'
+                });
+            }
+
+            console.log(`[SLSKD] Found ${result.result.length} matches. Best match: ${bestMatch.filename}`);
+            console.log(`[SLSKD] Match confidence: ${bestMatch.metadata?.confidence || 'N/A'}, Quality: ${bestMatch.bitRate || 'N/A'}kbps`);
+
+            // Build metadata response if available
+            let metadataResponse;
+            if (bestMatch.metadata) {
+                metadataResponse = {
+                    extractedArtist: bestMatch.metadata.artist,
+                    extractedTitle: bestMatch.metadata.title,
+                    extractedAlbum: bestMatch.metadata.album,
+                    pattern: bestMatch.metadata.pattern,
+                    confidence: bestMatch.metadata.confidence
+                };
+            }
+
+            // Success response with detailed metadata
+            return res.status(200).json({
+                success: true,
+                message: 'Track search completed successfully',
+                track: {
+                    title,
+                    artist,
+                    album
+                },
+                bestMatch: {
+                    filename: bestMatch.filename,
+                    username: bestMatch.username,
+                    size: bestMatch.size,
+                    bitRate: bestMatch.bitRate,
+                    bitDepth: bestMatch.bitDepth,
+                    sampleRate: bestMatch.sampleRate,
+                    extension: bestMatch.extension,
+                    length: bestMatch.length,
+                    isLocked: bestMatch.isLocked
+                },
+                metadata: metadataResponse,
+                matchInfo: {
+                    totalMatches: result.result.length,
+                    queriesAttempted: result.queries?.length || 0,
+                    approaches: result.queries?.map(q => q.approach).filter((v, i, a) => a.indexOf(v) === i) || []
+                }
+            });
 
         } catch (error) {
             console.error('[SLSKD] Unexpected error in send-track:', error);
             res.status(500).json({
-                error: `Failed to send track to SLSKD: ${error instanceof Error ? error.message : 'Unknown error'}`
+                error: `Failed to search track in SLSKD: ${error instanceof Error ? error.message : 'Unknown error'}`
             });
         }
     });

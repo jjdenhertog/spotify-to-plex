@@ -1,7 +1,7 @@
 import { Pill } from './expressionToPills';
 import type { OperationText } from '../types/MatchFilterTypes';
 
-export function pillsToExpression(pills: Pill[]): string {
+export function pillsToExpression(pills: Pill[]) {
     if (!pills.length) {
         return '';
     }

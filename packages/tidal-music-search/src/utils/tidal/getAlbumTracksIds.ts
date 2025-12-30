@@ -2,7 +2,7 @@ import { operations } from "../../types/TidalAPI";
 import tidalApiRequest from "../tidalApiRequest";
 import { getCredentials, authenticate } from "../../session/credentials";
 
-export async function getAlbumTracksIds(id: string, countryCode: string = 'NL'): Promise<string[]> {
+export async function getAlbumTracksIds(id: string, countryCode: string = 'NL') {
     const state = getCredentials();
 
     // Authenticate again if the token is expired

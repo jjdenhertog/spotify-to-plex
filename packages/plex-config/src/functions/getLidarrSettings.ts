@@ -10,7 +10,7 @@ const DEFAULT_SETTINGS: LidarrSettings = {
     auto_sync: false,
 };
 
-export async function getLidarrSettings(): Promise<LidarrSettings> {
+export async function getLidarrSettings() {
     const settings = await readJSON<LidarrSettings>('lidarr.json');
 
     if (!settings) {

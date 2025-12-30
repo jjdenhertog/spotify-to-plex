@@ -13,44 +13,12 @@ import { completeSyncType } from "../utils/completeSyncType";
 import { errorSyncType } from "../utils/errorSyncType";
 import { updateSyncTypeProgress } from "../utils/updateSyncTypeProgress";
 
-// SLSKD API response types based on Go example
-type SlskdSearch = {
-    id: string;
-    searchText: string;
-    state: string;
-    isComplete: boolean;
-    fileCount: number;
-    lockedFileCount: number;
-    responseCount: number;
-    startedAt: string;
-    endedAt?: string;
-    token: number;
-};
+import { newTrackSearch, setState, clearState } from "@spotify-to-plex/slskd-music-search";
+import type { SlskdMusicSearchConfig, SlskdTrack } from "@spotify-to-plex/slskd-music-search";
+import { getMusicSearchConfig } from "@spotify-to-plex/music-search/functions/getMusicSearchConfig";
+import { setMusicSearchConfig as setMusicSearchMatchFilters } from "@spotify-to-plex/music-search/functions/setMusicSearchConfig";
 
-type SlskdFile = {
-    filename: string;
-    size: number;
-    extension: string;
-    bitRate: number;
-    bitDepth: number;
-    length: number;
-    isLocked: boolean;
-};
-
-type SlskdSearchResult = {
-    username: string;
-    fileCount: number;
-    files: SlskdFile[];
-    lockedFileCount: number;
-    hasFreeUploadSlot: boolean;
-    uploadSpeed: number;
-    queueLength: number;
-};
-
-type DownloadPayload = {
-    filename: string;
-    size: number;
-};
+type DownloadPayload = { filename: string; size: number; };
 
 export async function syncSlskd() {
     console.log('Starting SLSKD sync...');
@@ -119,7 +87,7 @@ export async function syncSlskd() {
         const slskdLogsPath = join(getStorageDir(), 'slskd_sync_log.json');
         const slskdLogs: Record<string, SlskdSyncLog> = {};
 
-        // Setup axios instance with API key
+        // Setup axios instance with API key for download operations
         const baseUrl = settings.url.endsWith('/') ? settings.url.slice(0, -1) : settings.url;
         const axiosInstance = axios.create({
             baseURL: baseUrl,
@@ -128,6 +96,26 @@ export async function syncSlskd() {
                 'Content-Type': 'application/json',
             },
         });
+
+        // Load centralized music search configuration
+        const musicSearchConfig = await getMusicSearchConfig();
+        const { searchApproaches, textProcessing } = musicSearchConfig;
+
+        // Set up match filters (required for music search sorting/matching)
+        setMusicSearchMatchFilters(musicSearchConfig);
+
+        // Initialize search state with configuration
+        const slskdConfig: SlskdMusicSearchConfig = {
+            baseUrl,
+            apiKey,
+            searchApproaches,
+            textProcessing,
+            musicSearchConfig,
+            maxResultsPerApproach: settings.max_results,
+            searchTimeout: settings.search_timeout * 1000,
+        };
+
+        setState({ baseUrl, apiKey }, slskdConfig);
 
         // Process each track
         let successCount = 0;
@@ -165,164 +153,49 @@ export async function syncSlskd() {
                     continue;
                 }
 
-                // STEP 1: Create search
-                const searchText = `${track.artist_name} - ${track.track_name}`;
-                console.log(`🔍 Searching for: ${searchText}`);
+                console.log(`🔍 Searching for: ${track.artist_name} - ${track.track_name}`);
 
-                const searchResponse = await axiosInstance.post<SlskdSearch>('/api/v0/searches', {
-                    searchText
-                });
+                // Use the new search package with progressive fallback
+                const searchResult = await newTrackSearch(
+                    searchApproaches,
+                    {
+                        id: trackKey,
+                        artists: [track.artist_name],
+                        title: track.track_name,
+                        album: track.album_name || '',
+                    },
+                    false // analyze=false for first match only
+                );
 
-                const searchId = searchResponse.data.id;
-                trackLog.error = `Search ID: ${searchId}`;
-
-                // STEP 2: Wait for search to complete (with retry logic)
-                let searchComplete = false;
-                let retryCount = 0;
-
-                while (!searchComplete && retryCount < settings.retry_limit) {
-                    await new Promise(resolve => { setTimeout(resolve, settings.search_timeout * 1000) });
-
-                    const statusResponse = await axiosInstance.get<SlskdSearch>(`/api/v0/searches/${searchId}`);
-                    const searchStatus = statusResponse.data;
-
-                    if (searchStatus.isComplete) {
-                        // Check if we have any available (non-locked) files
-                        const availableFileCount = searchStatus.fileCount - searchStatus.lockedFileCount;
-
-                        if (availableFileCount > 0) {
-                            searchComplete = true;
-                            console.log(`✓ Search complete: found ${searchStatus.fileCount} files (${availableFileCount} available)`);
-                        } else {
-                            // Search is complete but no available files
-                            trackLog.status = 'not_found';
-                            trackLog.error = `No available files found (${searchStatus.fileCount} total, ${searchStatus.lockedFileCount} locked)`;
-                            trackLog.end = Date.now();
-                            notFoundCount++;
-                            slskdLogs[logId] = trackLog;
-
-                            // Clean up search
-                            await axiosInstance.delete(`/api/v0/searches/${searchId}`).catch(() => { console.log(`❌ Error deleting search: ${searchId}`); });
-                            break;
-                        }
-                    } else {
-                        retryCount++;
-                        console.log(`⏳ Search in progress... (${retryCount}/${settings.retry_limit})`);
-                    }
-                }
-
-                if (!searchComplete) {
-                    if (retryCount >= settings.retry_limit) {
-                        trackLog.status = 'error';
-                        trackLog.error = `Search timeout after ${settings.retry_limit} retries`;
-                        trackLog.end = Date.now();
-                        errorCount++;
-                        slskdLogs[logId] = trackLog;
-
-                        // Clean up search
-                        await axiosInstance.delete(`/api/v0/searches/${searchId}`).catch(() => { console.log(`❌ Error deleting search: ${searchId}`); });
-                    }
-
-                    continue;
-                }
-
-                // STEP 3: Collect search results
-                const resultsResponse = await axiosInstance.get<SlskdSearchResult[]>(`/api/v0/searches/${searchId}/responses`);
-                const searchResults = resultsResponse.data;
-
-                // STEP 4: Filter files based on settings
-                const candidateFiles: { file: SlskdFile; username: string }[] = [];
-
-                // Helper function to sanitize names (remove special chars, normalize)
-                const sanitizeName = (name: string): string => {
-                    return name
-                        .toLowerCase()
-                        .normalize('NFD')
-                        .replace(/[\u0300-\u036F]/g, '') // Remove diacritics
-                        .replace(/[^\d\sa-z]/g, ' ') // Replace special chars with space
-                        .replace(/\s+/g, ' ') // Normalize whitespace
-                        .trim();
-                };
-
-                const sanitizedArtist = sanitizeName(track.artist_name);
-                const sanitizedTitle = sanitizeName(track.track_name);
-                const sanitizedAlbum = track.album_name ? sanitizeName(track.album_name) : '';
-
-                for (const result of searchResults) {
-                    if (result.fileCount > 0 && result.hasFreeUploadSlot) {
-                        for (const file of result.files) {
-                            // Check if file is locked first
-                            if (file.isLocked) {
-                                continue;
-                            }
-
-                            // Extract extension
-                            let extension = file.extension.toLowerCase().replace(/^\./, '');
-                            if (!extension && file.filename) {
-                                const match = /\.([^.]+)$/.exec(file.filename);
-                                extension = match ? match[1]?.toLowerCase() || '' : '';
-                            }
-
-                            // Check if extension is allowed
-                            if (!settings.allowed_extensions.includes(extension)) {
-                                continue;
-                            }
-
-                            // TODO: Re-enable when Track type includes duration_ms
-                            // Check track duration (if available) - skip if difference > max_length_difference
-                            // if (track.duration && track.duration > 0 && file.length > 0) {
-                            //     const trackLengthSeconds = Math.floor(track.duration / 1000);
-                            //     const lengthDiff = Math.abs(trackLengthSeconds - file.length);
-                            //     if (lengthDiff > settings.max_length_difference) {
-                            //         continue;
-                            //     }
-                            // }
-
-                            // Check bitrate (skip if 0, as it means not applicable or not reported)
-                            if (settings.min_bitrate > 0 && file.bitRate > 0 && file.bitRate < settings.min_bitrate) {
-                                continue;
-                            }
-
-                            // Check bit depth (skip if 0, as it means not applicable or not reported)
-                            if (settings.min_bitdepth > 0 && file.bitDepth > 0 && file.bitDepth < settings.min_bitdepth) {
-                                continue;
-                            }
-
-                            // Check if filename contains (artist OR album) AND title
-                            const sanitizedFilename = sanitizeName(file.filename);
-                            const hasArtistOrAlbum = sanitizedFilename.includes(sanitizedArtist) ||
-                                (sanitizedAlbum && sanitizedFilename.includes(sanitizedAlbum));
-                            const hasTitle = sanitizedFilename.includes(sanitizedTitle);
-
-                            if (hasArtistOrAlbum && hasTitle) {
-                                candidateFiles.push({ file, username: result.username });
-
-                                // Limit to download attempts
-                                if (candidateFiles.length >= settings.download_attempts) {
-                                    break;
-                                }
-                            }
-                        }
-
-                        if (candidateFiles.length >= settings.download_attempts) {
-                            break;
-                        }
-                    }
-                }
-
-                if (candidateFiles.length === 0) {
+                // Check if we found any results
+                if (!searchResult.result || searchResult.result.length === 0) {
                     trackLog.status = 'not_found';
-                    trackLog.error = 'No files matched filter criteria';
+                    trackLog.error = 'No files matched filter criteria after trying all approaches';
                     trackLog.end = Date.now();
                     notFoundCount++;
                     slskdLogs[logId] = trackLog;
-
-                    // Clean up search
-                    await axiosInstance.delete(`/api/v0/searches/${searchId}`).catch(() => { console.log(`❌ Error deleting search: ${searchId}`); });
+                    console.log(`❌ Not found: ${track.artist_name} - ${track.track_name}`);
                     continue;
                 }
 
-                // STEP 5: Queue download (try each candidate until one succeeds)
+                // Filter results - skip locked files only
+                const candidateFiles: SlskdTrack[] = searchResult.result
+                    .filter((file: SlskdTrack) => !file.isLocked)
+                    .slice(0, settings.download_attempts); // Limit to download attempts
+
+                if (candidateFiles.length === 0) {
+                    trackLog.status = 'not_found';
+                    trackLog.error = 'No available files found (all locked)';
+                    trackLog.end = Date.now();
+                    notFoundCount++;
+                    slskdLogs[logId] = trackLog;
+                    console.log(`❌ No available files: ${track.artist_name} - ${track.track_name}`);
+                    continue;
+                }
+
+                console.log(`✓ Found ${candidateFiles.length} candidate(s), attempting download...`);
+
+                // Try to queue download (try each candidate until one succeeds)
                 let downloadQueued = false;
 
                 for (let attempt = 0; attempt < candidateFiles.length; attempt++) {
@@ -332,23 +205,23 @@ export async function syncSlskd() {
 
                     try {
                         const payload: DownloadPayload[] = [{
-                            filename: candidate.file.filename,
-                            size: candidate.file.size,
+                            filename: candidate.filename,
+                            size: candidate.size,
                         }];
 
                         await axiosInstance.post(`/api/v0/transfers/downloads/${candidate.username}`, payload);
 
                         // Success!
                         trackLog.status = 'queued';
-                        trackLog.file_path = candidate.file.filename;
-                        trackLog.file_size = candidate.file.size;
+                        trackLog.file_path = candidate.filename;
+                        trackLog.file_size = candidate.size;
                         trackLog.download_username = candidate.username;
                         trackLog.end = Date.now();
                         downloadQueued = true;
                         successCount++;
                         slskdLogs[logId] = trackLog;
 
-                        console.log(`✓ Queued download: ${candidate.file.filename}`);
+                        console.log(`✓ Queued download: ${candidate.filename}`);
                         break;
                     } catch (downloadError: any) {
                         console.log(`⚠️  Failed to queue download (attempt ${attempt + 1}/${candidateFiles.length}): ${downloadError.message}`);
@@ -362,9 +235,6 @@ export async function syncSlskd() {
                     errorCount++;
                     slskdLogs[logId] = trackLog;
                 }
-
-                // Clean up search
-                await axiosInstance.delete(`/api/v0/searches/${searchId}`).catch(() => { console.log(`❌ Error deleting search: ${searchId}`); });
 
             } catch (error: any) {
                 trackLog.status = 'error';
@@ -380,6 +250,9 @@ export async function syncSlskd() {
             await new Promise(resolve => { setTimeout(resolve, 1000) });
         }
 
+        // Clear search state
+        clearState();
+
         // Save SLSKD logs
         writeFileSync(slskdLogsPath, JSON.stringify(slskdLogs, null, 2));
 
@@ -391,6 +264,9 @@ export async function syncSlskd() {
         // Mark sync as complete
         completeSyncType('slskd');
     } catch (e: unknown) {
+        // Clear search state on error
+        clearState();
+
         const message = e instanceof Error ? e.message : 'Unknown error';
         errorSyncType('slskd', message);
         throw e;

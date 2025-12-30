@@ -4,7 +4,7 @@ import { SearchResponse } from "../types/SearchResponse";
 import { newTrackSearch } from "./newTrackSearch";
 import { setMusicSearchConfig, resetCache } from "../session/state";
 
-export async function search(config: PlexMusicSearchConfig, tracks: PlexMusicSearchTrack[]): Promise<SearchResponse[]> {
+export async function search(config: PlexMusicSearchConfig, tracks: PlexMusicSearchTrack[]) {
     if (!config.searchApproaches || config.searchApproaches.length === 0) 
         throw new Error('No search approaches provided. Configuration must include explicit searchApproaches.');
 

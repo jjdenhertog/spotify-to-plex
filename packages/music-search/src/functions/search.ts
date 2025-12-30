@@ -3,7 +3,7 @@ import { compareTitles } from '@spotify-to-plex/shared-utils/music/compareTitles
 import { removeFeaturing } from '@spotify-to-plex/shared-utils/music/removeFeaturing';
 import { getRuntimeFilters } from "./getRuntimeFilters";
 
-export function search(find: Track, options: Track[], analyze: boolean = false): Track[] {
+export function search(find: Track, options: Track[], analyze: boolean = false) {
     const matchFilters = getRuntimeFilters();
     if (matchFilters.length == 0)
         throw new Error("No match filters found");

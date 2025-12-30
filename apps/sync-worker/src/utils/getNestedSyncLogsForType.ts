@@ -23,13 +23,13 @@ export function getNestedSyncLogsForType(syncType: SyncType) {
         return itemLog;
     };
 
-    const logError = (item: SyncLog, error: string): void => {
+    const logError = (item: SyncLog, error: string) => {
         item.error = error;
         item.end = Date.now();
         saveNestedSyncLogs(logs);
     };
 
-    const logComplete = (item: SyncLog): void => {
+    const logComplete = (item: SyncLog) => {
         item.error = undefined;
         item.end = Date.now();
         saveNestedSyncLogs(logs);

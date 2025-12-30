@@ -1,4 +1,3 @@
-import { MusicSearchConfig } from '../types/MusicSearchConfig';
 import {
     DEFAULT_MATCH_FILTERS,
     DEFAULT_TEXT_PROCESSING,
@@ -10,7 +9,7 @@ import { updateSearchApproaches } from './updateSearchApproaches';
 import { getMusicSearchConfig } from './getMusicSearchConfig';
 import { getStorageDir } from '@spotify-to-plex/shared-utils/utils/getStorageDir';
 
-export async function resetToDefaults(): Promise<MusicSearchConfig> {
+export async function resetToDefaults() {
 
     const storageDir = getStorageDir();
     await Promise.all([

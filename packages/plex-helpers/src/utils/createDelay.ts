@@ -1,3 +1,3 @@
-export function createDelay(ms: number): Promise<void> {
+export function createDelay(ms: number) {
     return new Promise(resolve => { setTimeout(resolve, ms) });
 }

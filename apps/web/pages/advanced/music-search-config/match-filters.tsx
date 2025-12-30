@@ -20,7 +20,7 @@ const MatchFiltersPage: NextPage = () => {
     const [viewMode, setViewMode] = useState<ViewMode>('ui');
 
     // Validation function
-    const validateFilters = useCallback((data: any): string | null => {
+    const validateFilters = useCallback((data: any) => {
         if (!Array.isArray(data)) {
             return 'Configuration must be an array';
         }

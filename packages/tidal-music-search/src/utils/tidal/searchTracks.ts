@@ -4,7 +4,7 @@ import tidalApiRequest from "../tidalApiRequest";
 import { getCredentials, authenticate } from "../../session/credentials";
 import { getTrackByIds } from "./getTrackByIds";
 
-export async function searchTracks(query: string, countryCode: string = 'NL'): Promise<TidalTrack[]> {
+export async function searchTracks(query: string, countryCode: string = 'NL') {
     const state = getCredentials();
 
     // Authenticate again if the token is expired

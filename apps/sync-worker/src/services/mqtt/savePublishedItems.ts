@@ -6,7 +6,7 @@ import { PublishedItem } from './types';
 /**
  * Save currently published items
  */
-export function savePublishedItems(items: PublishedItem[]): void {
+export function savePublishedItems(items: PublishedItem[]) {
     const storageDir = getStorageDir();
     const publishedItemsPath = join(storageDir, 'mqtt_published_items.json');
 

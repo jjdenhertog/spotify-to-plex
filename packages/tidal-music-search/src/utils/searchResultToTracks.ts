@@ -1,7 +1,7 @@
 import { Track } from "@spotify-to-plex/music-search/types/Track";
 import { TidalTrack } from "../types/TidalTrack";
 
-export default function searchResultToTracks(items: TidalTrack[]): Track[] {
+export default function searchResultToTracks(items: TidalTrack[]) {
 
     const tracks: Track[] = []
 

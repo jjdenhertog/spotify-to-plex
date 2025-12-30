@@ -10,7 +10,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { createRouter } from 'next-connect';
 import { getSettings } from '@spotify-to-plex/plex-config/functions/getSettings';
 
-async function getPlexTracks(plexIds: string[], plexConfig: any): Promise<PlexTrack[]> {
+async function getPlexTracks(plexIds: string[], plexConfig: any) {
     const foundTracks: PlexTrack[] = []
     
     for (const plexId of plexIds.filter(Boolean)) {

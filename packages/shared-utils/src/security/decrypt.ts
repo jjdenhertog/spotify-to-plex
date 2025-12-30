@@ -1,7 +1,7 @@
 import { createDecipheriv } from 'node:crypto';
 import { algorithm, key } from './constants';
 
-export function decrypt(encryptedText: string): string {
+export function decrypt(encryptedText: string) {
     const [ivHex, encrypted] = encryptedText.split(':');
     if (!ivHex || !encrypted) {
         throw new Error('Invalid encrypted text format');

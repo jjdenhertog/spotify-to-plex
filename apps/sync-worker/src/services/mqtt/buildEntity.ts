@@ -1,10 +1,9 @@
 import { SavedItem } from '@spotify-to-plex/shared-types/spotify/SavedItem';
-import { MQTTEntity } from './types';
 
 /**
  * Build MQTT entity from SavedItem and Plex data
  */
-export function buildEntity(savedItem: SavedItem, plexId: string, plexThumb: string): MQTTEntity {
+export function buildEntity(savedItem: SavedItem, plexId: string, plexThumb: string) {
     const category = savedItem.label || '';
     const categoryId = category.toLowerCase();
 

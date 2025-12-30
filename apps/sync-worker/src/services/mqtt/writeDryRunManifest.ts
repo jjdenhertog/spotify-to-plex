@@ -55,7 +55,7 @@ export function writeDryRunManifest(
         categoriesCount: number;
         byType: { playlists: number; albums: number; 'plex-media': number };
     }
-): void {
+) {
     const manifest: DryRunManifest = {
         timestamp: new Date().toISOString(),
         mode: 'DRY_RUN',
