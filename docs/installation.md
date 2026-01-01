@@ -103,3 +103,28 @@ Add optional integrations as needed:
             - LIDARR_API_KEY=YOUR_LIDARR_API_KEY
             - SLSKD_API_KEY=YOUR_SLSKD_API_KEY
 ```
+
+---
+
+## Unraid Installation
+
+Install from the Community Applications (CA) store by searching for "spotify-to-plex".
+
+{: .important }
+The Unraid template from CA does **not** include the Lidarr and SLSKD environment variables by default. You must add these manually if you want to use those integrations.
+
+### Adding Environment Variables in Unraid
+
+1. Go to the Docker tab in Unraid
+2. Click on the Spotify-to-Plex container
+3. Select **Edit**
+4. Click **+ Add another Path, Port, Variable, Label or Device**
+5. Configure as follows:
+   - **Config Type:** Variable
+   - **Name:** SLSKD API Key (or any descriptive name)
+   - **Key:** `SLSKD_API_KEY`
+   - **Value:** Your generated API key
+6. Repeat for `LIDARR_API_KEY` if needed
+7. Click **Apply**
+
+See the [Lidarr Integration](integrations/lidarr) and [SLSKD Integration](integrations/slskd) pages for details on generating API keys and configuring these integrations.
