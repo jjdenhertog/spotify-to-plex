@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spotify to Plex - Auth Redirect</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 500px;
+            margin: 80px auto;
+            padding: 20px;
+            text-align: center;
+            background: #121212;
+            color: #fff;
+            min-height: 100vh;
+        }
+        h2 {
+            margin-bottom: 10px;
+        }
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #333;
+            border-top-color: #1DB954;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 30px auto;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        a {
+            color: #1DB954;
+        }
+        .error {
+            color: #ff6b6b;
+        }
+        .success {
+            color: #1DB954;
+        }
+        code {
+            background: #2a2a2a;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .code-block {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            padding: 15px;
+            border-radius: 8px;
+            word-break: break-all;
+            font-family: monospace;
+            font-size: 13px;
+            margin: 20px 0;
+            text-align: left;
+        }
+        button {
+            background: #1DB954;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        button:hover {
+            background: #1ed760;
+        }
+        .subtle {
+            color: #666;
+            font-size: 13px;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div id="content">
+        <h2>🎵 Redirecting...</h2>
+        <div class="spinner"></div>
+        <p>Sending you back to your Spotify-to-Plex instance.</p>
+    </div>
+
+    <script>
+        (function() {
+            const params = new URLSearchParams(window.location.search);
+            const code = params.get('code');
+            const state = params.get('state');
+            const error = params.get('error');
+            const errorDescription = params.get('error_description');
+
+            const content = document.getElementById('content');
+
+            function showError(title, message) {
+                content.innerHTML = `
+                    <h2 class="error">❌ ${title}</h2>
+                    <p>${message}</p>
+                    <p class="subtle">Close this window and try again from your Spotify-to-Plex instance.</p>
+                `;
+            }
+
+            function showManualCode(code) {
+                content.innerHTML = `
+                    <h2 class="success">✓ Authentication Successful</h2>
+                    <p>Could not redirect automatically. Copy this code back to your application:</p>
+                    <div class="code-block">${code}</div>
+                    <button onclick="copyCode()">📋 Copy Code</button>
+                    <p class="subtle">Paste this code in your Spotify-to-Plex instance to complete setup.</p>
+                `;
+                
+                window.copyCode = function() {
+                    navigator.clipboard.writeText('${code}');
+                    document.querySelector('button').textContent = '✓ Copied!';
+                    setTimeout(() => {
+                        document.querySelector('button').textContent = '📋 Copy Code';
+                    }, 2000);
+                };
+            }
+
+            function showLanding() {
+                content.innerHTML = `
+                    <h2>🎵 Spotify to Plex</h2>
+                    <p>This page handles OAuth redirects for Spotify-to-Plex.</p>
+                    <p>To authenticate, start the login flow from your local Spotify-to-Plex instance.</p>
+                    <p class="subtle">
+                        <a href="https://github.com/jjdenhertog/spotify-to-plex" target="_blank">View on GitHub</a>
+                    </p>
+                `;
+            }
+
+            // Handle errors from Spotify
+            if (error) {
+                const message = error === 'access_denied' 
+                    ? 'You denied access to your Spotify account.'
+                    : (errorDescription || error);
+                showError('Authorization Failed', message);
+                return;
+            }
+
+            // No code means someone visited directly
+            if (!code) {
+                showLanding();
+                return;
+            }
+
+            // We have a code - try to redirect
+            if (state) {
+                try {
+                    // Decode return URL from state
+                    const stateData = JSON.parse(atob(state));
+                    const returnUrl = stateData.return_url;
+
+                    if (!returnUrl) {
+                        throw new Error('No return URL');
+                    }
+
+                    // Validate it looks like a local URL
+                    const url = new URL(returnUrl);
+                    const isLocal = url.hostname === 'localhost' 
+                        || url.hostname === '127.0.0.1'
+                        || url.hostname.startsWith('192.168.')
+                        || url.hostname.startsWith('10.')
+                        || url.hostname.startsWith('172.');
+
+                    if (!isLocal) {
+                        throw new Error('Invalid return URL');
+                    }
+
+                    // Build redirect URL
+                    url.searchParams.set('code', code);
+                    
+                    // Pass through CSRF token if present
+                    if (stateData.csrf) {
+                        url.searchParams.set('state', stateData.csrf);
+                    }
+
+                    // Redirect
+                    window.location.href = url.toString();
+
+                } catch (e) {
+                    console.error('State parsing failed:', e);
+                    showManualCode(code);
+                }
+            } else {
+                // No state parameter - show manual code
+                showManualCode(code);
+            }
+        })();
+    </script>
+</body>
+</html>
