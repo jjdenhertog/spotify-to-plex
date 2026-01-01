@@ -158,6 +158,7 @@ This creates a manifest file at `/app/config/mqtt_dry_run_manifest.json` showing
 
 Here's a simple automation example that plays a random playlist from a category:
 
+{% raw %}
 ```yaml
 # Example: Play random Jazz playlist
 automation:
@@ -177,6 +178,7 @@ automation:
                | list %}
             {{ (jazz_playlists | random).attributes.media_content_id }}
 ```
+{% endraw %}
 
 {: .note }
 The exact implementation depends on your Home Assistant setup, Plex integration, and media player configuration.
