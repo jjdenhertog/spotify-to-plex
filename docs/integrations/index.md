@@ -17,6 +17,7 @@ Spotify to Plex supports several integrations to help you download missing track
 | [Lidarr](lidarr) | Automatically download complete albums |
 | [SLSKD](slskd) | P2P downloads from Soulseek network |
 | [Tidal](tidal) | Find and match tracks on Tidal |
+| [MQTT / Home Assistant](mqtt) | Publish categorized playlists to Home Assistant |
 
 ---
 
@@ -39,3 +40,10 @@ Real-time P2P searches take longer than other lookups - approximately 40 seconds
 ### Tidal
 
 With Tidal credentials configured, you can match missing songs with Tidal to find alternatives or verify track availability.
+
+### MQTT / Home Assistant
+
+Publish your categorized playlists and albums to Home Assistant via MQTT. This enables smart home scenarios like "play a random jazz playlist".
+
+{: .note }
+This is a specialized feature for home automation. It requires you to assign categories (labels) to your saved items.

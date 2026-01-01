@@ -16,7 +16,17 @@ Synchronization can take a very long time (60+ minutes) depending on your setup.
 
 ## How It Works
 
-The application includes a built-in automatic synchronization scheduler that runs every day around 02:00.
+The application includes a built-in automatic synchronization scheduler with multiple jobs:
+
+| Job | Schedule | Description |
+|-----|----------|-------------|
+| Main sync | Daily at 02:00 | Syncs playlists, albums, and user content |
+| SLSKD sync | Daily at 03:00 | Downloads missing tracks via Soulseek |
+| Lidarr sync | Daily at 04:00 | Sends missing albums to Lidarr |
+| MQTT publish | Every hour | Publishes categorized items to Home Assistant |
+
+{: .note }
+All times are based on your configured timezone (`TZ` environment variable) or UTC if not set.
 
 1. Enable automatic syncing for your playlists
 2. Set the sync interval in days
@@ -56,6 +66,8 @@ To manually trigger a sync, use these API endpoints:
 | `/api/sync/albums` | Sync all enabled albums |
 | `/api/sync/users` | Sync user-specific content |
 | `/api/sync/lidarr` | Sync missing albums to Lidarr |
+| `/api/sync/slskd` | Search and download missing tracks via SLSKD |
+| `/api/sync/mqtt` | Publish categorized items to MQTT |
 
 Example:
 ```
