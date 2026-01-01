@@ -26,7 +26,6 @@
 - Multiple Spotify user support
 - Scheduled automatic synchronization
 - Smart caching for faster syncs
-
 ---
 
 ## Quick Start
