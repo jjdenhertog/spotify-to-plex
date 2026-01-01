@@ -63,18 +63,18 @@ const MissingTrack = forwardRef<MissingTrackHandle, MissingTrackProps>((props, r
 
         try {
             // Step 1: Search for the track
-            const searchResponse = await axios.post<Array<{
+            const searchResponse = await axios.post<{
                 id: string;
-                result?: Array<{
+                result?: {
                     username: string;
                     filename: string;
                     size: number;
                     bitRate?: number;
                     bitDepth?: number;
                     extension?: string;
-                }>;
-                queries?: Array<{ approach: string }>;
-            }>>(
+                }[];
+                queries?: { approach: string }[];
+            }[]>(
                 '/api/slskd/search',
                 {
                     items: [{
@@ -90,6 +90,7 @@ const MissingTrack = forwardRef<MissingTrackHandle, MissingTrackProps>((props, r
             // Check if stopped after search
             if (!abortControllerRef.current) {
                 setIsSending(false);
+
                 return { success: false, message: 'Stopped' };
             }
 
@@ -106,6 +107,7 @@ const MissingTrack = forwardRef<MissingTrackHandle, MissingTrackProps>((props, r
                 };
                 setResult(errorResult);
                 setIsSending(false);
+
                 return { success: false, message: errorResult.message };
             }
 
@@ -125,6 +127,7 @@ const MissingTrack = forwardRef<MissingTrackHandle, MissingTrackProps>((props, r
                 };
                 setResult(errorResult);
                 setIsSending(false);
+
                 return { success: false, message: errorResult.message };
             }
 
@@ -177,6 +180,7 @@ const MissingTrack = forwardRef<MissingTrackHandle, MissingTrackProps>((props, r
             // Check if request was cancelled
             if (axios.isCancel(error)) {
                 setIsSending(false);
+
                 return { success: false, message: 'Stopped' };
             }
 
@@ -244,7 +248,14 @@ const MissingTrack = forwardRef<MissingTrackHandle, MissingTrackProps>((props, r
                                     Stop
                                 </Button>
                             ) : (
-                                <Button onClick={onSendToSlskdClick} className="btn" color="primary" variant="outlined" size="small" sx={{ fontSize: '.8em' }} disabled={slskdBusy}>
+                                <Button
+                                    onClick={onSendToSlskdClick}
+                                    className="btn"
+                                    color="primary"
+                                    variant="outlined"
+                                    size="small"
+                                    sx={{ fontSize: '.8em' }}
+                                    disabled={slskdBusy}>
                                     Send to SLSKD
                                 </Button>
                             )}

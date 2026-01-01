@@ -173,7 +173,8 @@
 
                     // Build redirect URL
                     url.searchParams.set('code', code);
-                    
+                    url.searchParams.set('redirect_uri', window.location.origin + window.location.pathname);
+
                     // Pass through CSRF token if present
                     if (stateData.csrf) {
                         url.searchParams.set('state', stateData.csrf);

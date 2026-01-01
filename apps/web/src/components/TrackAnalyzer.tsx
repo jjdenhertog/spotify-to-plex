@@ -69,8 +69,11 @@ const TrackAnalyzer = forwardRef<TrackAnalyzerHandles, unknown>((_props, ref) =>
     // Check if a file extension is in the allowed list
     const isExtensionAllowed = (filename: string, allowedExtensions?: string[]) => {
         if (!allowedExtensions || allowedExtensions.length === 0) return true;
-        const ext = filename.split('.').pop()?.toLowerCase() || '';
+
+        const ext = filename.split('.').pop()
+            ?.toLowerCase() || '';
         const normalizedAllowed = allowedExtensions.map(e => e.toLowerCase().replace(/^\./, ''));
+
         return normalizedAllowed.includes(ext);
     }
 
@@ -164,9 +167,11 @@ const TrackAnalyzer = forwardRef<TrackAnalyzerHandles, unknown>((_props, ref) =>
                                             if (!extensionAllowed) {
                                                 return <Block sx={{ fontSize: "1.2em", color: "error.main" }} titleAccess="Extension not in allowed list" />;
                                             }
+
                                             if (isMatchingApproach) {
                                                 return <CheckCircle sx={{ fontSize: "1.2em", color: "success.main" }} />;
                                             }
+
                                             return <Close sx={{ fontSize: "1.2em", color: "error.main" }} />;
                                         };
 

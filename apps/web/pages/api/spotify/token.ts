@@ -14,7 +14,8 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
         async (req, res) => {
 
             const code = req.query.code as string;
-            const redirectUri = `${process.env.SPOTIFY_API_REDIRECT_URI}`;
+            // Get redirect_uri from query (public redirect flow) or fall back to env var (direct/legacy)
+            const redirectUri = (req.query.redirect_uri as string) || `${process.env.SPOTIFY_API_REDIRECT_URI}`;
             const clientId = `${process.env.SPOTIFY_API_CLIENT_ID}`;
             const clientSecret = `${process.env.SPOTIFY_API_CLIENT_SECRET}`;
 

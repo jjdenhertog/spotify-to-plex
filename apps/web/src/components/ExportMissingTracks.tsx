@@ -325,11 +325,7 @@ export default function ExportMissingTracks(props: Props) {
                                     )}
 
                                     {!!slskdEnabled && visibleTracks.length > 0 && (
-                                        <Button
-                                            variant="outlined"
-                                            color={sendingToSlskd ? "error" : "primary"}
-                                            onClick={sendingToSlskd ? handleStopSlskd : handleSendPageToSlskd}
-                                        >
+                                        <Button variant="outlined" color={sendingToSlskd ? "error" : "primary"} onClick={sendingToSlskd ? handleStopSlskd : handleSendPageToSlskd}>
                                             {sendingToSlskd
                                                 ? `Stop (${slskdProgress?.current || 0}/${slskdProgress?.total || 0})`
                                                 : `Send Page to SLSKD (${visibleTracks.length} tracks)`

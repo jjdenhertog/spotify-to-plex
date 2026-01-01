@@ -4,7 +4,7 @@ import { createRouter } from 'next-connect';
 
 const router = createRouter<NextApiRequest, NextApiResponse>()
     .get(
-        async (_req, res) => {
+        async (req, res) => {
             const redirectUri = process.env.SPOTIFY_API_REDIRECT_URI;
             const clientId = process.env.SPOTIFY_API_CLIENT_ID;
 
@@ -14,6 +14,17 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
             if (!clientId)
                 throw new Error(`Missing environment variables: SPOTIFY_API_CLIENT_ID`)
 
+            // Build the local return URL from request headers
+            const { host } = req.headers;
+            const forwardedProto = req.headers['x-forwarded-proto'];
+            const protocol = (Array.isArray(forwardedProto) ? forwardedProto[0] : forwardedProto) || 'http';
+            const localTokenUrl = `${protocol}://${host || 'localhost'}/api/spotify/token`;
+
+            // Create state with local return URL
+            const state = Buffer.from(JSON.stringify({
+                return_url: localTokenUrl
+            })).toString('base64');
+
             const scopes = [
                 'user-read-recently-played',
                 'user-library-read',
@@ -22,7 +33,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 'user-read-playback-state'
             ].join(' ')
 
-            const authUrl = `https://accounts.spotify.com/authorize?response_type=code&client_id=${clientId}&scope=${encodeURIComponent(scopes)}&redirect_uri=${encodeURIComponent(redirectUri)}`;
+            const authUrl = `https://accounts.spotify.com/authorize?response_type=code&client_id=${clientId}&scope=${encodeURIComponent(scopes)}&redirect_uri=${encodeURIComponent(redirectUri)}&state=${encodeURIComponent(state)}`;
 
             return res.redirect(302, authUrl);
         }
