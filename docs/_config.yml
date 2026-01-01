@@ -4,6 +4,9 @@ theme: just-the-docs
 url: https://jjdenhertog.github.io
 baseurl: /spotify-to-plex
 
+# Logo in the header
+logo: /assets/images/logo.png
+
 # Aux links in header
 aux_links:
   GitHub: https://github.com/jjdenhertog/spotify-to-plex

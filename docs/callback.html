@@ -85,8 +85,9 @@ search_exclude: true
     </style>
 </head>
 <body>
+    <p style="margin-bottom: 20px;"><img src="assets/images/logo.png" width="90" alt="Spotify to Plex"></p>
     <div id="content">
-        <h2>🎵 Redirecting...</h2>
+        <h2>Redirecting...</h2>
         <div class="spinner"></div>
         <p>Sending you back to your Spotify-to-Plex instance.</p>
     </div>
@@ -103,7 +104,7 @@ search_exclude: true
 
             function showError(title, message) {
                 content.innerHTML = `
-                    <h2 class="error">❌ ${title}</h2>
+                    <h2 class="error">${title}</h2>
                     <p>${message}</p>
                     <p class="subtle">Close this window and try again from your Spotify-to-Plex instance.</p>
                 `;
@@ -111,7 +112,7 @@ search_exclude: true
 
             function showManualCode(code) {
                 content.innerHTML = `
-                    <h2 class="success">✓ Authentication Successful</h2>
+                    <h2 class="success">Authentication Successful</h2>
                     <p>Could not redirect automatically. Copy this code back to your application:</p>
                     <div class="code-block">${code}</div>
                     <button onclick="copyCode()">📋 Copy Code</button>
@@ -129,7 +130,7 @@ search_exclude: true
 
             function showLanding() {
                 content.innerHTML = `
-                    <h2>🎵 Spotify to Plex</h2>
+                    <h2>Spotify to Plex</h2>
                     <p>This page handles OAuth redirects for Spotify-to-Plex.</p>
                     <p>To authenticate, start the login flow from your local Spotify-to-Plex instance.</p>
                     <p class="subtle">
