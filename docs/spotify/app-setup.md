@@ -33,6 +33,7 @@ Once you have created your Spotify app, note these values:
 |---------|-------------|
 | Client ID | Your app's unique identifier |
 | Client Secret | Your app's secret key (keep this private!) |
+| Redurect YRU | `https://jjdenhertog.github.io/spotify-to-plex/callback.html` |
 
 Add these to your Docker environment:
 

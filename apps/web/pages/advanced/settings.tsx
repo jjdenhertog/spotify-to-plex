@@ -32,7 +32,6 @@ const Page: NextPage = () => {
                         <LidarrSettings />
                     </Paper>
                     <Paper elevation={0} sx={{ p: 2, bgcolor: 'action.hover' , mb:2}}>
-
                         <SlskdSettings />
                     </Paper>
                 </Container>

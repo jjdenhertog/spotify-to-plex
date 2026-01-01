@@ -116,7 +116,7 @@ export default function SlskdSettings() {
     const handleEnabledChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
         handleChange('enabled', e.target.checked);
     }, [handleChange]);
-    
+
     const hanldeRemoveExtension = useCallback((ext: string) => () => {
         handleRemoveExtension(ext);
     }, [handleRemoveExtension]);
@@ -245,13 +245,13 @@ export default function SlskdSettings() {
                 <Typography variant="body2" sx={{ mb: 2, color: 'text.secondary' }}>
                     When enabled, SLSKD will automatically download missing tracks during daily synchronization.
                 </Typography>
-
-                <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
-                    <Button variant="contained" onClick={handleSaveClick} disabled={saving}>
-                        {saving ? 'Saving...' : 'Save Settings'}
-                    </Button>
-                </Box>
             </> : null}
+
+            <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
+                <Button variant="contained" onClick={handleSaveClick} disabled={saving}>
+                    {saving ? 'Saving...' : 'Save Settings'}
+                </Button>
+            </Box>
         </Box>
     );
 }
