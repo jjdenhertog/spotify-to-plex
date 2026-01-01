@@ -1,6 +1,6 @@
 import { generateError } from '@/helpers/errors/generateError';
 import { search } from '@spotify-to-plex/slskd-music-search/functions/search';
-import { SlskdMusicSearchTrack } from '@spotify-to-plex/slskd-music-search/types/track';
+import { SlskdMusicSearchTrack } from '@spotify-to-plex/slskd-music-search/types/SlskdMusicSearchTrack';
 import { getMusicSearchConfig } from "@spotify-to-plex/music-search/functions/getMusicSearchConfig";
 import { getSlskdSettings } from '@spotify-to-plex/plex-config/functions/getSlskdSettings';
 import type { NextApiRequest, NextApiResponse } from 'next';
@@ -41,7 +41,8 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                     textProcessing: musicSearchConfig.textProcessing,
                     // Apply user settings for search behavior
                     searchTimeout: slskdSettings.search_timeout * 1000, // Convert seconds to milliseconds
-                    maxResultsPerApproach: slskdSettings.max_results
+                    maxResultsPerApproach: slskdSettings.max_results,
+                    allowedExtensions: slskdSettings.allowed_extensions
                 };
 
                 const searchResponse = await search(slskdConfig, searchItems);

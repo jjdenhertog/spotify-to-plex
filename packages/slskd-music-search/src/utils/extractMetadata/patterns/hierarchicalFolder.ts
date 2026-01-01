@@ -56,8 +56,7 @@ function extract(filePath: string): ExtractionResult {
             artist,
             title,
             album,
-            pattern: 'hierarchical-folder',
-            confidence: 0.95
+            pattern: 'hierarchical-folder'
         }
     };
 }

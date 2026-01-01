@@ -15,9 +15,9 @@ const DEFAULT_RETRY_CONFIG: RetryConfig = {
 
 const DEFAULT_POLLING_CONFIG: PollingConfig = {
     maxWaitTime: 30_000,
-    initialInterval: 500,
-    maxInterval: 3000,
-    backoffMultiplier: 1.5
+    initialInterval: 200,
+    maxInterval: 1000,
+    backoffMultiplier: 1.3
 };
 
 ////////////////////////////////////////////

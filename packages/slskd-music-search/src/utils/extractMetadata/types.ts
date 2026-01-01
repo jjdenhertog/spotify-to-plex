@@ -8,7 +8,6 @@ export type ExtractedMetadata = {
     title: string;
     album: string;
     pattern: string;
-    confidence: number;
 }
 
 export type ExtractionResult = {
@@ -29,5 +28,4 @@ export type ExtractionStats = {
     failed: number;
     successRate: number;
     patternDistribution: Record<string, number>;
-    averageConfidence: number;
 }

@@ -14,5 +14,6 @@ export type SlskdMusicSearchConfig = {
     musicSearchConfig?: MusicSearchConfig;
     maxResultsPerApproach?: number;
     searchTimeout?: number;
-    confidenceThreshold?: number;
+    /** Allowed file extensions (e.g., ['flac', 'mp3']). If set, only files with these extensions will be returned. */
+    allowedExtensions?: string[];
 };

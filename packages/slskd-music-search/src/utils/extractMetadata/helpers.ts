@@ -154,6 +154,8 @@ export function getGrandparentFolder(filePath: string): string {
 export function cleanFilename(filename: string): string {
     let cleaned = removeExtension(filename);
     cleaned = stripBracketSuffix(cleaned);
+    // Convert underscores to spaces (common in downloaded filenames)
+    cleaned = cleaned.replace(/_/g, ' ');
     cleaned = normalizeDashes(cleaned);
     cleaned = stripTrackNumber(cleaned);
 
@@ -164,23 +166,49 @@ export function cleanFilename(filename: string): string {
  * Split "Artist - Title" string, respecting nested brackets/parentheses
  * Based on slsk-batchdl's SplitArtistAndTitle approach
  *
+ * Tries multiple separator patterns:
+ * 1. " - " (standard format)
+ * 2. "-" (single hyphen, for formats like "artist-title")
+ *
  * Returns null if no valid split found
  */
 export function splitArtistTitle(text: string): { artist: string; title: string } | null {
     const normalized = normalizeDashes(text);
 
-    // Find " - " separator, but not inside brackets or parentheses
+    // Try " - " separator first (standard format)
+    const standardResult = trySplitWithSeparator(normalized, ' - ');
+    if (standardResult) return standardResult;
+
+    // Fallback: try single hyphen (for formats like "querbeat-nie mehr fastelovend")
+    // Only if the text doesn't contain " - " and has a hyphen
+    if (normalized.includes('-') && !normalized.includes(' - ')) {
+        const hyphenResult = trySplitWithSeparator(normalized, '-');
+        if (hyphenResult) {
+            // Validate: both parts should be substantial words (not single chars or numbers)
+            if (hyphenResult.artist.length >= 2 && hyphenResult.title.length >= 3) {
+                return hyphenResult;
+            }
+        }
+    }
+
+    return null;
+}
+
+/**
+ * Helper to split text with a given separator, respecting brackets
+ */
+function trySplitWithSeparator(text: string, separator: string): { artist: string; title: string } | null {
     let depth = 0;
     let splitIndex = -1;
 
-    for (let i = 0; i < normalized.length - 2; i++) {
-        const char = normalized[i];
+    for (let i = 0; i <= text.length - separator.length; i++) {
+        const char = text[i];
 
         if (char === '(' || char === '[' || char === '{') {
             depth++;
         } else if (char === ')' || char === ']' || char === '}') {
             depth = Math.max(0, depth - 1);
-        } else if (depth === 0 && normalized.slice(i, i + 3) === ' - ') {
+        } else if (depth === 0 && text.slice(i, i + separator.length) === separator) {
             splitIndex = i;
             break; // Take first valid separator
         }
@@ -190,8 +218,8 @@ export function splitArtistTitle(text: string): { artist: string; title: string 
         return null;
     }
 
-    const artist = normalizeText(normalized.slice(0, splitIndex));
-    const title = normalizeText(normalized.slice(splitIndex + 3));
+    const artist = normalizeText(text.slice(0, splitIndex));
+    const title = normalizeText(text.slice(splitIndex + separator.length));
 
     if (!artist || !title) {
         return null;
@@ -256,6 +284,10 @@ export function isGenericFolderName(folderName: string): boolean {
 
     // Looks like a hash/ID
     if (folderName.startsWith('@@')) return true;
+
+    // Bracket-enclosed names are usually tags/categories, not artist names
+    // Examples: [Charts], [MP3], [FLAC], [320kbps], [New], [2024]
+    if (/^\[.+\]$/.test(folderName)) return true;
 
     // Just a year
     if (/^\d{4}$/.test(folderName)) return true;

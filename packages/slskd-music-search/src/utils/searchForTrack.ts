@@ -14,12 +14,46 @@ export function clearSearchCache() {
 }
 
 /**
+ * Normalize accented/unicode characters to ASCII equivalents.
+ * This helps match files that may have non-accented versions of names.
+ */
+function normalizeAccents(str: string): string {
+    // Common accent mappings
+    const accentMap: Record<string, string> = {
+        'à': 'a', 'á': 'a', 'â': 'a', 'ã': 'a', 'ä': 'a', 'å': 'a', 'æ': 'ae',
+        'ç': 'c', 'č': 'c', 'ć': 'c',
+        'è': 'e', 'é': 'e', 'ê': 'e', 'ë': 'e', 'ě': 'e',
+        'ì': 'i', 'í': 'i', 'î': 'i', 'ï': 'i',
+        'ñ': 'n', 'ń': 'n',
+        'ò': 'o', 'ó': 'o', 'ô': 'o', 'õ': 'o', 'ö': 'o', 'ø': 'o', 'œ': 'oe',
+        'ù': 'u', 'ú': 'u', 'û': 'u', 'ü': 'u',
+        'ý': 'y', 'ÿ': 'y',
+        'ž': 'z', 'ź': 'z', 'ż': 'z',
+        'ß': 'ss',
+        'đ': 'd', 'ð': 'd',
+        'þ': 'th',
+        'ł': 'l',
+        'ș': 's', 'ş': 's',
+        'ț': 't', 'ţ': 't',
+    };
+
+    return str.replace(/[àáâãäåæçčćèéêëěìíîïñńòóôõöøœùúûüýÿžźżßđðþłșşțţ]/gi, (char) => {
+        const lower = char.toLowerCase();
+        const replacement = accentMap[lower];
+        if (!replacement) return char;
+        // Preserve case for first letter
+        return char === lower ? replacement : replacement.charAt(0).toUpperCase() + replacement.slice(1);
+    });
+}
+
+/**
  * Sanitize search query by removing/replacing problematic special characters.
  *
  * Soulseek/SLSKD has issues with certain characters:
  * - `!`, `@`, `#`, `$`, `%`, `^`, `&`, `*`, `+`, `=` cause search failures
  * - `-` at start of word means "exclude" (we preserve mid-word hyphens)
  * - `"` and `'` can cause issues
+ * - `()` parentheses can cause search issues
  * - Unicode/accented characters may not match
  *
  * Common artist name substitutions:
@@ -30,23 +64,40 @@ export function clearSearchCache() {
  * @see https://github.com/mrusse/soularr/issues/26
  */
 function sanitizeSearchQuery(query: string) {
-    return query
+    let result = query
         // Smart substitutions for common special char letter replacements in artist names
         .replace(/!/g, 'i')      // P!nk -> Pink
         .replace(/\$/g, 's')     // Ke$ha -> Kesha
         .replace(/@/g, 'a')      // @liya -> Aliya
+        // Remove parentheses (but keep content) - they can break SLSKD searches
+        .replace(/[()[\]]/g, ' ')
         // Remove other characters that break SLSKD searches
-        .replace(/[#%&*+<=>[\\\]^`{|}~]/g, '')
-        // Replace curly/smart quotes with nothing
-        .replace(/["']/g, '')
-        // Remove straight quotes
-        .replace(/["']/g, '')
+        .replace(/[#%&*+<=>\\^`{|}~]/g, '')
+        // Replace apostrophes/quotes with space (allows word-based matching)
+        // "Cherlene's" -> "Cherlene s" matches both "Cherlene's" and "Cherlenes"
+        .replace(/["'''""]/g, ' ')
         // Replace multiple spaces with single space
         .replace(/\s+/g, ' ')
         // Remove leading hyphens from words (exclusion syntax)
         .replace(/\s-+/g, ' ')
         .replace(/^-+/, '')
         .trim();
+
+    // Normalize accented characters to ASCII equivalents
+    result = normalizeAccents(result);
+
+    return result;
+}
+
+/**
+ * Extract file extension from filename
+ */
+function extractExtensionFromFilename(filename: string): string {
+    const lastDot = filename.lastIndexOf('.');
+    if (lastDot === -1 || lastDot === filename.length - 1) {
+        return '';
+    }
+    return filename.slice(lastDot + 1).toLowerCase();
 }
 
 /**
@@ -55,7 +106,7 @@ function sanitizeSearchQuery(query: string) {
 export async function searchForTrack(
     artist: string,
     title: string,
-    album: string
+    _album: string
 ) {
     const state = getState();
     if (!state.credentials) {
@@ -66,13 +117,9 @@ export async function searchForTrack(
         throw new Error('Config not initialized. Call setState first.');
     }
 
-    // Build search query with sanitization for SLSKD special characters
-    const queryParts = [artist, title];
-    if (album) {
-        queryParts.push(album);
-    }
-
-    const rawQuery = queryParts.join(' ').trim();
+    // Build search query with artist + title only (like plex-music-search)
+    // Album is not included in search - it's used for matching/filtering results
+    const rawQuery = `${artist} ${title}`.trim();
     const query = sanitizeSearchQuery(rawQuery);
 
     if (!query) {
@@ -131,6 +178,9 @@ export async function searchForTrack(
             const extractedTitle = meta?.title ?? '';
             const extractedAlbum = meta?.album ?? '';
 
+            // Extract extension from filename if not provided by API
+            const fileExtension = file.extension || extractExtensionFromFilename(file.filename);
+
             // Create track result with Plex-compatible format
             const track: SlskdTrack = {
                 id: file.filename, // Use filename as unique identifier
@@ -147,7 +197,7 @@ export async function searchForTrack(
                 username: file.username,
                 filename: file.filename,
                 size: file.size,
-                extension: file.extension,
+                extension: fileExtension,
                 bitRate: file.bitRate,
                 sampleRate: file.sampleRate,
                 bitDepth: file.bitDepth,

@@ -3,7 +3,6 @@ import { getSlskdSettings } from "@spotify-to-plex/plex-config/functions/getSlsk
 import { getStorageDir } from "@spotify-to-plex/shared-utils/utils/getStorageDir";
 import { SlskdSyncLog } from "@spotify-to-plex/shared-types/slskd/SlskdSyncLog";
 import { SlskdTrackData } from "@spotify-to-plex/shared-types/slskd/SlskdTrackData";
-import axios from "axios";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { getNestedSyncLogsForType } from "../utils/getNestedSyncLogsForType";
@@ -13,12 +12,10 @@ import { completeSyncType } from "../utils/completeSyncType";
 import { errorSyncType } from "../utils/errorSyncType";
 import { updateSyncTypeProgress } from "../utils/updateSyncTypeProgress";
 
-import { newTrackSearch, setState, clearState } from "@spotify-to-plex/slskd-music-search";
+import { newTrackSearch, setState, clearState, queueDownload } from "@spotify-to-plex/slskd-music-search";
 import type { SlskdMusicSearchConfig, SlskdTrack } from "@spotify-to-plex/slskd-music-search";
 import { getMusicSearchConfig } from "@spotify-to-plex/music-search/functions/getMusicSearchConfig";
 import { setMusicSearchConfig as setMusicSearchMatchFilters } from "@spotify-to-plex/music-search/functions/setMusicSearchConfig";
-
-type DownloadPayload = { filename: string; size: number; };
 
 export async function syncSlskd() {
     console.log('Starting SLSKD sync...');
@@ -87,15 +84,8 @@ export async function syncSlskd() {
         const slskdLogsPath = join(getStorageDir(), 'slskd_sync_log.json');
         const slskdLogs: Record<string, SlskdSyncLog> = {};
 
-        // Setup axios instance with API key for download operations
+        // Setup base URL for API operations
         const baseUrl = settings.url.endsWith('/') ? settings.url.slice(0, -1) : settings.url;
-        const axiosInstance = axios.create({
-            baseURL: baseUrl,
-            headers: {
-                'X-API-Key': apiKey,
-                'Content-Type': 'application/json',
-            },
-        });
 
         // Load centralized music search configuration
         const musicSearchConfig = await getMusicSearchConfig();
@@ -113,6 +103,7 @@ export async function syncSlskd() {
             musicSearchConfig,
             maxResultsPerApproach: settings.max_results,
             searchTimeout: settings.search_timeout * 1000,
+            allowedExtensions: settings.allowed_extensions,
         };
 
         setState({ baseUrl, apiKey }, slskdConfig);
@@ -195,45 +186,40 @@ export async function syncSlskd() {
 
                 console.log(`✓ Found ${candidateFiles.length} candidate(s), attempting download...`);
 
-                // Try to queue download (try each candidate until one succeeds)
-                let downloadQueued = false;
+                // Try to queue download using shared queueDownload function
+                // It handles fallback to next source on non-retriable errors (e.g., "File not shared")
+                try {
+                    const queuedFile = await queueDownload(
+                        candidateFiles.map(f => ({
+                            username: f.username,
+                            filename: f.filename,
+                            size: f.size,
+                            bitRate: f.bitRate,
+                            bitDepth: f.bitDepth,
+                            extension: f.extension
+                        })),
+                        { baseUrl, apiKey }
+                    );
 
-                for (let attempt = 0; attempt < candidateFiles.length; attempt++) {
-                    const candidate = candidateFiles[attempt];
-                    if (!candidate)
-                        continue;
+                    // Success!
+                    trackLog.status = 'queued';
+                    trackLog.file_path = queuedFile.filename;
+                    trackLog.file_size = queuedFile.size;
+                    trackLog.download_username = queuedFile.username;
+                    trackLog.end = Date.now();
+                    successCount++;
+                    slskdLogs[logId] = trackLog;
 
-                    try {
-                        const payload: DownloadPayload[] = [{
-                            filename: candidate.filename,
-                            size: candidate.size,
-                        }];
-
-                        await axiosInstance.post(`/api/v0/transfers/downloads/${candidate.username}`, payload);
-
-                        // Success!
-                        trackLog.status = 'queued';
-                        trackLog.file_path = candidate.filename;
-                        trackLog.file_size = candidate.size;
-                        trackLog.download_username = candidate.username;
-                        trackLog.end = Date.now();
-                        downloadQueued = true;
-                        successCount++;
-                        slskdLogs[logId] = trackLog;
-
-                        console.log(`✓ Queued download: ${candidate.filename}`);
-                        break;
-                    } catch (downloadError: any) {
-                        console.log(`⚠️  Failed to queue download (attempt ${attempt + 1}/${candidateFiles.length}): ${downloadError.message}`);
-                    }
-                }
-
-                if (!downloadQueued) {
+                    console.log(`✓ Queued download from ${queuedFile.username}: ${queuedFile.filename}`);
+                } catch (queueError: unknown) {
+                    const errorMessage = queueError instanceof Error ? queueError.message : 'Unknown error';
                     trackLog.status = 'error';
-                    trackLog.error = 'Failed to queue any download';
+                    trackLog.error = `Failed to queue download: ${errorMessage}`;
                     trackLog.end = Date.now();
                     errorCount++;
                     slskdLogs[logId] = trackLog;
+
+                    console.log(`❌ Failed to queue: ${errorMessage}`);
                 }
 
             } catch (error: any) {

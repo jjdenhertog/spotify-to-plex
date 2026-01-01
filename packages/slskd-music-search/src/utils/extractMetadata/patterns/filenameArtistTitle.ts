@@ -66,8 +66,7 @@ function extract(filePath: string): ExtractionResult {
             artist,
             title,
             album,
-            pattern: 'filename-artist-title',
-            confidence: 0.9
+            pattern: 'filename-artist-title'
         }
     };
 }

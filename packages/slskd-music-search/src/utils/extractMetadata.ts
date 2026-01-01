@@ -118,13 +118,11 @@ export function getExtractionStats(results: ExtractionResult[]): ExtractionStats
     const failed = results.filter(r => !r.success);
 
     const patternDistribution: Record<string, number> = {};
-    let totalConfidence = 0;
 
     for (const result of successful) {
         if (result.metadata) {
-            const { pattern, confidence } = result.metadata;
+            const { pattern } = result.metadata;
             patternDistribution[pattern] = (patternDistribution[pattern] || 0) + 1;
-            totalConfidence += confidence;
         }
     }
 
@@ -133,7 +131,6 @@ export function getExtractionStats(results: ExtractionResult[]): ExtractionStats
         successful: successful.length,
         failed: failed.length,
         successRate: calculateSuccessRate(results),
-        patternDistribution,
-        averageConfidence: successful.length > 0 ? totalConfidence / successful.length : 0
+        patternDistribution
     };
 }

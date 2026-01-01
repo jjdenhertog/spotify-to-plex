@@ -8,7 +8,6 @@ type SlskdSettings = {
     enabled: boolean;
     url: string;
     allowed_extensions: string[];
-    retry_limit: number;
     search_timeout: number;
     max_results: number;
     download_attempts: number;
@@ -26,8 +25,7 @@ export default function SlskdSettings() {
         enabled: false,
         url: '',
         allowed_extensions: ['flac', 'mp3', 'wav', 'ogg', 'm4a'],
-        retry_limit: 5,
-        search_timeout: 20,
+        search_timeout: 5,
         max_results: 50,
         download_attempts: 3,
         auto_sync: false,
@@ -129,10 +127,6 @@ export default function SlskdSettings() {
 
     const handleDownloadAttemptsChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
         handleChange('download_attempts', parseInt(e.target.value, 10));
-    }, [handleChange]);
-
-    const handleRetryLimitChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-        handleChange('retry_limit', parseInt(e.target.value, 10));
     }, [handleChange]);
 
     const handleSearchTimeoutChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
@@ -237,8 +231,6 @@ export default function SlskdSettings() {
                 </Box>
 
                 <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
-                    <TextField label="Retry Limit" type="number" value={settings.retry_limit} onChange={handleRetryLimitChange} sx={{ flex: 1 }} helperText="Search retry attempts" />
-
                     <TextField label="Search Timeout (seconds)" type="number" value={settings.search_timeout} onChange={handleSearchTimeoutChange} sx={{ flex: 1 }} helperText="Time to wait for search results" />
                 </Box>
 

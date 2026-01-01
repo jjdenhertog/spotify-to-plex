@@ -59,8 +59,7 @@ function extract(filePath: string): ExtractionResult {
             artist,
             title,
             album,
-            pattern: 'combined-folder',
-            confidence: 0.9
+            pattern: 'combined-folder'
         }
     };
 }

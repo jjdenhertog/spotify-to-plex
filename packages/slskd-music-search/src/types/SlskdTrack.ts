@@ -25,7 +25,6 @@ export type SlskdTrack = {
         title: string;
         album: string;
         pattern: string;
-        confidence: number;
     };
 
     matching?: {

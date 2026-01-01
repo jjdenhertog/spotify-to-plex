@@ -1,6 +1,6 @@
 import { generateError } from '@/helpers/errors/generateError';
 import { analyze } from '@spotify-to-plex/slskd-music-search/functions/analyze';
-import { SlskdMusicSearchTrack } from '@spotify-to-plex/slskd-music-search/types/track';
+import { SlskdMusicSearchTrack } from '@spotify-to-plex/slskd-music-search/types/SlskdMusicSearchTrack';
 import { getMusicSearchConfig } from "@spotify-to-plex/music-search/functions/getMusicSearchConfig";
 import { getSlskdSettings } from '@spotify-to-plex/plex-config/functions/getSlskdSettings';
 import type { NextApiRequest, NextApiResponse } from 'next';
@@ -42,6 +42,8 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                     // Apply user settings for search behavior
                     searchTimeout: slskdSettings.search_timeout * 1000, // Convert seconds to milliseconds
                     maxResultsPerApproach: slskdSettings.max_results
+                    // Note: allowedExtensions intentionally omitted for analyze
+                    // so all file types are shown for debugging/analysis
                 };
 
                 const searchResponse = await analyze(slskdConfig, [searchItem])
@@ -62,7 +64,11 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                     resultsCount: result.result?.length || 0
                 });
 
-                res.status(200).json(result);
+                // Include allowed extensions so UI can show which tracks would be filtered
+                res.status(200).json({
+                    ...result,
+                    allowedExtensions: slskdSettings.allowed_extensions || []
+                });
             } catch (error) {
                 const errorMessage = error instanceof Error ? error.message : 'Unknown error';
                 res.status(500).json({ error: `Failed to analyze music: ${errorMessage}` });

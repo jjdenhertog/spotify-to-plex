@@ -38,6 +38,9 @@ export default function ExportMissingTracks(props: Props) {
     ///////////////////////////////////////////////
     const [slskdEnabled, setSlskdEnabled] = useState(false);
     const [sendingToSlskd, setSendingToSlskd] = useState(false);
+    const [slskdProgress, setSlskdProgress] = useState<{ current: number; total: number } | null>(null);
+    const slskdAbortRef = useRef(false);
+    const currentTrackIndexRef = useRef(-1);
     const trackRefs = useRef<(MissingTrackHandle | null)[]>([]);
 
     const setTrackRefs = useCallback((index: number) => (ref: MissingTrackHandle | null) => {
@@ -164,20 +167,38 @@ export default function ExportMissingTracks(props: Props) {
 
     const handleSendPageToSlskd = useCallback(async () => {
         setSendingToSlskd(true);
+        slskdAbortRef.current = false;
+        const total = trackRefs.current.length;
+        setSlskdProgress({ current: 0, total });
 
         // Sequential processing through refs
         for (let i = 0; i < trackRefs.current.length; i++) {
+            // Check if user requested stop
+            if (slskdAbortRef.current) {
+                break;
+            }
+
+            currentTrackIndexRef.current = i;
+            setSlskdProgress({ current: i + 1, total });
             const ref = trackRefs.current[i];
-            if (ref) 
+            if (ref)
                 await ref.sendToSlskd();
         }
 
+        currentTrackIndexRef.current = -1;
         setSendingToSlskd(false);
+        setSlskdProgress(null);
     }, []);
 
-    const onSendPageToSlskdClick = useCallback(() => {
-        handleSendPageToSlskd();
-    }, [handleSendPageToSlskd]);
+    const handleStopSlskd = useCallback(() => {
+        slskdAbortRef.current = true;
+
+        // Stop the current track request
+        const currentIndex = currentTrackIndexRef.current;
+        if (currentIndex >= 0 && trackRefs.current[currentIndex]) {
+            trackRefs.current[currentIndex]?.stopSlskd();
+        }
+    }, []);
 
     // Extract unique albums for Lidarr
     const uniqueAlbums = useMemo(() => {
@@ -304,8 +325,15 @@ export default function ExportMissingTracks(props: Props) {
                                     )}
 
                                     {!!slskdEnabled && visibleTracks.length > 0 && (
-                                        <Button variant="outlined" onClick={onSendPageToSlskdClick} disabled={sendingToSlskd}>
-                                            {sendingToSlskd ? 'Sending...' : `Send Page to SLSKD (${visibleTracks.length} tracks)`}
+                                        <Button
+                                            variant="outlined"
+                                            color={sendingToSlskd ? "error" : "primary"}
+                                            onClick={sendingToSlskd ? handleStopSlskd : handleSendPageToSlskd}
+                                        >
+                                            {sendingToSlskd
+                                                ? `Stop (${slskdProgress?.current || 0}/${slskdProgress?.total || 0})`
+                                                : `Send Page to SLSKD (${visibleTracks.length} tracks)`
+                                            }
                                         </Button>
                                     )}
                                 </>
@@ -349,7 +377,7 @@ export default function ExportMissingTracks(props: Props) {
                             {visibleTracks.map((item, index) => {
                                 const tidalTrack = tidalTracks.find(tidalTrack => tidalTrack.id === item.id);
 
-                                return <MissingTrack key={item.id} ref={setTrackRefs(index)} track={item} tidalTrack={tidalTrack} slskdEnabled={slskdEnabled} />;
+                                return <MissingTrack key={item.id} ref={setTrackRefs(index)} track={item} tidalTrack={tidalTrack} slskdEnabled={slskdEnabled} slskdBusy={sendingToSlskd} />;
                             })}
 
                             {totalPages > 1 &&

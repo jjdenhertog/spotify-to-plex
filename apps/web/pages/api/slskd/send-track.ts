@@ -1,5 +1,6 @@
 import { generateError } from '@/helpers/errors/generateError';
 import { search } from '@spotify-to-plex/slskd-music-search/functions/search';
+import { queueDownload } from '@spotify-to-plex/slskd-music-search/actions/queueDownload';
 import type { SlskdMusicSearchTrack } from '@spotify-to-plex/slskd-music-search';
 import { getMusicSearchConfig } from "@spotify-to-plex/music-search/functions/getMusicSearchConfig";
 import { getSlskdSettings } from '@spotify-to-plex/plex-config/functions/getSlskdSettings';
@@ -54,7 +55,9 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 textProcessing: musicSearchConfig.textProcessing,
                 // Apply user settings for search behavior
                 searchTimeout: slskdSettings.search_timeout * 1000, // Convert seconds to milliseconds
-                maxResultsPerApproach: slskdSettings.max_results
+                maxResultsPerApproach: slskdSettings.max_results,
+                // Filter results by allowed file extensions
+                allowedExtensions: slskdSettings.allowed_extensions
             };
 
             // Build track search request
@@ -99,7 +102,29 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
             }
 
             console.log(`[SLSKD] Found ${result.result.length} matches. Best match: ${bestMatch.filename}`);
-            console.log(`[SLSKD] Match confidence: ${bestMatch.metadata?.confidence || 'N/A'}, Quality: ${bestMatch.bitRate || 'N/A'}kbps`);
+
+            // Queue the download
+            try {
+                await queueDownload(
+                    [{
+                        username: bestMatch.username,
+                        filename: bestMatch.filename,
+                        size: bestMatch.size
+                    }],
+                    { baseUrl, apiKey: process.env.SLSKD_API_KEY }
+                );
+                console.log(`[SLSKD] Successfully queued download: ${bestMatch.filename}`);
+            } catch (queueError) {
+                console.error(`[SLSKD] Failed to queue download:`, queueError);
+
+                return res.status(500).json({
+                    error: `Found track but failed to queue download: ${queueError instanceof Error ? queueError.message : 'Unknown error'}`,
+                    bestMatch: {
+                        filename: bestMatch.filename,
+                        username: bestMatch.username
+                    }
+                });
+            }
 
             // Build metadata response if available
             let metadataResponse;
@@ -107,16 +132,14 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 metadataResponse = {
                     extractedArtist: bestMatch.metadata.artist,
                     extractedTitle: bestMatch.metadata.title,
-                    extractedAlbum: bestMatch.metadata.album,
-                    pattern: bestMatch.metadata.pattern,
-                    confidence: bestMatch.metadata.confidence
+                    extractedAlbum: bestMatch.metadata.album
                 };
             }
 
             // Success response with detailed metadata
             return res.status(200).json({
                 success: true,
-                message: 'Track search completed successfully',
+                message: 'Track queued for download',
                 track: {
                     title,
                     artist,
@@ -124,14 +147,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 },
                 bestMatch: {
                     filename: bestMatch.filename,
-                    username: bestMatch.username,
-                    size: bestMatch.size,
-                    bitRate: bestMatch.bitRate,
-                    bitDepth: bestMatch.bitDepth,
-                    sampleRate: bestMatch.sampleRate,
-                    extension: bestMatch.extension,
-                    length: bestMatch.length,
-                    isLocked: bestMatch.isLocked
+                    username: bestMatch.username
                 },
                 metadata: metadataResponse,
                 matchInfo: {

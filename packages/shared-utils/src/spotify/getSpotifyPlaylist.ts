@@ -1,11 +1,12 @@
 import { GetSpotifyPlaylist } from "@spotify-to-plex/shared-types/spotify/GetSpotifyPlaylist";
-import { SpotifyApi } from "@spotify/web-api-ts-sdk";
+import { Page, PlaylistedTrack, SpotifyApi, Track } from "@spotify/web-api-ts-sdk";
 
 
 export async function getSpotifyPlaylist(api: SpotifyApi, id: string, simplified: boolean) {
 
 
     try {
+        const tokenInfo = await api.getAccessToken();
         const result = await api.playlists.getPlaylist(id)
         const playlist: GetSpotifyPlaylist = {
             type: "spotify-playlist",
@@ -15,9 +16,10 @@ export async function getSpotifyPlaylist(api: SpotifyApi, id: string, simplified
             image: result.images?.[0]?.url || '',
             tracks: []
         }
+
         const validTracks = result.tracks.items
             .map(item => {
-                if (!item.track) 
+                if (!item.track)
                     return null;
 
                 const artists = item.track.artists?.flatMap(artist => artist.name.split(',').map(name => name.trim()));
@@ -31,17 +33,33 @@ export async function getSpotifyPlaylist(api: SpotifyApi, id: string, simplified
                     album_id: item.track.album?.id || 'unknown'
                 }
             })
-            .filter((track)=>!!track);
-        
+            .filter((track) => !!track);
+
         playlist.tracks = playlist.tracks.concat(validTracks);
         if (simplified)
             return playlist;
 
-        let offset = result.tracks.limit;
-        let nextUrl = result.tracks.next
-
+        let nextUrl: string | null = result.tracks.next
         while (nextUrl) {
-            const loadMore = await api.playlists.getPlaylistItems(id, undefined, undefined, 50, offset)
+
+            const response = await fetch(nextUrl, {
+                headers: {
+                    'Authorization': `Bearer ${tokenInfo?.access_token}`
+                }
+            });
+
+            if (!response.ok) {
+                console.error(`❌ Fetch failed: ${response.status} ${response.statusText}`);
+                break;
+            }
+
+            const data = await response.json();
+            const loadMore = data as Page<PlaylistedTrack<Track>>;
+            if (!loadMore.items) {
+                nextUrl = null;
+                break;
+            }
+
             const validLoadMoreTracks = loadMore.items
                 .map(item => {
                     if (!item.track) return null;
@@ -55,21 +73,21 @@ export async function getSpotifyPlaylist(api: SpotifyApi, id: string, simplified
                         album_id: item.track.album?.id || 'unknown'
                     }
                 })
-                .filter((track)=>!!track);
+                .filter((track) => !!track);
 
             playlist.tracks = playlist.tracks.concat(validLoadMoreTracks);
 
             nextUrl = loadMore.next
-            offset = loadMore.offset + loadMore.limit;
 
-            // Add throttling between pagination requests (~171 req/min)
-            if (nextUrl) 
+            if (nextUrl)
                 await new Promise(resolve => { setTimeout(resolve, 350) });
         }
 
         return playlist;
 
-    } catch (_e) {
+    } catch (e) {
+        console.error("❌ Error in getSpotifyPlaylist:", e);
+
         return null;
     }
 }

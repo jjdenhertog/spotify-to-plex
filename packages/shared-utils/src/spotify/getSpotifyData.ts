@@ -42,7 +42,7 @@ export async function getSpotifyData(api: SpotifyApi, id: string, simplified: bo
 
     const playlistId = id.slice(Math.max(0, id.indexOf('spotify:playlist:') + 'spotify:playlist:'.length)).trim();
     const playlist = await getSpotifyPlaylist(api, playlistId, simplified)
-
+    
     if (playlist)
         return playlist;
 

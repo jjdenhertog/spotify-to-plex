@@ -3,7 +3,7 @@ import { getCachedTrackLinks } from '@spotify-to-plex/shared-utils/cache/getCach
 import { Album } from '@spotify-to-plex/shared-types/spotify/Album';
 import { Track } from '@spotify-to-plex/shared-types/spotify/Track';
 import { search as slskdMusicSearch } from '@spotify-to-plex/slskd-music-search/functions/search';
-import { SearchResponse } from '@spotify-to-plex/slskd-music-search/types/response';
+import { SearchResponse } from '@spotify-to-plex/slskd-music-search/types/SearchResponse';
 import { getMusicSearchConfig } from "@spotify-to-plex/music-search/functions/getMusicSearchConfig";
 import { getSlskdSettings } from '@spotify-to-plex/plex-config/functions/getSlskdSettings';
 import type { NextApiRequest, NextApiResponse } from 'next';
@@ -61,7 +61,8 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 apiKey: process.env.SLSKD_API_KEY,
                 musicSearchConfig,
                 searchApproaches,
-                textProcessing
+                textProcessing,
+                allowedExtensions: slskdSettings.allowed_extensions
             };
 
             //////////////////////////////////////

@@ -2,7 +2,7 @@
 /* eslint-disable react/display-name */
 import { errorBoundary } from "@/helpers/errors/errorBoundary";
 import { GetSpotifyTrackByIdResponse } from "@/pages/api/spotify/tracks/[id]";
-import { CheckCircle, Close } from "@mui/icons-material";
+import { CheckCircle, Close, Block } from "@mui/icons-material";
 import { Box, CircularProgress, Divider, Typography } from "@mui/material";
 import type { PlexTrack } from "@spotify-to-plex/plex-music-search/types/PlexTrack";
 import type { SearchQuery, SearchResponse } from "@spotify-to-plex/plex-music-search/types/SearchResponse";
@@ -18,7 +18,7 @@ const TrackAnalyzer = forwardRef<TrackAnalyzerHandles, unknown>((_props, ref) =>
     const [loading, setLoading] = useState(false)
     const [trackLoading, setTrackLoading] = useState(false)
     const [track, setTrack] = useState<GetSpotifyTrackByIdResponse>()
-    const [searchResponse, setSearchResponse] = useState<SearchResponse>()
+    const [searchResponse, setSearchResponse] = useState<SearchResponse & { allowedExtensions?: string[] }>()
 
     useImperativeHandle(ref, () => ({
         analyze: (trackId: string, type: 'plex' | 'tidal' | 'slskd') => {
@@ -64,6 +64,14 @@ const TrackAnalyzer = forwardRef<TrackAnalyzerHandles, unknown>((_props, ref) =>
 
     const getRoundedSimilarity = (value: number) => {
         return `${Math.round(value * 100)}%`
+    }
+
+    // Check if a file extension is in the allowed list
+    const isExtensionAllowed = (filename: string, allowedExtensions?: string[]) => {
+        if (!allowedExtensions || allowedExtensions.length === 0) return true;
+        const ext = filename.split('.').pop()?.toLowerCase() || '';
+        const normalizedAllowed = allowedExtensions.map(e => e.toLowerCase().replace(/^\./, ''));
+        return normalizedAllowed.includes(ext);
     }
 
     return (
@@ -149,12 +157,29 @@ const TrackAnalyzer = forwardRef<TrackAnalyzerHandles, unknown>((_props, ref) =>
                                             return null;
 
                                         const { isMatchingApproach } = matching;
+                                        const extensionAllowed = isExtensionAllowed(src || '', searchResponse?.allowedExtensions);
+
+                                        // Determine icon: Block if extension not allowed, otherwise check/close based on match
+                                        const getStatusIcon = () => {
+                                            if (!extensionAllowed) {
+                                                return <Block sx={{ fontSize: "1.2em", color: "error.main" }} titleAccess="Extension not in allowed list" />;
+                                            }
+                                            if (isMatchingApproach) {
+                                                return <CheckCircle sx={{ fontSize: "1.2em", color: "success.main" }} />;
+                                            }
+                                            return <Close sx={{ fontSize: "1.2em", color: "error.main" }} />;
+                                        };
 
                                         return <Box key={`result-${resultId}`} sx={{ mb: 1, p: 1, bgcolor: 'action.hover', borderRadius: 1 }} >
                                             <Box >
                                                 <Typography variant="h6" sx={{ mb: 1, fontSize: "1.2em", display: "flex", alignItems: "center", gap: 1 }} >
-                                                    {isMatchingApproach ? <CheckCircle sx={{ fontSize: "1.2em", color: "success.main" }} /> : <Close sx={{ fontSize: "1.2em", color: "error.main" }} />}
+                                                    {getStatusIcon()}
                                                     {title}
+                                                    {!extensionAllowed && (
+                                                        <Typography component="span" sx={{ fontSize: "0.7em", color: "error.main", ml: 1 }}>
+                                                            (extension not allowed)
+                                                        </Typography>
+                                                    )}
                                                 </Typography>
                                                 <Box sx={{ flex: 1, display: 'flex' }}>
                                                     <Typography variant="body2" sx={{ width: '60px' }}>

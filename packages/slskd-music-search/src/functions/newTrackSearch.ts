@@ -97,6 +97,20 @@ function sortByFormatPreference<T extends { extension: string }>(tracks: T[]) {
     });
 }
 
+function filterByAllowedExtensions<T extends { extension: string }>(tracks: T[], allowedExtensions?: string[]) {
+    if (!allowedExtensions || allowedExtensions.length === 0) {
+        return tracks;
+    }
+
+    const normalizedAllowed = allowedExtensions.map(ext => ext.toLowerCase().replace(/^\./, ''));
+
+    return tracks.filter(track => {
+        const ext = track.extension.toLowerCase().replace(/^\./, '');
+
+        return normalizedAllowed.includes(ext);
+    });
+}
+
 async function tryApproachWithArtist(approach: SlskdMusicSearchApproach, searchParams: SearchParams, analyze: boolean, executedQueries: Set<string>) {
     try {
         return await performApproachSearch(approach, searchParams, analyze, executedQueries);
@@ -126,7 +140,8 @@ async function performApproachSearch(approach: SlskdMusicSearchApproach, searchP
     const searchAlbum = filterOutWords(album.toLowerCase(), config.textProcessing, filtered, trim, removeQuotes);
     const searchTrack = filterOutWords(title.toLowerCase(), config.textProcessing, filtered, trim, removeQuotes);
 
-    const querySignature = `${searchArtist}|${searchTrack}|${searchAlbum}`.toLowerCase();
+    // Query signature only uses artist + title since album is not part of the SLSKD search
+    const querySignature = `${searchArtist}|${searchTrack}`.toLowerCase();
 
     if (executedQueries.has(querySignature)) {
         console.log(`[performSearch] Skipping duplicate query for approach ${approachId}: "${searchArtist} ${searchTrack}"`);
@@ -141,6 +156,14 @@ async function performApproachSearch(approach: SlskdMusicSearchApproach, searchP
         const convertedTracks = slskdResultToTracks(searchResults);
         const musicSearchResult = musicSearch({ id, artist, title, album }, convertedTracks, analyze);
 
+        console.log(`[performSearch] approach=${approach}, analyze=${analyze}:`, {
+            searchResultsCount: searchResults.length,
+            convertedTracksCount: convertedTracks.length,
+            musicSearchResultCount: musicSearchResult.length,
+            searchResultExtensions: searchResults.slice(0, 5).map(r => r.extension),
+            musicSearchIds: musicSearchResult.slice(0, 3).map(r => r.id?.slice(-50))
+        });
+
         const slskdTracks = musicSearchResult
             .map((item: Track) => {
                 const searchResult = searchResults.find(track => track.filename === item.id);
@@ -152,13 +175,22 @@ async function performApproachSearch(approach: SlskdMusicSearchApproach, searchP
             .filter((item) => !!item);
 
         const sortedTracks = sortByFormatPreference(slskdTracks);
+        const filteredTracks = filterByAllowedExtensions(sortedTracks, config.allowedExtensions);
+
+        console.log(`[performSearch] Post-filtering:`, {
+            slskdTracksCount: slskdTracks.length,
+            sortedTracksCount: sortedTracks.length,
+            filteredTracksCount: filteredTracks.length,
+            allowedExtensions: config.allowedExtensions
+        });
+
         const query: SearchQuery = { approach, artist, title, album };
         if (analyze)
-            query.result = sortedTracks;
+            query.result = filteredTracks;
 
         queries.push(query);
 
-        return sortedTracks;
+        return filteredTracks;
     };
 
     searchResult = await performSearch(approachId, searchArtist, searchTrack, searchAlbum);
