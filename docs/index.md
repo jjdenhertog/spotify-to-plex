@@ -47,6 +47,7 @@ Set it and forget it with automatic playlist syncing:
 2. Follow the [Quick Start](quick-start) guide
 3. [Configure Spotify](spotify/) authentication
 
+
 ---
 
 ## Why Spotify to Plex?
