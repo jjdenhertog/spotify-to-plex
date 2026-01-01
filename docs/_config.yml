@@ -21,3 +21,10 @@ color_scheme: dark
 exclude:
   - Gemfile
   - Gemfile.lock
+
+# Default layout for all pages
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: default
