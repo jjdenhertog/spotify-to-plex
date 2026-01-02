@@ -94,7 +94,7 @@ const MissingTrack = forwardRef<MissingTrackHandle, MissingTrackProps>((props, r
                 return { success: false, message: 'Stopped' };
             }
 
-            const searchResult = searchResponse.data[0];
+            const [searchResult] = searchResponse.data;
             if (!searchResult?.result || searchResult.result.length === 0) {
                 const errorResult: SlskdSearchResult = {
                     success: false,
@@ -163,8 +163,8 @@ const MissingTrack = forwardRef<MissingTrackHandle, MissingTrackProps>((props, r
                 success: true,
                 message: 'Track queued for download',
                 bestMatch: {
-                    filename: queuedFile.filename,
-                    username: queuedFile.username
+                    filename: queuedFile?.filename || '',
+                    username: queuedFile?.username || ''
                 },
                 matchInfo: {
                     totalMatches: searchResult.result.length,
@@ -217,6 +217,8 @@ const MissingTrack = forwardRef<MissingTrackHandle, MissingTrackProps>((props, r
 
 
     const spotifyId = useMemo(()=>{
+        if (!track.id) return null;
+
         return track.id.replace('spotify:track:', '');
     }, [track.id]);
 
@@ -281,20 +283,22 @@ const MissingTrack = forwardRef<MissingTrackHandle, MissingTrackProps>((props, r
                     )}
 
                     {/* Spotify Button */}
-                    <Box>
-                        <Button
-                            component="a"
-                            href={`https://open.spotify.com/track/${spotifyId}`}
-                            target="_blank"
-                            className="btn"
-                            color="inherit"
-                            variant="outlined"
-                            size="small"
-                            sx={{ fontSize: '.8em' }}
-                        >
-                            Spotify
-                        </Button>
-                    </Box>
+                    {!!spotifyId && 
+                        <Box>
+                            <Button
+                                component="a"
+                                href={`https://open.spotify.com/track/${spotifyId}`}
+                                target="_blank"
+                                className="btn"
+                                color="inherit"
+                                variant="outlined"
+                                size="small"
+                                sx={{ fontSize: '.8em' }}
+                            >
+                                Spotify
+                            </Button>
+                        </Box>
+                    }
                 </Box>
             </Box>
 

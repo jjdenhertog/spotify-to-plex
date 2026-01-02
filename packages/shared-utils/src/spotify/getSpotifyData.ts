@@ -116,8 +116,14 @@ export async function getSpotifyData(api: SpotifyApi, id: string, simplified: bo
     for (let i = 0; i < tracks.length; i += BATCH_SIZE) {
         const batch = tracks.slice(i, i + BATCH_SIZE);
 
-        // Extract track IDs for batch API call
-        const trackIds = batch.map(track => track.id.replace('spotify:track:', ''));
+        // Separate tracks with valid IDs from those without (local files/unavailable)
+        const tracksWithIds = batch.filter(track => track.id);
+        const trackIds = tracksWithIds.map(track => track.id.replace('spotify:track:', ''));
+
+        // Skip API call if no valid track IDs in batch
+        if (trackIds.length === 0) {
+            continue;
+        }
 
         let retryCount = 0;
         let success = false;
@@ -127,9 +133,13 @@ export async function getSpotifyData(api: SpotifyApi, id: string, simplified: bo
                 // SINGLE API CALL for up to 50 tracks (50x more efficient!)
                 const enrichedTracks = await api.tracks.get(trackIds);
 
-                // Map enriched data back to original tracks
-                const enrichedBatch = batch.map((track, idx) => {
-                    const enrichedTrack = enrichedTracks[idx];
+                // Map enriched data back to original tracks - only for tracks with IDs
+                let enrichedIdx = 0;
+                const enrichedBatch = batch.map((track) => {
+                    // Skip tracks without IDs (local files/unavailable)
+                    if (!track.id) return track;
+
+                    const enrichedTrack = enrichedTracks[enrichedIdx++];
                     if (!enrichedTrack) return track; // Fallback if track not found
 
                     return {

@@ -22,6 +22,11 @@ export async function getSpotifyPlaylist(api: SpotifyApi, id: string, simplified
                 if (!item.track)
                     return null;
 
+                // Local files and unavailable tracks have null IDs - log for visibility
+                if (!item.track.id) {
+                    console.log(`⚠️  Track without Spotify ID (local file or unavailable): "${item.track.name}" by ${item.track.artists?.[0]?.name || 'Unknown'}`);
+                }
+
                 const artists = item.track.artists?.flatMap(artist => artist.name.split(',').map(name => name.trim()));
 
                 return {
@@ -63,6 +68,11 @@ export async function getSpotifyPlaylist(api: SpotifyApi, id: string, simplified
             const validLoadMoreTracks = loadMore.items
                 .map(item => {
                     if (!item.track) return null;
+
+                    // Local files and unavailable tracks have null IDs - log for visibility
+                    if (!item.track.id) {
+                        console.log(`⚠️  Track without Spotify ID (local file or unavailable): "${item.track.name}" by ${item.track.artists?.[0]?.name || 'Unknown'}`);
+                    }
 
                     return {
                         id: item.track.id,

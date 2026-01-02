@@ -1,6 +1,6 @@
 /* eslint-disable react/no-multi-comp */
 import { errorBoundary } from "@/helpers/errors/errorBoundary";
-import { Alert, Box, Button, Chip, CircularProgress, Paper, Tab, Tabs, TextField, Typography } from "@mui/material";
+import { Alert, Box, Button, Chip, CircularProgress, Paper, Tab, Tabs, TextField, Tooltip, Typography } from "@mui/material";
 import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
 import { GetLogsResponse } from "../../pages/api/logs";
@@ -194,7 +194,13 @@ export default function Logs() {
                                         {formatDuration(duration)}
                                     </Typography>
                                 )}
-                                <Chip label={hasError ? 'Error' : 'Success'} color={hasError ? 'error' : 'success'} size="small" sx={{ minWidth: '75px' }} />
+                                {hasError && log.error ? (
+                                    <Tooltip title={log.error} arrow>
+                                        <Chip label="Error" color="error" size="small" sx={{ minWidth: '75px', cursor: 'help' }} />
+                                    </Tooltip>
+                                ) : (
+                                    <Chip label={hasError ? 'Error' : 'Success'} color={hasError ? 'error' : 'success'} size="small" sx={{ minWidth: '75px' }} />
+                                )}
                             </Box>
                         </Box>
                     );
@@ -249,7 +255,13 @@ export default function Logs() {
                                         {formatDuration(duration)}
                                     </Typography>
                                 )}
-                                <Chip label={log.status} color={log.status==='success' ? 'success' : log.status==='error' ? 'error' : 'warning'} size="small" sx={{ minWidth: '85px' }} />
+                                {hasError && log.error ? (
+                                    <Tooltip title={log.error} arrow>
+                                        <Chip label={log.status} color="error" size="small" sx={{ minWidth: '85px', cursor: 'help' }} />
+                                    </Tooltip>
+                                ) : (
+                                    <Chip label={log.status} color={log.status==='success' ? 'success' : log.status==='error' ? 'error' : 'warning'} size="small" sx={{ minWidth: '85px' }} />
+                                )}
                             </Box>
                         </Box>
                     );
@@ -306,7 +318,13 @@ export default function Logs() {
                                         {formatDuration(duration)}
                                     </Typography>
                                 )}
-                                <Chip label={log.status} color={log.status==='success' || isQueued ? 'success' : notFound ? 'warning' : 'error'} size="small" sx={{ minWidth: '85px' }} />
+                                {hasError && log.error ? (
+                                    <Tooltip title={log.error} arrow>
+                                        <Chip label={log.status} color="error" size="small" sx={{ minWidth: '85px', cursor: 'help' }} />
+                                    </Tooltip>
+                                ) : (
+                                    <Chip label={log.status} color={log.status==='success' || isQueued ? 'success' : notFound ? 'warning' : 'error'} size="small" sx={{ minWidth: '85px' }} />
+                                )}
                             </Box>
                         </Box>
                     );

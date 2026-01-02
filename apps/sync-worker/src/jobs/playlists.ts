@@ -158,6 +158,7 @@ export async function syncPlaylists() {
 
                 console.log(`Missing ${missingTracks.length} tracks`)
                 missingTracks.forEach(item => {
+                    if (!item.id) return; // Skip tracks with null id
                     const id = item.id.indexOf(":") > -1 ? item.id.split(":")[2] : item.id;
                     if (typeof id === 'string' && !missingSpotifyTracks.includes(id))
                         missingSpotifyTracks.push(id)
@@ -194,6 +195,7 @@ export async function syncPlaylists() {
 
                 // Collect track data for SLSKD
                 missingTracks.forEach(track => {
+                    if (!track.id) return; // Skip tracks with null id
                     const spotifyId = track.id.indexOf(":") > -1 ? track.id.split(":")[2] : track.id;
                     const artist = track.artists[0] || 'Unknown Artist';
                     const trackName = track.title || 'Unknown Track';

@@ -143,6 +143,7 @@ export async function syncAlbums() {
 
             // Collect track data for SLSKD
             missingTracks.forEach(track => {
+                if (!track.id) return; // Skip tracks with null id (local files/unavailable)
                 const spotifyId = track.id.indexOf(":") > -1 ? track.id.split(":")[2] : track.id;
                 const artist = track.artists[0] || 'Unknown Artist';
                 const trackName = track.title || 'Unknown Track';
