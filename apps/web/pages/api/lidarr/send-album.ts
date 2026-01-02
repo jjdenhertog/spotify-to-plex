@@ -3,6 +3,7 @@ import { getLidarrSettings } from '@spotify-to-plex/plex-config/functions/getLid
 import { LidarrAddAlbumRequest } from '@spotify-to-plex/shared-types/lidarr/LidarrAddAlbumRequest';
 import { getMusicBrainzIds } from '@spotify-to-plex/shared-utils/lidarr/getMusicBrainzIds';
 import { lookupLidarrAlbum } from '@spotify-to-plex/shared-utils/lidarr/lookupLidarrAlbum';
+import { monitorAndSearchAlbum } from '@spotify-to-plex/shared-utils/lidarr/monitorAndSearchAlbum';
 import axios from 'axios';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createRouter } from 'next-connect';
@@ -87,56 +88,98 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                     qualityProfileId: settings.quality_profile_id,
                     metadataProfileId: settings.metadata_profile_id,
                     rootFolderPath: settings.root_folder_path,
+                    monitored: true,
+                    addOptions: {
+                        monitor: "none",
+                        monitored: true,
+                        searchForMissingAlbums: false,
+                    },
                 },
             };
 
             const addUrl = `${baseUrl}/api/v1/album`;
-            await axios.post(addUrl, addRequest, {
-                headers: {
-                    'X-Api-Key': apiKey,
-                    'Content-Type': 'application/json',
-                },
-            });
 
-            res.status(200).json({
-                success: true,
-                message: `Successfully added "${lidarrAlbum.title}" to Lidarr`,
-            });
+            try {
+                const addResponse = await axios.post(addUrl, addRequest, {
+                    headers: {
+                        'X-Api-Key': apiKey,
+                        'Content-Type': 'application/json',
+                    },
+                });
 
-        } catch (error: any) {
-            console.error('Error sending album to Lidarr:', error.message);
+                // Trigger explicit album search to start download
+                const albumId = addResponse.data?.id;
+                if (albumId) {
+                    const commandUrl = `${baseUrl}/api/v1/command`;
+                    await axios.post(commandUrl, {
+                        name: 'AlbumSearch',
+                        albumIds: [albumId],
+                    }, {
+                        headers: {
+                            'X-Api-Key': apiKey,
+                            'Content-Type': 'application/json',
+                        },
+                    });
+                }
 
-            // Log detailed error response from Lidarr
-            if (error.response?.data) {
-                console.error('Lidarr API Response:', JSON.stringify(error.response.data, null, 2));
-            }
-
-            // Handle "already exists" error
-            if (error.response?.status === 409) {
                 return res.status(200).json({
                     success: true,
-                    message: 'Album already exists in Lidarr',
+                    message: `Successfully added "${lidarrAlbum.title}" to Lidarr`,
+                });
+
+            } catch (error: any) {
+                console.error('Error sending album to Lidarr:', error.message);
+
+                // Log detailed error response from Lidarr
+                if (error.response?.data) {
+                    console.error('Lidarr API Response:', JSON.stringify(error.response.data, null, 2));
+                }
+
+                // Handle "already exists" error - monitor and search the existing album
+                const result = error.response?.data?.[0];
+                const albumExists = error.response?.status === 409 || result?.errorCode === 'AlbumExistsValidator';
+
+                if (albumExists) {
+                    const monitorResult = await monitorAndSearchAlbum(
+                        lidarrAlbum.foreignAlbumId,
+                        settings.url,
+                        apiKey
+                    );
+
+                    return res.status(200).json({
+                        success: monitorResult.success,
+                        message: monitorResult.message,
+                    });
+                }
+
+                // Extract error message from Lidarr's response
+                let errorMessage = 'Failed to send album';
+                if (error.response?.data) {
+                    const { data } = error.response;
+                    // Handle array response (validation errors)
+                    if (Array.isArray(data) && data.length > 0) {
+                        const [firstError] = data;
+                        errorMessage = firstError.errorMessage || firstError.message || JSON.stringify(firstError);
+                    } else if (data.message) {
+                        errorMessage = data.message;
+                    }
+                } else if (error.message) {
+                    errorMessage = error.message;
+                }
+
+                return res.status(500).json({
+                    success: false,
+                    message: errorMessage,
                 });
             }
 
-            // Extract error message from Lidarr's response
-            let errorMessage = 'Failed to send album';
-            if (error.response?.data) {
-                const {data} = error.response;
-                // Handle array response (validation errors)
-                if (Array.isArray(data) && data.length > 0) {
-                    const [firstError] = data;
-                    errorMessage = firstError.errorMessage || firstError.message || JSON.stringify(firstError);
-                } else if (data.message) {
-                    errorMessage = data.message;
-                }
-            } else if (error.message) {
-                errorMessage = error.message;
-            }
+        } catch (error: unknown) {
+            const message = error instanceof Error ? error.message : 'Unknown error';
+            console.error('Error in send-album:', message);
 
-            res.status(500).json({
+            return res.status(500).json({
                 success: false,
-                message: errorMessage,
+                message,
             });
         }
     });

@@ -14,6 +14,7 @@ import { errorSyncType } from "../utils/errorSyncType";
 import { updateSyncTypeProgress } from "../utils/updateSyncTypeProgress";
 import { getMusicBrainzIds } from "@spotify-to-plex/shared-utils/lidarr/getMusicBrainzIds";
 import { lookupLidarrAlbum } from "@spotify-to-plex/shared-utils/lidarr/lookupLidarrAlbum";
+import { monitorAndSearchAlbum } from "@spotify-to-plex/shared-utils/lidarr/monitorAndSearchAlbum";
 
 export async function syncLidarr() {
     console.log('Starting Lidarr sync...');
@@ -181,37 +182,75 @@ export async function syncLidarr() {
                         qualityProfileId: settings.quality_profile_id,
                         metadataProfileId: settings.metadata_profile_id,
                         rootFolderPath: settings.root_folder_path,
+                        monitored: true,
+                        addOptions: {
+                            monitor: "none",
+                            monitored: true,
+                            searchForMissingAlbums: false,
+                        },
                     },
                 };
 
                 const addUrl = `${baseUrl}/api/v1/album`;
-                await axios.post(addUrl, addRequest, {
-                    headers: {
-                        'X-Api-Key': apiKey,
-                        'Content-Type': 'application/json',
-                    },
-                });
 
-                albumLog.status = 'success';
-                albumLog.end = Date.now();
-                successCount++;
-                lidarrLogs[logId] = albumLog;
+                try {
+                    const addResponse = await axios.post(addUrl, addRequest, {
+                        headers: {
+                            'X-Api-Key': apiKey,
+                            'Content-Type': 'application/json',
+                        },
+                    });
 
-            } catch (error: any) {
-                const result = error.response?.data[0];
+                    // Trigger explicit album search to start download
+                    const albumId = addResponse.data?.id;
+                    const commandUrl = `${baseUrl}/api/v1/command`;
+                    if (albumId) {
+                        await axios.post(commandUrl, { name: 'AlbumSearch', albumIds: [albumId] }, {
+                            headers: { 'X-Api-Key': apiKey, 'Content-Type': 'application/json' },
+                        });
+                    }
 
-                const albumExists = error.response?.status === 409 || result?.errorCode == 'AlbumExistsValidator';
-                if (albumExists) {
                     albumLog.status = 'success';
-                    albumLog.error = 'Album already exists in Lidarr';
-                    continue;
-                } else {
-                    albumLog.status = 'error';
-                    albumLog.error = error.message;
-                    errorCount++;
+                    albumLog.end = Date.now();
+                    successCount++;
+                    lidarrLogs[logId] = albumLog;
+
+                } catch (error: any) {
+                    const result = error.response?.data?.[0];
+                    const albumExists = error.response?.status === 409 || result?.errorCode === 'AlbumExistsValidator';
+
+                    if (!albumExists) {
+                        albumLog.status = 'error';
+                        albumLog.error = error.message;
+                        albumLog.end = Date.now();
+                        errorCount++;
+                        lidarrLogs[logId] = albumLog;
+                        continue;
+                    }
+
+                    // Album already exists - try to monitor it and trigger search
+                    const monitorResult = await monitorAndSearchAlbum(
+                        lidarrAlbum.foreignAlbumId,
+                        settings.url,
+                        apiKey
+                    );
+
+                    albumLog.status = monitorResult.success ? 'success' : 'error';
+                    albumLog.error = monitorResult.message;
+                    albumLog.end = Date.now();
+                    if (monitorResult.success) {
+                        successCount++;
+                    } else {
+                        errorCount++;
+                    }
+                    lidarrLogs[logId] = albumLog;
                 }
 
+            } catch (error: unknown) {
+                albumLog.status = 'error';
+                albumLog.error = error instanceof Error ? error.message : 'Unknown error';
                 albumLog.end = Date.now();
+                errorCount++;
                 lidarrLogs[logId] = albumLog;
             }
 

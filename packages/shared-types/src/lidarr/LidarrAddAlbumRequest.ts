@@ -17,5 +17,11 @@ export type LidarrAddAlbumRequest = {
         qualityProfileId: number;
         metadataProfileId: number;
         rootFolderPath: string;
+        monitored: boolean;
+        addOptions?: {
+            monitor: string;
+            monitored: boolean;
+            searchForMissingAlbums: boolean;
+        };
     };
 };
