@@ -39,7 +39,7 @@ export async function syncSlskd() {
             return;
         }
 
-        const apiKey = process.env.SLSKD_API_KEY;
+        const apiKey = process.env.SLSKD_API_KEY?.trim();
         if (!apiKey) {
             console.log('SLSKD API key not configured in environment (SLSKD_API_KEY)');
 

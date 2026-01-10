@@ -33,7 +33,7 @@ export async function syncLidarr() {
         if (!settings.url)
             return;
 
-        const apiKey = process.env.LIDARR_API_KEY;
+        const apiKey = process.env.LIDARR_API_KEY?.trim();
         if (!apiKey)
             return;
 

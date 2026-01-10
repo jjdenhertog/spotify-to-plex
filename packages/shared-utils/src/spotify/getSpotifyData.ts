@@ -46,10 +46,14 @@ export async function getSpotifyData(api: SpotifyApi, id: string, simplified: bo
     if (playlist)
         return playlist;
 
+    const scraperUrl = process.env.SPOTIFY_SCRAPER_URL?.trim();
+    if (!scraperUrl)
+        throw new Error(`This was a Spotify curated playlist, and SpotifyScraper is not configured. Set SPOTIFY_SCRAPER_URL environment variable.`);
+
     let response: AxiosResponse<GetSpotifyScraperData>;
     try {
         const spotifyUrl = `https://open.spotify.com/playlist/${playlistId}`;
-        response = await axios.post<GetSpotifyScraperData>(`${process.env.SPOTIFY_SCRAPER_URL}/playlist`, {
+        response = await axios.post<GetSpotifyScraperData>(`${scraperUrl}/playlist`, {
             url: spotifyUrl,
             include_album_data: false
         });

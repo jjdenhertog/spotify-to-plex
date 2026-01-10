@@ -8,7 +8,7 @@ import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 
 export async function loadSpotifyData(uri: string, user?: string, simplified: boolean = false) {
-    if (!process.env.SPOTIFY_API_CLIENT_ID || !process.env.SPOTIFY_API_CLIENT_SECRET)
+    if (!process.env.SPOTIFY_API_CLIENT_ID?.trim() || !process.env.SPOTIFY_API_CLIENT_SECRET?.trim())
         throw new Error("Spotify Credentials missing. Please add the environment variables to use this feature.");
 
     // Handle liked songs URI pattern

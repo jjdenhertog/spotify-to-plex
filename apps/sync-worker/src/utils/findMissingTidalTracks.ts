@@ -10,6 +10,9 @@ export async function findMissingTidalTracks(missingTracks: Track[]) {
     if (typeof process.env.TIDAL_API_CLIENT_ID != 'string' || typeof process.env.TIDAL_API_CLIENT_SECRET != 'string')
         return [];
 
+    if (!process.env.TIDAL_API_CLIENT_ID.trim() || !process.env.TIDAL_API_CLIENT_SECRET.trim())
+        return [];
+
     // Caching
     const { add, found: cachedTidalLinks } = getCachedTrackLinks(missingTracks, 'tidal');
     const result: { id: string; tidal_id: string; }[] = [];

@@ -11,8 +11,8 @@ export async function refreshAccessTokens() {
     if (!existsSync(credentialsPath))
         throw new Error("No users are currently connected.");
 
-    const clientId = process.env.SPOTIFY_API_CLIENT_ID
-    const clientSecret = process.env.SPOTIFY_API_CLIENT_SECRET
+    const clientId = process.env.SPOTIFY_API_CLIENT_ID?.trim()
+    const clientSecret = process.env.SPOTIFY_API_CLIENT_SECRET?.trim()
 
     if (!clientId)
         throw new Error(`Missing environment variables: SPOTIFY_API_CLIENT_ID`)

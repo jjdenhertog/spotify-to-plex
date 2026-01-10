@@ -8,6 +8,9 @@ export async function findMissingTidalAlbums(missingTracks: Track[]) {
     if (typeof process.env.TIDAL_API_CLIENT_ID != 'string' || typeof process.env.TIDAL_API_CLIENT_SECRET != 'string')
         return [];
 
+    if(!process.env.TIDAL_API_CLIENT_ID.trim() || !process.env.TIDAL_API_CLIENT_SECRET.trim())
+        return [];
+
     console.log(`Search for ${missingTracks.length} tracks on Tidal`);
 
     // Set client credentials for Tidal API (no user OAuth needed)

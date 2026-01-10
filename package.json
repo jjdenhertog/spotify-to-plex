@@ -5,7 +5,7 @@
         "apps/*",
         "packages/*"
     ],
-    "version": "1.0.99",
+    "version": "1.0.101",
     "description": "Sync Spotify with your Plex Library.",
     "keywords": [
         "plex",
@@ -33,7 +33,8 @@
         "docker:build": "docker build -t jjdenhertog/spotify-to-plex .",
         "docker:push": "PACKAGE_VERSION=$(node -p \"require('./package.json').version\") && docker buildx build --platform=linux/amd64,linux/arm64 -t jjdenhertog/spotify-to-plex:latest -t jjdenhertog/spotify-to-plex:$PACKAGE_VERSION --push .",
         "docker:push:beta": "PACKAGE_VERSION=$(node -p \"require('./package.json').version\") && docker buildx build --platform=linux/amd64,linux/arm64 -t jjdenhertog/spotify-to-plex:beta -t jjdenhertog/spotify-to-plex:$PACKAGE_VERSION-beta --push .",
-        "deploy": "npm version patch --no-git-tag-version && npm run docker:push",
+        "deploy": "npm version patch && npm run docker:push && npm run release",
+        "release": "PACKAGE_VERSION=$(grep '\"version\"' package.json | cut -d '\"' -f 4 | head -n 1) && git push && git push --tags && gh release create v$PACKAGE_VERSION --generate-notes --title \"v$PACKAGE_VERSION\"",
         "deploy:beta": "npm version prerelease --preid=beta --no-git-tag-version && npm run docker:push:beta",
         "dev:sync:playlists": "npm run dev:sync:playlists --workspace=@spotify-to-plex/sync-worker",
         "dev:sync:albums": "npm run dev:sync:albums --workspace=@spotify-to-plex/sync-worker",
