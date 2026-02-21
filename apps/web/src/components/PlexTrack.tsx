@@ -12,7 +12,6 @@ type Props = {
         artists: string[];
         title: string;
         reason?: string;
-        album?: string;
     }
     readonly data?: SearchResponse
     readonly songIdx: number
@@ -203,7 +202,6 @@ export default function PlexTrack(props: Props) {
                     <ManualSearchPopup
                         trackTitle={trackTitle}
                         artistNames={artistNames}
-                        albumName={track.album}
                         onClose={onCloseManualSearch}
                         onSelect={onManualSelectTrack}
                     />

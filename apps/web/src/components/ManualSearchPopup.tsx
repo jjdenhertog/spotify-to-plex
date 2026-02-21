@@ -6,13 +6,12 @@ import type { PlexTrack } from "@spotify-to-plex/plex-music-search/types/PlexTra
 type Props = {
     readonly trackTitle: string;
     readonly artistNames: string[];
-    readonly albumName?: string;
     readonly onClose: () => void;
     readonly onSelect: (track: PlexTrack) => void;
 }
 
 export default function ManualSearchPopup(props: Props) {
-    const { trackTitle, artistNames, albumName, onClose, onSelect } = props;
+    const { trackTitle, artistNames, onClose, onSelect } = props;
 
     const [searchQuery, setSearchQuery] = useState<string>(`${artistNames[0] || ''} ${trackTitle}`.trim());
     const [loading, setLoading] = useState<boolean>(false);
@@ -79,7 +78,6 @@ export default function ManualSearchPopup(props: Props) {
                 <Typography variant="h6" sx={{ mb: 1 }}>Manual Track Search</Typography>
                 <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
                     Search for <strong>{trackTitle}</strong> by {artistNames.join(', ')}
-                    {albumName && <> from <strong>{albumName}</strong></>}
                 </Typography>
             </Box>
 
@@ -101,20 +99,6 @@ export default function ManualSearchPopup(props: Props) {
                     {loading ? <CircularProgress size={24} /> : 'Search'}
                 </Button>
             </Box>
-
-            {albumName && (
-                <Button
-                    variant="outlined"
-                    size="small"
-                    onClick={() => {
-                        setSearchQuery(albumName);
-                        setTimeout(() => onSearch(), 0);
-                    }}
-                    disabled={loading}
-                >
-                    Search by Album
-                </Button>
-            )}
 
             {error && (
                 <Typography variant="body2" color="error">
