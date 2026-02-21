@@ -10,11 +10,9 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
     .post(
         async (req, res) => {
             try {
-                const { query, trackTitle, albumTitle } = req.body;
+                const { query } = req.body;
 
-                const searchQuery = (query || trackTitle || albumTitle || '').trim();
-
-                if (!searchQuery)
+                if (!query || !query.trim())
                     return res.status(400).json({ message: "Please provide a search query" });
 
                 const settings = await getSettings();
@@ -23,24 +21,11 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                     return res.status(400).json({ message: "No Plex connection found" });
 
                 // Search the Plex library using hub search
-                const results = await hubSearch(settings.uri, settings.token, searchQuery, 50);
+                const results = await hubSearch(settings.uri, settings.token, query, 50);
 
                 // Filter to only include tracks and convert to PlexTrack format
-                const normalizedQuery = searchQuery.toLowerCase();
-                const normalizedAlbumTitle = (albumTitle || '').toLowerCase();
-
                 const trackResults: PlexTrack[] = results
                     .filter(result => result.type === 'track')
-                    .filter((result: any) => {
-                        const title = (result.title || '').toLowerCase();
-                        const album = (result.album?.title || '').toLowerCase();
-
-                        const titleMatch = normalizedQuery ? title.includes(normalizedQuery) : false;
-                        const albumMatch = normalizedQuery ? album.includes(normalizedQuery) : false;
-                        const explicitAlbumMatch = normalizedAlbumTitle ? album.includes(normalizedAlbumTitle) : false;
-
-                        return titleMatch || albumMatch || explicitAlbumMatch;
-                    })
                     .map((result: any) => ({
                         guid: result.guid || '',
                         id: result.id || result.ratingKey || '',
