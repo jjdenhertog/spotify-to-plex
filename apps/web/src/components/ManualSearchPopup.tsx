@@ -14,7 +14,7 @@ type Props = {
 export default function ManualSearchPopup(props: Props) {
     const { trackTitle, artistNames, albumName, onClose, onSelect } = props;
 
-    const [searchQuery, setSearchQuery] = useState<string>(`${artistNames[0] || ''} ${trackTitle}`.trim());
+    const [searchQuery, setSearchQuery] = useState<string>(trackTitle.trim());
     const [loading, setLoading] = useState<boolean>(false);
     const [results, setResults] = useState<PlexTrack[]>([]);
     const [selectedIdx, setSelectedIdx] = useState<number>(0);
@@ -38,7 +38,9 @@ export default function ManualSearchPopup(props: Props) {
 
         try {
             const response = await axios.post<PlexTrack[]>('/api/plex/manual-search', {
-                query: searchQuery
+                query: searchQuery,
+                trackTitle,
+                albumTitle: albumName
             });
 
             if (response.data && response.data.length > 0) {
@@ -101,20 +103,6 @@ export default function ManualSearchPopup(props: Props) {
                     {loading ? <CircularProgress size={24} /> : 'Search'}
                 </Button>
             </Box>
-
-            {albumName && (
-                <Button
-                    variant="outlined"
-                    size="small"
-                    onClick={() => {
-                        setSearchQuery(albumName);
-                        setTimeout(() => onSearch(), 0);
-                    }}
-                    disabled={loading}
-                >
-                    Search by Album
-                </Button>
-            )}
 
             {error && (
                 <Typography variant="body2" color="error">
