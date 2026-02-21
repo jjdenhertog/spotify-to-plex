@@ -234,6 +234,34 @@ export default function PlexPlaylist(props: PlexPlaylistProps) {
         }
     }, [trackSelections])
 
+    ///////////////////////////////////
+    // Handle manual track selection
+    ///////////////////////////////////
+    const onManualTrackSelect = useCallback((spotifyTrack: GetSpotifyPlaylist['tracks'][0] | GetSpotifyAlbum['tracks'][0], plexTrack: SearchResponse['result'][0]) => {
+        // Create a synthetic search response with the manually selected track
+        const artist = spotifyTrack.artists[0];
+        const searchResponse: SearchResponse = {
+            id: spotifyTrack.id,
+            title: spotifyTrack.title,
+            artist: artist,
+            result: [plexTrack]
+        };
+
+        // Update tracks with the manual selection
+        setTracks(prevTracks =>
+            prevTracks.map(track =>
+                track.id === spotifyTrack.id ? searchResponse : track
+            )
+        );
+
+        // Set the selection to index 0 (the only result)
+        if (artist) {
+            onSetSongIndex(artist, spotifyTrack.title, 0);
+        }
+
+        enqueueSnackbar(`${spotifyTrack.title} manually matched`, { variant: 'success' });
+    }, [onSetSongIndex]);
+
     ///////////////////////////////////////////////
     // Modify Playlist name
     ///////////////////////////////////////////////
@@ -482,7 +510,11 @@ export default function PlexPlaylist(props: PlexPlaylistProps) {
                     const songIdx = trackSelectIdx ? trackSelectIdx.idx : 0;
                     const loading = loadingTracks && !(tracksLoaded.some(item => item === track.id))
 
-                    return <PlexTrack key={`${playlist.id}-plex-${track.title}-${track.id}}`} loading={loading} track={track} setSongIdx={onSetSongIndex} songIdx={songIdx} data={data} />
+                    const handleManualSelect = (plexTrack: SearchResponse['result'][0]) => {
+                        onManualTrackSelect(track, plexTrack);
+                    }
+
+                    return <PlexTrack key={`${playlist.id}-plex-${track.title}-${track.id}}`} loading={loading} track={track} setSongIdx={onSetSongIndex} songIdx={songIdx} data={data} onManualSelect={handleManualSelect} />
                 })}
             </Stack>
         </Paper>

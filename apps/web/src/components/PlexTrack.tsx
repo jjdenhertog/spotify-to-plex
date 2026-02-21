@@ -1,9 +1,10 @@
 /* eslint-disable custom/jsx-single-line-props */
 import type { SearchResponse } from "@spotify-to-plex/plex-music-search/types/SearchResponse";
-import type { PlexTrack } from "@spotify-to-plex/plex-music-search/types/PlexTrack";
-import { Check, LibraryMusicSharp, Warning } from "@mui/icons-material";
-import { Box, CircularProgress, Divider, FormControlLabel, IconButton, ListItem, Paper, Radio, RadioGroup, Tooltip, Typography } from "@mui/material";
+import type { PlexTrack as PlexTrackType } from "@spotify-to-plex/plex-music-search/types/PlexTrack";
+import { Check, LibraryMusicSharp, Warning, Edit } from "@mui/icons-material";
+import { Box, CircularProgress, Divider, FormControlLabel, IconButton, ListItem, Modal, Paper, Radio, RadioGroup, Tooltip, Typography } from "@mui/material";
 import { ChangeEvent, useCallback, useMemo, useState } from "react";
+import ManualSearchPopup from "./ManualSearchPopup";
 type Props = {
     readonly loading: boolean
     readonly track: {
@@ -15,17 +16,18 @@ type Props = {
     readonly data?: SearchResponse
     readonly songIdx: number
     readonly setSongIdx?: (artist: string, name: string, idx: number) => void
+    readonly onManualSelect?: (track: PlexTrackType) => void
 }
 export default function PlexTrack(props: Props) {
 
-    const { loading, track, data, songIdx, setSongIdx } = props;
+    const { loading, track, data, songIdx, setSongIdx, onManualSelect } = props;
 
     const songs = useMemo(() => {
 
         if (!data)
             return []
 
-        return data.result.map((item: PlexTrack) => {
+        return data.result.map((item: PlexTrackType) => {
             const thumbUrl = item.image && item.image.indexOf('rovicorp') === -1 ? `/api/plex/image?path=${item.image}` : '';
             const albumThumbUrl = item.album?.image && item.image.indexOf('rovicorp') === -1 ? `/api/plex/image?path=${item.album.image}` : '';
 
@@ -56,6 +58,23 @@ export default function PlexTrack(props: Props) {
 
 
     const thumbSize = window.innerWidth < 400 ? 50 : 80;
+
+    ////////////////////////////////////
+    // Handle manual search
+    ////////////////////////////////////
+    const [showManualSearch, setShowManualSearch] = useState(false);
+    const onShowManualSearchClick = useCallback(() => {
+        setShowManualSearch(true);
+    }, []);
+    const onCloseManualSearch = useCallback(() => {
+        setShowManualSearch(false);
+    }, []);
+    const onManualSelectTrack = useCallback((track: PlexTrackType) => {
+        if (onManualSelect) {
+            onManualSelect(track);
+        }
+        setShowManualSearch(false);
+    }, [onManualSelect]);
 
     ////////////////////////////////////
     // Handle multiple song results
@@ -108,9 +127,14 @@ export default function PlexTrack(props: Props) {
                         </>
                     }
                     {!!data && data.result.length === 0 &&
-                        <Tooltip title="Song not found">
-                            <IconButton size="small" color="warning" onClick={onNotPerfectMatchClick}><Warning sx={{ fontSize: '1em' }} /></IconButton>
-                        </Tooltip>
+                        <>
+                            <Tooltip title="Manual match">
+                                <IconButton size="small" color="warning" onClick={onShowManualSearchClick}><Edit sx={{ fontSize: '1em' }} /></IconButton>
+                            </Tooltip>
+                            <Tooltip title="Song not found">
+                                <IconButton size="small" color="warning" onClick={onNotPerfectMatchClick}><Warning sx={{ fontSize: '1em' }} /></IconButton>
+                            </Tooltip>
+                        </>
                     }
                 </>}
             </Box>
@@ -129,7 +153,7 @@ export default function PlexTrack(props: Props) {
                             py: 1
                         }}
                     >
-                        
+
                         <FormControlLabel
                             value={`${index}`}
                             control={<Radio checked={songIdx === index} />}
@@ -159,5 +183,30 @@ export default function PlexTrack(props: Props) {
             </RadioGroup>
         </Box>}
         <Divider sx={{ mt: 1, mb: 1 }} />
+
+        {!!showManualSearch && (
+            <Modal open onClose={onCloseManualSearch}>
+                <Box sx={{
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    width: '90%',
+                    maxWidth: 600,
+                    maxHeight: '90vh',
+                    overflow: 'auto',
+                    bgcolor: 'background.paper',
+                    borderRadius: 1,
+                    boxShadow: 24
+                }}>
+                    <ManualSearchPopup
+                        trackTitle={trackTitle}
+                        artistNames={artistNames}
+                        onClose={onCloseManualSearch}
+                        onSelect={onManualSelectTrack}
+                    />
+                </Box>
+            </Modal>
+        )}
     </Box>)
 }
