@@ -114,6 +114,9 @@ export default function PlexTrack(props: Props) {
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                 {!!loading && <CircularProgress size={20} />}
                 {!loading && <>
+                    <Tooltip title="Manual match">
+                        <IconButton size="small" color="warning" onClick={onShowManualSearchClick}><Edit sx={{ fontSize: '1em' }} /></IconButton>
+                    </Tooltip>
                     {!!data && data.result.length > 0 &&
                         <>
                             {!!data && data.result.length > 1 &&
@@ -128,9 +131,6 @@ export default function PlexTrack(props: Props) {
                     }
                     {!!data && data.result.length === 0 &&
                         <>
-                            <Tooltip title="Manual match">
-                                <IconButton size="small" color="warning" onClick={onShowManualSearchClick}><Edit sx={{ fontSize: '1em' }} /></IconButton>
-                            </Tooltip>
                             <Tooltip title="Song not found">
                                 <IconButton size="small" color="warning" onClick={onNotPerfectMatchClick}><Warning sx={{ fontSize: '1em' }} /></IconButton>
                             </Tooltip>
