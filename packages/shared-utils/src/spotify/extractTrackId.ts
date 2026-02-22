@@ -32,7 +32,7 @@ export function isLocalTrack(trackId: string | undefined | null): boolean {
  * Format: spotify:local:artist:album:track:duration
  */
 export function extractLocalTrackArtist(trackId: string | undefined | null): string | null {
-    if (!isLocalTrack(trackId)) return null;
+    if (!trackId || !trackId.startsWith('spotify:local:')) return null;
 
     const parts = trackId.split(':');
     // parts[0] = 'spotify', parts[1] = 'local', parts[2] = artist
@@ -47,7 +47,7 @@ export function extractLocalTrackArtist(trackId: string | undefined | null): str
  * Format: spotify:local:artist:album:track:duration
  */
 export function extractLocalTrackAlbum(trackId: string | undefined | null): string | null {
-    if (!isLocalTrack(trackId)) return null;
+    if (!trackId || !trackId.startsWith('spotify:local:')) return null;
 
     const parts = trackId.split(':');
     // parts[0] = 'spotify', parts[1] = 'local', parts[2] = artist, parts[3] = album
@@ -62,7 +62,7 @@ export function extractLocalTrackAlbum(trackId: string | undefined | null): stri
  * Format: spotify:local:artist:album:track:duration
  */
 export function extractLocalTrackTitle(trackId: string | undefined | null): string | null {
-    if (!isLocalTrack(trackId)) return null;
+    if (!trackId || !trackId.startsWith('spotify:local:')) return null;
 
     const parts = trackId.split(':');
     // parts[0] = 'spotify', parts[1] = 'local', parts[2] = artist, parts[3] = album, parts[4] = track
