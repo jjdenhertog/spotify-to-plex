@@ -22,15 +22,19 @@ export async function getSpotifyPlaylist(api: SpotifyApi, id: string, simplified
                 if (!item.track)
                     return null;
 
-                // Local files and unavailable tracks have null IDs - log for visibility
+                // Local files and unavailable tracks have null IDs - use URI instead
                 if (!item.track.id) {
                     console.log(`⚠️  Track without Spotify ID (local file or unavailable): "${item.track.name}" by ${item.track.artists?.[0]?.name || 'Unknown'}`);
+                    // Use URI as fallback for local/unavailable tracks
+                    if (!item.track.uri) {
+                        return null; // Skip if we have neither ID nor URI
+                    }
                 }
 
                 const artists = item.track.artists?.flatMap(artist => artist.name.split(',').map(name => name.trim()));
 
                 return {
-                    id: item.track.id,
+                    id: item.track.id || item.track.uri, // Use URI as fallback
                     title: item.track.name,
                     artist: item.track.artists?.[0]?.name || 'Unknown',
                     album: item.track.album?.name || 'Unknown',
@@ -69,13 +73,17 @@ export async function getSpotifyPlaylist(api: SpotifyApi, id: string, simplified
                 .map(item => {
                     if (!item.track) return null;
 
-                    // Local files and unavailable tracks have null IDs - log for visibility
+                    // Local files and unavailable tracks have null IDs - use URI instead
                     if (!item.track.id) {
                         console.log(`⚠️  Track without Spotify ID (local file or unavailable): "${item.track.name}" by ${item.track.artists?.[0]?.name || 'Unknown'}`);
+                        // Use URI as fallback for local/unavailable tracks
+                        if (!item.track.uri) {
+                            return null; // Skip if we have neither ID nor URI
+                        }
                     }
 
                     return {
-                        id: item.track.id,
+                        id: item.track.id || item.track.uri, // Use URI as fallback
                         title: item.track.name,
                         artist: item.track.artists?.[0]?.name || 'Unknown',
                         album: item.track.album?.name || 'Unknown',
