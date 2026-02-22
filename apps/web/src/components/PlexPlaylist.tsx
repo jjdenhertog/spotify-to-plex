@@ -259,6 +259,16 @@ export default function PlexPlaylist(props: PlexPlaylistProps) {
             onSetSongIndex(artist, spotifyTrack.title, 0);
         }
 
+        // Cache the manual selection so it persists across runs
+        axios.post('/api/plex/cache-manual-match', {
+            spotifyId: spotifyTrack.id,
+            title: spotifyTrack.title,
+            artist: artist,
+            plexTrack: plexTrack
+        }).catch(error => {
+            console.error('Failed to cache manual match:', error);
+        });
+
         enqueueSnackbar(`${spotifyTrack.title} manually matched`, { variant: 'success' });
     }, [onSetSongIndex]);
 
