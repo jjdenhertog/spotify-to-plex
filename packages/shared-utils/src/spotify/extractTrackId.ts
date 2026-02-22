@@ -36,7 +36,7 @@ export function extractLocalTrackArtist(trackId: string | undefined | null): str
 
     const parts = trackId.split(':');
     // parts[0] = 'spotify', parts[1] = 'local', parts[2] = artist
-    if (parts.length >= 3) {
+    if (parts.length >= 3 && parts[2]) {
         return decodeURIComponent(parts[2]);
     }
     return null;
@@ -51,7 +51,7 @@ export function extractLocalTrackAlbum(trackId: string | undefined | null): stri
 
     const parts = trackId.split(':');
     // parts[0] = 'spotify', parts[1] = 'local', parts[2] = artist, parts[3] = album
-    if (parts.length >= 4) {
+    if (parts.length >= 4 && parts[3]) {
         return decodeURIComponent(parts[3]);
     }
     return null;
@@ -66,7 +66,7 @@ export function extractLocalTrackTitle(trackId: string | undefined | null): stri
 
     const parts = trackId.split(':');
     // parts[0] = 'spotify', parts[1] = 'local', parts[2] = artist, parts[3] = album, parts[4] = track
-    if (parts.length >= 5) {
+    if (parts.length >= 5 && parts[4]) {
         return decodeURIComponent(parts[4]);
     }
     return null;
