@@ -23,6 +23,7 @@ export type PlexPlaylistProps = {
 type TrackSelection = {
     artist: string
     title: string
+    trackId: string
     idx: number
 }
 
@@ -219,18 +220,18 @@ export default function PlexPlaylist(props: PlexPlaylistProps) {
     ///////////////////////////////////
     // Set selected track index
     ///////////////////////////////////
-    const onSetSongIndex = useCallback((artist: string, track: string, idx: number) => {
-        console.log('onSetSongIndex', artist, track, idx)
-        if (trackSelections.some(item => item.artist === artist && item.title === track)) {
+    const onSetSongIndex = useCallback((artist: string, track: string, trackId: string, idx: number) => {
+        console.log('onSetSongIndex', artist, track, trackId, idx)
+        if (trackSelections.some(item => item.trackId === trackId)) {
 
             setTrackSelections(items => items.map(item => {
-                if (item.artist === artist && item.title === track)
+                if (item.trackId === trackId)
                     return { ...item, idx }
 
                 return item;
             }))
         } else {
-            setTrackSelections(prev => [...prev, { artist, title: track, idx }])
+            setTrackSelections(prev => [...prev, { artist, title: track, trackId, idx }])
         }
     }, [trackSelections])
 
@@ -256,7 +257,7 @@ export default function PlexPlaylist(props: PlexPlaylistProps) {
 
         // Set the selection to index 0 (the only result)
         if (artist) {
-            onSetSongIndex(artist, spotifyTrack.title, 0);
+            onSetSongIndex(artist, spotifyTrack.title, spotifyTrack.id, 0);
         }
 
         // Cache the manual selection so it persists across runs
@@ -516,7 +517,7 @@ export default function PlexPlaylist(props: PlexPlaylistProps) {
                         return track.artists.indexOf(item.artist) > -1 && track.title === item.title
 
                     })
-                    const trackSelectIdx = trackSelections.find(item => track.artists.indexOf(item.artist) > -1 && item.title === track.title)
+                    const trackSelectIdx = trackSelections.find(item => item.trackId === track.id)
                     const songIdx = trackSelectIdx ? trackSelectIdx.idx : 0;
                     const loading = loadingTracks && !(tracksLoaded.some(item => item === track.id))
 

@@ -15,7 +15,7 @@ type Props = {
     }
     readonly data?: SearchResponse
     readonly songIdx: number
-    readonly setSongIdx?: (artist: string, name: string, idx: number) => void
+    readonly setSongIdx?: (artist: string, name: string, trackId: string, idx: number) => void
     readonly onManualSelect?: (track: PlexTrackType) => void
 }
 export default function PlexTrack(props: Props) {
@@ -88,9 +88,9 @@ export default function PlexTrack(props: Props) {
 
         const songIdx = Number(e.currentTarget.value)
         if (setSongIdx && artistNames[0])
-            setSongIdx(artistNames[0], trackTitle, songIdx)
+            setSongIdx(artistNames[0], trackTitle, id, songIdx)
 
-    }, [artistNames, setSongIdx, trackTitle])
+    }, [artistNames, setSongIdx, trackTitle, id])
 
     ////////////////////////////////////
     // Handle not perfect songs
