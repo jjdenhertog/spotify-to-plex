@@ -105,10 +105,28 @@ export default function PlexTrack(props: Props) {
 
     return (<Box>
         <Paper elevation={0} sx={{ p: 1, mb: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 1, bgcolor: 'action.hover' }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                <Box>
-                    <Typography variant="body1">{trackTitle}</Typography>
-                    <Typography variant="caption">{artistNames.join(', ')}</Typography>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flex: 1, minWidth: 0 }}>
+                <Box sx={{ flex: 1, minWidth: 0 }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mb: 0.5, flexWrap: 'wrap' }}>
+                        <img src="/img/spotify.png" alt="Spotify" style={{ width: 16, height: 16 }} />
+                        <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                            {trackTitle} - <strong>{artistNames.join(', ')}</strong>
+                        </Typography>
+                        <Typography variant="caption" sx={{ color: 'text.secondary', ml: 'auto' }}>
+                            (From Spotify)
+                        </Typography>
+                    </Box>
+                    {!!songs[songIdx] && (
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, flexWrap: 'wrap' }}>
+                            <img src="/img/plex.png" alt="Plex" style={{ width: 16, height: 16 }} />
+                            <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                                {songs[songIdx].trackTitle} - <strong>{songs[songIdx].artistName}</strong>
+                            </Typography>
+                            <Typography variant="caption" sx={{ color: 'text.secondary', ml: 'auto' }}>
+                                (Matched in Plex)
+                            </Typography>
+                        </Box>
+                    )}
                 </Box>
             </Box>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -171,9 +189,13 @@ export default function PlexTrack(props: Props) {
                                         />}
                                 </Box>
                                 <Box>
-                                    <Typography display="block" variant="body1">{song.trackTitle}</Typography>
-                                    <Typography display="block" variant="body2">{song.artistName}</Typography>
-                                    {!!song.album && <Typography display="block" variant="body2">{song.album.title}</Typography>}
+                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mb: 0.5 }}>
+                                        <img src="/img/plex.png" alt="Plex" style={{ width: 14, height: 14 }} />
+                                        <Typography display="block" variant="body1">
+                                            {song.trackTitle} - <strong>{song.artistName}</strong>
+                                        </Typography>
+                                    </Box>
+                                    {!!song.album && <Typography display="block" variant="caption">{song.album.title}</Typography>}
                                 </Box>
                             </Box>
                             }
