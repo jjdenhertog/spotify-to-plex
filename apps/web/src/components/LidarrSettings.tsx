@@ -1,8 +1,8 @@
 import { errorBoundary } from "@/helpers/errors/errorBoundary";
-import { Alert, Box, Button, CircularProgress, FormControlLabel, Switch, TextField, Typography } from "@mui/material";
+import { Alert, Box, Button, CircularProgress, FormControl, FormControlLabel, FormHelperText, InputLabel, MenuItem, Select, Switch, TextField, Typography } from "@mui/material";
 import axios from "axios";
 import { enqueueSnackbar } from "notistack";
-import { ChangeEvent, useCallback, useEffect, useState } from "react";
+import { ChangeEvent, SelectChangeEvent, useCallback, useEffect, useState } from "react";
 
 type LidarrSettings = {
     enabled: boolean;
@@ -13,12 +13,21 @@ type LidarrSettings = {
     auto_sync: boolean;
 };
 
+type LidarrProfile = {
+    id: number;
+    name: string;
+};
+
 export default function LidarrSettings() {
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [testing, setTesting] = useState(false);
     const [testResult, setTestResult] = useState<{ success: boolean; message: string } | null>(null);
     const [canUseLidarr, setCanUseLidarr] = useState(false);
+    const [qualityProfiles, setQualityProfiles] = useState<LidarrProfile[]>([]);
+    const [metadataProfiles, setMetadataProfiles] = useState<LidarrProfile[]>([]);
+    const [profilesLoading, setProfilesLoading] = useState(false);
+    const [profilesError, setProfilesError] = useState<string | null>(null);
     const [settings, setSettings] = useState<LidarrSettings>({
         enabled: false,
         url: '',
@@ -28,13 +37,34 @@ export default function LidarrSettings() {
         auto_sync: false,
     });
 
+    const fetchProfiles = useCallback(async (url: string) => {
+        setProfilesLoading(true);
+        setProfilesError(null);
+        await errorBoundary(async () => {
+            const result = await axios.post<{ qualityProfiles?: LidarrProfile[]; metadataProfiles?: LidarrProfile[]; error?: string }>(
+                '/api/lidarr/profiles',
+                { url }
+            );
+
+            if (result.data.error) {
+                setProfilesError(result.data.error);
+            } else {
+                setQualityProfiles(result.data.qualityProfiles ?? []);
+                setMetadataProfiles(result.data.metadataProfiles ?? []);
+            }
+
+            setProfilesLoading(false);
+        }, () => {
+            setProfilesError('Failed to fetch profiles from Lidarr');
+            setProfilesLoading(false);
+        });
+    }, []);
+
     useEffect(() => {
         errorBoundary(async () => {
-            // Check if LIDARR_API_KEY is configured
             const validResult = await axios.get<{ ok: boolean }>('/api/lidarr/valid');
             setCanUseLidarr(validResult.data.ok);
 
-            // Load settings
             const result = await axios.get<LidarrSettings>('/api/lidarr/settings');
             setSettings(result.data);
             setLoading(false);
@@ -42,6 +72,22 @@ export default function LidarrSettings() {
             setLoading(false);
         });
     }, []);
+
+    useEffect(() => {
+        if (!settings.url) {
+            setQualityProfiles([]);
+            setMetadataProfiles([]);
+            setProfilesError(null);
+
+            return;
+        }
+
+        const timeout = setTimeout(() => {
+            fetchProfiles(settings.url);
+        }, 600);
+
+        return () => clearTimeout(timeout);
+    }, [settings.url, fetchProfiles]);
 
     const handleChange = useCallback((field: keyof LidarrSettings, value: any) => {
         setSettings(prev => ({ ...prev, [field]: value }));
@@ -78,7 +124,6 @@ export default function LidarrSettings() {
         });
     }, [settings.url]);
 
-
     const handleEnabledChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
         handleChange('enabled', e.target.checked);
     }, [handleChange]);
@@ -91,12 +136,12 @@ export default function LidarrSettings() {
         handleChange('root_folder_path', e.target.value);
     }, [handleChange]);
 
-    const handleQualityProfileIdChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-        handleChange('quality_profile_id', parseInt(e.target.value, 10));
+    const handleQualityProfileChange = useCallback((e: SelectChangeEvent<number>) => {
+        handleChange('quality_profile_id', Number(e.target.value));
     }, [handleChange]);
 
-    const handleMetadataProfileIdChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-        handleChange('metadata_profile_id', parseInt(e.target.value, 10));
+    const handleMetadataProfileChange = useCallback((e: SelectChangeEvent<number>) => {
+        handleChange('metadata_profile_id', Number(e.target.value));
     }, [handleChange]);
 
     const handleAutoSyncChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
@@ -119,6 +164,14 @@ export default function LidarrSettings() {
         );
     }
 
+    const profilesDisabled = profilesLoading || !settings.url;
+    const profileHelperText = profilesLoading
+        ? 'Loading profiles...'
+        : profilesError
+            ? `Could not load profiles: ${profilesError}`
+            : !settings.url
+                ? 'Enter a Lidarr URL to load profiles'
+                : null;
 
     return (
         <Box>
@@ -159,8 +212,39 @@ export default function LidarrSettings() {
                 />
 
                 <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
-                    <TextField label="Quality Profile ID" type="number" value={settings.quality_profile_id} onChange={handleQualityProfileIdChange} sx={{ flex: 1 }} helperText="Usually 1 for default profile" />
-                    <TextField label="Metadata Profile ID" type="number" value={settings.metadata_profile_id} onChange={handleMetadataProfileIdChange} sx={{ flex: 1 }} helperText="Usually 1 for default profile" />
+                    <FormControl sx={{ flex: 1 }} disabled={profilesDisabled}>
+                        <InputLabel id="quality-profile-label">Quality Profile</InputLabel>
+                        <Select
+                            labelId="quality-profile-label"
+                            value={settings.quality_profile_id}
+                            label="Quality Profile"
+                            onChange={handleQualityProfileChange}
+                        >
+                            {qualityProfiles.map(profile => (
+                                <MenuItem key={profile.id} value={profile.id}>{profile.name}</MenuItem>
+                            ))}
+                        </Select>
+                        {!!profileHelperText &&
+                            <FormHelperText error={!!profilesError}>{profileHelperText}</FormHelperText>
+                        }
+                    </FormControl>
+
+                    <FormControl sx={{ flex: 1 }} disabled={profilesDisabled}>
+                        <InputLabel id="metadata-profile-label">Metadata Profile</InputLabel>
+                        <Select
+                            labelId="metadata-profile-label"
+                            value={settings.metadata_profile_id}
+                            label="Metadata Profile"
+                            onChange={handleMetadataProfileChange}
+                        >
+                            {metadataProfiles.map(profile => (
+                                <MenuItem key={profile.id} value={profile.id}>{profile.name}</MenuItem>
+                            ))}
+                        </Select>
+                        {!!profileHelperText &&
+                            <FormHelperText error={!!profilesError}>{profileHelperText}</FormHelperText>
+                        }
+                    </FormControl>
                 </Box>
 
                 <FormControlLabel control={<Switch checked={settings.auto_sync} onChange={handleAutoSyncChange} />} label="Enable Automatic Synchronization" sx={{ mb: 2 }} />
