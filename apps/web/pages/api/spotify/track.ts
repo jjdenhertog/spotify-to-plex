@@ -1,5 +1,6 @@
 import { generateError } from '@/helpers/errors/generateError';
 import { Track } from '@spotify-to-plex/shared-types/spotify/Track';
+import { extractTrackId } from '@spotify-to-plex/shared-utils/spotify/extractTrackId';
 import { SpotifyApi } from '@spotify/web-api-ts-sdk';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createRouter } from 'next-connect';
@@ -33,7 +34,11 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 return res.status(400).json({ error: "Invalid Spotify URI, expecting spotify:track:id" })
 
             const api = SpotifyApi.withClientCredentials(process.env.SPOTIFY_API_CLIENT_ID, process.env.SPOTIFY_API_CLIENT_SECRET);
-            const trackId = id.slice(Math.max(0, id.indexOf('spotify:track:') + 'spotify:track:'.length)).trim();
+            const trackId = extractTrackId(id);
+
+            if (!trackId)
+                return res.status(400).json({ error: "Invalid track ID" })
+
             const data = await api.tracks.get(trackId)
             if (!data)
                 return res.status(400).json({ error: "No data found, double check your Spotify Track URI" })
