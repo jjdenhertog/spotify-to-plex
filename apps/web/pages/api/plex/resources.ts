@@ -1,6 +1,6 @@
 import { generateError } from '@/helpers/errors/generateError';
 import { getSettings } from '@spotify-to-plex/plex-config/functions/getSettings';
-import axios from 'axios';
+import { plexTvClient } from '@spotify-to-plex/http-client/plexTvClient';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createRouter } from 'next-connect';
 
@@ -26,7 +26,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 if (!settings?.token)
                     return res.status(400).json({ message: "No Plex connection found" });
 
-                const result = await axios.get(`https://plex.tv/api/v2/resources`, {
+                const result = await plexTvClient.get(`https://plex.tv/api/v2/resources`, {
                     params: {
                         "X-Plex-Product": "Spotify to Plex",
                         "X-Plex-Client-Identifier": process.env.PLEX_APP_ID,
@@ -59,7 +59,9 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
 
 
                 return res.status(200).json(servers)
-            } catch (_e) {
+            } catch (error) {
+                console.error('Error fetching Plex resources:', error);
+
                 return res.status(400).json({ message: "No resources found" })
             }
         })

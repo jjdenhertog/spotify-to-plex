@@ -2,7 +2,7 @@ import { generateError } from '@/helpers/errors/generateError';
 import { getSettings } from '@spotify-to-plex/plex-config/functions/getSettings';
 import { updateSettings } from '@spotify-to-plex/plex-config/functions/updateSettings';
 import { GetPlexPinResponse } from '@spotify-to-plex/shared-types/plex/GetPlexPinResponse';
-import axios from 'axios';
+import { plexTvClient } from '@spotify-to-plex/http-client/plexTvClient';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createRouter } from 'next-connect';
 
@@ -15,7 +15,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 if (!settings.pin_id || !settings.pin_code)
                     return res.status(400).json({ error: 'No authentication pin found' });
 
-                const result = await axios.get<GetPlexPinResponse>(`https://plex.tv/api/v2/pins/${settings.pin_id}`, {
+                const result = await plexTvClient.get<GetPlexPinResponse>(`https://plex.tv/api/v2/pins/${settings.pin_id}`, {
                     params: {
                         code: settings.pin_code,
                         "X-Plex-Client-Identifier": process.env.PLEX_APP_ID,
