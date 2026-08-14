@@ -1,8 +1,8 @@
 import { errorBoundary } from "@/helpers/errors/errorBoundary";
-import { Alert, Box, Button, CircularProgress, FormControl, FormControlLabel, FormHelperText, InputLabel, MenuItem, Select, Switch, TextField, Typography } from "@mui/material";
+import { Alert, Box, Button, CircularProgress, FormControl, FormControlLabel, FormHelperText, InputLabel, MenuItem, Select, SelectChangeEvent, Switch, TextField, Typography } from "@mui/material";
 import axios from "axios";
 import { enqueueSnackbar } from "notistack";
-import { ChangeEvent, SelectChangeEvent, useCallback, useEffect, useState } from "react";
+import { ChangeEvent, useCallback, useEffect, useState } from "react";
 
 type LidarrSettings = {
     enabled: boolean;
