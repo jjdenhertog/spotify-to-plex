@@ -65,8 +65,8 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
             if (!savedItem)
                 return res.status(400).json({ error: `Item not found` })
 
-            // Login, prefer to use signed in users token.
-            const accessToken = await getAccessToken()
+            // Login, prefer to use the token of the user who added this item.
+            const accessToken = await getAccessToken(savedItem.user)
             let api = SpotifyApi.withClientCredentials(process.env.SPOTIFY_API_CLIENT_ID, process.env.SPOTIFY_API_CLIENT_SECRET);
             if (accessToken)
                 api = SpotifyApi.withAccessToken(process.env.SPOTIFY_API_CLIENT_ID, accessToken)
