@@ -41,6 +41,12 @@ export async function getSpotifyData(api: SpotifyApi, id: string, simplified: bo
     // Playlists
     ////////////////////////////////////////
 
+    // Anything else Spotify-flavoured (artist, track, show, ...) would be sliced
+    // into a mangled id below and then reported as a failed curated playlist.
+    const spotifyType = id.startsWith('spotify:') ? id.split(':')[1] : undefined;
+    if (spotifyType && spotifyType != 'playlist')
+        throw new Error(`This is a Spotify ${spotifyType} link. Only playlists and albums can be imported.`);
+
     const playlistId = id.slice(Math.max(0, id.indexOf('spotify:playlist:') + 'spotify:playlist:'.length)).trim();
     const playlist = await getSpotifyPlaylist(api, playlistId, simplified)
     
@@ -59,8 +65,18 @@ export async function getSpotifyData(api: SpotifyApi, id: string, simplified: bo
             include_album_data: false
         });
 
-    } catch (_e) {
-        throw new Error(`This was a Spotify curated playlist, and SpotifyScraper is not available. You might need to restart Spotify-to-Plex to fix this.`)
+    } catch (error) {
+        // Reporting every failure as "not available, restart me" hid the real
+        // cause (see issue #124) - say what actually went wrong instead.
+        let detail: string;
+        if (axios.isAxiosError(error) && error.response)
+            detail = `SpotifyScraper returned ${error.response.status}: ${JSON.stringify(error.response.data)}`;
+        else if (axios.isAxiosError(error))
+            detail = `SpotifyScraper at ${scraperUrl} is unreachable (${error.code || error.message}). It might still be starting up.`;
+        else
+            detail = error instanceof Error ? error.message : String(error);
+
+        throw new Error(`This was a Spotify curated playlist and scraping it failed. ${detail}`)
     }
 
     if (!response.data) {
@@ -72,13 +88,15 @@ export async function getSpotifyData(api: SpotifyApi, id: string, simplified: bo
     const images = scraperData.images || [];
     const [image] = images
         .filter((image) => {
-            if (image.width < 100)
-                return false;
+            // Keep images without dimensions: SpotifyScraper stopped reporting
+            // them, and dropping those would leave every playlist coverless.
+            if (typeof image.width != 'number')
+                return true;
 
-            return true;
+            return image.width >= 100;
         })
         .sort((a, b) => {
-            return a.width - b.width;
+            return (a.width ?? 0) - (b.width ?? 0);
         });
 
     const tracks = scraperData.tracks?.map((track) => {
