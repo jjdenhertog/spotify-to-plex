@@ -3,7 +3,10 @@ Flask==2.3.2
 flask-cors==4.0.0
 
 # Spotify scraping library
-git+https://github.com/AliAkhtari78/SpotifyScraper.git
+# Pinned: installing from git HEAD meant every rebuild could pull a breaking
+# release. 3.9.x renamed the playlist/track methods, which silently broke
+# curated-playlist imports on rebuild. Bump this deliberately, never implicitly.
+spotifyscraper==3.9.2
 
 # HTTP client and utilities
 requests==2.31.0

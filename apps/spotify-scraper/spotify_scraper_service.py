@@ -28,6 +28,28 @@ class SpotifyScraperService:
         except Exception:
             return False
     
+    @staticmethod
+    def _normalize_playlist(data: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Map SpotifyScraper's response onto the shape the web app expects.
+
+        SpotifyScraper 3.9.x renamed get_playlist_info() to get_playlist(),
+        returns a Playlist object instead of a dict, nests every entry under a
+        "track" key and renamed track_count to total_tracks. Normalising here
+        keeps the HTTP contract stable so the web app stays unaware of it.
+        """
+        tracks = []
+        for item in data.get('tracks') or []:
+            track = item.get('track') if isinstance(item, dict) and 'track' in item else item
+            if track:
+                tracks.append(track)
+
+        data['tracks'] = tracks
+        if not data.get('track_count'):
+            data['track_count'] = data.get('total_tracks') or len(tracks)
+
+        return data
+
     def scrape_playlist(self, url: str, include_album_data: bool = True) -> Dict[str, Any]:
         """
         Scrape Spotify playlist with optional complete album data
@@ -42,11 +64,14 @@ class SpotifyScraperService:
         """
         try:
             # Get basic playlist data first (fast, 1 request)
-            raw_data = self.scraper.get_playlist_info(url)
-            
-            if not raw_data:
+            playlist = self.scraper.get_playlist(url)
+
+            if not playlist:
                 raise ValueError("Failed to scrape playlist data")
-            
+
+            raw_data = playlist.to_dict() if hasattr(playlist, 'to_dict') else playlist
+            raw_data = self._normalize_playlist(raw_data)
+
             logger.info(f"Successfully scraped playlist: {raw_data.get('name', 'Unknown')}")
             
             # If album data not needed, return basic data
@@ -77,8 +102,10 @@ class SpotifyScraperService:
                         continue
                     
                     # Get complete track information with album data
-                    complete_track = self.scraper.get_track_info(track_uri)
-                    
+                    complete_track = self.scraper.get_track(track_uri)
+                    if complete_track and hasattr(complete_track, 'to_dict'):
+                        complete_track = complete_track.to_dict()
+
                     if complete_track:
                         # Simply merge all complete track data into existing track
                         # This preserves any new fields added by the library
