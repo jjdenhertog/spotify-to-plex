@@ -28,6 +28,11 @@
 - Smart caching for faster syncs
 ---
 
+> [!IMPORTANT]
+> The Spotify account you create your Spotify app with needs an active **Premium** subscription. This is a [limitation Spotify added in 2026](https://developer.spotify.com/blog/2026-02-06-update-on-developer-access-and-platform-security), together with a limit of one app per account and a maximum of 5 connected users. See the [Spotify setup](https://jjdenhertog.github.io/spotify-to-plex/spotify/app-setup) docs.
+
+---
+
 ## Quick Start
 
 ```sh

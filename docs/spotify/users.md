@@ -37,6 +37,9 @@ When you have a connected user you can:
 You can add multiple Spotify users to sync playlists from different accounts.
 
 {: .important }
+Since 2026 Spotify limits you to 5 connected users per app. See [App Configuration](app-setup#spotify-requirements).
+
+{: .important }
 To add multiple users, you need to sign out of Spotify before attempting to add the extra user. Alternatively, perform this step in an incognito/private browser window.
 
 ---

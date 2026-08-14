@@ -87,6 +87,10 @@ SPOTIFY_API_REDIRECT_URI=https://192.168.1.100:9030/api/spotify/token
 
 ## Troubleshooting
 
+### Active premium subscription required for the owner of the app
+
+Nothing wrong with your setup: the Spotify account you created the app with needs Premium. Re-authenticating does not help. See [App Configuration](app-setup#spotify-requirements).
+
 ### Invalid Redirect URL
 
 - Ensure `SPOTIFY_API_REDIRECT_URI` exactly matches what's in your Spotify app

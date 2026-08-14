@@ -10,10 +10,17 @@ To import playlists you need Spotify API credentials. Visit the [Spotify Develop
 
 ---
 
+## Spotify Requirements
+
+{: .important }
+The Spotify account you create the app with needs an active **Premium** subscription. This is a [limitation Spotify added in 2026](https://developer.spotify.com/blog/2026-02-06-update-on-developer-access-and-platform-security), not something this app can work around. The same change limits you to one app per Spotify account and a maximum of 5 connected users.
+
+---
+
 ## Creating Your App
 
 1. Go to the [Spotify Developer Dashboard](https://developer.spotify.com/dashboard)
-2. Log in with your Spotify account
+2. Log in with your Spotify account (this account needs Premium, see above)
 3. Click "Create App"
 4. Fill in the required fields:
    - **App Name**: Choose any name (e.g., "Spotify to Plex")
