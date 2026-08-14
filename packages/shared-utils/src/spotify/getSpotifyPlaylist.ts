@@ -22,7 +22,12 @@ export async function getSpotifyPlaylist(api: SpotifyApi, id: string, simplified
         // instead of `tracks`, and each entry exposes the track object as
         // `item` instead of `track`. Read both shapes so the function keeps
         // working for any account or region still on the legacy response.
-        const tracksPage = ((result as any).items ?? (result as any).tracks) as Page<PlaylistedTrack<Track>> | undefined;
+        // Pick whichever field actually holds a page of tracks: `??` alone would
+        // take an `items` field that is present but not a tracks page, and skip
+        // a perfectly good legacy `tracks` alongside it.
+        const tracksPage = [(result as any).items, (result as any).tracks]
+            .find((page) => Array.isArray(page?.items)) as Page<PlaylistedTrack<Track>> | undefined;
+
         if (!tracksPage?.items) {
             console.error(`❌ Playlist ${id} response missing tracks page. Most likely fetched with client_credentials — Spotify no longer returns playlist tracks to that auth mode. A user access token is required.`);
 
