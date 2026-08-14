@@ -63,7 +63,8 @@ export async function refreshAccessTokens() {
                     },
                     expires_at: now + (expires_in * 1000)
                 })
-            } catch (_e) {
+            } catch (e) {
+                console.error(`⚠️  Failed to refresh token for user ${user?.user?.id}:`, e instanceof Error ? e.message : e)
             }
         }
     }
