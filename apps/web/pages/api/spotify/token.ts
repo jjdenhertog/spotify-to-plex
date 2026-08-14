@@ -198,7 +198,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                         expires_in,
                         token_type
                     },
-                    expires_at: Date.now() + expires_in
+                    expires_at: Date.now() + (expires_in * 1000)
                 }
 
                 const credentialsPath = join(getStorageDir(), 'spotify.json')
