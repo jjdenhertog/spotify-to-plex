@@ -260,9 +260,9 @@ export default function PlexPlaylist(props: PlexPlaylistProps) {
     ///////////////////////////////////
     // Handle manual track selection
     ///////////////////////////////////
-    const onManualTrackSelect = useCallback((spotifyTrack: GetSpotifyPlaylist['tracks'][0] | GetSpotifyAlbum['tracks'][0], plexTrack: SearchResponse['result'][0]) => {
+    const onManualTrackSelect = useCallback((spotifyTrack: Track, plexTrack: SearchResponse['result'][0]) => {
         // Create a synthetic search response with the manually selected track
-        const artist = spotifyTrack.artists[0];
+        const [artist] = spotifyTrack.artists;
         const searchResponse: SearchResponse = {
             id: spotifyTrack.id,
             title: spotifyTrack.title,
@@ -287,9 +287,9 @@ export default function PlexPlaylist(props: PlexPlaylistProps) {
         axios.post('/api/plex/cache-manual-match', {
             spotifyId: spotifyTrack.id,
             title: spotifyTrack.title,
-            artist: artist,
-            plexTrack: plexTrack
-        }).catch(error => {
+            artist,
+            plexTrack
+        }).catch((error: unknown) => {
             console.error('Failed to cache manual match:', error);
         });
 
