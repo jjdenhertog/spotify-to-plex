@@ -1,7 +1,7 @@
 import { GetTidalTracksResponse } from "@/pages/api/tidal";
 import { Alert, Box, Button, Divider, Typography } from "@mui/material";
 import { Track } from "@spotify-to-plex/shared-types/spotify/Track";
-import { extractTrackId, isLocalTrack } from "@spotify-to-plex/shared-utils/spotify/extractTrackId";
+import { extractTrackId } from "@spotify-to-plex/shared-utils/spotify/extractTrackId";
 import axios from "axios";
 import { forwardRef, useCallback, useImperativeHandle, useMemo, useRef, useState } from "react";
 
