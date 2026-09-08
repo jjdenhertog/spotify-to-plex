@@ -345,14 +345,10 @@ export default function PlexPlaylist(props: PlexPlaylistProps) {
 
     // Single owner for "which search result belongs to this track" - the filter
     // and the row renderer must agree or the counts lie
-    const findMatchFor = useCallback((track: { title: string, artists: string[] }) =>
-        tracks.find(item => {
-            const mergedArtistsMatch = track.artists.join(',') == item.artist && track.title === item.title
-            if (mergedArtistsMatch)
-                return true;
-
-            return track.artists.indexOf(item.artist) > -1 && track.title === item.title
-        })
+    // Matching on the spotify id - title+artist returns the same entry for both
+    // rows when a playlist holds the same song twice
+    const findMatchFor = useCallback((track: { id: string }) =>
+        tracks.find(item => item.id === track.id)
     , [tracks])
 
     // Every track is already loaded client-side, so searching covers the whole
