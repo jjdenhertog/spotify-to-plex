@@ -23,6 +23,7 @@ export type PlexPlaylistProps = {
 type TrackSelection = {
     artist: string
     title: string
+    trackId: string
     idx: number
 }
 
@@ -241,20 +242,31 @@ export default function PlexPlaylist(props: PlexPlaylistProps) {
     ///////////////////////////////////
     // Set selected track index
     ///////////////////////////////////
-    const onSetSongIndex = useCallback((artist: string, track: string, idx: number) => {
-        console.log('onSetSongIndex', artist, track, idx)
-        if (trackSelections.some(item => item.artist === artist && item.title === track)) {
-
+    const onSetSongIndex = useCallback((artist: string, track: string, trackId: string, idx: number) => {
+        if (trackSelections.some(item => item.trackId === trackId)) {
             setTrackSelections(items => items.map(item => {
-                if (item.artist === artist && item.title === track)
+                if (item.trackId === trackId)
                     return { ...item, idx }
 
                 return item;
             }))
         } else {
-            setTrackSelections(prev => [...prev, { artist, title: track, idx }])
+            setTrackSelections(prev => [...prev, { artist, title: track, trackId, idx }])
         }
     }, [trackSelections])
+
+    const onManualTrackSelect = useCallback((spotifyId: string, title: string, artist: string, plexTrack: SearchResponse['result'][0]) => {
+        setTracks(prev => prev.map(item => item.id === spotifyId
+            ? { ...item, result: [plexTrack] }
+            : item))
+
+        onSetSongIndex(artist, title, spotifyId, 0)
+
+        errorBoundary(async () => {
+            await axios.post('/api/plex/cache-manual-match', { spotifyId, plexId: plexTrack.id })
+            enqueueSnackbar(`${title} matched manually`)
+        }, undefined, true)
+    }, [onSetSongIndex])
 
     ///////////////////////////////////////////////
     // Modify Playlist name
@@ -306,7 +318,7 @@ export default function PlexPlaylist(props: PlexPlaylistProps) {
             if (!item)
                 continue;
 
-            const trackSelectIdx = trackSelections.find(selectionItem => selectionItem.artist === item?.artist && selectionItem.title === item?.title)
+            const trackSelectIdx = trackSelections.find(selectionItem => selectionItem.trackId === item?.id)
             const song = item.result?.[trackSelectIdx ? trackSelectIdx.idx : 0];
 
             if (song)
@@ -333,14 +345,10 @@ export default function PlexPlaylist(props: PlexPlaylistProps) {
 
     // Single owner for "which search result belongs to this track" - the filter
     // and the row renderer must agree or the counts lie
-    const findMatchFor = useCallback((track: { title: string, artists: string[] }) =>
-        tracks.find(item => {
-            const mergedArtistsMatch = track.artists.join(',') == item.artist && track.title === item.title
-            if (mergedArtistsMatch)
-                return true;
-
-            return track.artists.indexOf(item.artist) > -1 && track.title === item.title
-        })
+    // Matching on the spotify id - title+artist returns the same entry for both
+    // rows when a playlist holds the same song twice
+    const findMatchFor = useCallback((track: { id: string }) =>
+        tracks.find(item => item.id === track.id)
     , [tracks])
 
     // Every track is already loaded client-side, so searching covers the whole
@@ -388,12 +396,20 @@ export default function PlexPlaylist(props: PlexPlaylistProps) {
     // Shared by the paged list and the review dialog so both stay interactive
     const renderTrack = useCallback((track: Track) => {
         const data = findMatchFor(track)
-        const trackSelectIdx = trackSelections.find(item => track.artists.indexOf(item.artist) > -1 && item.title === track.title)
+        const trackSelectIdx = trackSelections.find(item => item.trackId === track.id)
         const songIdx = trackSelectIdx ? trackSelectIdx.idx : 0;
         const loading = loadingTracks && !(tracksLoaded.some(item => item === track.id))
 
-        return <PlexTrack key={`${playlist.id}-plex-${track.title}-${track.id}}`} loading={loading} track={track} setSongIdx={onSetSongIndex} songIdx={songIdx} data={data} />
-    }, [findMatchFor, trackSelections, loadingTracks, tracksLoaded, onSetSongIndex, playlist.id])
+        return <PlexTrack
+            key={`${playlist.id}-plex-${track.title}-${track.id}}`}
+            loading={loading}
+            track={track}
+            setSongIdx={onSetSongIndex}
+            songIdx={songIdx}
+            data={data}
+            onManualSelect={onManualTrackSelect}
+        />
+    }, [findMatchFor, trackSelections, loadingTracks, tracksLoaded, onSetSongIndex, onManualTrackSelect, playlist.id])
     const totalPages = Math.ceil(filteredTracks.length / pageSize)
     const visibleTracks = filteredTracks.slice(page * pageSize, (page * pageSize) + pageSize)
     let curEnd = (page * pageSize) + pageSize;
