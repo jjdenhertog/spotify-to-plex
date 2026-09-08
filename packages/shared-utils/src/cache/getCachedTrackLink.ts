@@ -89,13 +89,12 @@ export function getCachedTrackLinks(
 
                 switch (type) {
                     case "plex":
+                        // A person's pick stands until they pick again
+                        if (trackLink.manual)
+                            break;
+
                         trackLink.plex_id = item.result
                             .map(item => item.id)
-
-                        // An automatic search replaced it, so it is no longer a manual pick
-                        if (trackLink.manual)
-                            delete trackLink.manual
-
                         break;
 
                     case "tidal":

@@ -257,7 +257,7 @@ export default function PlexPlaylist(props: PlexPlaylistProps) {
 
     const onManualTrackSelect = useCallback((spotifyId: string, title: string, artist: string, plexTrack: SearchResponse['result'][0]) => {
         setTracks(prev => prev.map(item => item.id === spotifyId
-            ? { ...item, artist, title, result: [plexTrack] }
+            ? { ...item, result: [plexTrack] }
             : item))
 
         onSetSongIndex(artist, title, spotifyId, 0)

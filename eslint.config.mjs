@@ -687,7 +687,8 @@ const config = [
                     jsx: true
                 },
                 projectService: false,
-                project: ["packages/*/tsconfig.eslint.json"]
+                project: ["packages/*/tsconfig.eslint.json"],
+                tsconfigRootDir: import.meta.dirname
             }
         }
     }
