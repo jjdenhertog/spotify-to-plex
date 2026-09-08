@@ -35,6 +35,10 @@ export async function syncPlaylists() {
 
     try {
 
+        // Check if we need to force syncing
+        const args = process.argv.slice(2);
+        const force = args.includes("force")
+
         const { toSyncPlaylists } = getSavedPlaylists()
         const { putLog, logError, logComplete } = getNestedSyncLogsForType('playlists')
 
@@ -57,14 +61,23 @@ export async function syncPlaylists() {
             // Update progress
             updateSyncTypeProgress('playlists', i + 1, toSyncPlaylists.length);
 
-            const { id, title, uri, user } = item;
+            const { id, title, uri, user, sync_interval } = item;
 
             //////////////////////////////////
             // Load Plex playlist
             //////////////////////////////////
             const itemLog = putLog(id, title)
+            let days = Number(sync_interval)
+            if (isNaN(days))
+                days = 0;
 
             try {
+
+                const nextSyncAfter = new Date((itemLog.end || 0) + (days * 24 * 60 * 60 * 1000));
+                if (nextSyncAfter.getTime() > Date.now() && !force) {
+                    console.log(`Next sync on: ${nextSyncAfter.toString()}`)
+                    continue;
+                }
 
                 //////////////////////////////////
                 // Load Spotify Data

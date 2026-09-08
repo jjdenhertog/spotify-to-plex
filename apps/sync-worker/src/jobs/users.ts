@@ -83,6 +83,7 @@ export async function syncUsers() {
                         title: name,
                         image,
                         sync: true,
+                        sync_interval: "0",
                         label,
                         user: userId
                     }
