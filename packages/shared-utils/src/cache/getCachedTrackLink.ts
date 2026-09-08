@@ -61,14 +61,18 @@ export function getCachedTrackLinks(
     }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const add = (searchResult: { title: string, artist: string, result: any[] }[], type: "tidal" | "plex" | "slskd", album?: { id: string }) => {
+    const add = (searchResult: { id?: string, title: string, artist: string, result: any[] }[], type: "tidal" | "plex" | "slskd", album?: { id: string }) => {
 
         ////////////////////////////////
         // Cache tracks
         ////////////////////////////////
         searchResult.forEach(item => {
             if (item.result && item.result.length > 0) {
-                const searchItem = searchItems.find(toSearchItem => toSearchItem.title == item.title && toSearchItem.artists.indexOf(item.artist) > -1)
+                // Prefer the spotify id - title/artist equality misses multi-artist
+                // variants, leaving stale links that get re-searched every sync
+                const searchItem = searchItems.find(toSearchItem => item.id
+                    ? toSearchItem.id == item.id
+                    : (toSearchItem.title == item.title && toSearchItem.artists.indexOf(item.artist) > -1))
                 if (!searchItem)
                     return;
 
