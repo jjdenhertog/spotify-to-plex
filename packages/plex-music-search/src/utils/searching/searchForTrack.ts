@@ -7,18 +7,6 @@ export async function searchForTrack(uri: string, token: string, artist: string,
     // Search for artist + track
     const searchResult = await hubSearch(uri, token, search, 20);
 
-    const albums = searchResult.filter(item => item.type == "album");
-    const [foundAlbum] = albums;
-    if (searchResult.length == albums.length && foundAlbum) {
-        
-        const trackResult: HubSearchResult[] = await getAlbumTracks(uri, token, foundAlbum.id)
-        trackResult.forEach(item => {
-            if (searchResult.filter(existingItem => existingItem.guid == item.guid).length == 0)
-                searchResult.push(item);
-        });
-
-    }
-
     // Search for track name
     {
         const alternativeSearchResult = await hubSearch(uri, token, track, 50);
@@ -46,6 +34,22 @@ export async function searchForTrack(uri: string, token: string, artist: string,
             if (searchResult.filter(existingItem => existingItem.guid == item.guid).length == 0)
                 searchResult.push(item);
         });
+    }
+
+    // Expand album hits from ALL queries above into their tracks: Plex's track
+    // search index can miss tracks whose album IS indexed, and album hits often
+    // only surface on the title-only query
+    const albums = searchResult.filter(item => item.type == "album");
+    for (const album of albums.slice(0, 3)) {
+        try {
+            const trackResult: HubSearchResult[] = await getAlbumTracks(uri, token, album.id)
+            trackResult.forEach(item => {
+                if (searchResult.filter(existingItem => existingItem.guid == item.guid).length == 0)
+                    searchResult.push(item);
+            });
+        } catch (_e) {
+            // Ignore albums that fail to load
+        }
     }
 
     return searchResult;
