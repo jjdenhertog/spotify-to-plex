@@ -10,5 +10,4 @@ export type SavedItem = {
 
     label?: string
     sync?: boolean
-    sync_interval?: string
 }

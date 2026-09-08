@@ -206,7 +206,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
             if (!existsSync(savedItemsPath))
                 return res.status(400).json({ error: `No items found` })
 
-            const { ids, label, sync, sync_interval, title } = req.body
+            const { ids, label, sync, title } = req.body
             if (!Array.isArray(ids))
                 return res.status(400).json({ error: `Mutliple ids expected as an array` })
 
@@ -217,10 +217,8 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 if (!saveItem)
                     return res.status(400).json({ error: `Item not found` })
 
-                if (typeof sync === 'boolean' && typeof sync_interval === 'string') {
+                if (typeof sync === 'boolean')
                     saveItem.sync = sync
-                    saveItem.sync_interval = sync_interval
-                }
 
                 if (typeof label === 'string')
                     saveItem.label = label;
