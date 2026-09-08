@@ -22,7 +22,8 @@
         "clean": "rm -rf dist",
         "type-check": "tsc --noEmit",
         "lint": "eslint src",
-        "lint:fix": "eslint src --fix"
+        "lint:fix": "eslint src --fix",
+        "test": "vitest run"
     },
     "files": [
         "dist"
@@ -40,7 +41,8 @@
     "devDependencies": {
         "@types/fs-extra": "^11.0.4",
         "@types/node": "^20.19.11",
-        "typescript": "^5.3.3"
+        "typescript": "^5.3.3",
+        "vitest": "^2.1.9"
     },
     "peerDependencies": {
         "typescript": ">=5.0.0"
