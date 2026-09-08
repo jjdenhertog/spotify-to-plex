@@ -87,6 +87,11 @@ export function getCachedTrackLinks(
                     case "plex":
                         trackLink.plex_id = item.result
                             .map(item => item.id)
+
+                        // An automatic search replaced it, so it is no longer a manual pick
+                        if (trackLink.manual)
+                            delete trackLink.manual
+
                         break;
 
                     case "tidal":
