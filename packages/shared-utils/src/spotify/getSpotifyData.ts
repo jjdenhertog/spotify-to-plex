@@ -190,6 +190,13 @@ export async function getSpotifyData(api: SpotifyApi, id: string, simplified: bo
                     batchError.message?.includes('rate limit') ||
                     batchError.message?.includes('429');
 
+                // Restricted-mode (development) apps get 403 on the batch endpoint
+                // while the single-track endpoint keeps working
+                const isForbidden = batchError.status === 403 ||
+                    batchError.statusCode === 403 ||
+                    batchError.message?.includes('403') ||
+                    batchError.message?.includes('Forbidden');
+
                 if (isRateLimit) {
                     // Extract retry-after from various possible locations
                     const retryAfter = parseInt(
@@ -205,13 +212,19 @@ export async function getSpotifyData(api: SpotifyApi, id: string, simplified: bo
 
                     console.log(`Rate limited. Waiting ${backoffDelay}ms before retry ${retryCount}/${MAX_RETRIES}...`);
                     await new Promise(resolve => { setTimeout(resolve, backoffDelay) });
-                } else {
+                } else if (isForbidden) {
                     // Batch /v1/tracks?ids= is 403-forbidden for restricted-mode tokens
-                    // while single-track lookups still work - enrich one by one instead
-                    console.error(`Error enriching batch - ${retryCount}/${MAX_RETRIES}: ${batchError.message}. Falling back to single-track lookups.`);
+                    // while single-track lookups still work - enrich one by one instead.
+                    // Only 403 falls back: any other error is likely transient, and
+                    // retrying it as 50 single calls would just multiply the failure
+                    console.error(`Batch enrichment forbidden - ${retryCount}/${MAX_RETRIES}: ${batchError.message}. Falling back to single-track lookups.`);
                     const enrichedBatch = await enrichTracksIndividually(api, batch, BATCH_DELAY);
                     tracks.splice(i, BATCH_SIZE, ...enrichedBatch);
                     success = true;
+                } else {
+                    // For other errors, just log and continue with original track data
+                    console.error(`Error enriching batch - ${retryCount}/${MAX_RETRIES}: ${batchError.message}`);
+                    success = true; // Don't retry non-rate-limit errors
                 }
             }
         }
