@@ -10,6 +10,16 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { createRouter } from 'next-connect';
 import { getSettings } from '@spotify-to-plex/plex-config/functions/getSettings';
 
+// Large playlists ship thousands of tracks in one request/response (issue #94)
+export const config = {
+    api: {
+        bodyParser: {
+            sizeLimit: '8mb',
+        },
+        responseLimit: false,
+    },
+}
+
 const router = createRouter<NextApiRequest, NextApiResponse>()
     .post(
         async (req, res) => {
