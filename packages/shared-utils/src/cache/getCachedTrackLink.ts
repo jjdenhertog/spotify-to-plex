@@ -60,6 +60,10 @@ export function getCachedTrackLinks(
         }
     }
 
+    const save = () => {
+        writeFileSync(path, JSON.stringify(all, undefined, 4))
+    }
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const add = (searchResult: { id?: string, title: string, artist: string, result: any[] }[], type: "tidal" | "plex" | "slskd", album?: { id: string }) => {
 
@@ -140,9 +144,9 @@ export function getCachedTrackLinks(
         }
 
 
-        writeFileSync(path, JSON.stringify(all, undefined, 4))
+        save()
     }
 
-    return { path, all, found, add }
+    return { path, all, found, add, save }
 
 }
