@@ -9,12 +9,18 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
         async (req, res) => {
             const { spotifyId, plexId } = req.body;
 
-            if (typeof spotifyId !== 'string' || typeof plexId !== 'string')
+            if (typeof spotifyId !== 'string' || !spotifyId.trim() || typeof plexId !== 'string' || !plexId.trim())
                 return res.status(400).json({ error: "Missing spotifyId or plexId" });
 
-            setManualTrackLink(spotifyId, plexId);
+            try {
+                setManualTrackLink(spotifyId, plexId);
 
-            return res.json({ success: true });
+                return res.json({ success: true });
+            } catch (error) {
+                console.error('Error caching manual match:', error);
+
+                return res.status(500).json({ error: 'Failed to save the manual match' });
+            }
         })
 
 export default router.handler({
