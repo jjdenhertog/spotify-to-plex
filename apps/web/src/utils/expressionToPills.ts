@@ -50,7 +50,7 @@ export function expressionToPills(expression: string): Pill[] {
                 });
             } else {
                 // Check if this is just a field name without operation
-                const fieldOnlyPattern = /^(artist|title|album|artistWithTitle|artistInTitle)$/;
+                const fieldOnlyPattern = /^(artist|title|album|artistWithTitle|artistInTitle|version|duration)$/;
                 const fieldMatch = fieldOnlyPattern.exec(token);
                 
                 if (fieldMatch) {
@@ -78,7 +78,7 @@ export function expressionToPills(expression: string): Pill[] {
 
 function parseCondition(conditionText: string): ParsedCondition | null {
     // Match pattern: field:operation or field:operation>=threshold
-    const conditionPattern = /^(artist|title|album|artistWithTitle|artistInTitle):(match|contains|similarity(?:>=\d*\.?\d+)?)$/;
+    const conditionPattern = /^(artist|title|album|artistWithTitle|artistInTitle|version|duration):(match|contains|similarity(?:>=\d*\.?\d+)?)$/;
     const match = conditionPattern.exec(conditionText);
     
     if (!match) {
