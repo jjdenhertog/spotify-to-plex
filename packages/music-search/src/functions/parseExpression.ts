@@ -1,3 +1,4 @@
+import { MATCH_FILTER_FIELDS } from '@spotify-to-plex/shared-utils/validation/matchFilterFields';
 import { Track } from "../types/Track";
 
 /**
@@ -94,7 +95,7 @@ function parseCondition(conditionStr: string): ParsedCondition {
     }
 
     // Validate field
-    const validFields = ['artist', 'title', 'album', 'artistWithTitle', 'artistInTitle', 'version', 'duration'];
+    const validFields: readonly string[] = MATCH_FILTER_FIELDS;
 
     if (!validFields.includes(field)) {
         throw new Error(`Invalid field: ${field}`);
