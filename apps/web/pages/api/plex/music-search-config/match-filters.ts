@@ -1,3 +1,4 @@
+import { matchFilterFieldPattern } from '@spotify-to-plex/shared-utils/validation/matchFilterFieldPattern';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { createRouter } from 'next-connect';
 import { generateError } from '@/helpers/errors/generateError';
@@ -78,7 +79,7 @@ function validateExpressions(filters: MatchFilterConfig[]) {
         }
 
         // Basic expression validation - allow both complete (field:operation) and incomplete (field) conditions
-        const fieldPattern = '(artist|title|album|artistWithTitle|artistInTitle|version|duration)';
+        const fieldPattern = matchFilterFieldPattern();
         const operationPattern = String.raw`:(match|contains|similarity>=\d*\.?\d+)`;
         const conditionPattern = `${fieldPattern}(${operationPattern})?`; // Operation is optional
         const validPattern = new RegExp(String.raw`^${conditionPattern}(\s+(AND|OR)\s+${conditionPattern})*$`);

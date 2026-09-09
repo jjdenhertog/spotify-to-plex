@@ -2,6 +2,8 @@
 import { MenuItem, Popover } from "@mui/material";
 import { useCallback } from "react";
 
+import { MATCH_FILTER_FIELDS } from "@spotify-to-plex/shared-utils/validation/matchFilterFields";
+
 import type { FieldType } from "@/types/MatchFilterTypes";
 
 type FieldSelectorPopupProps = {
@@ -17,15 +19,18 @@ const FieldSelectorPopup: React.FC<FieldSelectorPopupProps> = ({
     onClose,
     onFieldSelect
 }) => {
-    const fields: { value: FieldType; label: string; description: string }[] = [
-        { value: 'artist', label: 'Artist', description: 'Match by artist name' },
-        { value: 'title', label: 'Title', description: 'Match by track title' },
-        { value: 'album', label: 'Album', description: 'Match by album name' },
-        { value: 'artistWithTitle', label: 'Artist with Title', description: 'Match by artist and title combined' },
-        { value: 'artistInTitle', label: 'Artist in Title', description: 'Match artist name within track title' },
-        { value: 'version', label: 'Version', description: 'Both titles name the same version (remix, edit, acoustic)' },
-        { value: 'duration', label: 'Duration', description: 'Match by track length (similarity only)' }
-    ];
+    // A Record, not an array - adding a field to MATCH_FILTER_FIELDS then fails
+    // to compile here until it has a label, instead of going missing silently
+    const labels: Record<FieldType, { label: string; description: string }> = {
+        artist: { label: 'Artist', description: 'Match by artist name' },
+        title: { label: 'Title', description: 'Match by track title' },
+        album: { label: 'Album', description: 'Match by album name' },
+        artistWithTitle: { label: 'Artist with Title', description: 'Match by artist and title combined' },
+        artistInTitle: { label: 'Artist in Title', description: 'Match artist name within track title' },
+        version: { label: 'Version', description: 'Both titles name the same version (remix, edit, acoustic)' },
+        duration: { label: 'Duration', description: 'Match by track length (similarity only)' }
+    };
+    const fields = MATCH_FILTER_FIELDS.map(value => ({ value, ...labels[value] }));
 
     const createFieldClickHandler = useCallback((field: FieldType) => () => {
         onFieldSelect(field);

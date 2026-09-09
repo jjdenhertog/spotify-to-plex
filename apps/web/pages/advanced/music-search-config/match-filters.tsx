@@ -1,3 +1,4 @@
+import { matchFilterFieldPattern } from '@spotify-to-plex/shared-utils/validation/matchFilterFieldPattern';
 import { Box, Button, Card, CardContent, Paper, ToggleButton, ToggleButtonGroup, Typography } from "@mui/material"
 import { NextPage } from "next"
 import MusicSearchConfigLayout from "@/components/layouts/MusicSearchConfigLayout"
@@ -36,7 +37,8 @@ const MatchFiltersPage: NextPage = () => {
             }
 
             // Basic expression validation - allow optional operations
-            const validFieldPattern = /^(artist|title|album|artistWithTitle|artistInTitle|version|duration)(:(match|contains|similarity>=\d*\.?\d+))?((\s+(AND|OR)\s+(artist|title|album|artistWithTitle|artistInTitle|version|duration)(:(match|contains|similarity>=\d*\.?\d+))?))*$/;
+            const condition = String.raw`${matchFilterFieldPattern()}(:(match|contains|similarity>=\d*\.?\d+))?`;
+            const validFieldPattern = new RegExp(String.raw`^${condition}((\s+(AND|OR)\s+${condition}))*$`);
             if (!validFieldPattern.test(filter.trim())) {
                 return `Filter at index ${i}: invalid expression format`;
             }
@@ -124,7 +126,7 @@ const MatchFiltersPage: NextPage = () => {
         items: {
             type: 'string',
             description: 'Expression string using simplified syntax (e.g., "artist:match AND title:contains")',
-            pattern: String.raw`^(artist|title|album|artistWithTitle|artistInTitle|version|duration):(match|contains|similarity>=\d*\.?\d+)(\s+(AND|OR)\s+(artist|title|album|artistWithTitle|artistInTitle|version|duration):(match|contains|similarity>=\d*\.?\d+))*$`
+            pattern: String.raw`^${matchFilterFieldPattern()}:(match|contains|similarity>=\d*\.?\d+)(\s+(AND|OR)\s+${matchFilterFieldPattern()}:(match|contains|similarity>=\d*\.?\d+))*$`
         }
     };
 

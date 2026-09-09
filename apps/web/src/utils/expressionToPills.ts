@@ -1,3 +1,4 @@
+import { matchFilterFieldPattern } from '@spotify-to-plex/shared-utils/validation/matchFilterFieldPattern';
 import { ParsedCondition, CombinatorType, FieldType, OperationType } from '../types/MatchFilterTypes';
 
 export type Pill = {
@@ -50,7 +51,7 @@ export function expressionToPills(expression: string): Pill[] {
                 });
             } else {
                 // Check if this is just a field name without operation
-                const fieldOnlyPattern = /^(artist|title|album|artistWithTitle|artistInTitle|version|duration)$/;
+                const fieldOnlyPattern = new RegExp(`^${matchFilterFieldPattern()}$`);
                 const fieldMatch = fieldOnlyPattern.exec(token);
                 
                 if (fieldMatch) {
@@ -78,7 +79,7 @@ export function expressionToPills(expression: string): Pill[] {
 
 function parseCondition(conditionText: string): ParsedCondition | null {
     // Match pattern: field:operation or field:operation>=threshold
-    const conditionPattern = /^(artist|title|album|artistWithTitle|artistInTitle|version|duration):(match|contains|similarity(?:>=\d*\.?\d+)?)$/;
+    const conditionPattern = new RegExp(String.raw`^${matchFilterFieldPattern()}:(match|contains|similarity(?:>=\d*\.?\d+)?)$`);
     const match = conditionPattern.exec(conditionText);
     
     if (!match) {
