@@ -36,7 +36,7 @@ const MatchFiltersPage: NextPage = () => {
             }
 
             // Basic expression validation - allow optional operations
-            const validFieldPattern = /^(artist|title|album|artistWithTitle|artistInTitle)(:(match|contains|similarity>=\d*\.?\d+))?((\s+(AND|OR)\s+(artist|title|album|artistWithTitle|artistInTitle)(:(match|contains|similarity>=\d*\.?\d+))?))*$/;
+            const validFieldPattern = /^(artist|title|album|artistWithTitle|artistInTitle|version|duration)(:(match|contains|similarity>=\d*\.?\d+))?((\s+(AND|OR)\s+(artist|title|album|artistWithTitle|artistInTitle|version|duration)(:(match|contains|similarity>=\d*\.?\d+))?))*$/;
             if (!validFieldPattern.test(filter.trim())) {
                 return `Filter at index ${i}: invalid expression format`;
             }
@@ -124,7 +124,7 @@ const MatchFiltersPage: NextPage = () => {
         items: {
             type: 'string',
             description: 'Expression string using simplified syntax (e.g., "artist:match AND title:contains")',
-            pattern: String.raw`^(artist|title|album|artistWithTitle|artistInTitle):(match|contains|similarity>=\d*\.?\d+)(\s+(AND|OR)\s+(artist|title|album|artistWithTitle|artistInTitle):(match|contains|similarity>=\d*\.?\d+))*$`
+            pattern: String.raw`^(artist|title|album|artistWithTitle|artistInTitle|version|duration):(match|contains|similarity>=\d*\.?\d+)(\s+(AND|OR)\s+(artist|title|album|artistWithTitle|artistInTitle|version|duration):(match|contains|similarity>=\d*\.?\d+))*$`
         }
     };
 

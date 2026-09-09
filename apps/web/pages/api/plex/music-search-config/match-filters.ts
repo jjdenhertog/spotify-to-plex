@@ -78,7 +78,7 @@ function validateExpressions(filters: MatchFilterConfig[]) {
         }
 
         // Basic expression validation - allow both complete (field:operation) and incomplete (field) conditions
-        const fieldPattern = '(artist|title|album|artistWithTitle|artistInTitle)';
+        const fieldPattern = '(artist|title|album|artistWithTitle|artistInTitle|version|duration)';
         const operationPattern = String.raw`:(match|contains|similarity>=\d*\.?\d+)`;
         const conditionPattern = `${fieldPattern}(${operationPattern})?`; // Operation is optional
         const validPattern = new RegExp(String.raw`^${conditionPattern}(\s+(AND|OR)\s+${conditionPattern})*$`);
