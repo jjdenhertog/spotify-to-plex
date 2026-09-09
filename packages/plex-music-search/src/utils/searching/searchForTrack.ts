@@ -40,6 +40,7 @@ export async function searchForTrack(uri: string, token: string, artist: string,
     // search index can miss tracks whose album IS indexed, and album hits often
     // only surface on the title-only query
     const albums = searchResult.filter(item => item.type == "album");
+
     for (const album of albums.slice(0, 3)) {
         try {
             const trackResult: HubSearchResult[] = await getAlbumTracks(uri, token, album.id)

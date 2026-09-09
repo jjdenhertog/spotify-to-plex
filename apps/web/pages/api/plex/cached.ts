@@ -26,6 +26,16 @@ async function getPlexTracks(plexIds: string[], plexConfig: any) {
 }
 
 
+// Large playlists ship thousands of tracks in one request/response (issue #94)
+export const config = {
+    api: {
+        bodyParser: {
+            sizeLimit: '8mb',
+        },
+        responseLimit: false,
+    },
+}
+
 const router = createRouter<NextApiRequest, NextApiResponse>()
     .post(
         async (req, res) => {

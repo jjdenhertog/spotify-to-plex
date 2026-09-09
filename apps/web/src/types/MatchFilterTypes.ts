@@ -5,7 +5,7 @@
 export type MatchFilterRule = string; // e.g., "artist:match AND title:match"
 
 // Expression parsing types
-export type FieldType = 'artist' | 'title' | 'album' | 'artistWithTitle' | 'artistInTitle';
+export type FieldType = 'artist' | 'title' | 'album' | 'artistWithTitle' | 'artistInTitle' | 'version' | 'duration';
 export type OperationType = 'match' | 'contains' | 'similarity' | 'is' | 'not';
 export type OperationText = OperationType | `similarity>=${number}`;
 export type CombinatorType = 'AND' | 'OR';

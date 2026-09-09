@@ -16,7 +16,7 @@ type Props = {
     readonly data?: SearchResponse
     readonly songIdx: number
     readonly setSongIdx?: (artist: string, name: string, trackId: string, idx: number) => void
-    readonly onManualSelect?: (track: PlexTrackType) => void
+    readonly onManualSelect?: (spotifyTrackId: string, plexTrack: PlexTrackType) => void
 }
 export default function PlexTrack(props: Props) {
 
@@ -69,12 +69,13 @@ export default function PlexTrack(props: Props) {
     const onCloseManualSearch = useCallback(() => {
         setShowManualSearch(false);
     }, []);
-    const onManualSelectTrack = useCallback((track: PlexTrackType) => {
+    const onManualSelectTrack = useCallback((plexTrack: PlexTrackType) => {
         if (onManualSelect) {
-            onManualSelect(track);
+            onManualSelect(id, plexTrack);
         }
+
         setShowManualSearch(false);
-    }, [onManualSelect]);
+    }, [onManualSelect, id]);
 
     ////////////////////////////////////
     // Handle multiple song results
@@ -207,20 +208,25 @@ export default function PlexTrack(props: Props) {
         <Divider sx={{ mt: 1, mb: 1 }} />
 
         {!!showManualSearch && (
-            <Modal open onClose={onCloseManualSearch}>
-                <Box sx={{
-                    position: 'absolute',
-                    top: '50%',
-                    left: '50%',
-                    transform: 'translate(-50%, -50%)',
-                    width: '90%',
-                    maxWidth: 600,
-                    maxHeight: '90vh',
-                    overflow: 'auto',
-                    bgcolor: 'background.paper',
-                    borderRadius: 1,
-                    boxShadow: 24
-                }}>
+            <Modal
+                open
+                onClose={onCloseManualSearch}
+            >
+                <Box
+                    sx={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        width: '90%',
+                        maxWidth: 600,
+                        maxHeight: '90vh',
+                        overflow: 'auto',
+                        bgcolor: 'background.paper',
+                        borderRadius: 1,
+                        boxShadow: 24
+                    }}
+                >
                     <ManualSearchPopup
                         trackTitle={trackTitle}
                         artistNames={artistNames}

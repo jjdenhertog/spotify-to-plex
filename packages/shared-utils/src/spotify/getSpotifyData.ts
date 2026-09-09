@@ -190,6 +190,13 @@ export async function getSpotifyData(api: SpotifyApi, id: string, simplified: bo
                     batchError.message?.includes('rate limit') ||
                     batchError.message?.includes('429');
 
+                // Restricted-mode (development) apps get 403 on the batch endpoint
+                // while the single-track endpoint keeps working
+                const isForbidden = batchError.status === 403 ||
+                    batchError.statusCode === 403 ||
+                    batchError.message?.includes('403') ||
+                    batchError.message?.includes('Forbidden');
+
                 if (isRateLimit) {
                     // Extract retry-after from various possible locations
                     const retryAfter = parseInt(
@@ -205,6 +212,15 @@ export async function getSpotifyData(api: SpotifyApi, id: string, simplified: bo
 
                     console.log(`Rate limited. Waiting ${backoffDelay}ms before retry ${retryCount}/${MAX_RETRIES}...`);
                     await new Promise(resolve => { setTimeout(resolve, backoffDelay) });
+                } else if (isForbidden) {
+                    // Batch /v1/tracks?ids= is 403-forbidden for restricted-mode tokens
+                    // while single-track lookups still work - enrich one by one instead.
+                    // Only 403 falls back: any other error is likely transient, and
+                    // retrying it as 50 single calls would just multiply the failure
+                    console.error(`Batch enrichment forbidden - ${retryCount}/${MAX_RETRIES}: ${batchError.message}. Falling back to single-track lookups.`);
+                    const enrichedBatch = await enrichTracksIndividually(api, batch, BATCH_DELAY);
+                    tracks.splice(i, BATCH_SIZE, ...enrichedBatch);
+                    success = true;
                 } else {
                     // For other errors, just log and continue with original track data
                     console.error(`Error enriching batch - ${retryCount}/${MAX_RETRIES}: ${batchError.message}`);
@@ -236,4 +252,37 @@ export async function getSpotifyData(api: SpotifyApi, id: string, simplified: bo
 
     return null
 
+}
+
+type EnrichableTrack = {
+    id: string;
+    album: string;
+    album_id: string;
+    duration_ms?: number;
+};
+
+async function enrichTracksIndividually<T extends EnrichableTrack>(api: SpotifyApi, batch: T[], delayMs: number): Promise<T[]> {
+    const result = [...batch];
+
+    for (let i = 0; i < result.length; i++) {
+        const track = result[i];
+        if (!track?.id || track.id.startsWith('spotify:local:'))
+            continue;
+
+        try {
+            const enrichedTrack = await api.tracks.get(track.id.replace('spotify:track:', ''));
+            result[i] = {
+                ...track,
+                album: enrichedTrack.album.name,
+                album_id: enrichedTrack.album.id,
+                duration_ms: track.duration_ms ?? enrichedTrack.duration_ms
+            };
+        } catch (_e) {
+            // Keep the scraper data for tracks that fail individually
+        }
+
+        await new Promise(resolve => { setTimeout(resolve, delayMs) });
+    }
+
+    return result;
 }
