@@ -28,6 +28,7 @@ export default function ManualSearchPopup(props: Props) {
     const onSearch = useCallback(async () => {
         if (!searchQuery.trim()) {
             setError('Please enter a search query');
+
             return;
         }
 
@@ -65,6 +66,10 @@ export default function ManualSearchPopup(props: Props) {
         setSelectedIdx(Number(e.currentTarget.value));
     }, []);
 
+    const onSearchClick = useCallback(() => {
+        onSearch();
+    }, [onSearch]);
+
     const handleKeyPress = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter') {
             e.preventDefault();
@@ -91,20 +96,14 @@ export default function ManualSearchPopup(props: Props) {
                     onKeyPress={handleKeyPress}
                     disabled={loading}
                 />
-                <Button
-                    variant="contained"
-                    onClick={onSearch}
-                    disabled={loading || !searchQuery.trim()}
-                >
+                <Button variant="contained" onClick={onSearchClick} disabled={loading || !searchQuery.trim()}>
                     {loading ? <CircularProgress size={24} /> : 'Search'}
                 </Button>
             </Box>
 
-            {error && (
-                <Typography variant="body2" color="error">
-                    {error}
-                </Typography>
-            )}
+            {error ? <Typography variant="body2" color="error">
+                {error}
+            </Typography> : null}
 
             {results.length > 0 && (
                 <Box sx={{ maxHeight: 400, overflow: 'auto', border: '1px solid', borderColor: 'divider', borderRadius: 1 }}>
@@ -125,44 +124,7 @@ export default function ManualSearchPopup(props: Props) {
                                         }
                                     }}
                                 >
-                                    <FormControlLabel
-                                        value={`${index}`}
-                                        control={<Radio checked={selectedIdx === index} />}
-                                        label={
-                                            <Box display="flex" gap={1} width="100%">
-                                                <Box
-                                                    width={thumbSize}
-                                                    height={thumbSize}
-                                                    position="relative"
-                                                    flexShrink={0}
-                                                >
-                                                    {thumbUrl && (
-                                                        <img
-                                                            src={thumbUrl}
-                                                            alt={track.title}
-                                                            width={thumbSize}
-                                                            height={thumbSize}
-                                                            style={{ borderRadius: 4 }}
-                                                        />
-                                                    )}
-                                                </Box>
-                                                <Box sx={{ minWidth: 0 }}>
-                                                    <Typography display="block" variant="body1" sx={{ wordBreak: 'break-word' }}>
-                                                        {track.title}
-                                                    </Typography>
-                                                    <Typography display="block" variant="body2" color="text.secondary">
-                                                        {track.artist?.title || 'Unknown Artist'}
-                                                    </Typography>
-                                                    {track.album && (
-                                                        <Typography display="block" variant="body2" color="text.secondary">
-                                                            {track.album.title}
-                                                        </Typography>
-                                                    )}
-                                                </Box>
-                                            </Box>
-                                        }
-                                        sx={{ width: '100%' }}
-                                    />
+                                    <FormControlLabel value={`${index}`} control={<Radio checked={selectedIdx===index} />} label={ <Box display="flex" gap={1} width="100%"> <Box width={thumbSize} height={thumbSize} position="relative" flexShrink={0} > {thumbUrl ? <img src={thumbUrl} alt={track.title} width={thumbSize} height={thumbSize} style={{ borderRadius: 4 }} /> : null} </Box> <Box sx={{ minWidth: 0 }}> <Typography display="block" variant="body1" sx={{ wordBreak: 'break-word' }}> {track.title} </Typography> <Typography display="block" variant="body2" color="text.secondary"> {track.artist?.title || 'Unknown Artist'} </Typography> {track.album ? <Typography display="block" variant="body2" color="text.secondary"> {track.album.title} </Typography> : null} </Box> </Box> } sx={{ width: '100%' }} />
                                 </ListItem>
                             );
                         })}
@@ -176,11 +138,7 @@ export default function ManualSearchPopup(props: Props) {
                 <Button variant="outlined" onClick={onClose}>
                     Cancel
                 </Button>
-                <Button
-                    variant="contained"
-                    onClick={onSelectTrack}
-                    disabled={results.length === 0 || loading}
-                >
+                <Button variant="contained" onClick={onSelectTrack} disabled={results.length===0 || loading}>
                     Select Track
                 </Button>
             </Box>

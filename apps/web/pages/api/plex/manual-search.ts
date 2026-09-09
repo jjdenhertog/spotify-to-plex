@@ -13,7 +13,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
             try {
                 const { query } = req.body;
 
-                if (!query || !query.trim())
+                if (!query?.trim())
                     return res.status(400).json({ message: "Please provide a search query" });
 
                 const settings = await getSettings();
@@ -27,6 +27,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 // Expand album hits into their tracks — Plex's track search index can
                 // miss tracks whose album IS indexed (mirrors searchForTrack)
                 const albums = results.filter(result => result.type === 'album');
+
                 for (const album of albums.slice(0, 5)) {
                     try {
                         const albumTracks: HubSearchResult[] = await getAlbumTracks(settings.uri, settings.token, album.id);
@@ -52,12 +53,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                             guid: result.artist?.guid || '',
                             image: result.artist?.image || ''
                         },
-                        album: result.album ? {
-                            id: result.album.id || '',
-                            title: result.album.title || '',
-                            guid: result.album.guid || '',
-                            image: result.album.image || ''
-                        } : undefined,
+                        album: toAlbum(result.album),
                         title: result.title || '',
                         image: result.image || '',
                         src: result.src || '',
@@ -77,3 +73,15 @@ export default router.handler({
         generateError(req, res, "Manual Search", err);
     }
 });
+
+function toAlbum(album: any): PlexTrack['album'] {
+    if (!album)
+        return undefined;
+
+    return {
+        id: album.id || '',
+        title: album.title || '',
+        guid: album.guid || '',
+        image: album.image || ''
+    };
+}

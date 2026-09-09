@@ -65,7 +65,8 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
 
                         return `https://open.spotify.com/track/${cleanId}`
 
-                    }).filter(item => item).join('\n'))
+                    }).filter(Boolean)
+                        .join('\n'))
                     break;
             }
 
