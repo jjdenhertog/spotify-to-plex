@@ -151,6 +151,9 @@ importers:
       '@spotify-to-plex/shared-utils':
         specifier: workspace:*
         version: link:../../packages/shared-utils
+      '@spotify-to-plex/slskd-music-search':
+        specifier: workspace:*
+        version: link:../../packages/slskd-music-search
       '@spotify-to-plex/tidal-music-search':
         specifier: workspace:*
         version: link:../../packages/tidal-music-search
