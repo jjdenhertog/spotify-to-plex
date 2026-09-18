@@ -51,11 +51,9 @@ Due to changes to Spotify's Web API (November 2024), many public Spotify-owned p
 
 | Limitation | Details |
 |------------|---------|
-| Track limit | Playlists scraped through SpotifyScraper are limited to 100 tracks |
 | Rate limiting | Large numbers of requests may be throttled |
 
-{: .note }
-For Spotify-owned playlists with more than 100 tracks, copy the playlist to a private playlist and use that URL instead.
+Full playlists are fetched through SpotifyScraper (`max_tracks: null`), and through the official API with pagination for user playlists and manual imports (`/import/[id]` with `?full=1`).
 
 ---
 

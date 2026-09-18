@@ -33,7 +33,8 @@ def scrape_playlist():
     Expected payload:
     {
         "url": "spotify_playlist_url",
-        "include_album_data": true  # Optional, defaults to true
+        "include_album_data": true,  # Optional, defaults to true
+        "max_tracks": null  # Optional, null (default) fetches all tracks
     }
     
     Returns raw JSON data from SpotifyScraper with optional album enrichment
@@ -59,11 +60,22 @@ def scrape_playlist():
         
         # Get optional include_album_data parameter (defaults to True for backwards compatibility)
         include_album_data = data.get('include_album_data', True)
-        
-        logger.info(f"Scraping playlist: {playlist_url} (include_album_data={include_album_data})")
-        
+
+        # Optional max_tracks: null/omitted fetches the full playlist,
+        # a positive int caps it (keeps the add-validation call fast).
+        max_tracks = data.get('max_tracks', data.get('maxTracks', None))
+        if max_tracks is not None:
+            try:
+                max_tracks = int(max_tracks)
+            except (TypeError, ValueError):
+                return jsonify({"error": "max_tracks must be a positive integer or null"}), 400
+            if max_tracks <= 0:
+                return jsonify({"error": "max_tracks must be a positive integer or null"}), 400
+
+        logger.info(f"Scraping playlist: {playlist_url} (include_album_data={include_album_data}, max_tracks={max_tracks})")
+
         # Scrape playlist data with optional album enrichment
-        playlist_data = scraper_service.scrape_playlist(playlist_url, include_album_data=include_album_data)
+        playlist_data = scraper_service.scrape_playlist(playlist_url, include_album_data=include_album_data, max_tracks=max_tracks)
         
         logger.info(f"Successfully scraped playlist: {playlist_data.get('name', 'Unknown')}")
         

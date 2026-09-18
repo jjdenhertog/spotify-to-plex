@@ -50,21 +50,25 @@ class SpotifyScraperService:
 
         return data
 
-    def scrape_playlist(self, url: str, include_album_data: bool = True) -> Dict[str, Any]:
+    def scrape_playlist(self, url: str, include_album_data: bool = True, max_tracks: int | None = None) -> Dict[str, Any]:
         """
         Scrape Spotify playlist with optional complete album data
-        
+
         Args:
             url: Spotify playlist URL
             include_album_data: If True, fetches complete album data for each track
-                              If False, returns basic playlist data (faster)
-            
+                               If False, returns basic playlist data (faster)
+            max_tracks: Upper bound on tracks to collect; None fetches all.
+                        Defaults to None so large playlists are not capped at
+                        the library default of 100.
+
         Returns:
             Dict containing playlist data with complete track and album information
         """
         try:
-            # Get basic playlist data first (fast, 1 request)
-            playlist = self.scraper.get_playlist(url)
+            # Paginate through the full track list when max_tracks is None,
+            # otherwise the library default caps playlists at 100 tracks.
+            playlist = self.scraper.get_playlist(url, max_tracks=max_tracks)
 
             if not playlist:
                 raise ValueError("Failed to scrape playlist data")

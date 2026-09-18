@@ -62,7 +62,10 @@ export async function getSpotifyData(api: SpotifyApi, id: string, simplified: bo
         const spotifyUrl = `https://open.spotify.com/playlist/${playlistId}`;
         response = await axios.post<GetSpotifyScraperData>(`${scraperUrl}/playlist`, {
             url: spotifyUrl,
-            include_album_data: false
+            include_album_data: false,
+            // Full import (/import/[id] uses ?full=1) and sync need every
+            // track; the add-validation call (simplified) stays capped.
+            max_tracks: simplified ? 100 : null
         });
 
     } catch (error) {
