@@ -1,6 +1,8 @@
 import { Track } from "../types/Track";
 import { compareTitles } from '@spotify-to-plex/shared-utils/music/compareTitles';
 import { removeFeaturing } from '@spotify-to-plex/shared-utils/music/removeFeaturing';
+import { durationSimilarity } from '@spotify-to-plex/shared-utils/music/durationSimilarity';
+import { compareVersions } from "../utils/compareVersions";
 import { getRuntimeFilters } from "./getRuntimeFilters";
 
 export function search(find: Track, options: Track[], analyze: boolean = false) {
@@ -10,11 +12,8 @@ export function search(find: Track, options: Track[], analyze: boolean = false) 
 
     const results: Track[] = options
         .map(item => {
-            // Calculate duration similarity only if both have duration
             const hasBothDurations = !!(find.duration_ms && item.duration_ms);
-            const durationSimilarity = hasBothDurations
-                ? 1 - Math.abs(find.duration_ms! - item.duration_ms!) / Math.max(find.duration_ms!, item.duration_ms!)
-                : 0;
+            const similarity = durationSimilarity(find.duration_ms, item.duration_ms);
 
             const matching = {
                 album: compareTitles(item.album, find.album, true),
@@ -23,7 +22,8 @@ export function search(find: Track, options: Track[], analyze: boolean = false) 
                 artistWithTitle: compareTitles(item.title, `${find.artist} ${find.title}`, true),
                 artist: compareTitles(item.artist, find.artist, true),
                 alternativeArtist: compareTitles(removeFeaturing(item.artist), find.artist, true),
-                duration: { similarity: durationSimilarity, available: hasBothDurations },
+                version: compareVersions(item.title, find.title),
+                duration: { similarity, available: hasBothDurations },
             };
 
             return {

@@ -5,9 +5,9 @@ import { GetSpotifyAlbum } from "@spotify-to-plex/shared-types/spotify/GetSpotif
 import { GetSpotifyPlaylist } from "@spotify-to-plex/shared-types/spotify/GetSpotifyPlaylist";
 import { Track } from "@spotify-to-plex/shared-types/spotify/Track";
 import type { SearchResponse } from "@spotify-to-plex/plex-music-search/types/SearchResponse";
-import { Edit, Refresh } from "@mui/icons-material";
+import { Edit, Refresh, Search } from "@mui/icons-material";
 import CloseIcon from '@mui/icons-material/Close';
-import { Alert, Box, Button, CircularProgress, Divider, IconButton, Input, Modal, Paper, Stack, Tooltip, Typography } from "@mui/material";
+import { Alert, Box, Button, CircularProgress, Dialog, Divider, IconButton, Input, InputAdornment, Modal, Paper, Stack, TextField, Tooltip, Typography } from "@mui/material";
 import axios from "axios";
 import { enqueueSnackbar } from "notistack";
 import { ChangeEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -23,6 +23,7 @@ export type PlexPlaylistProps = {
 type TrackSelection = {
     artist: string
     title: string
+    trackId: string
     idx: number
 }
 
@@ -30,17 +31,41 @@ export default function PlexPlaylist(props: PlexPlaylistProps) {
     const { playlist, fast } = props
 
     ///////////////////////////////////////////////
-    // Pagination
+    // Searching & pagination
     ///////////////////////////////////////////////
     const pageSize = 30;
     const [page, setPage] = useState<number>(0);
     const [error, setError] = useState('')
-    const [totalPages, setTotalPages] = useState<number>(0);
+    const [query, setQuery] = useState<string>('')
+    const [showReview, setShowReview] = useState<boolean>(false)
+    const reviewPageSize = 10;
+    const [reviewPage, setReviewPage] = useState<number>(0);
     const prevPageClick = useCallback(() => {
         setPage(prev => prev - 1)
     }, [])
     const nextPageClick = useCallback(() => {
         setPage(prev => prev + 1)
+    }, [])
+
+    // Any filter change restarts at page 1, otherwise a narrow result set
+    // lands on a page that no longer exists
+    const onQueryChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+        setQuery(e.currentTarget.value)
+        setPage(0)
+    }, [])
+    const onClearQuery = useCallback(() => {
+        setQuery('')
+        setPage(0)
+    }, [])
+    const onToggleReview = useCallback(() => {
+        setShowReview(prev => !prev)
+        setReviewPage(0)
+    }, [])
+    const reviewPrevPageClick = useCallback(() => {
+        setReviewPage(prev => prev - 1)
+    }, [])
+    const reviewNextPageClick = useCallback(() => {
+        setReviewPage(prev => prev + 1)
     }, [])
 
     ///////////////////////////////////////////////
@@ -49,8 +74,6 @@ export default function PlexPlaylist(props: PlexPlaylistProps) {
     const [plexPlaylist, setPlexPlaylist] = useState<GetPlexPlaylistIdResponse>()
     useEffect(() => {
         if (!playlist) return;
-
-        setTotalPages(Math.ceil(playlist.tracks.length / pageSize))
 
         errorBoundary(async () => {
             const playlistResult = await axios.get<GetPlexPlaylistIdResponse>(`/api/playlists/${playlist.id}`)
@@ -219,20 +242,31 @@ export default function PlexPlaylist(props: PlexPlaylistProps) {
     ///////////////////////////////////
     // Set selected track index
     ///////////////////////////////////
-    const onSetSongIndex = useCallback((artist: string, track: string, idx: number) => {
-        console.log('onSetSongIndex', artist, track, idx)
-        if (trackSelections.some(item => item.artist === artist && item.title === track)) {
-
+    const onSetSongIndex = useCallback((artist: string, track: string, trackId: string, idx: number) => {
+        if (trackSelections.some(item => item.trackId === trackId)) {
             setTrackSelections(items => items.map(item => {
-                if (item.artist === artist && item.title === track)
+                if (item.trackId === trackId)
                     return { ...item, idx }
 
                 return item;
             }))
         } else {
-            setTrackSelections(prev => [...prev, { artist, title: track, idx }])
+            setTrackSelections(prev => [...prev, { artist, title: track, trackId, idx }])
         }
     }, [trackSelections])
+
+    const onManualTrackSelect = useCallback((spotifyId: string, title: string, artist: string, plexTrack: SearchResponse['result'][0]) => {
+        setTracks(prev => prev.map(item => item.id === spotifyId
+            ? { ...item, result: [plexTrack] }
+            : item))
+
+        onSetSongIndex(artist, title, spotifyId, 0)
+
+        errorBoundary(async () => {
+            await axios.post('/api/plex/cache-manual-match', { spotifyId, plexId: plexTrack.id })
+            enqueueSnackbar(`${title} matched manually`)
+        }, undefined, true)
+    }, [onSetSongIndex])
 
     ///////////////////////////////////////////////
     // Modify Playlist name
@@ -284,7 +318,7 @@ export default function PlexPlaylist(props: PlexPlaylistProps) {
             if (!item)
                 continue;
 
-            const trackSelectIdx = trackSelections.find(selectionItem => selectionItem.artist === item?.artist && selectionItem.title === item?.title)
+            const trackSelectIdx = trackSelections.find(selectionItem => selectionItem.trackId === item?.id)
             const song = item.result?.[trackSelectIdx ? trackSelectIdx.idx : 0];
 
             if (song)
@@ -309,10 +343,84 @@ export default function PlexPlaylist(props: PlexPlaylistProps) {
 
     }, [playlist, newPlaylistName, plexPlaylist, trackSelections, tracks])
 
-    const visibleTracks = playlist.tracks.slice(page * pageSize, (page * pageSize) + pageSize)
+    // Single owner for "which search result belongs to this track" - the filter
+    // and the row renderer must agree or the counts lie
+    // Matching on the spotify id - title+artist returns the same entry for both
+    // rows when a playlist holds the same song twice
+    const findMatchFor = useCallback((track: { id: string }) =>
+        tracks.find(item => item.id === track.id)
+    , [tracks])
+
+    // Every track is already loaded client-side, so searching covers the whole
+    // playlist rather than the current page
+    const filteredTracks = useMemo(() => {
+        const search = query.trim().toLowerCase();
+        if (!search)
+            return playlist.tracks;
+
+        return playlist.tracks.filter(track => {
+            const data = findMatchFor(track)
+
+            const haystack: (string | undefined)[] = [track.title, track.album, ...track.artists];
+            if (data)
+                data.result.forEach(item => {
+                    haystack.push(item.title, item.artist?.title, item.album?.title)
+                });
+
+            return haystack.some(value => !!value && value.toLowerCase().includes(search));
+        })
+    }, [playlist.tracks, findMatchFor, query])
+
+    // Matched to more than one candidate - the rows worth a human look. Tracks with
+    // nothing at all are the missing-tracks dialog's job, and listing them in both
+    // is the same problem shown twice
+    const reviewTracks = useMemo(() =>
+        playlist.tracks.filter(track => {
+            const data = findMatchFor(track)
+
+            return !!data && data.result.length > 1
+        })
+    , [playlist.tracks, findMatchFor])
+
+    const reviewTotalPages = Math.ceil(reviewTracks.length / reviewPageSize)
+    const visibleReviewTracks = reviewTracks.slice(reviewPage * reviewPageSize, (reviewPage * reviewPageSize) + reviewPageSize)
+
+    // Resolving a track drops it from the list, which can empty the current page
+    useEffect(() => {
+        if (reviewPage > 0 && reviewPage >= reviewTotalPages)
+            setReviewPage(Math.max(0, reviewTotalPages - 1))
+    }, [reviewPage, reviewTotalPages])
+
+    const filtering = !!query.trim();
+
+    // Shared by the paged list and the review dialog so both stay interactive
+    const renderTrack = useCallback((track: Track) => {
+        const data = findMatchFor(track)
+        const trackSelectIdx = trackSelections.find(item => item.trackId === track.id)
+        const songIdx = trackSelectIdx ? trackSelectIdx.idx : 0;
+        const loading = loadingTracks && !(tracksLoaded.some(item => item === track.id))
+
+        return <PlexTrack
+            key={`${playlist.id}-plex-${track.title}-${track.id}}`}
+            loading={loading}
+            track={track}
+            setSongIdx={onSetSongIndex}
+            songIdx={songIdx}
+            data={data}
+            onManualSelect={onManualTrackSelect}
+        />
+    }, [findMatchFor, trackSelections, loadingTracks, tracksLoaded, onSetSongIndex, onManualTrackSelect, playlist.id])
+    const totalPages = Math.ceil(filteredTracks.length / pageSize)
+    const visibleTracks = filteredTracks.slice(page * pageSize, (page * pageSize) + pageSize)
     let curEnd = (page * pageSize) + pageSize;
-    if (curEnd > playlist.tracks.length)
-        curEnd = playlist.tracks.length;
+    if (curEnd > filteredTracks.length)
+        curEnd = filteredTracks.length;
+
+    // Results can shrink under the current page while tracks are still resolving
+    useEffect(() => {
+        if (page > 0 && page >= totalPages)
+            setPage(Math.max(0, totalPages - 1))
+    }, [page, totalPages])
 
     //////////////////////////////////////////////
     // Handle missing tracks
@@ -327,10 +435,12 @@ export default function PlexPlaylist(props: PlexPlaylistProps) {
 
         return playlist.tracks
             .filter(item => {
-                return tracks.some(track => track.title === item.title && item.artists.indexOf(track.artist) > - 1 && track.result.length === 0)
+                const data = findMatchFor(item)
+
+                return !!data && data.result.length === 0
             })
 
-    }, [playlist, tracks])
+    }, [playlist, findMatchFor])
 
     if (error) {
         return (
@@ -434,6 +544,20 @@ export default function PlexPlaylist(props: PlexPlaylistProps) {
             </Box>
         }
 
+        {!!(reviewTracks.length > 0) && !loadingTracks &&
+            <Box sx={{ mt: 1, mb: 1 }}>
+                <Alert variant="outlined" severity="info">
+                    <Box sx={{ p: 1 }}>
+                        <Typography variant="h6" sx={{ mb: 0.5 }}>{reviewTracks.length} tracks to review</Typography>
+                        <Typography variant="body2" sx={{ mb: 1 }}>
+                            More than one track in your library matched these, so the wrong version may have been picked.
+                        </Typography>
+                        <Button variant="outlined" size="small" onClick={onToggleReview}>Review tracks</Button>
+                    </Box>
+                </Alert>
+            </Box>
+        }
+
         {missingTracks.length === 0 && !loadingTracks &&
             <Box sx={{ mt: 1, mb: 1 }}>
                 <Alert variant="outlined" color="success">
@@ -461,6 +585,25 @@ export default function PlexPlaylist(props: PlexPlaylistProps) {
 
             <Divider sx={{ mt: 1, mb: 1 }} />
             <Stack>
+                <TextField
+                    size="small"
+                    fullWidth
+                    sx={{ mb: 1 }}
+                    placeholder="Search this playlist"
+                    value={query}
+                    onChange={onQueryChange}
+                    InputProps={{
+                        startAdornment: <InputAdornment position="start"><Search fontSize="small" /></InputAdornment>,
+                        endAdornment: !!query && <InputAdornment position="end">
+                            <IconButton size="small" onClick={onClearQuery} aria-label="Clear search"><CloseIcon fontSize="small" /></IconButton>
+                        </InputAdornment>
+                    }}
+                />
+                {!!filtering &&
+                    <Typography variant="body2" sx={{ mb: 1, color: 'text.secondary' }}>
+                        {filteredTracks.length === 0 ? 'No tracks match' : `${filteredTracks.length} of ${playlist.tracks.length} tracks`}
+                    </Typography>
+                }
                 {totalPages > 1 &&
                     <Box display="flex" mb={1} justifyContent="space-between">
                         <Button variant="contained" disabled={page <= 0} onClick={prevPageClick}>Previous</Button>
@@ -468,22 +611,7 @@ export default function PlexPlaylist(props: PlexPlaylistProps) {
                         <Button variant="contained" disabled={page >= totalPages - 1} onClick={nextPageClick}>Next</Button>
                     </Box>
                 }
-                {visibleTracks.map(track => {
-                    const data = tracks.find(item => {
-
-                        const mergedArtistsMatch = track.artists.join(',') == item.artist && track.title === item.title
-                        if (mergedArtistsMatch)
-                            return true;
-
-                        return track.artists.indexOf(item.artist) > -1 && track.title === item.title
-
-                    })
-                    const trackSelectIdx = trackSelections.find(item => track.artists.indexOf(item.artist) > -1 && item.title === track.title)
-                    const songIdx = trackSelectIdx ? trackSelectIdx.idx : 0;
-                    const loading = loadingTracks && !(tracksLoaded.some(item => item === track.id))
-
-                    return <PlexTrack key={`${playlist.id}-plex-${track.title}-${track.id}}`} loading={loading} track={track} setSongIdx={onSetSongIndex} songIdx={songIdx} data={data} />
-                })}
+                {visibleTracks.map(renderTrack)}
             </Stack>
         </Paper>
 
@@ -503,6 +631,30 @@ export default function PlexPlaylist(props: PlexPlaylistProps) {
                     <Button variant="contained" onClick={onSavePlaylistNameClick} sx={{ mt: 2 }}>Save</Button>
                 </Box>
             </Modal>
+        }
+
+        {!!showReview &&
+            <Dialog open onClose={onToggleReview}>
+                <Box sx={{ maxWidth: 600, p: 2, position: 'relative' }}>
+                    <IconButton size="small" onClick={onToggleReview} sx={{ position: 'absolute', right: 8, top: 8 }}>
+                        <CloseIcon fontSize="small" />
+                    </IconButton>
+                    <Typography variant="h6">Tracks to review</Typography>
+                    <Typography variant="body2">
+                        Below you find the tracks where more than one track in your library matched. Pick the right one.
+                    </Typography>
+                    <Box sx={{ mt: 1 }}>
+                        {visibleReviewTracks.map(renderTrack)}
+
+                        {reviewTotalPages > 1 &&
+                            <Box mt={1} display="flex" justifyContent="space-between">
+                                <Button size="small" variant="outlined" color="inherit" disabled={reviewPage <= 0} onClick={reviewPrevPageClick}>Previous</Button>
+                                <Button size="small" variant="outlined" color="inherit" disabled={reviewPage >= reviewTotalPages - 1} onClick={reviewNextPageClick}>Next</Button>
+                            </Box>
+                        }
+                    </Box>
+                </Box>
+            </Dialog>
         }
 
         {!!showExportMissingTracks && missingTracks.length > 0 &&

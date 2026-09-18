@@ -22,6 +22,7 @@ export async function getById(config: PlexMusicSearchConfig, key: string) {
         guid: item.guid || '',
         image: item.thumb || '',
         title: item.title || '',
+        duration_ms: item.duration,
         src,
         album: {
             guid: item.parentGuid || '',

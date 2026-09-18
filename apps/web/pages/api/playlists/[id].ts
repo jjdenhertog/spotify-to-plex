@@ -17,6 +17,16 @@ export type GetPlexPlaylistIdResponse = {
     id: string,
     link: string
 }
+// Large playlists ship thousands of tracks in one request/response (issue #94)
+export const config = {
+    api: {
+        bodyParser: {
+            sizeLimit: '8mb',
+        },
+        responseLimit: false,
+    },
+}
+
 const router = createRouter<NextApiRequest, NextApiResponse>()
     .get(
         async (req, res) => {

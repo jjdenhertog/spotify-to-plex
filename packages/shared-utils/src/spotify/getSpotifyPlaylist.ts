@@ -40,15 +40,14 @@ export async function getSpotifyPlaylist(api: SpotifyApi, id: string, simplified
                 if (!track || typeof track !== 'object')
                     return null;
 
-                // Local files and unavailable tracks have null IDs - log for visibility
-                if (!track.id) {
-                    console.log(`⚠️  Track without Spotify ID (local file or unavailable): "${track.name}" by ${track.artists?.[0]?.name || 'Unknown'}`);
-                }
+                // Local files have no id but do have a spotify:local: uri
+                if (!track.id && !track.uri)
+                    return null;
 
                 const artists = track.artists?.flatMap(artist => artist.name.split(',').map(name => name.trim()));
 
                 return {
-                    id: track.id,
+                    id: track.id || track.uri,
                     title: track.name,
                     artist: track.artists?.[0]?.name || 'Unknown',
                     album: track.album?.name || 'Unknown',
@@ -89,13 +88,12 @@ export async function getSpotifyPlaylist(api: SpotifyApi, id: string, simplified
                     const track: Track | undefined = (item as any).item ?? (item as any).track;
                     if (!track || typeof track !== 'object') return null;
 
-                    // Local files and unavailable tracks have null IDs - log for visibility
-                    if (!track.id) {
-                        console.log(`⚠️  Track without Spotify ID (local file or unavailable): "${track.name}" by ${track.artists?.[0]?.name || 'Unknown'}`);
-                    }
+                    // Local files have no id but do have a spotify:local: uri
+                    if (!track.id && !track.uri)
+                        return null;
 
                     return {
-                        id: track.id,
+                        id: track.id || track.uri,
                         title: track.name,
                         artist: track.artists?.[0]?.name || 'Unknown',
                         album: track.album?.name || 'Unknown',

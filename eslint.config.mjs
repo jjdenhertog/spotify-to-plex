@@ -675,6 +675,22 @@ const config = [
             }],
             "react/jsx-first-prop-new-line": ["error", "multiline"]
         }
+    },
+    {
+        // Test files are excluded from each package's tsconfig.json so they never reach
+        // dist. Point typed linting at a sibling tsconfig.eslint.json that includes them
+        // instead, since the project service only knows about tsconfig.json.
+        files: ["**/*.test.ts", "**/*.test.tsx"],
+        languageOptions: {
+            parserOptions: {
+                ecmaFeatures: {
+                    jsx: true
+                },
+                projectService: false,
+                project: ["packages/*/tsconfig.eslint.json"],
+                tsconfigRootDir: import.meta.dirname
+            }
+        }
     }
 ]
 

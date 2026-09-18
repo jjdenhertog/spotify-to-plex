@@ -25,6 +25,7 @@ import { putPlexPlaylist } from "../utils/putPlexTracks";
 import { getSettings } from "@spotify-to-plex/plex-config/functions/getSettings";
 import { LidarrAlbumData } from "@spotify-to-plex/shared-types/lidarr/LidarrAlbumData";
 import { SlskdTrackData } from "@spotify-to-plex/shared-types/slskd/SlskdTrackData";
+import { isLocalTrack } from "@spotify-to-plex/shared-utils/spotify/isLocalTrack";
 
 
 export async function syncPlaylists() {
@@ -158,7 +159,10 @@ export async function syncPlaylists() {
 
                 console.log(`Missing ${missingTracks.length} tracks`)
                 missingTracks.forEach(item => {
-                    if (!item.id) return; // Skip tracks with null id
+                    // A local file has no spotify id to export - splitting its uri
+                    // would yield the artist name
+                    if (!item.id || isLocalTrack(item.id)) return;
+
                     const id = item.id.indexOf(":") > -1 ? item.id.split(":")[2] : item.id;
                     if (typeof id === 'string' && !missingSpotifyTracks.includes(id))
                         missingSpotifyTracks.push(id)
@@ -195,7 +199,10 @@ export async function syncPlaylists() {
 
                 // Collect track data for SLSKD
                 missingTracks.forEach(track => {
-                    if (!track.id) return; // Skip tracks with null id
+                    // A local file has no spotify id to export - splitting its uri
+                    // would yield the artist name
+                    if (!track.id || isLocalTrack(track.id)) return;
+
                     const spotifyId = track.id.indexOf(":") > -1 ? track.id.split(":")[2] : track.id;
                     const artist = track.artists[0] || 'Unknown Artist';
                     const trackName = track.title || 'Unknown Track';

@@ -84,6 +84,9 @@
       "path": "../../packages/tidal-music-search"
     },
     {
+      "path": "../../packages/slskd-music-search"
+    },
+    {
       "path": "../sync-worker"
     }
   ]
