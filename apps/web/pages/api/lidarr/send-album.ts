@@ -51,6 +51,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
             if (!musicBrainzIds) {
                 return res.status(404).json({
                     success: false,
+                    code: 'NO_MUSICBRAINZ_MAPPING',
                     message: `No MusicBrainz mapping found for Spotify album: ${spotify_album_id}`,
                 });
             }
