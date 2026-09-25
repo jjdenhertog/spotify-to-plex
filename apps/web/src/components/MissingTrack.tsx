@@ -3,6 +3,7 @@ import { Alert, Box, Button, Divider, Typography } from "@mui/material";
 import { Track } from "@spotify-to-plex/shared-types/spotify/Track";
 import axios from "axios";
 import { forwardRef, useCallback, useImperativeHandle, useMemo, useRef, useState } from "react";
+import MusicBrainzSeederButtons from "./MusicBrainzSeederButtons";
 
 type SlskdSearchResult = {
     success: boolean;
@@ -298,6 +299,11 @@ const MissingTrack = forwardRef<MissingTrackHandle, MissingTrackProps>((props, r
                                 Spotify
                             </Button>
                         </Box>
+                    }
+
+                    {/* MusicBrainz import tools for the track's album */}
+                    {!!track.album_id && track.album_id !== 'unknown' &&
+                        <MusicBrainzSeederButtons spotifyAlbumId={track.album_id} className="btn" />
                     }
                 </Box>
             </Box>
