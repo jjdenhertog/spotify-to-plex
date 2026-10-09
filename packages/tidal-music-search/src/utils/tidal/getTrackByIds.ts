@@ -17,7 +17,8 @@ export async function getTrackByIds(ids: string[], countryCode: string) {
         `https://openapi.tidal.com/v2/tracks`,
         {
             countryCode,
-            include: ['artists', 'tracks', 'albums'],
+            // 'tracks' is no longer a valid include on /v2/tracks: Tidal answers 400 and every lookup came back empty
+            include: ['artists', 'albums'],
             'filter[id]': ids
         }
     );
