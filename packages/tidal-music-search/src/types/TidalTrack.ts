@@ -16,5 +16,7 @@ export type TidalTrack = {
         title: string;
         link: string;
     };
+    // Informational only, matching does not use it
+    duration_ms?: number;
     matching?: Track["matching"]
 };

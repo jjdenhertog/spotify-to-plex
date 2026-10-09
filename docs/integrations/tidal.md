@@ -58,6 +58,56 @@ When you view missing tracks, the app can search Tidal for matching songs. This 
 
 ---
 
+## Tidal fallback for missing tracks
+
+`POST /api/plex/tracks` searches your Plex library for a list of tracks. Add `"tidal": true` to the body and every track Plex can't find is looked up on Tidal in the same request, so a caller can show what is missing and what would be downloaded. Without the flag the endpoint responds exactly as before.
+
+**Request:**
+```json
+{
+    "tidal": true,
+    "items": [
+        { "id": "spotify-id-or-any-string", "artists": ["Faithless", "Sister Bliss"], "title": "Insomnia", "album": "Reverence", "duration_ms": 522000 }
+    ]
+}
+```
+
+Each item needs an `id` (any unique string, it doesn't have to be a Spotify id), `artists` and `title`. `album` and `duration_ms` improve the match.
+
+**Response:** the usual search rows, each with a `status`:
+
+```json
+[
+    { "id": "a", "artist": "Plex Artist", "title": "In Plex", "album": "", "result": [{ "id": "1234", "title": "In Plex" }], "status": "plex" },
+    {
+        "id": "b", "artist": "Faithless", "title": "Insomnia", "album": "Reverence", "duration_ms": 522000, "result": [],
+        "status": "tidal",
+        "tidal_ids": ["77", "78"],
+        "tidal_album_id": "123",
+        "tidal_match": { "artist": "Faithless, Sister Bliss", "title": "Insomnia", "album": "Reverence", "duration_ms": 522000 }
+    },
+    { "id": "c", "artist": "Nobody", "title": "Nowhere", "album": "", "result": [], "status": "none", "tidal_ids": [] },
+    { "id": "d", "artist": "Someone", "title": "Something", "album": "", "result": [], "status": "none", "tidal_ids": [], "tidal_error": "unconfigured" }
+]
+```
+
+| Field | Meaning |
+|-------|---------|
+| `status` | `plex` (found in Plex), `tidal` (missing in Plex, found on Tidal) or `none` |
+| `tidal_ids` | Tidal track ids, best match first |
+| `tidal_album_id` | Album of the best Tidal match |
+| `tidal_match` | Artist, title, album and duration of the best Tidal match, to show what would be downloaded |
+| `tidal_error` | `unconfigured` when the Tidal credentials are missing, `failed` when the Tidal lookup failed. Plex results are returned either way |
+
+How it works:
+
+- It uses the same lookup as the synchronization: cached Tidal links first, a Tidal search for the rest. Matches are cached under the item `id`, misses are not, so they are searched again next time.
+- Tidal uses the same search approaches as the Plex search (only the first one with `"fast": true`), every artist on its own and all artists joined, the title after text processing, and the album to rank and filter the results (the album is not part of the search query). The duration isn't used for Tidal matching.
+- A track that comes from the cache only has its ids stored, so its `tidal_match` and `tidal_album_id` are fetched from Tidal and left out if that fails.
+- Only for the track search: with `"type": "spotify-album"` the flag is ignored.
+
+---
+
 ## Missing Tracks Files
 
 The synchronization process generates:

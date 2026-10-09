@@ -4,6 +4,7 @@ import { search } from '@spotify-to-plex/plex-music-search/functions/search';
 import { searchAlbum } from '@spotify-to-plex/plex-music-search/functions/searchAlbum';
 import { PlexMusicSearchTrack } from '@spotify-to-plex/plex-music-search/types/PlexMusicSearchTrack';
 import { getMusicSearchConfig } from "@spotify-to-plex/music-search/functions/getMusicSearchConfig";
+import { addTidalFallback } from '@spotify-to-plex/tidal-music-search/functions/addTidalFallback';
 
 import { SearchResponse } from '@spotify-to-plex/plex-music-search/types/SearchResponse';
 import type { NextApiRequest, NextApiResponse } from 'next';
@@ -25,7 +26,7 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
         async (req, res) => {
             try {
                 const searchItems: PlexMusicSearchTrack[] = req.body.items;
-                const { type = 'spotify-playlist', fast = false, album } = req.body;
+                const { type = 'spotify-playlist', fast = false, album, tidal = false } = req.body;
 
                 if (!searchItems || searchItems.length === 0)
                     return res.status(400).json({ msg: "No items given" });
@@ -73,6 +74,12 @@ const router = createRouter<NextApiRequest, NextApiResponse>()
                 ///////////////////////////
                 const { add } = getCachedTrackLinks(searchItems, 'plex')
                 add(searchResult, 'plex', album ? { id: album } : undefined)
+
+                ///////////////////////////
+                // Tidal fallback for missing tracks (track search only)
+                ///////////////////////////
+                if (tidal === true && type !== 'spotify-album')
+                    return res.status(200).json(await addTidalFallback(searchResult, searchItems, searchApproaches));
 
                 res.status(200).json(searchResult);
             } catch (error) {

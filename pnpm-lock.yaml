@@ -378,6 +378,9 @@ importers:
       '@spotify-to-plex/shared-types':
         specifier: workspace:*
         version: link:../shared-types
+      '@spotify-to-plex/shared-utils':
+        specifier: workspace:*
+        version: link:../shared-utils
       axios:
         specifier: ^1.11.0
         version: 1.11.0
@@ -394,6 +397,9 @@ importers:
       typescript:
         specifier: ^5.0.0
         version: 5.9.2
+      vitest:
+        specifier: ^2.1.9
+        version: 2.1.9(@types/node@20.19.11)(sass@1.90.0)
 
 packages:
 

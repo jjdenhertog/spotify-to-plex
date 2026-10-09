@@ -2,6 +2,7 @@ import { TidalTrack } from "../../types/TidalTrack";
 import { TidalComponents, operations } from "../../types/TidalAPI";
 import tidalApiRequest from "../tidalApiRequest";
 import { getCredentials } from "../../session/credentials";
+import { parseIsoDuration } from "../parseIsoDuration";
 
 export async function getTrackByIds(ids: string[], countryCode: string) {
     const state = getCredentials();
@@ -57,7 +58,8 @@ export async function getTrackByIds(ids: string[], countryCode: string) {
                         link,
                         artists,
                         artist: { title: artists[0]?.name || '' },
-                        album
+                        album,
+                        duration_ms: parseIsoDuration(attributes?.duration)
                     });
                 }
             }
