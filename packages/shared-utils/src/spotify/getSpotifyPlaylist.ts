@@ -1,12 +1,43 @@
 import { GetSpotifyPlaylist } from "@spotify-to-plex/shared-types/spotify/GetSpotifyPlaylist";
-import { Page, PlaylistedTrack, SpotifyApi, Track } from "@spotify/web-api-ts-sdk";
+import { MaxInt, Page, PlaylistedTrack, SpotifyApi, Track } from "@spotify/web-api-ts-sdk";
 
+const PAGE_SIZE = 50;
+// ponytail: hard cap on how many tracks a playlist contributes; raise if bigger playlists matter
+const MAX_TRACKS = 500;
+// ~350ms delay = ~171 requests/minute (under the ~180 req/min limit with safety margin)
+const PAGE_DELAY = 350;
+
+function mapTracks(items: PlaylistedTrack<Track>[]) {
+    return items
+        .map(item => {
+            // The 2024 API change exposes the track as `item`; older responses use `track`.
+            const track: Track | undefined = (item as any).item ?? (item as any).track;
+            if (!track || typeof track !== 'object')
+                return null;
+
+            // Local files have no id but do have a spotify:local: uri
+            if (!track.id && !track.uri)
+                return null;
+
+            const artists = track.artists?.flatMap(artist => artist.name.split(',').map(name => name.trim()));
+
+            return {
+                id: track.id || track.uri,
+                title: track.name,
+                artist: track.artists?.[0]?.name || 'Unknown',
+                album: track.album?.name || 'Unknown',
+                artists: artists || [],
+                album_id: track.album?.id || 'unknown',
+                duration_ms: track.duration_ms
+            }
+        })
+        .filter((track) => !!track);
+}
 
 export async function getSpotifyPlaylist(api: SpotifyApi, id: string, simplified: boolean) {
 
 
     try {
-        const tokenInfo = await api.getAccessToken();
         const result = await api.playlists.getPlaylist(id)
         const playlist: GetSpotifyPlaylist = {
             type: "spotify-playlist",
@@ -19,8 +50,7 @@ export async function getSpotifyPlaylist(api: SpotifyApi, id: string, simplified
 
         // Spotify Web API change (rolled out late 2024): user-authenticated
         // /playlists/{id} responses now return the tracks page under `items`
-        // instead of `tracks`, and each entry exposes the track object as
-        // `item` instead of `track`. Read both shapes so the function keeps
+        // instead of `tracks`. Read both shapes so the function keeps
         // working for any account or region still on the legacy response.
         // Pick whichever field actually holds a page of tracks: `??` alone would
         // take an `items` field that is present but not a tracks page, and skip
@@ -34,82 +64,28 @@ export async function getSpotifyPlaylist(api: SpotifyApi, id: string, simplified
             return null;
         }
 
-        const validTracks = tracksPage.items
-            .map(item => {
-                const track: Track | undefined = (item as any).item ?? (item as any).track;
-                if (!track || typeof track !== 'object')
-                    return null;
-
-                // Local files have no id but do have a spotify:local: uri
-                if (!track.id && !track.uri)
-                    return null;
-
-                const artists = track.artists?.flatMap(artist => artist.name.split(',').map(name => name.trim()));
-
-                return {
-                    id: track.id || track.uri,
-                    title: track.name,
-                    artist: track.artists?.[0]?.name || 'Unknown',
-                    album: track.album?.name || 'Unknown',
-                    artists: artists || [],
-                    album_id: track.album?.id || 'unknown',
-                    duration_ms: track.duration_ms
-                }
-            })
-            .filter((track) => !!track);
-
-        playlist.tracks = playlist.tracks.concat(validTracks);
+        playlist.tracks = mapTracks(tracksPage.items);
         if (simplified)
             return playlist;
 
-        let nextUrl: string | null = tracksPage.next
-        while (nextUrl) {
+        // The embedded page only carries the first 100 tracks, so keep asking the
+        // items endpoint for the rest, up to MAX_TRACKS. Paging by offset instead
+        // of following `next` by hand keeps the SDK's auth: a manual fetch needs a
+        // token this function does not always have.
+        let offset = tracksPage.items.length;
+        const total = Math.min(typeof tracksPage.total === 'number' ? tracksPage.total : Infinity, MAX_TRACKS);
 
-            const response = await fetch(nextUrl, {
-                headers: {
-                    'Authorization': `Bearer ${tokenInfo?.access_token}`
-                }
-            });
+        while (offset < total) {
+            await new Promise(resolve => { setTimeout(resolve, PAGE_DELAY) });
 
-            if (!response.ok) {
-                console.error(`❌ Fetch failed: ${response.status} ${response.statusText}`);
+            const limit = Math.min(PAGE_SIZE, total - offset) as MaxInt<50>;
+            const page = await api.playlists.getPlaylistItems(id, undefined, undefined, limit, offset);
+            const items = page?.items;
+            if (!items?.length)
                 break;
-            }
 
-            const data = await response.json();
-            const loadMore = data as Page<PlaylistedTrack<Track>>;
-            if (!loadMore.items) {
-                nextUrl = null;
-                break;
-            }
-
-            const validLoadMoreTracks = loadMore.items
-                .map(item => {
-                    const track: Track | undefined = (item as any).item ?? (item as any).track;
-                    if (!track || typeof track !== 'object') return null;
-
-                    // Local files have no id but do have a spotify:local: uri
-                    if (!track.id && !track.uri)
-                        return null;
-
-                    return {
-                        id: track.id || track.uri,
-                        title: track.name,
-                        artist: track.artists?.[0]?.name || 'Unknown',
-                        album: track.album?.name || 'Unknown',
-                        artists: track.artists?.map(artist => artist.name) || [],
-                        album_id: track.album?.id || 'unknown',
-                        duration_ms: track.duration_ms
-                    }
-                })
-                .filter((track) => !!track);
-
-            playlist.tracks = playlist.tracks.concat(validLoadMoreTracks);
-
-            nextUrl = loadMore.next
-
-            if (nextUrl)
-                await new Promise(resolve => { setTimeout(resolve, 350) });
+            playlist.tracks = playlist.tracks.concat(mapTracks(items));
+            offset += items.length;
         }
 
         return playlist;
