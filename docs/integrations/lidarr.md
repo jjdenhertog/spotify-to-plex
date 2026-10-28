@@ -52,6 +52,19 @@ When viewing missing tracks for a playlist, you'll see a "Send to Lidarr" button
 
 ![Lidarr Dialog](../assets/images/lidarr_dialog.jpg)
 
+### Albums Missing from MusicBrainz
+
+Lidarr can only download albums that exist on [MusicBrainz](https://musicbrainz.org). When an album has no MusicBrainz release linked to its Spotify URL, the dialog shows "No MusicBrainz mapping found" along with:
+
+- **Harmony** opens [Harmony](https://harmony.pulsewidth.org.uk) with the Spotify album prefilled, ready to import into MusicBrainz
+- **SAMBL** opens the [SAMBL](https://sambl.lioncat6.com) release seeder for the Spotify album
+- **Re-check** looks up the MusicBrainz mapping again; once the release exists, the album can be sent
+
+The same Harmony and SAMBL buttons appear on each track in the missing tracks list.
+
+{: .note }
+Lidarr reads MusicBrainz through its own metadata server, so a freshly added release may show "Album not found in Lidarr database" for a while after the mapping is found.
+
 ### Automatic Sync
 
 When automatic sync is enabled, missing albums are sent to Lidarr during the daily synchronization process.
